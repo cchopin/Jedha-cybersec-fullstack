@@ -23,7 +23,6 @@ Ce repository contient les projets et exercices réalisés dans le cadre de ma f
 | Final Project | 10 jours | ⏳ |
 | Cybersecurity Certification | - | ⏳ |
 
-**Progression :** 4/16 modules complétés • **Durée totale :** 61 jours
 
 ## Structure du projet
 
@@ -42,7 +41,7 @@ jedha/
 
 Collection de scripts Bash pour l'apprentissage :
 - `search_with_bash.sh` - Script de recherche de fichiers et répertoires
-- `lizard_toad_snake.sh` - Jeu interactif en ligne de commande
+- `lizard_toad_snake.sh` - Chi Fou Mi interactif en ligne de commande
 
 ### Threat Intelligence ✅
 **Répertoire :** `opencti/`
