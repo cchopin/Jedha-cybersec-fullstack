@@ -1,92 +1,136 @@
 # Formation Cybersécurité Full Stack - Jedha
 
-Ce repository contient les projets et exercices réalisés dans le cadre de ma formation en cybersécurité full stack avec Jedha.
+Ce repository contient l'ensemble des projets, exercices et documentations réalisés dans le cadre de ma formation en cybersécurité full stack avec Jedha.
 
-## Modules de formation
+## Progression
 
-| Module | Durée | Statut |
-|--------|-------|--------|
-| Prepare Your Training (Prep Work) | 1 jour | ✅ |
-| Threat Intelligence | 2 jours | ✅ |
-| Email Security | 1 jour | ✅ |
-| Databases | 2 jours | ✅ |
-| Web Security | 6 jours | ⏳ |
-| Cloud Security | 3 jours | ⏳ |
-| Network Security | 6 jours | ⏳ |
-| Linux System Security | 8 jours | ⏳ |
-| Windows Security | 8 jours | ⏳ |
-| Incident Response | 4 jours | ⏳ |
-| Digital Forensics | 3 jours | ⏳ |
-| Governance Risk and Compliance | 1 jour | ⏳ |
-| Penetration Testing | 3 jours | ⏳ |
-| Career Coaching | 3 jours | ⏳ |
-| Final Project | 10 jours | ⏳ |
-| Cybersecurity Certification | - | ⏳ |
+**4/16 modules complétés** • **Durée totale :** 61 jours
 
+```
+████████░░░░░░░░░░░░░░░░░░░░ 25%
+```
 
-## Structure du projet
+## Vue d'ensemble des modules
+
+| # | Module | Durée | Statut | Contenu principal |
+|---|--------|-------|--------|-------------------|
+| 01 | Prepare Your Training | 1 jour | ✅ | Scripting Bash, automatisation |
+| 02 | Threat Intelligence | 2 jours | ✅ | APT, MITRE ATT&CK, OSINT, OpenCTI |
+| 03 | Email Security | 1 jour | ✅ | Phishing, SPF/DKIM/DMARC, Gophish |
+| 04 | Databases | 2 jours | ✅ | SQL/NoSQL, injections, sécurisation |
+| 05 | Web Security | 6 jours | ⏳ | Python/Flask, XSS, SQLi, CSRF, Docker, CI/CD |
+| 06 | Cloud Security | 3 jours | ⏳ | AWS, IAM, VPC, CloudWatch |
+| 07 | Network Security | 6 jours | ⏳ | TCP/IP, VLANs, routing, firewalls, VPN, Wireshark |
+| 08 | Linux System Security | 8 jours | ⏳ | Users, processes, kernel, SELinux, containers |
+| 09 | Windows Security | 8 jours | ⏳ | Active Directory, GPO, Kerberos, exploitation |
+| 10 | Incident Response | 4 jours | ⏳ | SIEM, Wazuh, playbooks, malware analysis |
+| 11 | Digital Forensics | 3 jours | ⏳ | Disk/memory forensics, Autopsy, Volatility |
+| 12 | Governance Risk & Compliance | 1 jour | ⏳ | NIST, GDPR, ISO 27001 |
+| 13 | Penetration Testing | 3 jours | ⏳ | Metasploit, méthodologies, reporting |
+| 14 | Career Coaching | 3 jours | ⏳ | CV, entretiens, networking |
+| 15 | Final Project | 10 jours | ⏳ | Projet intégrateur |
+| 16 | Cybersecurity Certification | - | ⏳ | Certification professionnelle |
+
+## Structure du repository
 
 ```
 jedha/
-├── bash_training/        # [Prep Work] Scripts Bash d'entraînement
-├── opencti/             # [Threat Intelligence] Documentation OpenCTI
-├── python_blog/          # [Web Security] Projet de blog Flask
-└── README.md            # Ce fichier
+├── 01_prep_work/                    # ✅ Scripts Bash
+│   └── bash_training/
+├── 02_threat_intelligence/          # ✅ OpenCTI + Articles
+│   └── opencti/
+├── 03_email_security/               # ✅ Phishing, SPF/DKIM/DMARC
+├── 04_databases/                    # ✅ SQL, sécurisation BDD
+├── 05_web_security/                 # ⏳ Web app security (en cours)
+│   └── python_blog/
+├── 06_cloud_security/               # ⏳ AWS, IAM, monitoring
+├── 07_network_security/             # ⏳ TCP/IP, firewalls, VPN
+├── 08_linux_system_security/        # ⏳ Kernel, containers, hardening
+├── 09_windows_security/             # ⏳ AD, Kerberos, exploitation
+├── 10_incident_response/            # ⏳ SIEM, forensics, playbooks
+├── 11_digital_forensics/            # ⏳ Disk/memory analysis
+├── 12_governance_risk_compliance/   # ⏳ NIST, GDPR, compliance
+├── 13_penetration_testing/          # ⏳ Metasploit, pentesting
+├── 14_career_coaching/              # ⏳ Préparation professionnelle
+├── 15_final_project/                # ⏳ Projet final
+└── README.md                        # Ce fichier
 ```
 
-## Projets par module
+> Chaque module possède son propre README avec les détails des projets, objectifs et compétences acquises.
 
-### Prepare Your Training (Prep Work) ✅
-**Répertoire :** `bash_training/`
+## Modules complétés en détail
 
-Collection de scripts Bash pour l'apprentissage :
-- `search_with_bash.sh` - Script de recherche de fichiers et répertoires
-- `lizard_toad_snake.sh` - Chi Fou Mi interactif en ligne de commande
+### 01 - Prepare Your Training ✅
+**Projets :** Scripts Bash d'automatisation
+- `search_with_bash.sh` - Recherche de fichiers/répertoires
+- `lizard_toad_snake.sh` - Jeu interactif
 
-### Threat Intelligence ✅
-**Répertoire :** `opencti/`
+### 02 - Threat Intelligence ✅
+**Projets :** OpenCTI, analyse de menaces
+- Configuration complète d'OpenCTI
+- Analyse de groupes APT (DragonForce)
+- Articles : [OpenCTI](https://tely.info/article.html?id=opencti) | [DragonForce](https://tely.info/article.html?id=opencti-dragonforce)
 
-Documentation et guides de configuration pour OpenCTI :
-- `opencti_installation_macos.md` - Installation sur macOS
-- `opencti_configuration_sources.md` - Configuration des sources de données
+### 03 - Email Security ✅
+**Compétences :** Analyse de phishing, SPF/DKIM/DMARC, Gophish
+- Analyse d'headers d'emails
+- Validation des mécanismes de sécurité
+- Campagnes de simulation avec Gophish
 
-**Articles publiés :**
-- [OpenCTI - DragonForce](https://tely.info/article.html?id=opencti-dragonforce)
-- [OpenCTI](https://tely.info/article.html?id=opencti)
+### 04 - Databases ✅
+**Compétences :** SQL/NoSQL, injections, sécurisation
+- Requêtes SQL avancées
+- Détection et prévention des SQL injections
+- Gestion des accès et privilèges
 
-### Email Security ✅
-Module complété sans projet Git associé.
+## Modules en cours
 
-### Databases ✅
-Module complété sans projet Git associé.
+### 05 - Web Security ⏳
+**Technologies :** Python, Flask, Docker, Burp Suite
+- Développement d'applications web sécurisées
+- Vulnérabilités OWASP : XSS, SQLi, CSRF, SSTI
+- Infrastructure sécurisée avec Nginx et Docker
+- CI/CD avec GitHub Actions et Trivy
+- Déploiement avec Docker Swarm
 
-### Web Security ⏳
-**Répertoire :** `python_blog/`
+## Technologies et outils
 
-Application web de blog développée avec Flask :
-- Base de données SQLite
-- Templates HTML/CSS
-- Gestion des articles et des posts
-- Connexion à la base de données
+**Langages :** Python, Bash, SQL, HTML/CSS, PowerShell
 
-## Prérequis
+**Web :** Flask, Jinja2, Nginx, HTTPS/SSL
 
-- Python 3.x
-- Flask
-- Bash
-- Git
+**Sécurité :** Burp Suite, Metasploit, Wireshark, Nmap, OpenCTI, Wazuh
 
-## Installation
+**Infrastructure :** Docker, Docker Swarm, Ansible, Kubernetes
 
-### Projet Flask (python_blog)
-```bash
-cd python_blog
-python -m venv venv
-source venv/bin/activate  # Sur macOS/Linux
-pip install flask
-python app.py
-```
+**Cloud :** AWS (EC2, S3, IAM, VPC, CloudWatch)
+
+**Forensics :** Autopsy, Volatility, Wireshark
+
+**OS :** Linux (SELinux, AppArmor), Windows (Active Directory)
+
+**Autres :** Git, GitHub Actions, PostgreSQL, SQLite, LDAP
+
+## Ressources externes
+
+- **Articles techniques :** [tely.info](https://tely.info)
+- **Formation :** [Jedha Bootcamp](https://www.jedha.co)
+
+## Objectifs de la formation
+
+- Maîtriser les techniques offensives et défensives
+- Sécuriser les applications web, cloud et infrastructures
+- Analyser et répondre aux incidents de sécurité
+- Réaliser des tests d'intrusion professionnels
+- Comprendre les frameworks de compliance (NIST, GDPR)
+
+## Organisation
+
+Ce repository est organisé par module de formation. Chaque répertoire numéroté (`01_`, `02_`, etc.) correspond à un module spécifique et contient :
+- Un README détaillé du module
+- Les projets et exercices associés
+- La documentation et notes
 
 ## Licence
 
-Projet éducatif - Jedha
+Projet éducatif - Formation Jedha Bootcamp
