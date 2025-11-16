@@ -1,0 +1,206 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+h1 {
+    color: #ffffff;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    border-bottom: 3px solid #4a9eff;
+    padding-bottom: 15px;
+}
+
+h2 {
+    color: #4a9eff;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.post-list {
+    list-style: none;
+}
+
+.post-item {
+    background-color: #252525;
+    margin-bottom: 15px;  /* ← Réduit aussi l'espace entre les posts */
+    padding: 12px 20px;   /* ← Très compact */
+    border-radius: 8px;
+    border-left: 4px solid #4a9eff;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.post-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.2);
+}
+
+.post-item a {
+    color: #4a9eff;
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.post-item a:hover {
+    color: #6bb3ff;
+    text-decoration: underline;
+}
+
+.post-content {
+    background-color: #252525;
+    padding: 30px;
+    border-radius: 8px;
+    line-height: 1.8;
+    margin-top: 20px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: #4a9eff;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.back-link:hover {
+    background-color: #6bb3ff;
+}
+
+p {
+    margin-bottom: 15px;
+}
+
+/* Styles pour le formulaire */
+form {
+    background-color: #252525;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    color: #4a9eff;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 20px;
+}
+
+label:first-of-type {
+    margin-top: 0;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    background-color: #1a1a1a;
+    border: 2px solid #3a3a3a;
+    border-radius: 5px;
+    color: #e0e0e0;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #4a9eff;
+}
+
+textarea {
+    min-height: 200px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+input[type="button"],
+input[type="submit"],
+button {
+    margin-top: 25px;
+    padding: 12px 30px;
+    background-color: #4a9eff;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+input[type="button"]:hover,
+input[type="submit"]:hover,
+button:hover {
+    background-color: #6bb3ff;
+    transform: translateY(-2px);
+}
+
+input[type="button"]:active,
+input[type="submit"]:active,
+button:active {
+    transform: translateY(0);
+}
+
+/* Conteneur pour aligner le titre et le bouton supprimer */
+.post-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.post-item-header a {
+    flex: 1;
+}
+
+/* Bouton supprimer - Version élégante */
+.delete-btn {
+    background-color: transparent;
+    color: #ff4a4a;
+    border: 1px solid #ff4a4a;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+.delete-btn:hover {
+    background-color: #ff4a4a;
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+.delete-btn:active {
+    transform: scale(0.95);
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask Blog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Flask Blog</h1>
+        <ul class="post-list">
+            {% for post in posts %}
+            <li class="post-item">
+                <div class="post-item-header">
+                    <a href="/post/{{ post['Id'] }}">{{ post['Title'] }}</a>
+                    <form method="POST" action="/delete/{{ post['Id'] }}" style="margin: 0;">
+                        <button type="submit" class="delete-btn" onclick="return confirm('Voulez-vous vraiment supprimer ce post ?');">✕</button>
+                    </form>
+                </div>
+            </li>
+            {% endfor %}
+            <li class="post-item">
+                <a href="/new">Ajouter un article</a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

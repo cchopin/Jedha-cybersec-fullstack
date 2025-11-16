@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Créer un nouveau post</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Créer un nouveau post</h1>
+        <div class="post-content">
+            <form method="POST" action="{{ url_for('new') }}">
+                <label for="title">Titre :</label>
+                <input type="text" id="title" name="title" required>
+
+                <label for="content">Contenu :</label>
+                <textarea id="content" name="content" required></textarea>
+
+                <input type="submit" value="Publier" />
+            </form>
+        </div>
+        <a href="/" class="back-link">← Retour à l'accueil</a>
+    </div>
+</body>
+</html>
