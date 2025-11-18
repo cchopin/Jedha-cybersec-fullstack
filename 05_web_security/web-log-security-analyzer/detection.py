@@ -1,101 +1,34 @@
 #!/usr/bin/env python3
+"""Attack detection module for web security log analysis"""
+
 import re
-from urllib.parse import unquote
 import base64
+from urllib.parse import unquote
+
+
+def decode_and_combine_fields(*fields):
+    decoded_fields = [unquote(field) for field in fields]
+    return " ".join(decoded_fields).lower()
 
 
 def detect_jwt(url, user_agent, referer):
-    decoded_url = unquote(url)
-    decoded_user_agent = unquote(user_agent)
-    decoded_referer = unquote(referer)
-    content = f"{decoded_url} {decoded_user_agent} {decoded_referer}"
+    search_text = decode_and_combine_fields(url, user_agent, referer)
 
-    # Pattern pour détecter un JWT (3 parties séparées par des points)
-    jwt_pattern = r'eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*'
-
-    jwt_matches = re.findall(jwt_pattern, content)
-
-    for jwt in jwt_matches:
-        parts = jwt.split('.')
-        if len(parts) != 3:
-            continue
-
-        header = parts[0]
-        payload = parts[1]
-        signature = parts[2]
-
-        try:
-            # Décode le header (ajout du padding si nécessaire)
-            header_padded = header + '=' * (4 - len(header) % 4)
-            decoded_header = base64.urlsafe_b64decode(header_padded).decode('utf-8').lower()
-
-            # Décode le payload
-            payload_padded = payload + '=' * (4 - len(payload) % 4)
-            decoded_payload = base64.urlsafe_b64decode(payload_padded).decode('utf-8').lower()
-
-            # Patterns d'attaques JWT dans le header
-            jwt_header_attacks = [
-                r'"alg"\s*:\s*"none"',  # Algorithm None attack
-                r'"typ"\s*:\s*"none"',  # Type None
-                r'"alg"\s*:\s*"hs256".*"typ"\s*:\s*"jwt".*"alg"\s*:\s*"rs256"',  # Algorithm confusion
-                r'"jku"\s*:',  # JKU header injection
-                r'"x5u"\s*:',  # X5U header injection
-                r'"kid"\s*:\s*".*\.\./.*"',  # Path traversal dans kid
-                r'"kid"\s*:\s*".*/etc/passwd"',  # Path traversal vers fichier sensible
-                r'"kid"\s*:\s*".*sql.*"',  # SQL injection dans kid
-            ]
-
-            # Patterns d'attaques JWT dans le payload
-            jwt_payload_attacks = [
-                r'"admin"\s*:\s*true',  # Escalade de privilèges
-                r'"role"\s*:\s*"admin"',  # Modification du rôle
-                r'"exp"\s*:\s*9999999999',  # Expiration très longue
-                r'"iat"\s*:\s*-',  # Timestamp négatif
-                r'"nbf"\s*:\s*-',  # Not Before négatif
-                r'"sub"\s*:\s*"admin"',  # Changement de subject
-                r'"aud"\s*:\s*"\*"',  # Audience wildcard
-            ]
-
-            # Vérifie les attaques dans le header
-            for pattern in jwt_header_attacks:
-                if re.search(pattern, decoded_header, re.IGNORECASE):
-                    return True
-
-            # Vérifie les attaques dans le payload
-            for pattern in jwt_payload_attacks:
-                if re.search(pattern, decoded_payload, re.IGNORECASE):
-                    return True
-
-            # Signature vide ou invalide (None algorithm)
-            if signature == '' or signature == 'none':
-                return True
-
-        except Exception:
-            # Si on ne peut pas décoder, c'est peut-être manipulé
-            continue
-
-    # Détecte aussi les patterns d'attaques JWT sans décoder
+    # Simple JWT attack patterns detection
     jwt_attack_patterns = [
-        r'eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.',  # JWT sans signature
-        r'"alg":"none"',  # Algorithm None dans l'URL
-        r'authorization.*bearer.*eyj.*eyj\.',  # Token JWT dans Authorization
+        r'"alg"\s*:\s*"none"',  # Algorithm None
+        r'eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.',  # JWT without signature
     ]
 
     for pattern in jwt_attack_patterns:
-        if re.search(pattern, content, re.IGNORECASE):
+        if re.search(pattern, search_text, re.IGNORECASE):
             return True
 
     return False
 
 
 def detect_lfi(url, user_agent, referer):
-    # Décode les URL encodées (important pour %2e%2e%2f → ../)
-    decoded_url = unquote(url)
-    decoded_user_agent = unquote(user_agent)
-    decoded_referer = unquote(referer)
-
-    # Combine tous les champs
-    content = f"{decoded_url} {decoded_user_agent} {decoded_referer}".lower()
+    search_text = decode_and_combine_fields(url, user_agent, referer)
 
     # Patterns Path Traversal / LFI / RFI
     traversal_patterns = [
@@ -138,22 +71,16 @@ def detect_lfi(url, user_agent, referer):
         r"id_rsa",  # Clé SSH privée
     ]
 
-    # Vérifie chaque pattern
+    # Check each pattern
     for pattern in traversal_patterns:
-        if re.search(pattern, content, re.IGNORECASE):
+        if re.search(pattern, search_text, re.IGNORECASE):
             return True
 
     return False
 
 
 def detect_sql(url, user_agent, referer):
-    # Décode les URL encodées
-    decoded_url = unquote(url)
-    decoded_user_agent = unquote(user_agent)
-    decoded_referer = unquote(referer)
-
-    # Combine tous les champs à analyser
-    content = f"{decoded_url} {decoded_user_agent} {decoded_referer}".lower()
+    search_text = decode_and_combine_fields(url, user_agent, referer)
 
     # Patterns SQL injection courants
     sql_patterns = [
@@ -195,21 +122,16 @@ def detect_sql(url, user_agent, referer):
         r"'\s*;\s*shutdown\b",  # ; SHUTDOWN
     ]
 
-    # Vérifie chaque pattern
+    # Check each pattern
     for pattern in sql_patterns:
-        if re.search(pattern, content, re.IGNORECASE):
+        if re.search(pattern, search_text, re.IGNORECASE):
             return True
 
     return False
 
 
 def detect_xss(url, user_agent, referer):
-    decoded_url = unquote(url)
-    decoded_user_agent = unquote(user_agent)
-    decoded_referer = unquote(referer)
-
-    # Combine TOUS les champs à analyser (url + user_agent + referer)
-    content = f"{decoded_url} {decoded_user_agent} {decoded_referer}".lower()
+    search_text = decode_and_combine_fields(url, user_agent, referer)
 
     # Patterns XSS courants
     xss_patterns = [
@@ -230,19 +152,16 @@ def detect_xss(url, user_agent, referer):
         r'&#',  # Encodage HTML entities
     ]
 
-    # Vérifie chaque pattern
+    # Check each pattern
     for pattern in xss_patterns:
-        if re.search(pattern, content, re.IGNORECASE):
+        if re.search(pattern, search_text, re.IGNORECASE):
             return True
 
     return False
 
 
 def detect_command_injection(url, user_agent, referer):
-    decoded_url = unquote(url)
-    decoded_user_agent = unquote(user_agent)
-    decoded_referer = unquote(referer)
-    content = f"{decoded_url} {decoded_user_agent} {decoded_referer}".lower()
+    search_text = decode_and_combine_fields(url, user_agent, referer)
 
     rce_patterns = [
         r";\s*ls\b",  # ; ls
@@ -275,16 +194,14 @@ def detect_command_injection(url, user_agent, referer):
     ]
 
     for pattern in rce_patterns:
-        if re.search(pattern, content, re.IGNORECASE):
+        if re.search(pattern, search_text, re.IGNORECASE):
             return True
     return False
 
 
 def detect_xxe(url, user_agent, referer):
-    decoded_url = unquote(url)
-    decoded_user_agent = unquote(user_agent)
-    decoded_referer = unquote(referer)
-    content = f"{decoded_url} {decoded_user_agent} {decoded_referer}".lower()
+
+    search_text = decode_and_combine_fields(url, user_agent, referer)
 
     xxe_patterns = [
         r"<!entity",  # Déclaration entité XML
@@ -297,16 +214,14 @@ def detect_xxe(url, user_agent, referer):
     ]
 
     for pattern in xxe_patterns:
-        if re.search(pattern, content, re.IGNORECASE):
+        if re.search(pattern, search_text, re.IGNORECASE):
             return True
     return False
 
 
 def detect_ldap_injection(url, user_agent, referer):
-    decoded_url = unquote(url)
-    decoded_user_agent = unquote(user_agent)
-    decoded_referer = unquote(referer)
-    content = f"{decoded_url} {decoded_user_agent} {decoded_referer}".lower()
+
+    search_text = decode_and_combine_fields(url, user_agent, referer)
 
     ldap_patterns = [
         r"\*\)\(\|",  # *)( | (wildcard bypass)
@@ -318,16 +233,14 @@ def detect_ldap_injection(url, user_agent, referer):
     ]
 
     for pattern in ldap_patterns:
-        if re.search(pattern, content, re.IGNORECASE):
+        if re.search(pattern, search_text, re.IGNORECASE):
             return True
     return False
 
 
 def detect_ssrf(url, user_agent, referer):
-    decoded_url = unquote(url)
-    decoded_user_agent = unquote(user_agent)
-    decoded_referer = unquote(referer)
-    content = f"{decoded_url} {decoded_user_agent} {decoded_referer}".lower()
+
+    search_text = unquote(url).lower()
 
     ssrf_patterns = [
         r"localhost",  # localhost
@@ -346,16 +259,14 @@ def detect_ssrf(url, user_agent, referer):
     ]
 
     for pattern in ssrf_patterns:
-        if re.search(pattern, content, re.IGNORECASE):
+        if re.search(pattern, search_text, re.IGNORECASE):
             return True
     return False
 
 
 def detect_template_injection(url, user_agent, referer):
-    decoded_url = unquote(url)
-    decoded_user_agent = unquote(user_agent)
-    decoded_referer = unquote(referer)
-    content = f"{decoded_url} {decoded_user_agent} {decoded_referer}".lower()
+
+    search_text = decode_and_combine_fields(url, user_agent, referer)
 
     ssti_patterns = [
         r"\{\{.*\}\}",  # {{ }} (Jinja2, Twig)
@@ -372,12 +283,13 @@ def detect_template_injection(url, user_agent, referer):
     ]
 
     for pattern in ssti_patterns:
-        if re.search(pattern, content, re.IGNORECASE):
+        if re.search(pattern, search_text, re.IGNORECASE):
             return True
     return False
 
 
 def detect_open_redirect(url):
+
     decoded_url = unquote(url)
 
     redirect_patterns = [
@@ -400,7 +312,8 @@ def detect_open_redirect(url):
 
 
 def detect_scanner(user_agent):
-    ua_lower = user_agent.lower()
+
+    user_agent_lower = user_agent.lower()
 
     scanner_signatures = [
         'nikto',
@@ -424,7 +337,7 @@ def detect_scanner(user_agent):
         'nuclei',
     ]
 
-    for scanner in scanner_signatures:
-        if scanner in ua_lower:
+    for signature in scanner_signatures:
+        if signature in user_agent_lower:
             return True
     return False

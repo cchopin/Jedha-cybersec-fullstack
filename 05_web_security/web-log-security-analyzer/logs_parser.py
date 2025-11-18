@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
+"""Apache log parser module"""
 import re
 
+# Apache Combined Log Format regex pattern
+APACHE_LOG_PATTERN = r'(\S+) \S+ \S+ \[([^\]]+)\] "(\S+) (\S+) (\S+)" (\d+) (\d+) "([^"]*)" "([^"]*)"'
 
-def appache_parse(lines):
-    pattern = r'(\S+) \S+ \S+ \[([^\]]+)\] "(\S+) (\S+) (\S+)" (\d+) (\d+) "([^"]*)" "([^"]*)"'
-    tableau = []
 
-    for line in lines:
-        clean_line = line.strip().lstrip('"')
-        match = re.match(pattern, clean_line.strip())
+def parse_apache_logs(log_lines):
+
+    log_entries = []
+
+    for line in log_lines:
+        cleaned_line = line.strip().lstrip('"')
+        match = re.match(APACHE_LOG_PATTERN, cleaned_line.strip())
+
         if match:
-            tableau.append({
+            log_entries.append({
                 'ip': match.group(1),
-                'date': match.group(2),
+                'datetime': match.group(2),
                 'method': match.group(3),
                 'url': match.group(4),
                 'protocol': match.group(5),
@@ -21,5 +26,6 @@ def appache_parse(lines):
                 'referer': match.group(8),
                 'user_agent': match.group(9)
             })
-    return tableau
+
+    return log_entries
 
