@@ -2,15 +2,15 @@
 
 ##  Phase 1 : Création de la structure du projet
 
-- [ ] Créer le dossier principal `projet-http-server/`
-- [ ] Créer les fichiers Python vides :
+- [x] Créer le dossier principal `projet-http-server/`
+- [x] Créer les fichiers Python vides :
   - [ ] `server.py`
   - [ ] `http_handler.py`
-  - [ ] `file_manager.py`
-  - [ ] `response_builder.py`
-  - [ ] `config.py`
-  - [ ] `utils.py`
-- [ ] Créer le dossier `public/`
+  - [x] `file_manager.py`
+  - [x] `response_builder.py`
+  - [x] `config.py`
+  - [x] `utils.py`
+- [x] Créer le dossier `public/`
 - [ ] Créer le dossier `logs/` (optionnel)
 - [ ] Créer le fichier `public/index.html` avec le contenu de base
 
@@ -18,38 +18,38 @@
 
 ## ️ Phase 2 : Configuration (config.py)
 
-- [ ] Définir les constantes du serveur :
-  - [ ] `HOST = '0.0.0.0'`
-  - [ ] `PORT = 8000`
-  - [ ] `PUBLIC_DIR = 'public'`
-  - [ ] `MAX_CONNECTIONS = 5`
-- [ ] Créer le dictionnaire des codes de statut HTTP :
-  - [ ] 200 : "OK"
-  - [ ] 404 : "Not Found"
-  - [ ] 403 : "Forbidden"
-  - [ ] 405 : "Method Not Allowed"
-  - [ ] 500 : "Internal Server Error"
-- [ ] Créer le dictionnaire des MIME types :
-  - [ ] `.html` → `text/html`
-  - [ ] `.css` → `text/css`
-  - [ ] `.js` → `application/javascript`
-  - [ ] `.jpg` / `.jpeg` → `image/jpeg`
-  - [ ] `.png` → `image/png`
-  - [ ] `.gif` → `image/gif`
-  - [ ] `.txt` → `text/plain`
-  - [ ] Type par défaut → `application/octet-stream`
+- [x] Définir les constantes du serveur :
+  - [x] `HOST = '0.0.0.0'`
+  - [x] `PORT = 8000`
+  - [x] `PUBLIC_DIR = 'public'`
+  - [x] `MAX_CONNECTIONS = 5`
+- [x] Créer le dictionnaire des codes de statut HTTP :
+  - [x] 200 : "OK"
+  - [x] 404 : "Not Found"
+  - [x] 403 : "Forbidden"
+  - [x] 405 : "Method Not Allowed"
+  - [x] 500 : "Internal Server Error"
+- [x] Créer le dictionnaire des MIME types :
+  - [x] `.html` → `text/html`
+  - [x] `.css` → `text/css`
+  - [x] `.js` → `application/javascript`
+  - [x] `.jpg` / `.jpeg` → `image/jpeg`
+  - [x] `.png` → `image/png`
+  - [x] `.gif` → `image/gif`
+  - [x] `.txt` → `text/plain`
+  - [x] Type par défaut → `application/octet-stream`
 
 ---
 
 ## ️ Phase 3 : Utilitaires (utils.py)
 
-- [ ] Fonction `get_mime_type(file_path)` :
-  - [ ] Extraire l'extension du fichier
-  - [ ] Retourner le MIME type correspondant
-  - [ ] Gérer le cas par défaut
-- [ ] Fonction `get_status_message(status_code)` :
-  - [ ] Retourner le message associé au code de statut
-  - [ ] Gérer le cas où le code n'existe pas
+- [x] Fonction `get_mime_type(file_path)` :
+  - [x] Extraire l'extension du fichier
+  - [x] Retourner le MIME type correspondant
+  - [x] Gérer le cas par défaut
+- [x] Fonction `get_status_message(status_code)` :
+  - [x] Retourner le message associé au code de statut
+  - [x] Gérer le cas où le code n'existe pas
 - [ ] Fonction `format_log(message, level="INFO")` :
   - [ ] Formater avec timestamp
   - [ ] Ajouter le niveau (INFO, ERROR, WARNING)
@@ -59,56 +59,56 @@
 
 ##  Phase 4 : Gestion des fichiers (file_manager.py)
 
-- [ ] Fonction `sanitize_path(requested_path)` :
-  - [ ] Supprimer les `../` pour éviter les attaques
-  - [ ] Normaliser le chemin
-  - [ ] Retourner le chemin sécurisé
-- [ ] Fonction `resolve_file_path(path)` :
-  - [ ] Si path == "/" ou vide, retourner "index.html"
-  - [ ] Sinon, construire le chemin complet avec PUBLIC_DIR
-  - [ ] Appeler `sanitize_path()` sur le résultat
-- [ ] Fonction `file_exists(file_path)` :
-  - [ ] Vérifier si le fichier existe
-  - [ ] Retourner True/False
-- [ ] Fonction `read_file(file_path)` :
-  - [ ] Essayer d'ouvrir et lire le fichier
-  - [ ] Retourner le contenu en bytes
-  - [ ] Gérer l'exception `FileNotFoundError`
-  - [ ] Gérer les autres exceptions possibles
+- [x] Fonction `sanitize_path(requested_path)` :
+  - [x] Supprimer les `../` pour éviter les attaques
+  - [x] Normaliser le chemin
+  - [x] Retourner le chemin sécurisé
+- [x] Fonction `resolve_file_path(path)` :
+  - [x] Si path == "/" ou vide, retourner "index.html"
+  - [x] Sinon, construire le chemin complet avec PUBLIC_DIR
+  - [x] Appeler `sanitize_path()` sur le résultat
+- [x] Fonction `file_exists(file_path)` :
+  - [x] Vérifier si le fichier existe
+  - [x] Retourner True/False
+- [x] Fonction `read_file(file_path)` :
+  - [x] Essayer d'ouvrir et lire le fichier
+  - [x] Retourner le contenu en bytes
+  - [x] Gérer l'exception `FileNotFoundError`
+  - [x] Gérer les autres exceptions possibles
 
 ---
 
 ##  Phase 5 : Construction des réponses (response_builder.py)
 
-- [ ] Fonction `get_error_page(status_code)` :
-  - [ ] Créer une page HTML d'erreur personnalisée
-  - [ ] Inclure le code et le message d'erreur
-  - [ ] Retourner le contenu HTML
-- [ ] Fonction `build_status_line(status_code)` :
-  - [ ] Construire la ligne "HTTP/1.1 {code} {message}"
-  - [ ] Utiliser `get_status_message()` de utils
-  - [ ] Retourner la ligne complète
-- [ ] Fonction `build_headers(content_length, mime_type)` :
-  - [ ] Cr#éer le header `Content-Type`
-  - [ ] Créer le header `Content-Length`
-  - [ ] Ajouter le header `Connection: close`
-  - [ ] Retourner tous les headers formatés
-- [ ] Fonction `build_response(status_code, content, mime_type)` :
-  - [ ] Construire la ligne de statut
-  - [ ] Construire les headers
-  - [ ] Assembler : status_line + headers + "\r\n\r\n" + content
-  - [ ] Retourner la réponse complète en bytes
+- [x] Fonction `get_error_page(status_code)` :
+  - [x] Créer une page HTML d'erreur personnalisée
+  - [x] Inclure le code et le message d'erreur
+  - [x] Retourner le contenu HTML
+- [x] Fonction `build_status_line(status_code)` :
+  - [x] Construire la ligne "HTTP/1.1 {code} {message}"
+  - [x] Utiliser `get_status_message()` de utils
+  - [x] Retourner la ligne complète
+- [x] Fonction `build_headers(content_length, mime_type)` :
+  - [x] Créer le header `Content-Type`
+  - [x] Créer le header `Content-Length`
+  - [x] Ajouter le header `Connection: close`
+  - [x] Retourner tous les headers formatés
+- [x] Fonction `build_response(status_code, content, mime_type)` :
+  - [x] Construire la ligne de statut
+  - [x] Construire les headers
+  - [x] Assembler : status_line + headers + "\r\n\r\n" + content
+  - [x] Retourner la réponse complète en bytes
 
 ---
 
 ##  Phase 6 : Gestion HTTP (http_handler.py)
 
-- [ ] Fonction `parse_request(raw_request)` :
-  - [ ] Décoder la requête brute
-  - [ ] Séparer les lignes
-  - [ ] Extraire la première ligne (request line)
-  - [ ] Parser : méthode, path, version HTTP
-  - [ ] Retourner un dictionnaire avec ces infos
+- [x] Fonction `parse_request(raw_request)` :
+  - [x] Décoder la requête brute
+  - [x] Séparer les lignes
+  - [x] Extraire la première ligne (request line)
+  - [x] Parser : méthode, path, version HTTP
+  - [x] Retourner un dictionnaire avec ces infos
 - [ ] Fonction `route_request(method, path)` :
   - [ ] Vérifier que la méthode est GET (sinon retourner 405)
   - [ ] Résoudre le chemin du fichier avec `resolve_file_path()`
