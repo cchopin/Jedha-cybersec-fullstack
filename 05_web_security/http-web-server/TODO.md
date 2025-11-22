@@ -109,78 +109,78 @@
   - [x] Extraire la première ligne (request line)
   - [x] Parser : méthode, path, version HTTP
   - [x] Retourner un dictionnaire avec ces infos
-- [ ] Fonction `route_request(method, path)` :
-  - [ ] Vérifier que la méthode est GET (sinon retourner 405)
-  - [ ] Résoudre le chemin du fichier avec `resolve_file_path()`
-  - [ ] Vérifier l'existence avec `file_exists()`
-  - [ ] Si existe : lire le fichier et retourner (200, content, mime_type)
-  - [ ] Si n'existe pas : retourner (404, error_page, "text/html")
-- [ ] Fonction `handle_client(client_socket)` :
-  - [ ] Recevoir les données (recv 1024 bytes)
-  - [ ] Parser la requête avec `parse_request()`
+- [x] Fonction `route_request(method, path)` :
+  - [x] Vérifier que la méthode est GET (sinon retourner 405)
+  - [x] Résoudre le chemin du fichier avec `resolve_file_path()`
+  - [x] Vérifier l'existence avec `file_exists()`
+  - [x] Si existe : lire le fichier et retourner (200, content, mime_type)
+  - [x] Si n'existe pas : retourner (404, error_page, "text/html")
+- [x] Fonction `handle_client(client_socket)` :
+  - [x] Recevoir les données (recv 1024 bytes)
+  - [x] Parser la requête avec `parse_request()`
   - [ ] Logger la requête reçue
-  - [ ] Appeler `route_request()` pour obtenir status, content, mime_type
-  - [ ] Construire la réponse avec `build_response()`
-  - [ ] Envoyer la réponse avec `sendall()`
-  - [ ] Fermer la connexion client
-  - [ ] Gérer les exceptions globales (retourner 500 en cas d'erreur)
+  - [x] Appeler `route_request()` pour obtenir status, content, mime_type
+  - [x] Construire la réponse avec `build_response()`
+  - [x] Envoyer la réponse avec `sendall()`
+  - [x] Fermer la connexion client
+  - [x] Gérer les exceptions globales (retourner 500 en cas d'erreur)
 
 ---
 
 ##  Phase 7 : Serveur principal (server.py)
 
-- [ ] Importer tous les modules nécessaires
-- [ ] Fonction `shutdown_handler(signum, frame)` :
-  - [ ] Afficher un message de fermeture
-  - [ ] Fermer le socket serveur
-  - [ ] Appeler `sys.exit(0)`
-- [ ] Fonction `accept_connections(server_socket)` :
-  - [ ] Créer une boucle infinie `while True`
-  - [ ] Accepter les connexions avec `server_socket.accept()`
-  - [ ] Logger l'adresse du client
-  - [ ] Appeler `handle_client()` du module http_handler
-  - [ ] Gérer les exceptions
-- [ ] Fonction `start_server()` :
+- [x] Importer tous les modules nécessaires
+- [x] Fonction `shutdown_handler(signum, frame)` :
+  - [x] Afficher un message de fermeture
+  - [x] Fermer le socket serveur
+  - [x] Appeler `sys.exit(0)`
+- [x] Fonction `accept_connections(server_socket)` :
+  - [x] Créer une boucle infinie `while True`
+  - [x] Accepter les connexions avec `server_socket.accept()`
+  - [x] Logger l'adresse du client
+  - [x] Appeler `handle_client()` du module http_handler
+  - [x] Gérer les exceptions
+- [x] Fonction `start_server()` :
   - [ ] Logger le démarrage du serveur
-  - [ ] Créer le socket TCP/IP
-  - [ ] Configurer `SO_REUSEADDR`
-  - [ ] Binder le socket sur HOST:PORT
-  - [ ] Mettre le socket en écoute (listen)
+  - [x] Créer le socket TCP/IP
+  - [x] Configurer `SO_REUSEADDR`
+  - [x] Binder le socket sur HOST:PORT
+  - [x] Mettre le socket en écoute (listen)
   - [ ] Logger l'URL d'accès
-  - [ ] Appeler `accept_connections()`
-  - [ ] Fermer le socket en fin de programme
-- [ ] Bloc `if __name__ == "__main__"` :
-  - [ ] Configurer le handler de signal pour Ctrl+C
-  - [ ] Appeler `start_server()`
-  - [ ] Gérer l'exception `KeyboardInterrupt`
+  - [x] Appeler `accept_connections()`
+  - [x] Fermer le socket en fin de programme
+- [x] Bloc `if __name__ == "__main__"` :
+  - [x] Configurer le handler de signal pour Ctrl+C
+  - [x] Appeler `start_server()`
+  - [x] Gérer l'exception `KeyboardInterrupt`
 
 ---
 
 ##  Phase 8 : Tests et validation
 
-- [ ] Tester le serveur de base :
-  - [ ] Lancer `python server.py`
-  - [ ] Vérifier que le serveur démarre sans erreur
+- [x] Tester le serveur de base :
+  - [x] Lancer `python server.py`
+  - [x] Vérifier que le serveur démarre sans erreur
   - [ ] Vérifier les logs de démarrage
-- [ ] Tester l'accès à index.html :
-  - [ ] Ouvrir `http://localhost:8000/`
-  - [ ] Vérifier que la page s'affiche correctement
+- [x] Tester l'accès à index.html :
+  - [x] Ouvrir `http://localhost:8080/`
+  - [x] Vérifier que la page s'affiche correctement
   - [ ] Vérifier les logs du serveur
 - [ ] Tester les fichiers statiques :
   - [ ] Créer un fichier CSS dans `public/`
-  - [ ] Créer une image dans `public/`
-  - [ ] Accéder à ces fichiers via le navigateur
-  - [ ] Vérifier que les MIME types sont corrects
-- [ ] Tester les erreurs 404 :
-  - [ ] Accéder à `http://localhost:8000/fichier-inexistant.html`
-  - [ ] Vérifier la page d'erreur personnalisée
+  - [x] Créer une image dans `public/`
+  - [x] Accéder à ces fichiers via le navigateur
+  - [x] Vérifier que les MIME types sont corrects
+- [x] Tester les erreurs 404 :
+  - [x] Accéder à `http://localhost:8080/fichier-inexistant.html`
+  - [x] Vérifier la page d'erreur personnalisée
   - [ ] Vérifier le code de statut dans les logs
-- [ ] Tester la sécurité :
-  - [ ] Essayer d'accéder à `http://localhost:8000/../config.py`
-  - [ ] Vérifier que l'accès est refusé
-- [ ] Tester l'arrêt propre :
-  - [ ] Faire Ctrl+C
-  - [ ] Vérifier que le serveur se ferme proprement
+- [x]Tester la sécurité :
+  - [x] Essayer d'accéder à `http://localhost:8080/../config.py`
+  - [x] Vérifier que l'accès est refusé - redirection 404 valide
+- [x] Tester l'arrêt propre :
+  - [x] Faire Ctrl+C
+  - [x] Vérifier que le serveur se ferme proprement
 
 ---
 

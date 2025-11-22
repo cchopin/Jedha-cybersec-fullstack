@@ -10,12 +10,23 @@ def get_mime_type(file_path):
         extension = file_path[pos:]
         return config.MIME_type.get(extension, "application/octet-stream")
     except ValueError:
-        # Pas d'extension trouvée
         return "application/octet-stream"
 
 
 def get_http_code(status_code):
     return config.http_code[status_code]
+
+
+def get_error_title(status_code):
+    return config.HTTP_STATUS.get(status_code, {}).get("status", "Error")
+
+
+def get_error_message(status_code):
+    return config.HTTP_STATUS.get(status_code, {}).get("message", "Une erreur s'est produite.")
+
+
+def get_error_colors(status_code):
+    return config.HTTP_STATUS.get(status_code, {}).get("colors", ('#ff6b6b', '#ee5a5a'))
 
 
 if __name__ == '__main__':
