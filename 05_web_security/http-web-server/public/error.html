@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ERROR_CODE}} - {{ERROR_TITLE}}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0f0f13;
+            min-height: 100vh;
+            color: #e8e8e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .error-container {
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, {{ERROR_COLOR_1}}, {{ERROR_COLOR_2}});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            color: #888;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .error-details {
+            background: #18181f;
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .error-details-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #2a2a3e;
+            font-size: 0.85rem;
+            gap: 1rem;
+        }
+
+        .error-details-row:last-child {
+            border-bottom: none;
+        }
+
+        .error-details-key {
+            color: #666;
+        }
+
+        .error-details-value {
+            color: #aaa;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, {{ERROR_COLOR_1}}, {{ERROR_COLOR_2}});
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #888;
+            border: 1px solid #2a2a3e;
+        }
+
+        .btn-secondary:hover {
+            border-color: #444;
+            color: #aaa;
+        }
+
+        .server-badge {
+            margin-top: 3rem;
+            color: #444;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">{{ERROR_CODE}}</div>
+        <h1 class="error-title">{{ERROR_TITLE}}</h1>
+
+        <div class="error-details">
+            <div class="error-details-row">
+                <span class="error-details-key">Requête</span>
+                <span class="error-details-value">{{REQUEST_METHOD}} {{REQUEST_URI}}</span>
+            </div>
+            <div class="error-details-row">
+                <span class="error-details-key">Hôte</span>
+                <span class="error-details-value">{{REQUEST_HOST}}</span>
+            </div>
+            <div class="error-details-row">
+                <span class="error-details-key">Timestamp</span>
+                <span class="error-details-value">{{TIMESTAMP}}</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="/" class="btn btn-primary">← Accueil</a>
+            <a href="javascript:history.back()" class="btn btn-secondary">Retour</a>
+        </div>
+
+        <p class="server-badge">PyServ/1.0.0</p>
+    </div>
+</body>
+</html>
