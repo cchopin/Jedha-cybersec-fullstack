@@ -42,11 +42,11 @@ jedha/
 ├── 03_email_security/               # ✅ Phishing, SPF/DKIM/DMARC
 ├── 04_databases/                    # ✅ SQL, sécurisation BDD
 ├── 05_web_security/                 # ⏳ Web app security (en cours)
-│   ├── http-web-server/             # Serveur HTTP custom en Python
-│   ├── python_blog/                 # Blog Flask avec protections XSS
-│   ├── sql-injection/               # Démo complète des injections SQL
-│   ├── web-log-security-analyzer/   # Analyseur de logs de sécurité
-│   └── xss/                         # Démonstrations XSS
+│   ├── http-web-server/             # ✅ Serveur HTTP custom en Python
+│   ├── python_blog/                 # ✅ Blog Flask avec protections XSS
+│   ├── sql-injection/               # ✅ Démo complète des injections SQL
+│   ├── web-log-security-analyzer/   # ✅ Analyseur de logs de sécurité
+│   └── xss/                         # ✅ Démonstrations XSS
 ├── 06_cloud_security/               # ⏳ AWS, IAM, monitoring
 ├── 07_network_security/             # ⏳ TCP/IP, firewalls, VPN
 ├── 08_linux_system_security/        # ⏳ Kernel, containers, hardening
