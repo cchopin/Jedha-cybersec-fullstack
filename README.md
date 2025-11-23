@@ -42,7 +42,11 @@ jedha/
 ├── 03_email_security/               # ✅ Phishing, SPF/DKIM/DMARC
 ├── 04_databases/                    # ✅ SQL, sécurisation BDD
 ├── 05_web_security/                 # ⏳ Web app security (en cours)
-│   └── python_blog/
+│   ├── http-web-server/             # Serveur HTTP custom en Python
+│   ├── python_blog/                 # Blog Flask avec protections XSS
+│   ├── sql-injection/               # Démo complète des injections SQL
+│   ├── web-log-security-analyzer/   # Analyseur de logs de sécurité
+│   └── xss/                         # Démonstrations XSS
 ├── 06_cloud_security/               # ⏳ AWS, IAM, monitoring
 ├── 07_network_security/             # ⏳ TCP/IP, firewalls, VPN
 ├── 08_linux_system_security/        # ⏳ Kernel, containers, hardening
@@ -87,11 +91,42 @@ jedha/
 
 ### 05 - Web Security ⏳
 **Technologies :** Python, Flask, Docker, Burp Suite
-- Développement d'applications web sécurisées
-- Vulnérabilités OWASP : XSS, SQLi, CSRF, SSTI
-- Infrastructure sécurisée avec Nginx et Docker
-- CI/CD avec GitHub Actions et Trivy
-- Déploiement avec Docker Swarm
+
+**Projets réalisés :**
+
+#### sql-injection/
+Application Flask de démonstration des injections SQL avec deux modes :
+- **Mode Vulnérable** (rouge) : Requêtes concaténées
+- **Mode Sécurisé** (vert) : Requêtes paramétrées
+
+Types d'injections démontrés :
+- Classic (UNION-based)
+- Authentication Bypass
+- Blind (Boolean/Time-based)
+- Second-Order (Stored)
+- Out-of-band (ATTACH DATABASE)
+
+#### xss/
+Démonstrations des vulnérabilités Cross-Site Scripting :
+- XSS Réfléchi (Reflected)
+- XSS Stocké (Stored)
+- XSS DOM-based
+
+#### python_blog/
+Blog Flask avec livre d'or sécurisé :
+- Protection contre XSS et SQL Injection
+- Validation et échappement des entrées
+
+#### http-web-server/
+Serveur HTTP personnalisé en Python :
+- Implémentation du protocole HTTP
+- Gestion des requêtes GET/POST
+- Interface web de gestion de fichiers
+
+#### web-log-security-analyzer/
+Analyseur de logs pour la détection d'intrusions :
+- Parsing de logs Apache/Nginx
+- Détection de patterns malveillants
 
 ## Technologies et outils
 
