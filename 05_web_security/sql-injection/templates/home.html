@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection Demo - Formation Cybersecurity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #e0e0e0;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #dc3545, #28a745);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            padding: 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-vulnerable {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border: 2px solid #ff6b6b;
+        }
+
+        .card-secure {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            border: 2px solid #51cf66;
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .card .port {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .info h3 {
+            margin-bottom: 1rem;
+            color: #63d5eb;
+        }
+
+        .info code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .feature {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: left;
+        }
+
+        .feature strong {
+            color: #ffd93d;
+        }
+
+        .footer {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SQL Injection Demo</h1>
+        <p class="subtitle">Formation Cybersecurity - Comprendre et Prevenir les Injections SQL</p>
+
+        <div class="cards">
+            <a href="/vulnerable" class="card card-vulnerable">
+                <h2>Site Vulnerable</h2>
+                <p>Requetes SQL concatenees directement avec les inputs utilisateur. Explorez les failles!</p>
+                <span class="port">/vulnerable</span>
+            </a>
+
+            <a href="/secure" class="card card-secure">
+                <h2>Site Securise</h2>
+                <p>Requetes parametrees qui empechent les injections SQL. Testez la difference!</p>
+                <span class="port">/secure</span>
+            </a>
+        </div>
+
+        <div class="info">
+            <h3>Types d'injections a tester</h3>
+            <div class="features">
+                <div class="feature">
+                    <strong>Auth Bypass</strong><br>
+                    <code>admin'--</code>
+                </div>
+                <div class="feature">
+                    <strong>UNION Attack</strong><br>
+                    <code>' UNION SELECT...</code>
+                </div>
+                <div class="feature">
+                    <strong>Boolean Blind</strong><br>
+                    <code>' AND 1=1--</code>
+                </div>
+                <div class="feature">
+                    <strong>Data Extraction</strong><br>
+                    <code>sqlite_master</code>
+                </div>
+            </div>
+        </div>
+
+        <p class="footer">python main.py - http://localhost:5001</p>
+    </div>
+</body>
+</html>

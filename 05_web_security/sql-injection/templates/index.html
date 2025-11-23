@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Dashboard - Interface d'Administration</h2>
+    <p>Bienvenue sur l'interface d'administration. Utilisez le menu pour naviguer.</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>{{ stats.users }}</h3>
+        <p>Clients</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.products }}</h3>
+        <p>Articles</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.orders }}</h3>
+        <p>Commandes</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.categories }}</h3>
+        <p>Categories</p>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Types d'Injection SQL</h2>
+    <table>
+        <tr>
+            <th>Type</th>
+            <th>Page</th>
+            <th>Exemple de Payload</th>
+        </tr>
+        <tr>
+            <td>Classic (UNION-based)</td>
+            <td>Clients, Articles</td>
+            <td><code>' UNION SELECT 1,2,3,4,5--</code></td>
+        </tr>
+        <tr>
+            <td>Authentication Bypass</td>
+            <td>Login</td>
+            <td><code>admin'--</code> ou <code>' OR 1=1--</code></td>
+        </tr>
+        <tr>
+            <td>Blind (Boolean-based)</td>
+            <td>Blind</td>
+            <td><code>admin' AND 1=1--</code></td>
+        </tr>
+        <tr>
+            <td>Blind (Time-based)</td>
+            <td>Blind</td>
+            <td><code>1 AND (SELECT CASE WHEN...)</code></td>
+        </tr>
+        <tr>
+            <td>Second-Order (Stored)</td>
+            <td>Stored</td>
+            <td><code>' UNION SELECT...</code> (stocke puis exploite)</td>
+        </tr>
+        <tr>
+            <td>Out-of-band</td>
+            <td>Out-of-band</td>
+            <td><code>ATTACH DATABASE '/tmp/...'</code></td>
+        </tr>
+    </table>
+</div>
+{% endblock %}

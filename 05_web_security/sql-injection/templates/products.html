@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Articles{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Recherche d'Articles</h2>
+
+    <form action="{{ prefix }}/products" method="get" class="search-form">
+        <input type="text" name="search" value="{{ search_query }}" placeholder="Rechercher par nom...">
+        <input type="text" name="category" value="{{ category_query }}" placeholder="ID Categorie (optionnel)">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    {% if query %}
+    <div class="query-display">
+        <strong>Requete executee:</strong><br>
+        {{ query }}
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Liste des Articles ({{ products|length }} resultats)</h2>
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Categorie</th>
+                <th>Prix</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product[0] }}</td>
+                <td>{{ product[1] }}</td>
+                <td>{{ product[2] }}</td>
+                <td>{{ product[3] }} EUR</td>
+                <td>{{ product[4] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center;">Aucun resultat</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h2>Injections possibles</h2>
+    <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 0.5rem;"><code>' OR '1'='1</code> - Afficher tous les produits</li>
+        <li style="margin-bottom: 0.5rem;"><code>1 OR 1=1</code> - Injection dans le champ categorie (numerique)</li>
+        <li style="margin-bottom: 0.5rem;"><code>' UNION SELECT id,name,email,password,date FROM users--</code> - Extraire les utilisateurs</li>
+    </ul>
+</div>
+{% endblock %}

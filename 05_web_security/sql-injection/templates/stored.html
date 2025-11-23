@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Second-Order SQL Injection{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Etape 1 - Creer un utilisateur</h2>
+    <p>L'utilisateur est stocke dans la base de donnees (insertion securisee)</p>
+
+    <form action="{{ prefix }}/stored" method="post" class="search-form">
+        <input type="text" name="name" value="{{ name }}" placeholder="Nom d'utilisateur...">
+        <input type="text" name="email" value="{{ email }}" placeholder="Email...">
+        <input type="text" name="password" value="{{ password }}" placeholder="Mot de passe...">
+        <button type="submit">Creer</button>
+    </form>
+
+    {% if insert_result %}
+    <div class="alert alert-success">{{ insert_result }}</div>
+    {% endif %}
+
+    {% if insert_query %}
+    <div class="query-display">
+        <strong>Requete d'insertion:</strong><br>
+        {{ insert_query }}
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Etape 2 - Se connecter avec le nom stocke</h2>
+    <p>Le login utilise le nom stocke sans l'echapper → bypass d'authentification!</p>
+
+    <form action="{{ prefix }}/stored-login" method="post" class="search-form">
+        <input type="text" name="username" value="{{ login_username }}" placeholder="Nom d'utilisateur stocke...">
+        <input type="password" name="password" value="" placeholder="N'importe quel mot de passe...">
+        <button type="submit">Se connecter</button>
+    </form>
+
+    {% if login_result %}
+    <div class="alert {% if login_success %}alert-success{% else %}alert-danger{% endif %}">
+        {{ login_result }}
+    </div>
+    {% endif %}
+
+    {% if login_query %}
+    <div class="query-display">
+        <strong>Requete de login:</strong><br>
+        {{ login_query }}
+    </div>
+    {% endif %}
+</div>
+
+{% if results %}
+<div class="card">
+    <h2>Resultats ({{ results|length }})</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in results %}
+            <tr>
+                <td>{{ r[0] }}</td>
+                <td>{{ r[1] }}</td>
+                <td>{{ r[2] }}</td>
+                <td>{{ r[3] }}</td>
+                <td>{{ r[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<div class="card">
+    <h2>Comment exploiter (Second-Order Injection)</h2>
+
+    <h3 style="margin-top: 1rem; color: #ffd93d;">Etape 1 - Stocker le payload</h3>
+    <p>Creer un utilisateur avec un nom malveillant:</p>
+    <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 0.5rem;">Nom: <code>admin'--</code> → Se connecter comme admin sans mot de passe</li>
+        <li style="margin-bottom: 0.5rem;">Nom: <code>' OR '1'='1'--</code> → Se connecter comme le premier user</li>
+        <li style="margin-bottom: 0.5rem;">Nom: <code>' OR name='sophie'--</code> → Se connecter comme sophie</li>
+    </ul>
+
+    <h3 style="margin-top: 1rem; color: #ffd93d;">Etape 2 - Declencher l'injection</h3>
+    <p>Se connecter avec ce nom exact (n'importe quel mot de passe):</p>
+    <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 0.5rem;">Username: <code>admin'--</code> Password: <code>test</code></li>
+        <li style="margin-bottom: 0.5rem;">La requete devient: <code>SELECT * FROM users WHERE name='admin'--' AND password='test'</code></li>
+        <li style="margin-bottom: 0.5rem;">Le <code>--</code> commente le check du password!</li>
+    </ul>
+
+    <h3 style="margin-top: 1rem; color: #ffd93d;">Pourquoi c'est dangereux?</h3>
+    <p>L'insertion est securisee (parametree), mais le login reutilise la valeur stockee sans l'echapper → bypass d'authentification!</p>
+</div>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+{% endblock %}

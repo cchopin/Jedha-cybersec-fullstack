@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="card">
+        <h2>Connexion Administrateur</h2>
+
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+        {% endif %}
+
+        <form action="{{ prefix }}/login" method="post" class="search-form" style="flex-direction: column;">
+            <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+            <input type="password" name="password" placeholder="Mot de passe" required>
+            <button type="submit">Se connecter</button>
+        </form>
+
+        {% if query %}
+        <div class="query-display">
+            <strong>Requete executee:</strong><br>
+            {{ query }}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h2>Injections possibles</h2>
+        <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 0.5rem;"><code>admin'--</code> - Bypass password check</li>
+            <li style="margin-bottom: 0.5rem;"><code>' OR '1'='1</code> - Always true condition</li>
+            <li style="margin-bottom: 0.5rem;"><code>' OR 1=1--</code> - Return first user</li>
+            <li style="margin-bottom: 0.5rem;"><code>admin' AND 1=1--</code> - Boolean blind test</li>
+            <li style="margin-bottom: 0.5rem;"><code>admin' AND 1=2--</code> - Boolean blind false</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

