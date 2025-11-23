@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livre d'Or - Test XSS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Livre d'Or</h1>
+            <p class="subtitle">Laissez votre message</p>
+            <a href="/search" style="color: #3498db; font-size: 0.9rem;">Rechercher dans les messages</a>
+        </header>
+
+        <div class="form-container">
+            <form method="POST" action="/">
+                <div class="form-group">
+                    <label for="name">Nom :</label>
+                    <input type="text" id="name" name="name" required placeholder="Votre nom">
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message :</label>
+                    <textarea id="message" name="message" required placeholder="Votre message..." rows="4"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Envoyer</button>
+            </form>
+        </div>
+
+        <div class="comments-section">
+            <h2>Messages ({{ comments|length }})</h2>
+
+            {% if comments %}
+                {% for comment in comments %}
+                <div class="comment-card">
+                    <div class="comment-header">
+                        <span class="comment-author">{{ comment.name }}</span>
+                        <div class="comment-meta">
+                            <span class="comment-date">{{ comment.date }}</span>
+                            <form method="POST" action="/delete/{{ comment.id }}" class="delete-form">
+                                <button type="submit" class="btn-delete" title="Supprimer">&#128465;</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="comment-body">
+                        {{ comment.message }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-comments">Aucun message pour le moment. Soyez le premier à laisser un commentaire !</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer>
+         <p> Made with ❤️ | <a target="blank" href="https://github.com/cchopin/Jedha-cybersec-fullstack/tree/main/05_web_security/xss">GitHub</a></p>
+    </footer>
+</body>
+</html>

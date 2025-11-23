@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche - Livre d'Or</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Recherche</h1>
+            <p class="subtitle">Rechercher dans les messages</p>
+        </header>
+
+        <div class="form-container">
+            <form method="GET" action="/search">
+                <div class="form-group">
+                    <label for="q">Rechercher :</label>
+                    <input type="text" id="q" name="q" placeholder="Mot-clé..." value="{{ query }}">
+                </div>
+
+                <button type="submit" class="btn-submit">Rechercher</button>
+            </form>
+        </div>
+
+        {% if query %}
+        <div class="comments-section">
+            <h2>Résultats pour : {{ query }} ({{ results|length }})</h2>
+
+            {% if results %}
+                {% for comment in results %}
+                <div class="comment-card">
+                    <div class="comment-header">
+                        <span class="comment-author">{{ comment.name }}</span>
+                        <span class="comment-date">{{ comment.date }}</span>
+                    </div>
+                    <div class="comment-body">
+                        {{ comment.message }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-comments">Aucun résultat pour "{{ query }}"</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/" style="color: #3498db;">← Retour au livre d'or</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Made with ❤️ | <a target="blank" href="https://github.com/cchopin/Jedha-cybersec-fullstack/tree/main/05_web_security/xss">GitHub</a></p>
+    </footer>
+</body>
+</html>
