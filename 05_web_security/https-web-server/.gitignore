@@ -1,0 +1,28 @@
+# Certificats SSL/TLS - NE JAMAIS COMMITER
+*.pem
+*.key
+*.crt
+*.cer
+
+# Environnements virtuels Python
+venv/
+env/
+.venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
