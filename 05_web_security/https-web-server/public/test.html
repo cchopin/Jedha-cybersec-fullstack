@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page - PyServ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0f0f13;
+            min-height: 100vh;
+            color: #e8e8e8;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #2a2a3e;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .header .badge {
+            background: rgba(0, 212, 255, 0.15);
+            color: #00d4ff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .card {
+            background: #18181f;
+            border-radius: 12px;
+            border: 1px solid #2a2a3e;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card p {
+            color: #888;
+            line-height: 1.7;
+        }
+
+        .checklist {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .checklist li {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #2a2a3e;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #aaa;
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .check {
+            width: 20px;
+            height: 20px;
+            background: rgba(46, 213, 115, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2ed573;
+            font-size: 0.7rem;
+        }
+
+        .code-block {
+            background: #0a0a0f;
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.85rem;
+            color: #a8e6cf;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .nav a {
+            color: #00d4ff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav a:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Page de Test</h1>
+            <span class="badge">PyServ/1.0.0</span>
+        </div>
+
+        <div class="card">
+            <h2>Ça fonctionne !</h2>
+            <p>
+                Cette page confirme que PyServ fonctionne correctement et sert les fichiers statiques.
+                Le serveur a traité la requête HTTP et retourné ce contenu HTML.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Checklist du serveur</h2>
+            <ul class="checklist">
+                <li><span class="check">✓</span> Parsing des requêtes HTTP</li>
+                <li><span class="check">✓</span> Routage des fichiers statiques</li>
+                <li><span class="check">✓</span> Headers Content-Type corrects</li>
+                <li><span class="check">✓</span> Encodage UTF-8</li>
+                <li><span class="check">✓</span> Réponse HTTP/1.1 200 OK</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Exemple de requête</h2>
+            <p>Voici la requête HTTP reçue par le serveur :</p>
+            <div class="code-block">
+                <code>
+GET /test.html HTTP/1.1<br>
+Host: localhost:8080<br>
+Connection: keep-alive<br>
+Accept: text/html,application/xhtml+xml
+                </code>
+            </div>
+        </div>
+
+        <div class="nav">
+            <a href="/">← Accueil</a>
+            <a href="/index.html">Infos serveur</a>
+        </div>
+    </div>
+</body>
+</html>
