@@ -4,6 +4,16 @@
 
 Ce document explique en détail les modifications apportées pour transformer le serveur HTTP en serveur HTTPS sécurisé avec support TLS 1.3.
 
+## Captures d'écran
+
+### Interface web HTTPS avec informations de sécurité
+![Interface PyServ HTTPS](assets/https-index.png)
+*Interface web montrant les informations SSL/TLS : TLS 1.3, AES-256-GCM, SHA-384 et Perfect Forward Secrecy*
+
+### Serveur HTTPS en fonctionnement
+![Serveur HTTPS logs](assets/https-ssl-info.png)
+*Serveur PyServ en écoute sur le port 8443 avec chiffrement SSL/TLS actif*
+
 ## Vue d'ensemble
 
 La transformation d'un serveur HTTP en HTTPS nécessite trois composants principaux :
