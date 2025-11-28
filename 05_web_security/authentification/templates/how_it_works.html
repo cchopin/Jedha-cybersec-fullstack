@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Auth System{% endblock %}
+
+{% block content %}
+<div class="card" style="font-family: monospace;">
+    <h1 style="color: var(--accent); margin-bottom: 0.5rem;">[~] Cookie-Based Authentication</h1>
+    <p style="color: var(--text-secondary); font-size: 0.9rem;">$ cat /docs/auth_flow.txt</p>
+</div>
+
+<!-- Flow -->
+<div class="card" style="background: var(--bg-tertiary); font-family: monospace; font-size: 0.95rem;">
+    <pre style="line-height: 1.8; margin: 0;">
+<span style="color: var(--success);">[1] REGISTER</span>
+POST /register {username, password}
+  → hash = scrypt(password, salt)
+  → INSERT INTO users (username, password_hash)
+  → <span style="color: var(--success);">201 Created</span>
+
+<span style="color: var(--accent);">[2] LOGIN</span>
+POST /login {username, password}
+  → user = SELECT * FROM users WHERE username=?
+  → verify(password, user.password_hash)
+  → token = secrets.token_urlsafe(32)
+  → INSERT INTO sessions (user_id, token, expires_at)
+  → Set-Cookie: session_token=<span style="color: var(--warning);">{token}</span>; HttpOnly; Secure
+  → <span style="color: var(--success);">200 OK</span>
+
+<span style="color: var(--warning);">[3] AUTHENTICATED REQUEST</span>
+GET /dashboard
+  Cookie: session_token=<span style="color: var(--warning);">{token}</span>
+  → session = SELECT * FROM sessions WHERE token=? AND expires_at > NOW()
+  → if session: <span style="color: var(--success);">allow</span>
+  → else: <span style="color: var(--danger);">redirect /login</span>
+
+<span style="color: var(--danger);">[4] LOGOUT</span>
+GET /logout
+  → DELETE FROM sessions WHERE token=?
+  → Set-Cookie: session_token=; Expires=Thu, 01 Jan 1970
+  → <span style="color: var(--success);">302 Redirect /</span>
+    </pre>
+</div>
+
+<!-- Security -->
+<div class="card">
+    <h2 style="color: var(--accent); font-family: monospace; font-size: 1.2rem;">[!] Security Features</h2>
+    <div class="grid grid-2" style="font-family: monospace; font-size: 0.9rem;">
+        <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px;">
+            <strong style="color: var(--success);">✓ Enabled</strong>
+            <ul style="margin-top: 0.5rem; line-height: 1.8;">
+                <li>Password hashing (scrypt)</li>
+                <li>Secure random tokens</li>
+                <li>HttpOnly cookies (XSS)</li>
+                <li>SameSite=Lax (CSRF)</li>
+                <li>Session expiration (30min)</li>
+                <li>HTTPS enforcement</li>
+            </ul>
+        </div>
+
+        <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px;">
+            <strong style="color: var(--danger);">✗ Vulnerabilities</strong>
+            <ul style="margin-top: 0.5rem; line-height: 1.8;">
+                <li>No rate limiting</li>
+                <li>No CAPTCHA</li>
+                <li>No 2FA</li>
+                <li>No session rotation</li>
+                <li>Basic SQL (SQLi risk)</li>
+                <li>No account lockout</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Start -->
+<div class="card" style="background: var(--bg-tertiary); font-family: monospace;">
+    <h2 style="color: var(--accent); font-size: 1.1rem;">[>] Quick Start</h2>
+    <pre style="line-height: 1.8; font-size: 0.9rem; margin-top: 1rem;">
+<span style="color: var(--text-secondary);"># Create account</span>
+curl -X POST http://localhost:5001/register \
+  -d "username=alice&password=P@ssw0rd123"
+
+<span style="color: var(--text-secondary);"># Login</span>
+curl -X POST http://localhost:5001/login \
+  -d "username=alice&password=P@ssw0rd123" \
+  -c cookies.txt
+
+<span style="color: var(--text-secondary);"># Access protected resource</span>
+curl http://localhost:5001/dashboard -b cookies.txt
+
+<span style="color: var(--text-secondary);"># Logout</span>
+curl http://localhost:5001/logout -b cookies.txt
+    </pre>
+</div>
+
+<!-- CTA -->
+<div class="card" style="text-align: center; background: linear-gradient(135deg, rgba(0,217,255,0.1), rgba(46,204,113,0.1)); border: 1px solid var(--accent);">
+    <p style="font-family: monospace; font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent);">
+        → Ready to test?
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+        <a href="/login" class="btn btn-primary">Login</a>
+        <a href="/register" class="btn btn-outline">Register</a>
+    </div>
+</div>
+{% endblock %}

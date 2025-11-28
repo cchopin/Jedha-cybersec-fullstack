@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 1200px; margin: 2rem auto;">
+    <h1 style="color: var(--accent); font-family: monospace; font-size: 1.2rem; margin-bottom: 1rem;">
+        [~] $ cat /proc/self/auth
+    </h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" style="font-family: monospace; font-size: 0.9rem;">
+                    {% if category == 'success' %}[+]{% elif category == 'danger' %}[!]{% else %}[*]{% endif %} {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+        <a href="/users" class="btn btn-primary">[VIEW ALL USERS]</a>
+        <a href="/" class="btn btn-outline">[HOME]</a>
+        <a href="/logout" class="btn btn-danger">[LOGOUT]</a>
+    </div>
+</div>
+
+<!-- User Database Record -->
+<div class="card" style="max-width: 1200px; margin: 0 auto 1rem auto;">
+    <h2 style="color: var(--accent); font-family: monospace; font-size: 1.1rem; margin-bottom: 1rem;">
+        [1] Database Record (table: users)
+    </h2>
+    <div style="font-family: monospace; background: var(--bg-tertiary); padding: 1rem; border: 1px solid var(--border);">
+        <pre style="margin: 0; background: transparent; border: none; padding: 0; font-size: 0.85rem; line-height: 1.8;">
+<span style="color: var(--text-secondary);">SELECT * FROM users WHERE id_user = {{ user['id_user'] if user else 'N/A' }};</span>
+
+id_user       : <span style="color: var(--warning);">{{ user['id_user'] if user else 'N/A' }}</span>
+username      : <span style="color: var(--success);">{{ user['username'] if user else 'N/A' }}</span>
+password_hash : <span style="color: var(--danger);">{{ user['password_hash'] if user else 'N/A' }}</span>
+created_at    : <span style="color: var(--text-secondary);">{{ user['created_at'] if user else 'N/A' }}</span>
+
+<span style="color: var(--accent);">[!] Security Note:</span> Password is hashed using scrypt (Werkzeug default)
+    - Algorithm: scrypt
+    - Salt: Random 16 bytes
+    - Hash length: ~102 characters
+    - Format: scrypt:32768:8:1$salt$hash
+        </pre>
+    </div>
+</div>
+
+<!-- Flask Session -->
+<div class="card" style="max-width: 1200px; margin: 0 auto 1rem auto;">
+    <h2 style="color: var(--accent); font-family: monospace; font-size: 1.1rem; margin-bottom: 1rem;">
+        [2] Flask Session (decoded content)
+    </h2>
+    <div style="font-family: monospace; background: var(--bg-tertiary); padding: 1rem; border: 1px solid var(--border);">
+        <pre style="margin: 0; background: transparent; border: none; padding: 0; font-size: 0.85rem; line-height: 1.8;">
+<span style="color: var(--text-secondary);"># Python session object (Flask) - what's inside the signed cookie</span>
+session = {
+    {% for key, value in session.items() %}
+    '{{ key }}': <span style="color: {% if 'user' in key %}var(--warning){% else %}var(--text-secondary){% endif %};">{% if value is string %}'{{ value }}'{% else %}{{ value }}{% endif %}</span>,
+    {% endfor %}
+}
+
+<span style="color: var(--accent);">[*] Session Details:</span>
+Type      : Client-side signed cookie (not server-side!)
+Encoding  : JSON → base64url → HMAC signature
+Algorithm : HMAC-SHA1 with SECRET_KEY
+Tampering : <span style="color: var(--success);">Impossible</span> without SECRET_KEY = '{{ config.SECRET_KEY }}'
+Storage   : Browser cookie named 'session'
+Permanent : <span style="color: var(--warning);">{{ session.permanent }}</span> (expires in 30 min if True)
+
+<span style="color: var(--danger);">[!] Security:</span> Session is NOT encrypted, only signed.
+Anyone can decode and read the content, but cannot modify it without SECRET_KEY.
+        </pre>
+    </div>
+</div>
+
+<!-- Session Cookie Details -->
+<div class="card" style="max-width: 1200px; margin: 0 auto 1rem auto;">
+    <h2 style="color: var(--accent); font-family: monospace; font-size: 1.1rem; margin-bottom: 1rem;">
+        [3] Session Cookie (sent with every request)
+    </h2>
+    <div style="font-family: monospace; background: var(--bg-tertiary); padding: 1rem; border: 1px solid var(--border);">
+        <pre style="margin: 0; background: transparent; border: none; padding: 0; font-size: 0.85rem; line-height: 1.8;">
+<span style="color: var(--text-secondary);"># HTTP Request Header (Cookie sent by browser)</span>
+Cookie: session=<span style="color: var(--warning);">{{ session_cookie[:50] }}...</span>
+
+<span style="color: var(--accent);">[*] Full Cookie Value ({{ session_cookie|length }} chars):</span>
+<span style="color: var(--warning); word-break: break-all;">{{ session_cookie }}</span>
+
+<span style="color: var(--accent);">[*] Cookie Properties:</span>
+Name      : session
+Value     : <span style="color: var(--warning);">{{ session_cookie[:30] }}...</span> (base64url encoded + signed)
+HttpOnly  : <span style="color: var(--success);">Yes</span> (JavaScript cannot read this cookie)
+SameSite  : <span style="color: var(--success);">Lax</span> (CSRF protection)
+Path      : / (available on all routes)
+Secure    : <span style="color: var(--danger);">No</span> (production should be HTTPS only)
+Expires   : <span style="color: var(--text-secondary);">Session + 30 minutes</span>
+
+<span style="color: var(--accent);">[*] Cookie Format:</span>
+Flask uses itsdangerous library to sign session data:
+- Format: [payload].[timestamp].[signature]
+- Encoding: base64url + HMAC-SHA1 signature
+- Key: SECRET_KEY from config
+        </pre>
+    </div>
+</div>
+
+<!-- Authentication Flow -->
+<div class="card" style="max-width: 1200px; margin: 0 auto 1rem auto;">
+    <h2 style="color: var(--accent); font-family: monospace; font-size: 1.1rem; margin-bottom: 1rem;">
+        [4] Authentication Flow (what happened during login)
+    </h2>
+    <div style="font-family: monospace; background: var(--bg-tertiary); padding: 1rem; border: 1px solid var(--border);">
+        <pre style="margin: 0; background: transparent; border: none; padding: 0; font-size: 0.85rem; line-height: 1.8;">
+<span style="color: var(--success);">[1] LOGIN REQUEST</span>
+POST /login
+Content-Type: application/x-www-form-urlencoded
+
+username={{ session.get('username', 'user') }}&password=<span style="color: var(--danger);">[REDACTED]</span>
+
+<span style="color: var(--accent);">[2] SERVER VERIFICATION</span>
+user = SELECT * FROM users WHERE username = '{{ session.get('username', 'user') }}'
+result = check_password_hash(user.password_hash, submitted_password)
+<span style="color: var(--success);">✓ Password matches!</span>
+
+<span style="color: var(--warning);">[3] SESSION CREATION</span>
+session['user_id'] = {{ session.get('user_id', 'N/A') }}
+session['username'] = '{{ session.get('username', 'N/A') }}'
+Flask signs the session data and creates cookie
+
+<span style="color: var(--success);">[4] RESPONSE</span>
+HTTP/1.1 302 Found
+Location: /dashboard
+Set-Cookie: session=[SIGNED_PAYLOAD]; HttpOnly; SameSite=Lax
+
+<span style="color: var(--accent);">[5] AUTHENTICATED REQUESTS</span>
+Every subsequent request sends:
+Cookie: session=[SIGNED_PAYLOAD]
+
+Flask automatically:
+- Verifies signature
+- Decrypts session data
+- Makes it available as 'session' object
+        </pre>
+    </div>
+</div>
+
+<!-- Security Features -->
+<div class="card" style="max-width: 1200px; margin: 0 auto;">
+    <h2 style="color: var(--accent); font-family: monospace; font-size: 1.1rem; margin-bottom: 1rem;">
+        [5] Security Analysis
+    </h2>
+    <div class="grid grid-2" style="font-family: monospace; font-size: 0.85rem;">
+        <div style="background: var(--bg-tertiary); padding: 1rem; border: 1px solid var(--success);">
+            <strong style="color: var(--success);">✓ Protections Enabled</strong>
+            <ul style="margin-top: 0.5rem; line-height: 1.8; padding-left: 1.5rem;">
+                <li>Password hashing (scrypt)</li>
+                <li>HttpOnly cookies (XSS)</li>
+                <li>SameSite=Lax (CSRF)</li>
+                <li>Signed sessions (tampering)</li>
+                <li>SQL parameterization (SQLi)</li>
+                <li>Session expiration (30min)</li>
+            </ul>
+        </div>
+
+        <div style="background: var(--bg-tertiary); padding: 1rem; border: 1px solid var(--danger);">
+            <strong style="color: var(--danger);">✗ Missing Protections</strong>
+            <ul style="margin-top: 0.5rem; line-height: 1.8; padding-left: 1.5rem;">
+                <li>No rate limiting</li>
+                <li>No account lockout</li>
+                <li>No 2FA/MFA</li>
+                <li>No session rotation</li>
+                <li>No CAPTCHA</li>
+                <li>No password complexity rules</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="max-width: 1200px; margin: 1rem auto; background: rgba(255, 170, 0, 0.05); border: 1px solid var(--warning);">
+    <p style="font-family: monospace; font-size: 0.85rem; color: var(--warning); margin: 0;">
+        <strong>[!] Educational Purpose:</strong> This dashboard exposes internal auth details for learning.
+        In production, NEVER expose password hashes, session internals, or detailed auth flows to users.
+    </p>
+</div>
+{% endblock %}

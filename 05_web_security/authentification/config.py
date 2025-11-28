@@ -1,0 +1,12 @@
+#!/usr/bin/python3
+from datetime import timedelta
+
+SECRET_KEY = 'sup3rs3cr3t'
+DATABASE_PATH = 'instance/database.db'
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
+PASSWORD_MIN_LENGTH = 8
+USERNAME_MIN_LENGTH = 3
+MAX_LOGIN_ATTEMPTS = 5

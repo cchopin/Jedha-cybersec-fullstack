@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 2rem auto;">
+    <h1 style="color: var(--accent); font-family: monospace; font-size: 1.2rem; margin-bottom: 1rem;">
+        [~] $ ./login
+    </h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" style="font-family: monospace; font-size: 0.9rem;">
+                    {% if category == 'success' %}[+]{% elif category == 'danger' %}[!]{% else %}[*]{% endif %} {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/login" style="font-family: monospace;">
+        <div class="form-group">
+            <label class="form-label" for="username">username</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-input"
+                placeholder="alice"
+                required
+                autocomplete="username"
+                autofocus
+            >
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password">password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-input"
+                placeholder="••••••••"
+                required
+                autocomplete="current-password"
+            >
+        </div>
+
+        <div class="form-group" style="display: flex; gap: 0.8rem; margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary">
+                [LOGIN]
+            </button>
+            <a href="/register" class="btn btn-outline">
+                [REGISTER]
+            </a>
+        </div>
+    </form>
+
+    <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-family: monospace; font-size: 0.85rem; color: var(--text-secondary);">
+        <p style="margin: 0;">$ cat /etc/security/features</p>
+        <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem; line-height: 1.8;">
+            <li>Password hashing (scrypt)</li>
+            <li>HttpOnly cookies</li>
+            <li>Session expiration (30min)</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

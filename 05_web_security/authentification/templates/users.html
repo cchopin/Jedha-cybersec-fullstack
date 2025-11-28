@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Users List{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 1400px; margin: 2rem auto;">
+    <h1 style="color: var(--accent); font-family: monospace; font-size: 1.2rem; margin-bottom: 1rem;">
+        [~] $ cat /etc/passwd
+    </h1>
+
+    <div style="display: flex; gap: 0.8rem; margin-bottom: 1.5rem;">
+        <a href="/dashboard" class="btn btn-outline">[DASHBOARD]</a>
+        <a href="/logout" class="btn btn-danger">[LOGOUT]</a>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="grid grid-2" style="max-width: 1400px; margin: 0 auto 1rem auto;">
+    <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--success);">
+        <div style="font-family: monospace; text-align: center;">
+            <div style="font-size: 2.5rem; color: var(--success); font-weight: bold;">
+                {{ total_users }}
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                Total users
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--warning);">
+        <div style="font-family: monospace; text-align: center;">
+            <div style="font-size: 2.5rem; color: var(--warning); font-weight: bold;">
+                {{ active_sessions }}
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                Active sessions (you)
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="card" style="max-width: 1400px; margin: 0 auto;">
+    <h2 style="color: var(--accent); font-family: monospace; font-size: 1.1rem; margin-bottom: 1rem;">
+        [*] Registered Users
+    </h2>
+
+    <div style="overflow-x: auto;">
+        <table style="font-family: monospace; font-size: 0.85rem;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Password Hash</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if users %}
+                    {% for user in users %}
+                    <tr>
+                        <td><span style="color: var(--warning);">{{ user['id_user'] }}</span></td>
+                        <td><strong style="color: var(--success);">{{ user['username'] }}</strong></td>
+                        <td>
+                            <code style="font-size: 0.75rem; color: var(--danger); display: block; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ user['password_hash'] }}
+                            </code>
+                        </td>
+                        <td style="color: var(--text-secondary);">{{ user['created_at'] if user else 'N/A' }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                            [!] No users registered
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Security Info -->
+<div class="card" style="max-width: 1400px; margin: 1rem auto; background: rgba(0, 255, 65, 0.05); border: 1px solid var(--success);">
+    <h2 style="color: var(--success); font-family: monospace; font-size: 1rem; margin-bottom: 0.8rem;">
+        [+] Password Security
+    </h2>
+    <div style="font-family: monospace; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
+        <p style="margin: 0 0 0.5rem 0;">$ echo "All passwords are hashed using scrypt algorithm"</p>
+        <ul style="margin: 0; padding-left: 1.5rem;">
+            <li>Algorithm: scrypt (Werkzeug default)</li>
+            <li>Salt: Random 16 bytes per password</li>
+            <li>Format: scrypt:32768:8:1$salt$hash</li>
+            <li>Reversible: <span style="color: var(--danger);">NO</span> - One-way hash function</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

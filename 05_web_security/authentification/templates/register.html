@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 2rem auto;">
+    <h1 style="color: var(--accent); font-family: monospace; font-size: 1.2rem; margin-bottom: 1rem;">
+        [~] $ ./register --new-user
+    </h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" style="font-family: monospace; font-size: 0.9rem;">
+                    {% if category == 'success' %}[+]{% elif category == 'danger' %}[!]{% else %}[*]{% endif %} {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/register" style="font-family: monospace;">
+        <div class="form-group">
+            <label class="form-label" for="username">username</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-input"
+                placeholder="alice"
+                required
+                autocomplete="username"
+                minlength="3"
+                autofocus
+            >
+            <small style="color: var(--text-secondary); font-size: 0.8rem; display: block; margin-top: 0.3rem;">
+                # min 3 chars
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password">password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-input"
+                placeholder="••••••••"
+                required
+                autocomplete="new-password"
+                minlength="8"
+            >
+            <small style="color: var(--text-secondary); font-size: 0.8rem; display: block; margin-top: 0.3rem;">
+                # min 8 chars
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password_confirm">confirm</label>
+            <input
+                type="password"
+                id="password_confirm"
+                name="password_confirm"
+                class="form-input"
+                placeholder="••••••••"
+                required
+                autocomplete="new-password"
+            >
+        </div>
+
+        <div class="form-group" style="display: flex; gap: 0.8rem; margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary">
+                [CREATE]
+            </button>
+            <a href="/login" class="btn btn-outline">
+                [LOGIN]
+            </a>
+        </div>
+    </form>
+
+    <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-family: monospace; font-size: 0.85rem; color: var(--text-secondary);">
+        <p style="margin: 0 0 0.5rem 0;">$ echo "Password security info"</p>
+        <pre style="line-height: 1.6; font-size: 0.8rem; background: transparent; border: none; padding: 0;">
+password: "P@ssw0rd"
+    ↓ scrypt(password, salt=16)
+hash: "$scrypt$..."  <span style="color: var(--accent);"># stored in DB</span>
+
+[!] Irreversible - even admins can't see your password
+        </pre>
+    </div>
+</div>
+{% endblock %}

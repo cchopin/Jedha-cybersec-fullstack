@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}{% if user %}Modifier{% else %}Créer{% endif %} un utilisateur - Auth Demo{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h1 class="card-header">
+        {% if user %}
+            Modifier l'utilisateur
+        {% else %}
+            Créer un nouvel utilisateur
+        {% endif %}
+    </h1>
+
+    {% if error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{% if user %}/user/edit/{{ user.id_user }}{% else %}/user/new{% endif %}">
+        <div class="form-group">
+            <label class="form-label" for="username">Nom d'utilisateur</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-input"
+                placeholder="Nom d'utilisateur"
+                value="{% if user %}{{ user.username }}{% endif %}"
+                required
+                minlength="3"
+            >
+            <small style="color: var(--text-secondary); font-size: 0.85rem;">
+                Minimum 3 caractères, doit être unique
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password">
+                Mot de passe
+                {% if user %}
+                    <span style="color: var(--text-secondary); font-weight: normal; font-size: 0.9rem;">
+                        (laisser vide pour ne pas modifier)
+                    </span>
+                {% endif %}
+            </label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-input"
+                placeholder="Mot de passe"
+                {% if not user %}required{% endif %}
+                minlength="6"
+            >
+            <small style="color: var(--text-secondary); font-size: 0.85rem;">
+                Minimum 6 caractères
+            </small>
+        </div>
+
+        {% if not user %}
+        <div class="form-group">
+            <label class="form-label" for="password_confirm">Confirmer le mot de passe</label>
+            <input
+                type="password"
+                id="password_confirm"
+                name="password_confirm"
+                class="form-input"
+                placeholder="Confirmer le mot de passe"
+                required
+            >
+        </div>
+        {% endif %}
+
+        {% if user %}
+        <div class="alert alert-info">
+            <strong>Informations actuelles :</strong><br>
+            ID : <code>{{ user.id_user }}</code><br>
+            Hash actuel : <code style="font-size: 0.75rem;">{{ user.password_hash }}</code><br>
+            Créé le : <strong>{{ user.created_at }}</strong>
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+                {% if user %}Enregistrer les modifications{% else %}Créer l'utilisateur{% endif %}
+            </button>
+            <a href="/users" class="btn btn-secondary" style="margin-left: 1rem;">
+                Retour à la liste
+            </a>
+        </div>
+    </form>
+</div>
+
+{% if user %}
+<div class="card" style="max-width: 800px; margin: 2rem auto;">
+    <h2 class="card-header">Gérer la session</h2>
+
+    {% if user.session_token %}
+    <div class="alert alert-success">
+        <strong>Session active</strong><br>
+        Token : <code>{{ user.session_token }}</code><br>
+        Expire le : <strong>{{ user.session_expires }}</strong>
+    </div>
+
+    <form method="POST" action="/user/logout/{{ user.id_user }}" style="margin-top: 1rem;">
+        <button type="submit" class="btn btn-danger">
+            Déconnecter cet utilisateur
+        </button>
+    </form>
+    {% else %}
+    <div class="alert alert-danger">
+        Aucune session active pour cet utilisateur
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
