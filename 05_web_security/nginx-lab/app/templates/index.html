@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des tâches{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Ma liste de tâches</h2>
+    
+    <form action="{{ url_for('main.add') }}" method="POST" class="task-form">
+        <input type="text" name="content" placeholder="Ajouter une nouvelle tâche...">
+        <button type="submit">Ajouter</button>
+    </form>
+    
+    <div class="tasks">
+        {% if tasks|length < 1 %}
+        <p class="empty-list">Aucune tâche. Ajoutez-en une!</p>
+        {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Tâche</th>
+                    <th>Date de création</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr class="{% if task.completed %}completed{% endif %}">
+                    <td>{{ task.content }}</td>
+                    <td>{{ task.date_created.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('main.complete', id=task.id) }}" class="complete">
+                            {% if task.completed %}Annuler{% else %}Terminer{% endif %}
+                        </a>
+                        <a href="{{ url_for('main.delete', id=task.id) }}" class="delete">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+# Certificats SSL
+nginx/certs/*.pem
+nginx/certs/*.key
+nginx/certs/*.crt
+
+# Variables d'environnement
+.env
+.env.local
+
+# Volumes Docker
+postgres_data/
+
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
