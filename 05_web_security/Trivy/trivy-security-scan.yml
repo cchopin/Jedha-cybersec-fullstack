@@ -1,0 +1,109 @@
+name: Security Scan with Trivy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Scan quotidien à 6h UTC pour détecter les nouvelles vulnérabilités
+    - cron: '0 6 * * *'
+
+# Permissions minimales suivant le principe du moindre privilège
+# Cette approche réduit la surface d'attaque en cas de compromission (supply chain attack)
+permissions:
+  contents: read         # Permet de lire le code du repository (requis par actions/checkout)
+  security-events: write # Permet d'uploader les résultats vers l'onglet Security de GitHub
+
+jobs:
+  # Job principal : scan du filesystem (code source et dépendances)
+  trivy-scan:
+    runs-on: ubuntu-latest
+    steps:
+      # Étape 1 : Récupération du code source
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      # Étape 2 : Premier scan en mode filesystem avec sortie "table" pour la lisibilité
+      # Ce scan vérifie :
+      # - Les vulnérabilités connues dans les dépendances Python (requirements.txt)
+      # - Les secrets hardcodés (API keys, passwords, etc.)
+      # - Les problèmes de configuration
+      - name: Run Trivy vulnerability scanner in filesystem mode
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "table"
+          severity: "CRITICAL,HIGH"
+          exit-code: 0  # Ne pas bloquer le workflow - les résultats sont consultables dans Security
+
+      # Étape 3 : Second scan avec format SARIF pour intégration GitHub
+      # SARIF (Static Analysis Results Interchange Format) est le format standardisé
+      # qui permet à GitHub de créer des alertes détaillées dans l'onglet Security
+      - name: Run Trivy vulnerability scanner for SARIF report
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH,MEDIUM"
+
+      # Étape 4 : Upload des résultats vers l'onglet Security de GitHub
+      # Les développeurs peuvent consulter les vulnérabilités directement depuis GitHub
+      # et créer des issues/tickets pour les corriger (shared responsibility model)
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()  # Upload même si le scan précédent a échoué
+        with:
+          sarif_file: "trivy-results.sarif"
+
+  # Job optionnel : scan des images Docker (désactivé par défaut)
+  # Pour activer : changer 'if: false' en 'if: true' ci-dessous
+  # Ce job scanne les images Docker pour détecter :
+  # - Les vulnérabilités des packages OS (Alpine, Debian, etc.)
+  # - Les vulnérabilités des dépendances applicatives dans le container
+  # - Les problèmes de configuration Docker
+  trivy-docker-scan:
+    runs-on: ubuntu-latest
+    if: false  # ⚠️ DÉSACTIVÉ PAR DÉFAUT - Passer à 'true' pour activer
+    strategy:
+      matrix:
+        dockerfile:
+          - context: "05_web_security/nginx"
+            name: "crypto-tavern"
+          - context: "05_web_security/nginx-lab"
+            name: "todo-app"
+    steps:
+      # Étape 1 : Récupération du code source
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      # Étape 2 : Build de l'image Docker
+      # Note : Docker est préinstallé sur les runners GitHub Actions Ubuntu
+      # Liste complète des outils : https://github.com/actions/runner-images
+      - name: Build Docker image from Dockerfile
+        run: |
+          cd ${{ matrix.dockerfile.context }}
+          docker build -t ${{ matrix.dockerfile.name }}:${{ github.sha }} .
+
+      # Étape 3 : Scan de l'image Docker en mode "image"
+      # Ce scan est plus complet que le scan filesystem car il analyse
+      # l'image finale avec toutes ses couches et dépendances système
+      - name: Run Trivy vulnerability scanner on Docker image
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: "${{ matrix.dockerfile.name }}:${{ github.sha }}"
+          format: "sarif"
+          output: "trivy-${{ matrix.dockerfile.name }}-results.sarif"
+          severity: "CRITICAL,HIGH,MEDIUM"
+
+      # Étape 4 : Upload avec catégorie distincte pour chaque image
+      # La catégorie permet de séparer les résultats dans l'onglet Security
+      - name: Upload Docker scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: "trivy-${{ matrix.dockerfile.name }}-results.sarif"
+          category: "docker-${{ matrix.dockerfile.name }}"
