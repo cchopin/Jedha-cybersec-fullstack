@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Tavern - Crypto Tavern{% endblock %}
+
+{% block content %}
+<div class="tavern-container">
+    <div class="welcome-banner">
+        <h2>Welcome back, {{ username }}! 🎉</h2>
+        <a href="{{ url_for('main.logout') }}" class="btn btn-secondary">Logout</a>
+    </div>
+
+    <section class="crypto-market">
+        <h3>🪙 Available Cryptocurrencies</h3>
+        <p class="market-info">Current market offerings in our fantasy tavern</p>
+
+        <div class="crypto-grid">
+            {% for crypto in inventory %}
+            <div class="crypto-card">
+                <div class="crypto-header">
+                    <h4>{{ crypto.name }}</h4>
+                    <span class="crypto-symbol">{{ crypto.symbol }}</span>
+                </div>
+                <div class="crypto-body">
+                    <div class="crypto-price">
+                        <span class="label">Price:</span>
+                        <span class="value">💰 {{ crypto.price }} gold</span>
+                    </div>
+                    <div class="crypto-stock">
+                        <span class="label">In Stock:</span>
+                        <span class="value {% if crypto.stock < 10 %}low-stock{% endif %}">
+                            {{ crypto.stock }} units
+                        </span>
+                    </div>
+                </div>
+                <div class="crypto-footer">
+                    <button class="btn btn-buy" onclick="buyCrypto('{{ crypto.symbol }}')">
+                        Buy {{ crypto.symbol }}
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="tavern-info">
+        <div class="info-box">
+            <h4>📜 About the Crypto Tavern</h4>
+            <p>Welcome to the most mystical trading post in the realm! Here, adventurers can
+               trade in magical cryptocurrencies using ancient gold coins. Each cryptocurrency
+               has unique properties and limited availability.</p>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Error {{ error_code }} - Crypto Tavern{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-box">
+        <h2>⚠️ Error {{ error_code }}</h2>
+        <p class="error-message">{{ error_message }}</p>
+
+        <div class="error-description">
+            {% if error_code == 404 %}
+                <p>The page you're looking for seems to have vanished into the mystical void!</p>
+            {% elif error_code == 500 %}
+                <p>Our tavern keeper encountered a magical malfunction. Please try again later.</p>
+            {% else %}
+                <p>Something unexpected happened in the tavern.</p>
+            {% endif %}
+        </div>
+
+        <a href="{{ url_for('main.login') }}" class="btn btn-primary">Return to Tavern Entrance</a>
+    </div>
+</div>
+{% endblock %}

@@ -50,3 +50,25 @@ htmlcov/
 
 # mypy
 .mypy_cache/
+
+# SSL/TLS Certificates and Keys
+*.pem
+*.key
+*.crt
+*.cert
+*.cer
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Ignore certificate directories but allow README files
+certs/*
+!certs/README.md
+!certs/.gitkeep
+certificates/*
+!certificates/README.md
+!certificates/.gitkeep
+ssl/*
+!ssl/README.md
+!ssl/.gitkeep

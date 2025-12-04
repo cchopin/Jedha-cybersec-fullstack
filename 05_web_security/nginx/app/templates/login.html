@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Crypto Tavern{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <h2>🔐 Enter the Tavern</h2>
+        <p class="login-subtitle">Login to start trading cryptocurrencies</p>
+
+        <form method="POST" action="{{ url_for('main.login') }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required
+                       placeholder="Enter your username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required
+                       placeholder="Enter your password">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <div class="login-help">
+            <p><strong>Test accounts:</strong></p>
+            <ul>
+                <li>admin / tavern2025</li>
+                <li>merchant / crypto123</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
