@@ -1,0 +1,73 @@
+name: CI pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    # Define a testing strategy to test on multiple Python versions
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      # Step 2: Set up Python with the specified version
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+      
+      # Step 4: Lint with flake8
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      
+      # Step 5: Test with pytest
+      - name: Test with pytest
+        run: |
+          pytest tests/
+
+  trivy-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      # Run Trivy vulnerability scanner in filesystem mode and output in SARIF format
+      - name: Run Trivy vulnerability scanner in filesystem mode
+        uses: aquasecurity/trivy-action@b3dafe507ffa004210975439a1e6156b8ebb3f50
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      # Upload Trivy scan results to GitHub Security tab
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
