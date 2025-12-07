@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Add New Employee</h2>
+    
+    <form method="POST">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div>
+            <label for="role">Role:</label>
+            <input type="text" id="role" name="role" required>
+        </div>
+        
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div>
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone">
+        </div>
+        
+        <button type="submit" class="btn">Add Employee</button>
+        <a href="{{ url_for('index') }}" class="btn" style="background-color: #95a5a6;">Cancel</a>
+    </form>
+{% endblock %}

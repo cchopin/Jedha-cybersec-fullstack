@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <a href="{{ url_for('add_employee') }}" class="btn">Add New Employee</a>
+    
+    <h2>Current Employees</h2>
+    
+    {% if employees %}
+        {% for employee in employees %}
+            <div class="employee-card">
+                <h3>{{ employee.name }}</h3>
+                <p><strong>Role:</strong> {{ employee.role }}</p>
+                <p><strong>Email:</strong> {{ employee.email }}</p>
+                <p><strong>Phone:</strong> {{ employee.phone }}</p>
+                <a href="{{ url_for('delete_employee', id=employee.id) }}" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this employee?')">Delete</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No employees found. Add some to get started!</p>
+    {% endif %}
+{% endblock %}
