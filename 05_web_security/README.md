@@ -1,7 +1,7 @@
 # 05 - Web Security
 
 **Durée :** 6 jours
-**Statut :** ⏳ En cours
+**Statut :** ✅ Terminé
 
 ## Objectifs
 
@@ -74,14 +74,13 @@ python_blog/
     └── new.html       # Création d'article
 ```
 
-## Compétences acquises (en cours)
+## Compétences acquises
 
 - Développement d'applications web avec Flask
 - Intégration de bases de données
 - Templating avec Jinja2
 - Gestion de routes et requêtes HTTP
-- (À venir) Identification et correction de vulnérabilités web
-
-## Notes
-
-Module en cours. Le projet python_blog servira de base pour explorer les vulnérabilités web et apprendre à les corriger. D'autres projets Python viendront s'ajouter dans ce module.
+- Identification et correction de vulnérabilités web (OWASP Top 10)
+- Protection contre les injections SQL et XSS
+- Sécurisation de l'authentification et des sessions
+- Bonnes pratiques de développement sécurisé

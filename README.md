@@ -4,10 +4,10 @@ Ce repository contient l'ensemble des projets, exercices et documentations réal
 
 ## Progression
 
-**4/16 modules complétés** • **Durée totale :** 61 jours
+**5/16 modules complétés** • **Durée totale :** 61 jours
 
 ```
-████████░░░░░░░░░░░░░░░░░░░░ 25%
+█████████░░░░░░░░░░░░░░░░░░░ 31%
 ```
 
 ## Vue d'ensemble des modules
@@ -18,7 +18,7 @@ Ce repository contient l'ensemble des projets, exercices et documentations réal
 | 02 | Threat Intelligence | 2 jours | ✅ | APT, MITRE ATT&CK, OSINT, OpenCTI |
 | 03 | Email Security | 1 jour | ✅ | Phishing, SPF/DKIM/DMARC, Gophish |
 | 04 | Databases | 2 jours | ✅ | SQL/NoSQL, injections, sécurisation |
-| 05 | Web Security | 6 jours | ⏳ | Python/Flask, XSS, SQLi, CSRF, Docker, CI/CD |
+| 05 | Web Security | 6 jours | ✅ | Python/Flask, XSS, SQLi, CSRF, Docker, CI/CD |
 | 06 | Cloud Security | 3 jours | ⏳ | AWS, IAM, VPC, CloudWatch |
 | 07 | Network Security | 6 jours | ⏳ | TCP/IP, VLANs, routing, firewalls, VPN, Wireshark |
 | 08 | Linux System Security | 8 jours | ⏳ | Users, processes, kernel, SELinux, containers |
@@ -41,7 +41,7 @@ jedha/
 │   └── opencti/
 ├── 03_email_security/               # ✅ Phishing, SPF/DKIM/DMARC
 ├── 04_databases/                    # ✅ SQL, sécurisation BDD
-├── 05_web_security/                 # ⏳ Web app security (en cours)
+├── 05_web_security/                 # ✅ Web app security
 │   ├── http-web-server/             # ✅ Serveur HTTP custom en Python
 │   ├── python_blog/                 # ✅ Blog Flask avec protections XSS
 │   ├── sql-injection/               # ✅ Démo complète des injections SQL
@@ -87,10 +87,8 @@ jedha/
 - Détection et prévention des SQL injections
 - Gestion des accès et privilèges
 
-## Modules en cours
-
-### 05 - Web Security ⏳
-**Technologies :** Python, Flask, Docker, Burp Suite
+### 05 - Web Security ✅
+**Technologies :** Python, Flask, Docker, Burp Suite, Nginx, CI/CD
 
 **Projets réalisés :**
 
@@ -127,6 +125,36 @@ Serveur HTTP personnalisé en Python :
 Analyseur de logs pour la détection d'intrusions :
 - Parsing de logs Apache/Nginx
 - Détection de patterns malveillants
+
+## Module en cours
+
+### 06 - Cloud Security ⏳
+**Durée :** 3 jours • **Progression :** 0%
+
+#### Foundations of Cloud and IAM
+- [ ] Cloud 101
+- [ ] AWS Account Setup
+- [ ] AWS Core Services Overview
+- [ ] Introduction to IAM
+- [ ] Dev Team Example
+- [ ] Cloud and IAM Foundations Quiz
+- [ ] Creative Flow Document Management System
+
+#### Cloud Network Security & Isolation
+- [ ] VPC Fundamentals
+- [ ] Security Groups vs NACLs
+- [ ] Network Segmentation Best Practices
+- [ ] AWS Network Security Services
+- [ ] Cloud Network Security Quiz
+- [ ] Deploy a Basic 3-Tier App
+
+#### Cloud Monitoring and Security
+- [ ] AWS Security and Compliance
+- [ ] AWS CloudWatch
+- [ ] AWS Monitoring Demo
+- [ ] Cloud Monitoring Quiz
+- [ ] StartupExcuses Monitoring
+- [ ] StartupExcuses Deployment (Optional)
 
 ## Technologies et outils
 
