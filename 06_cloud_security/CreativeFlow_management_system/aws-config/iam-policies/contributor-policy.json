@@ -1,0 +1,59 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "S3ListUploadsFolder",
+            "Effect": "Allow",
+            "Action": "s3:ListBucket",
+            "Resource": "arn:aws:s3:::creativeflow-docs-*",
+            "Condition": {
+                "StringLike": {
+                    "s3:prefix": [
+                        "uploads/*",
+                        "uploads/drafts/*",
+                        "uploads/final/*",
+                        "uploads/client-assets/*"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "S3UploadToDesignatedFolders",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::creativeflow-docs-*/uploads/drafts/*",
+                "arn:aws:s3:::creativeflow-docs-*/uploads/final/*",
+                "arn:aws:s3:::creativeflow-docs-*/uploads/client-assets/*"
+            ]
+        },
+        {
+            "Sid": "DenyAppLogsAccess",
+            "Effect": "Deny",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::creativeflow-docs-*/app-logs/*"
+            ]
+        },
+        {
+            "Sid": "DenyDeleteOperations",
+            "Effect": "Deny",
+            "Action": "s3:DeleteObject",
+            "Resource": "arn:aws:s3:::creativeflow-docs-*/*"
+        },
+        {
+            "Sid": "STSGetCallerIdentity",
+            "Effect": "Allow",
+            "Action": "sts:GetCallerIdentity",
+            "Resource": "*"
+        }
+    ]
+}
