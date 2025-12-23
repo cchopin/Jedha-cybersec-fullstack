@@ -1,5 +1,5 @@
 # =============================================================================
-# SUBNET - Division de reseaux en sous-reseaux
+# SUBNET - Division de reseaux en sous-reseaux et supernetting
 # =============================================================================
 #
 # Ce module permet de diviser un reseau en sous-reseaux :
@@ -7,7 +7,36 @@
 # - subnet_by_host_count : division avec un minimum d'hotes par sous-reseau
 # - subnet_vlsm : division en sous-reseaux de tailles variables
 #
+# Et d'agreger plusieurs reseaux (supernetting / route summarization) :
+# - supernet : combine plusieurs reseaux contigus en un super-reseau
+#
 # Supporte IPv4 et IPv6.
+#
+# SUPERNETTING (Route Summarization)
+# ==================================
+#
+# Le supernetting est l'inverse du subnetting : on combine plusieurs
+# petits reseaux en un seul grand reseau.
+#
+# Exemple : agreger ces 4 reseaux /24 :
+#   192.168.0.0/24
+#   192.168.1.0/24
+#   192.168.2.0/24
+#   192.168.3.0/24
+#
+# Etape 1 : Ecrire le 3eme octet en binaire (les 2 premiers sont identiques)
+#   192.168.0.x → 00000000
+#   192.168.1.x → 00000001
+#   192.168.2.x → 00000010
+#   192.168.3.x → 00000011
+#
+# Etape 2 : Trouver les bits communs (de gauche a droite)
+#   Les 6 premiers bits sont identiques (000000xx)
+#
+# Etape 3 : Calculer le nouveau prefixe
+#   8 (1er octet) + 8 (2eme) + 6 (bits communs du 3eme) = /22
+#
+# Resultat : 192.168.0.0/22 couvre les 4 reseaux
 #
 # =============================================================================
 
@@ -66,6 +95,20 @@ type
     success*: bool
     error*: string
     subnets*: seq[NamedSubnetV6]
+
+  ## Resultat d'une operation de supernetting IPv4.
+  SupernetResult* = object
+    success*: bool
+    error*: string
+    supernet*: SubnetInfo        ## Le super-reseau resultant
+    original_networks*: seq[string]  ## Les reseaux d'origine
+
+  ## Resultat d'une operation de supernetting IPv6.
+  SupernetResultV6* = object
+    success*: bool
+    error*: string
+    supernet*: SubnetInfoV6      ## Le super-reseau resultant
+    original_networks*: seq[string]  ## Les reseaux d'origine
 
 
 ## Divise un reseau en N sous-reseaux egaux.
@@ -414,4 +457,214 @@ proc subnet_vlsm_v6*(cidr_str: string, requests: seq[SubnetRequest]): VlsmResult
   return VlsmResultV6(
     success: true,
     subnets: subnets
+  )
+
+
+# =============================================================================
+# Supernetting / Route Summarization
+# =============================================================================
+
+## Compte le nombre de bits a 0 depuis la gauche (leading zeros).
+##
+## Cette fonction est utilisee pour determiner le prefixe commun
+## entre plusieurs adresses lors du supernetting.
+##
+## Parametres:
+##   - value: nombre uint32 a analyser
+##
+## Retour: nombre de bits a 0 depuis la gauche (0 a 32)
+##
+## Exemple:
+##   count_leading_zeros(0x00FFFFFF) → 8 (premier octet a 0)
+##   count_leading_zeros(0x0000FFFF) → 16 (deux premiers octets a 0)
+proc count_leading_zeros(value: uint32): int =
+  if value == 0:
+    return 32
+  var v = value
+  var count = 0
+  # Parcourir les bits depuis la gauche
+  while (v and 0x80000000'u32) == 0:
+    count += 1
+    v = v shl 1
+  return count
+
+
+## Compte le nombre de bits a 0 depuis la gauche pour IPv6.
+##
+## Analyse les 128 bits (high puis low) pour trouver les leading zeros.
+##
+## Parametres:
+##   - high: partie haute (64 bits)
+##   - low: partie basse (64 bits)
+##
+## Retour: nombre de bits a 0 depuis la gauche (0 a 128)
+proc count_leading_zeros_v6(high: uint64, low: uint64): int =
+  if high == 0 and low == 0:
+    return 128
+  if high != 0:
+    var v = high
+    var count = 0
+    while (v and 0x8000000000000000'u64) == 0:
+      count += 1
+      v = v shl 1
+    return count
+  else:
+    # high est 0, compter dans low
+    var v = low
+    var count = 64  # Deja 64 bits a 0 dans high
+    while (v and 0x8000000000000000'u64) == 0:
+      count += 1
+      v = v shl 1
+    return count
+
+
+## Agrege plusieurs reseaux IPv4 en un super-reseau (supernetting).
+##
+## Le supernetting (ou route summarization) permet de combiner plusieurs
+## petits reseaux en un seul grand reseau, reduisant ainsi la taille
+## des tables de routage.
+##
+## L'algorithme :
+## 1. Convertit tous les reseaux en adresses uint32
+## 2. Trouve les bits communs a toutes les adresses (XOR cumulatif)
+## 3. Calcule le nouveau prefixe base sur les bits communs
+## 4. Retourne le super-reseau
+##
+## Parametres:
+##   - networks: liste des reseaux en notation CIDR (ex: ["192.168.0.0/24", "192.168.1.0/24"])
+##
+## Retour: SupernetResult avec le super-reseau ou une erreur
+##
+## Exemple:
+##   let result = supernet(@["192.168.0.0/24", "192.168.1.0/24",
+##                           "192.168.2.0/24", "192.168.3.0/24"])
+##   # → 192.168.0.0/22
+proc supernet*(networks: seq[string]): SupernetResult =
+  if networks.len < 2:
+    return SupernetResult(
+      success: false,
+      error: "Au moins 2 reseaux sont necessaires pour le supernetting"
+    )
+
+  # Convertir tous les reseaux en adresses de base
+  var addresses: seq[uint32] = @[]
+  var min_prefix = 32
+
+  for cidr in networks:
+    let prefix = get_prefix(cidr, 24)
+    if prefix < min_prefix:
+      min_prefix = prefix
+
+    let ip_addr = ipv4_to_uint32(cidr)
+    let mask = prefix_to_mask(prefix)
+    let network_addr = ip_addr and mask
+    addresses.add(network_addr)
+
+  # Trouver les bits differents entre toutes les adresses (XOR cumulatif)
+  # On part de la premiere adresse et on XOR avec toutes les autres
+  var xor_result: uint32 = 0
+  let base_addr = addresses[0]
+  for i in 1..<addresses.len:
+    xor_result = xor_result or (base_addr xor addresses[i])
+
+  # Compter les leading zeros dans le XOR pour trouver le prefixe commun
+  let common_prefix = count_leading_zeros(xor_result)
+
+  # Le nouveau prefixe ne peut pas etre plus grand que le plus petit original
+  let new_prefix = min(common_prefix, min_prefix)
+
+  if new_prefix == 0:
+    return SupernetResult(
+      success: false,
+      error: "Les reseaux n'ont pas de prefixe commun (trop differents)"
+    )
+
+  # Calculer l'adresse du super-reseau
+  let supernet_mask = prefix_to_mask(new_prefix)
+  let supernet_addr = base_addr and supernet_mask
+  let supernet_cidr = uint32_to_ip(supernet_addr) & "/" & $new_prefix
+
+  # Verifier que tous les reseaux sont couverts par le super-reseau
+  for i, net_addr in addresses:
+    if (net_addr and supernet_mask) != supernet_addr:
+      return SupernetResult(
+        success: false,
+        error: "Le reseau " & networks[i] & " n'est pas couvert par le super-reseau calcule"
+      )
+
+  return SupernetResult(
+    success: true,
+    supernet: get_subnet_info(supernet_cidr),
+    original_networks: networks
+  )
+
+
+## Agrege plusieurs reseaux IPv6 en un super-reseau (supernetting).
+##
+## Meme principe que pour IPv4, mais sur 128 bits.
+##
+## Parametres:
+##   - networks: liste des reseaux en notation CIDR (ex: ["2001:db8::/48", "2001:db8:1::/48"])
+##
+## Retour: SupernetResultV6 avec le super-reseau ou une erreur
+proc supernet_v6*(networks: seq[string]): SupernetResultV6 =
+  if networks.len < 2:
+    return SupernetResultV6(
+      success: false,
+      error: "Au moins 2 reseaux sont necessaires pour le supernetting"
+    )
+
+  # Convertir tous les reseaux en adresses IPv6
+  var addresses: seq[IPv6Addr] = @[]
+  var min_prefix = 128
+
+  for cidr in networks:
+    let prefix = get_prefix(cidr, 64)
+    if prefix < min_prefix:
+      min_prefix = prefix
+
+    let ip_addr = ipv6_to_addr(cidr)
+    let network_addr = get_network_v6(ip_addr, prefix)
+    addresses.add(network_addr)
+
+  # Trouver les bits differents (XOR cumulatif)
+  var xor_high: uint64 = 0
+  var xor_low: uint64 = 0
+  let base_addr = addresses[0]
+
+  for i in 1..<addresses.len:
+    xor_high = xor_high or (base_addr.high xor addresses[i].high)
+    xor_low = xor_low or (base_addr.low xor addresses[i].low)
+
+  # Compter les leading zeros pour trouver le prefixe commun
+  let common_prefix = count_leading_zeros_v6(xor_high, xor_low)
+
+  # Le nouveau prefixe ne peut pas etre plus grand que le plus petit original
+  let new_prefix = min(common_prefix, min_prefix)
+
+  if new_prefix == 0:
+    return SupernetResultV6(
+      success: false,
+      error: "Les reseaux n'ont pas de prefixe commun (trop differents)"
+    )
+
+  # Calculer l'adresse du super-reseau
+  let supernet_addr = get_network_v6(base_addr, new_prefix)
+  let supernet_cidr = addr_to_ipv6(supernet_addr) & "/" & $new_prefix
+
+  # Verifier que tous les reseaux sont couverts
+  let (high_mask, low_mask) = prefix_to_mask_v6(new_prefix)
+  for i, net_addr in addresses:
+    let addr_masked_high = net_addr.high and high_mask
+    let addr_masked_low = net_addr.low and low_mask
+    if addr_masked_high != supernet_addr.high or addr_masked_low != supernet_addr.low:
+      return SupernetResultV6(
+        success: false,
+        error: "Le reseau " & networks[i] & " n'est pas couvert par le super-reseau calcule"
+      )
+
+  return SupernetResultV6(
+    success: true,
+    supernet: get_subnet_info_v6(supernet_cidr),
+    original_networks: networks
   )

@@ -204,7 +204,7 @@ Adresse IPv6 : 2001:db8:1234::/48
 |<--- 48 bits --->|<-- 16 -->|<----------- 64 bits ----------->|
 |    Préfixe      |  Sous-   |         Interface ID            |
 |    global       |  réseau  |                                 |
-|   (du FAI)      |  (vous)  |      (identifie l'hôte)         |
+|   (du FAI)      | (local)  |      (identifie l'hôte)         |
 
 Préfixe global /48 : 2001:db8:1234::/48 (attribué par le FAI)
 Sous-réseau    /64 : 2001:db8:1234:56::/64 (géré par l'organisation)

@@ -7,10 +7,14 @@
 #
 # COMMANDES DISPONIBLES :
 #
-#   validate <ip>      Vérifie si une adresse IP est valide
-#   classify <ip>      Détermine le type de réseau (privé, public, etc.)
-#   info <cidr>        Affiche les informations complètes d'un sous-réseau
+#   validate <ip>         Vérifie si une adresse IP est valide
+#   classify <ip>         Détermine le type de réseau (privé, public, etc.)
+#   info <cidr>           Affiche les informations complètes d'un sous-réseau
 #   contains <cidr> <ip>  Vérifie si une IP appartient à un réseau
+#   split <cidr> <n>      Divise un réseau en N sous-réseaux égaux
+#   hosts <cidr> <n> <m>  Divise avec contrainte de nombre d'hôtes
+#   vlsm <cidr>           Division en tailles variables (VLSM)
+#   supernet              Agrège plusieurs réseaux en un super-réseau
 #
 # EXEMPLES :
 #
@@ -18,6 +22,8 @@
 #   netprobe classify 8.8.8.8
 #   netprobe info 192.168.1.0/24
 #   netprobe contains 10.0.0.0/8 10.5.3.2
+#   netprobe split 192.168.0.0/24 4
+#   netprobe supernet
 #
 # MODE INTERACTIF :
 #   Après chaque commande, le programme propose de :
@@ -35,7 +41,7 @@ from validate import get_ip_kind, is_valid_ip, IPKind
 from classify import classify_ip, NetworkInfo, NetworkKind
 from info import get_subnet_info, SubnetInfo, get_subnet_info_v6, SubnetInfoV6
 from utils import ipv4_to_uint32, is_in_network, ipv6_to_addr, is_in_network_v6
-from subnet import subnet_equal_parts, subnet_by_host_count, subnet_vlsm, SubnetResult, VlsmResult, SubnetRequest, NamedSubnet, subnet_equal_parts_v6, subnet_by_host_count_v6, subnet_vlsm_v6, SubnetResultV6, VlsmResultV6, NamedSubnetV6
+from subnet import subnet_equal_parts, subnet_by_host_count, subnet_vlsm, SubnetResult, VlsmResult, SubnetRequest, NamedSubnet, subnet_equal_parts_v6, subnet_by_host_count_v6, subnet_vlsm_v6, SubnetResultV6, VlsmResultV6, NamedSubnetV6, supernet, supernet_v6, SupernetResult, SupernetResultV6
 from classify import is_ipv6
 
 # Couleurs ANSI
@@ -346,6 +352,81 @@ proc run_vlsm(cidr_str: string, requests: seq[SubnetRequest]) =
     display_vlsm(result)
 
 
+## Affiche le resultat du supernetting IPv4.
+proc display_supernet(result: SupernetResult) =
+  if not result.success:
+    echo ""
+    echo "  ", RED, "Erreur: ", result.error, RESET
+    echo ""
+    return
+
+  echo ""
+  echo "  ", CYAN, "═══════════════════════════════════════════════════════════════════", RESET
+  echo "  ", CYAN, "                   SUPERNET (Route Summarization)                   ", RESET
+  echo "  ", CYAN, "═══════════════════════════════════════════════════════════════════", RESET
+  echo ""
+  echo "  ", YELLOW, "Reseaux d'origine:", RESET
+  for net in result.original_networks:
+    echo "   ", DIM, "•", RESET, " ", net
+  echo ""
+  echo "  ", CYAN, "───────────────────────────────────────────────────────────────────", RESET
+  echo ""
+  echo "  ", GREEN, "Super-reseau resultant:", RESET
+  echo ""
+  echo "   ", DIM, "Reseau:      ", RESET, BOLD, GREEN, result.supernet.network, "/", result.supernet.prefix, RESET
+  echo "   ", DIM, "Masque:      ", RESET, result.supernet.mask
+  echo "   ", DIM, "Broadcast:   ", RESET, result.supernet.broadcast
+  echo "   ", DIM, "Plage:       ", RESET, result.supernet.first_host, " - ", result.supernet.last_host
+  echo "   ", DIM, "Nb d'hotes:  ", RESET, BOLD, result.supernet.host_count, RESET
+  echo ""
+  echo "  ", CYAN, "═══════════════════════════════════════════════════════════════════", RESET
+  echo ""
+
+
+## Affiche le resultat du supernetting IPv6.
+proc display_supernet_v6(result: SupernetResultV6) =
+  if not result.success:
+    echo ""
+    echo "  ", RED, "Erreur: ", result.error, RESET
+    echo ""
+    return
+
+  echo ""
+  echo "  ", CYAN, "═══════════════════════════════════════════════════════════════════", RESET
+  echo "  ", CYAN, "                SUPERNET IPv6 (Route Summarization)                 ", RESET
+  echo "  ", CYAN, "═══════════════════════════════════════════════════════════════════", RESET
+  echo ""
+  echo "  ", YELLOW, "Reseaux d'origine:", RESET
+  for net in result.original_networks:
+    echo "   ", DIM, "•", RESET, " ", net
+  echo ""
+  echo "  ", CYAN, "───────────────────────────────────────────────────────────────────", RESET
+  echo ""
+  echo "  ", GREEN, "Super-reseau resultant:", RESET
+  echo ""
+  echo "   ", DIM, "Reseau:      ", RESET, BOLD, GREEN, result.supernet.network, "/", result.supernet.prefix, RESET
+  echo ""
+  echo "  ", CYAN, "═══════════════════════════════════════════════════════════════════", RESET
+  echo ""
+
+
+## Execute la commande supernet.
+proc run_supernet(networks: seq[string]) =
+  if networks.len < 2:
+    echo ""
+    echo "  ", RED, "Erreur: Au moins 2 reseaux sont necessaires", RESET
+    echo ""
+    return
+
+  # Determiner si c'est IPv4 ou IPv6 en regardant le premier reseau
+  if is_ipv6(networks[0]):
+    let result = supernet_v6(networks)
+    display_supernet_v6(result)
+  else:
+    let result = supernet(networks)
+    display_supernet(result)
+
+
 ## Affiche le menu interactif et retourne le choix de l'utilisateur.
 proc show_interactive_menu(): string =
   echo ""
@@ -376,6 +457,7 @@ proc show_command_menu(): string =
   echo "  ", CYAN, "│", RESET, "  [5] split     - Diviser en N parts    ", CYAN, "│", RESET
   echo "  ", CYAN, "│", RESET, "  [6] hosts     - Diviser par nb hotes  ", CYAN, "│", RESET
   echo "  ", CYAN, "│", RESET, "  [7] vlsm      - Tailles variables     ", CYAN, "│", RESET
+  echo "  ", CYAN, "│", RESET, "  [8] supernet  - Agreger des reseaux   ", CYAN, "│", RESET
   echo "  ", CYAN, "│", RESET, "  [q] Quitter                           ", CYAN, "│", RESET
   echo "  ", CYAN, "└─────────────────────────────────────────┘", RESET
   echo ""
@@ -418,13 +500,36 @@ proc prompt_vlsm_requests(): seq[SubnetRequest] =
   return requests
 
 
+## Demande les reseaux pour le supernetting.
+proc prompt_supernet_networks(): seq[string] =
+  var networks: seq[string] = @[]
+
+  let num_str = prompt_input("Nombre de reseaux a agreger: ")
+  if num_str.len == 0:
+    return networks
+
+  let num_networks = parseInt(num_str)
+  if num_networks < 2:
+    echo "  ", RED, "Au moins 2 reseaux sont necessaires", RESET
+    return networks
+
+  echo ""
+  for i in 1..num_networks:
+    let cidr = prompt_input("Reseau " & $i & " (notation CIDR): ")
+    if cidr.len > 0:
+      networks.add(cidr)
+
+  return networks
+
+
 ## Boucle interactive pour une commande donnée.
-proc interactive_loop(command: string, initial_arg1: string, initial_arg2: string = "", initial_arg3: string = "", vlsm_requests: seq[SubnetRequest] = @[]) =
+proc interactive_loop(command: string, initial_arg1: string, initial_arg2: string = "", initial_arg3: string = "", vlsm_requests: seq[SubnetRequest] = @[], supernet_networks: seq[string] = @[]) =
   var current_command = command
   var arg1 = initial_arg1
   var arg2 = initial_arg2
   var arg3 = initial_arg3
   var requests = vlsm_requests
+  var networks = supernet_networks
 
   # Exécuter la commande initiale
   case current_command
@@ -442,6 +547,8 @@ proc interactive_loop(command: string, initial_arg1: string, initial_arg2: strin
     run_hosts(arg1, parseInt(arg2), parseInt(arg3))
   of "vlsm":
     run_vlsm(arg1, requests)
+  of "supernet":
+    run_supernet(networks)
   else:
     return
 
@@ -486,6 +593,10 @@ proc interactive_loop(command: string, initial_arg1: string, initial_arg2: strin
         requests = prompt_vlsm_requests()
         if arg1.len > 0 and requests.len > 0:
           run_vlsm(arg1, requests)
+      of "supernet":
+        networks = prompt_supernet_networks()
+        if networks.len >= 2:
+          run_supernet(networks)
       else:
         discard
 
@@ -533,6 +644,11 @@ proc interactive_loop(command: string, initial_arg1: string, initial_arg2: strin
         requests = prompt_vlsm_requests()
         if arg1.len > 0 and requests.len > 0:
           run_vlsm(arg1, requests)
+      of "8":
+        current_command = "supernet"
+        networks = prompt_supernet_networks()
+        if networks.len >= 2:
+          run_supernet(networks)
       of "q":
         echo ""
         echo "  ", DIM, "Au revoir!", RESET
@@ -605,6 +721,13 @@ when isMainModule:
         if requests.len > 0:
           interactive_loop("vlsm", opts.cidr, "", "", requests)
 
+    command("supernet"):
+      help("Agrege plusieurs reseaux en un super-reseau (route summarization)")
+      run:
+        let networks = prompt_supernet_networks()
+        if networks.len >= 2:
+          interactive_loop("supernet", "", "", "", @[], networks)
+
   try:
     if commandLineParams().len == 0:
       echo p.help
@@ -618,7 +741,7 @@ when isMainModule:
     echo "ERREUR: ", e.msg
     echo ""
     echo "Usage: netprobe <commande> <argument>"
-    echo "Commandes: validate, classify, info, contains, split, hosts, vlsm"
+    echo "Commandes: validate, classify, info, contains, split, hosts, vlsm, supernet"
     echo ""
     echo "Utilisez 'netprobe --help' pour plus d'informations"
     quit(1)

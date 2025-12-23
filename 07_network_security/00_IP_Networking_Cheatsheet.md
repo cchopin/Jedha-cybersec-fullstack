@@ -1,4 +1,4 @@
-# Cheatsheet IPv4 - Version Simple
+# Cheatsheet IPv4 - Version complète
 
 ## C'est quoi une adresse IP ?
 
@@ -42,14 +42,14 @@ Une adresse IP = 4 octets = 32 bits au total.
 
 ## C'est quoi le /XX (CIDR) ?
 
-Le /XX dit combien de bits sont pour le **RÉSEAU**.
+Le /XX dit combien de bits sont pour le **réseau**.
 
 ```
 /12 = les 12 premiers bits sont le réseau
 /24 = les 24 premiers bits sont le réseau
 ```
 
-Le reste des bits = les **MACHINES** (hôtes) dans ce réseau.
+Le reste des bits = les **machines** (hôtes) dans ce réseau.
 
 ---
 
@@ -74,7 +74,7 @@ Le reste des bits = les **MACHINES** (hôtes) dans ce réseau.
 
 ---
 
-## LA TABLE MAGIQUE 
+## La table magique 
 
 Cette table te dit la **taille du bloc** selon le nombre de bits :
 
@@ -93,13 +93,14 @@ Bits dans l'octet │ Taille du bloc │ On compte de X en X
 ```
 
 **Astuce :** Bloc = 2^(8 - bits)
+
 ---
 
-## TROUVER L'ADRESSE RÉSEAU 
+## Trouver l'adresse réseau 
 
 ### Exemple : 185.161.233.68/12
 
-**ÉTAPE 1 : Où coupe le /12 ?**
+**Étape 1 : Où coupe le /12 ?**
 
 ```
 /12 = 12 bits
@@ -110,7 +111,7 @@ Octet 3 : 0 bits   → devient 0
 Octet 4 : 0 bits   → devient 0
 ```
 
-**ÉTAPE 2 : Que faire avec chaque octet ?**
+**Étape 2 : Que faire avec chaque octet ?**
 
 ```
 185  .  161  .  233  .  68
@@ -120,7 +121,7 @@ Octet 4 : 0 bits   → devient 0
 GARDE   CALCULE  → 0   → 0
 ```
 
-**ÉTAPE 3 : Calculer l'octet 2**
+**Étape 3 : Calculer l'octet 2**
 
 4 bits = bloc de **16** (voir la table magique)
 
@@ -136,7 +137,7 @@ On compte de 16 en 16 pour trouver où tombe 161 :
 
 161 est dans le bloc qui commence à **160**.
 
-**ÉTAPE 4 : Assembler**
+**Étape 4 : Assembler**
 
 ```
 185.160.0.0
@@ -144,7 +145,7 @@ On compte de 16 en 16 pour trouver où tombe 161 :
 
 ---
 
-## FORMULE RAPIDE POUR TROUVER LE DÉBUT DU BLOC
+## Formule rapide pour trouver le début du bloc
 
 ```
 Début du bloc = (valeur ÷ taille) × taille
@@ -168,7 +169,7 @@ On garde que 7
 
 ---
 
-## TROUVER L'ADRESSE BROADCAST
+## Trouver l'adresse broadcast
 
 Le broadcast c'est la **dernière adresse** du bloc (juste avant le bloc suivant).
 
@@ -190,7 +191,7 @@ Broadcast : 185.175.255.255
 
 ---
 
-## EXEMPLES COMPLETS
+## Exemples complets
 
 ### Exemple 1 : 192.168.45.130/24
 
@@ -258,7 +259,7 @@ Broadcast : 172.16.85.223  (192 + 32 - 1 = 223)
 
 ---
 
-## VÉRIFIER SI UNE IP APPARTIENT À UN RÉSEAU
+## Vérifier si une IP appartient à un réseau
 
 **Question : 192.168.1.130 est dans 192.168.1.0/25 ?**
 
@@ -290,7 +291,7 @@ Pas le même bloc → NON, l'IP n'appartient pas au réseau.
 
 ---
 
-## COMBIEN D'HÔTES DANS UN RÉSEAU ?
+## Combien d'hôtes dans un réseau ?
 
 **Formule :**
 ```
@@ -315,18 +316,29 @@ On enlève 2 parce que :
 
 ---
 
-## DIVISER UN RÉSEAU EN SOUS-RÉSEAUX
+## Diviser un réseau en sous-réseaux (subnetting)
 
 **Question : Diviser 192.168.1.0/24 en 4 sous-réseaux**
 
-**Étape 1 : Combien de bits pour 4 ?**
+**Étape 1 : Combien de bits pour faire X sous-réseaux ?**
+
+On "emprunte" des bits aux hôtes pour créer des sous-réseaux.
+
 ```
-2 bits = 4 possibilités (2×2 = 4)
+Bits empruntés │ Sous-réseaux créés
+───────────────┼────────────────────
+      1        │   2
+      2        │   4
+      3        │   8
+      4        │  16
+      5        │  32
 ```
+
+Pour 4 sous-réseaux → 2 bits (2² = 4)
 
 **Étape 2 : Nouveau préfixe**
 ```
-/24 + 2 = /26
+/24 + 2 bits empruntés = /26
 ```
 
 **Étape 3 : Taille des nouveaux blocs**
@@ -337,15 +349,98 @@ On enlève 2 parce que :
 
 **Étape 4 : Lister les sous-réseaux**
 ```
-Sous-réseau 1 : 192.168.1.0    (0 à 63)
-Sous-réseau 2 : 192.168.1.64   (64 à 127)
-Sous-réseau 3 : 192.168.1.128  (128 à 191)
-Sous-réseau 4 : 192.168.1.192  (192 à 255)
+Sous-réseau 1 : 192.168.1.0/26    (0 à 63)     → 62 hôtes
+Sous-réseau 2 : 192.168.1.64/26   (64 à 127)   → 62 hôtes
+Sous-réseau 3 : 192.168.1.128/26  (128 à 191)  → 62 hôtes
+Sous-réseau 4 : 192.168.1.192/26  (192 à 255)  → 62 hôtes
 ```
 
 ---
 
-## CLASSES HISTORIQUES (pour la culture)
+## Regrouper des réseaux en un seul (supernetting)
+
+C'est l'inverse du subnetting : on fusionne plusieurs petits réseaux en un seul plus grand.
+
+**Question : Regrouper ces 4 réseaux en un supernet**
+```
+192.168.44.0/24
+192.168.45.0/24
+192.168.46.0/24
+192.168.47.0/24
+```
+
+**Étape 1 : Combien de réseaux à regrouper ?**
+
+On "rend" des bits au réseau pour fusionner.
+
+```
+Réseaux à fusionner │ Bits à rendre
+────────────────────┼───────────────
+        2           │      1
+        4           │      2
+        8           │      3
+       16           │      4
+       32           │      5
+```
+
+4 réseaux = 2² → 2 bits à rendre
+
+**Étape 2 : Nouveau préfixe**
+```
+/24 - 2 bits rendus = /22
+```
+
+**Étape 3 : Vérifier que les réseaux sont contigus**
+
+Avec /22, les blocs sont de 4 sur le 3e octet.
+
+Le premier réseau (44) doit être au début d'un bloc :
+```
+44 ÷ 4 = 11 pile → OK, 44 est bien le début d'un bloc
+```
+
+Le bloc 44 couvre : 44, 45, 46, 47 → ça correspond !
+
+**Réponse :**
+```
+Supernet : 192.168.44.0/22
+```
+
+---
+
+### Exemple supernetting avec 8 réseaux
+
+**Question : Regrouper ces 8 réseaux**
+```
+172.16.32.0/24  à  172.16.39.0/24
+```
+
+**Étape 1 :** 8 réseaux = 2³ → 3 bits à rendre
+
+**Étape 2 :** /24 - 3 = /21
+
+**Étape 3 :** Avec /21, blocs de 8. Le premier réseau (32) :
+```
+32 ÷ 8 = 4 pile → OK
+```
+
+**Réponse :**
+```
+Supernet : 172.16.32.0/21
+```
+
+---
+
+## Récap subnetting vs supernetting
+
+| Action | Opération | Ce qui change |
+|--------|-----------|---------------|
+| Subnetting (découper) | On emprunte des bits | Le masque augmente (/24 → /26) |
+| Supernetting (regrouper) | On rend des bits | Le masque diminue (/24 → /22) |
+
+---
+
+## Classes historiques (pour la culture)
 
 Avant, on n'utilisait pas /XX. On avait des "classes" :
 
@@ -362,7 +457,7 @@ Avant, on n'utilisait pas /XX. On avait des "classes" :
 
 ---
 
-## ADRESSES SPÉCIALES À CONNAÎTRE
+## Adresses spéciales à connaître
 
 | Plage | C'est quoi ? |
 |-------|--------------|
@@ -374,7 +469,7 @@ Avant, on n'utilisait pas /XX. On avait des "classes" :
 
 ---
 
-## CHECKLIST POUR CHAQUE EXERCICE
+## Checklist pour chaque exercice
 
 ### Trouver l'adresse réseau :
 
@@ -402,11 +497,30 @@ Avant, on n'utilisait pas /XX. On avait des "classes" :
 □ Pareil = OUI, Différent = NON
 ```
 
+### Diviser en sous-réseaux (subnetting) :
+
+```
+□ Combien de sous-réseaux ? → Combien de bits emprunter ?
+□ Nouveau masque = ancien + bits empruntés
+□ Calculer la nouvelle taille de bloc
+□ Lister les sous-réseaux de X en X
+```
+
+### Regrouper des réseaux (supernetting) :
+
+```
+□ Combien de réseaux à fusionner ? → Combien de bits rendre ?
+□ Nouveau masque = ancien - bits rendus
+□ Calculer la nouvelle taille de bloc
+□ Vérifier que le 1er réseau est au début d'un bloc (divisible par taille)
+□ Vérifier que tous les réseaux sont contigus
+```
+
 ---
 
-## EXERCICES POUR S'ENTRAÎNER
+## Exercices pour s'entraîner
 
-**1. Trouve l'adresse réseau :**
+### 1. Trouve l'adresse réseau :
 
 - 10.200.50.100/8
 - 172.20.100.200/16
@@ -414,31 +528,53 @@ Avant, on n'utilisait pas /XX. On avait des "classes" :
 - 10.50.200.75/12
 - 172.16.130.50/20
 
-**2. Trouve le broadcast :**
+### 2. Trouve le broadcast :
 
 - 192.168.1.0/26
 - 10.0.0.0/12
+- 172.20.53.180/22
 
-**3. L'IP appartient-elle au réseau ?**
+### 3. L'IP appartient-elle au réseau ?
 
 - 192.168.1.200 dans 192.168.1.0/25 ?
 - 10.10.50.100 dans 10.10.48.0/22 ?
 
+### 4. Divise en sous-réseaux :
+
+- 10.0.0.0/8 en 16 sous-réseaux
+- 192.168.50.0/24 en 8 sous-réseaux
+
+### 5. Trouve le supernet :
+
+- 10.20.16.0/24 à 10.20.19.0/24 (4 réseaux)
+- 172.16.32.0/24 à 172.16.39.0/24 (8 réseaux)
+
 ---
 
-## RÉPONSES
+## Réponses
 
-**1. Adresses réseau :**
+### 1. Adresses réseau :
 - 10.200.50.100/8 → 10.0.0.0
 - 172.20.100.200/16 → 172.20.0.0
 - 192.168.10.150/24 → 192.168.10.0
 - 10.50.200.75/12 → 10.48.0.0 (50÷16=3, 3×16=48)
 - 172.16.130.50/20 → 172.16.128.0 (130÷16=8, 8×16=128)
 
-**2. Broadcasts :**
+### 2. Broadcasts :
 - 192.168.1.0/26 → 192.168.1.63 (bloc 64, 0+64-1=63)
 - 10.0.0.0/12 → 10.15.255.255 (bloc 16, 0+16-1=15)
+- 172.20.53.180/22 → 172.20.55.255 (bloc 4, 52+4-1=55)
 
-**3. Appartenance :**
+### 3. Appartenance :
 - 192.168.1.200 dans /25 ? Bloc=128. 200 est dans 128-255. Réseau=192.168.1.128 ≠ .0 → **NON**
 - 10.10.50.100 dans 10.10.48.0/22 ? Bloc=4. 50÷4=12, 12×4=48. Réseau=10.10.48.0 → **OUI**
+
+### 4. Sous-réseaux :
+- 10.0.0.0/8 en 16 → 4 bits empruntés → /12, blocs de 16 sur octet 2
+  - 10.0.0.0/12, 10.16.0.0/12, 10.32.0.0/12... jusqu'à 10.240.0.0/12
+- 192.168.50.0/24 en 8 → 3 bits empruntés → /27, blocs de 32
+  - 192.168.50.0/27, .32/27, .64/27, .96/27, .128/27, .160/27, .192/27, .224/27
+
+### 5. Supernets :
+- 10.20.16.0/24 à .19 → 4 réseaux = 2 bits → /22. 16÷4=4 pile → **10.20.16.0/22**
+- 172.16.32.0/24 à .39 → 8 réseaux = 3 bits → /21. 32÷8=4 pile → **172.16.32.0/21**

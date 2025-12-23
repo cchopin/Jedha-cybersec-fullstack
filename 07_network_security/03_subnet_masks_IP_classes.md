@@ -94,7 +94,7 @@ Valeur   : 128  64  32  16  8   4   2   1
 Calcul   : 128 + 0 + 32 + 0 + 8 + 0 + 2 + 0 = 170
 ```
 
-#### Valeurs courantes à mémoriser
+#### Valeurs courantes
 
 | Décimal | Binaire | Remarque |
 |---------|---------|----------|
@@ -685,7 +685,7 @@ Sous-réseaux :
 
 ## Tableaux de référence rapide
 
-### Puissances de 2 (à mémoriser)
+### Puissances de 2
 
 | 2^n | Valeur |
 |-----|--------|
@@ -730,6 +730,39 @@ Sous-réseaux :
 ---
 
 ## Ressources
+
+### Outil local : NetProbe
+
+L'outil NetProbe permet de valider rapidement les calculs de subnetting :
+
+```bash
+./NetProbe info 192.168.1.100/26
+```
+
+Sortie :
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                            ANALYSE IPv4                                      ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Adresse saisie   : 192.168.1.100/26                                          ║
+║ Type             : Privée (RFC 1918)                                         ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ INFORMATIONS RÉSEAU                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Adresse réseau   : 192.168.1.64                                              ║
+║ Masque           : 255.255.255.192                                           ║
+║ Broadcast        : 192.168.1.127                                             ║
+║ Plage hôtes      : 192.168.1.65 - 192.168.1.126                              ║
+║ Nb hôtes         : 62                                                        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+Commandes disponibles :
+- `./NetProbe info <ip/cidr>` : Informations complètes du réseau
+- `./NetProbe classify <ip>` : Classification (public/privé, classe, type)
+- `./NetProbe validate <ip>` : Validation du format
+- `./NetProbe vlsm <réseau>` : Calcul VLSM interactif
+- `./NetProbe supernet <réseaux...>` : Agrégation de routes
 
 ### Outils en ligne
 
