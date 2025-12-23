@@ -1,0 +1,140 @@
+---
+# =============================================================================
+# Exercice 3: Dynamic Trunking Protocol (DTP)
+# =============================================================================
+# Objectif: Comprendre les différents modes DTP et leur négociation
+#
+# Modes DTP:
+#   - trunk             : Force trunk, envoie des paquets DTP
+#   - access            : Force access, pas de trunk possible
+#   - dynamic auto      : Passif, devient trunk si l'autre initie
+#   - dynamic desirable : Actif, tente de négocier un trunk
+#   - nonegotiate       : Désactive DTP (sécurité)
+#
+# Matrice de négociation DTP:
+#   +-----------------+--------+--------+---------------+-------------------+
+#   | SW1 \ SW2       | trunk  | access | dynamic auto  | dynamic desirable |
+#   +-----------------+--------+--------+---------------+-------------------+
+#   | trunk           | TRUNK  | -      | TRUNK         | TRUNK             |
+#   | access          | -      | ACCESS | ACCESS        | ACCESS            |
+#   | dynamic auto    | TRUNK  | ACCESS | ACCESS        | TRUNK             |
+#   | dynamic desirable| TRUNK | ACCESS | TRUNK         | TRUNK             |
+#   +-----------------+--------+--------+---------------+-------------------+
+# =============================================================================
+
+- name: "Exercice DTP - Test des modes de négociation"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  vars:
+    # Scénario à tester (modifier pour changer le test)
+    scenario: "trunk_trunk"  # Options: trunk_trunk, auto_auto, auto_desirable, desirable_desirable
+
+    scenarios:
+      # Scénario 1: Les deux en trunk (forcé)
+      trunk_trunk:
+        sw1_mode: "trunk"
+        sw2_mode: "trunk"
+        expected: "trunk"
+
+      # Scénario 2: Les deux en dynamic auto (pas de trunk!)
+      auto_auto:
+        sw1_mode: "dynamic auto"
+        sw2_mode: "dynamic auto"
+        expected: "access"
+
+      # Scénario 3: Auto + Desirable (trunk)
+      auto_desirable:
+        sw1_mode: "dynamic auto"
+        sw2_mode: "dynamic desirable"
+        expected: "trunk"
+
+      # Scénario 4: Les deux en desirable (trunk)
+      desirable_desirable:
+        sw1_mode: "dynamic desirable"
+        sw2_mode: "dynamic desirable"
+        expected: "trunk"
+
+  tasks:
+    - name: "Afficher le scénario testé"
+      debug:
+        msg: |
+          ============================================
+          TEST DTP: {{ scenario }}
+          ============================================
+          SW1 mode: {{ scenarios[scenario].sw1_mode }}
+          SW2 mode: {{ scenarios[scenario].sw2_mode }}
+          Résultat attendu: {{ scenarios[scenario].expected }}
+          ============================================
+
+    - name: "Configurer SW1 en mode {{ scenarios[scenario].sw1_mode }}"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --commands "enable;configure terminal;interface {{ trunk_interface }};switchport trunk encapsulation dot1q;switchport mode {{ scenarios[scenario].sw1_mode }};end"
+      args:
+        executable: python3
+
+    - name: "Configurer SW2 en mode {{ scenarios[scenario].sw2_mode }}"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw2_console_port }}
+        --commands "enable;configure terminal;interface {{ trunk_interface }};switchport trunk encapsulation dot1q;switchport mode {{ scenarios[scenario].sw2_mode }};end"
+      args:
+        executable: python3
+
+    - name: "Attendre la négociation DTP"
+      pause:
+        seconds: 5
+        prompt: "Attente de la négociation DTP..."
+
+    - name: "Vérifier le statut DTP sur SW1"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show interfaces {{ trunk_interface }} switchport"
+      args:
+        executable: python3
+      register: sw1_status
+
+    - name: "Afficher résultat SW1"
+      debug:
+        var: sw1_status.stdout_lines
+
+    - name: "Vérifier le trunk sur SW1"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show interfaces trunk"
+      args:
+        executable: python3
+      register: sw1_trunk
+
+    - name: "Afficher trunks actifs"
+      debug:
+        var: sw1_trunk.stdout_lines
+
+    - name: "Résumé du test"
+      debug:
+        msg: |
+          ============================================
+          RÉSULTAT DU TEST DTP
+          ============================================
+          Scénario: {{ scenario }}
+          SW1: {{ scenarios[scenario].sw1_mode }}
+          SW2: {{ scenarios[scenario].sw2_mode }}
+
+          Vérifiez dans la sortie ci-dessus si:
+          - "Operational Mode" correspond à {{ scenarios[scenario].expected }}
+          - Le trunk apparaît dans "show interfaces trunk"
+
+          Pour tester un autre scénario, modifiez la variable 'scenario'
+          ou lancez avec: -e "scenario=auto_desirable"
+          ============================================

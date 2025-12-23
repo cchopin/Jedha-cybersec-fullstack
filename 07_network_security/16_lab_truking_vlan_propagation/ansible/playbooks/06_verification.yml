@@ -1,0 +1,186 @@
+---
+# =============================================================================
+# Exercice 6: Vérification et Commandes de Diagnostic
+# =============================================================================
+# Objectif: Maîtriser toutes les commandes de vérification trunk/VLAN
+# =============================================================================
+
+- name: "Exercice Vérification - Toutes les commandes de diagnostic"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    - name: "=== COMMANDES DE VÉRIFICATION ==="
+      debug:
+        msg: |
+          Ce playbook exécute toutes les commandes de diagnostic
+          importantes pour le CCNA.
+
+    # =========================================================================
+    # 1. show vlan brief
+    # =========================================================================
+    - name: "1. show vlan brief - Liste tous les VLANs"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show vlan brief"
+      args:
+        executable: python3
+      register: cmd_vlan_brief
+
+    - name: "Résultat: show vlan brief"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show vlan brief
+          ============================================
+          UTILITÉ: Liste tous les VLANs et leurs ports assignés
+          {{ cmd_vlan_brief.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 2. show interfaces trunk
+    # =========================================================================
+    - name: "2. show interfaces trunk - Affiche les trunks actifs"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show interfaces trunk"
+      args:
+        executable: python3
+      register: cmd_trunk
+
+    - name: "Résultat: show interfaces trunk"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show interfaces trunk
+          ============================================
+          UTILITÉ: Affiche les ports en mode trunk, native VLAN,
+                   VLANs autorisés et VLANs actifs
+          {{ cmd_trunk.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 3. show interfaces switchport
+    # =========================================================================
+    - name: "3. show interfaces switchport - Détails d'un port"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show interfaces {{ trunk_interface }} switchport"
+      args:
+        executable: python3
+      register: cmd_switchport
+
+    - name: "Résultat: show interfaces switchport"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show interfaces {{ trunk_interface }} switchport
+          ============================================
+          UTILITÉ: Détails complets d'un port (mode, négociation, VLANs)
+          {{ cmd_switchport.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 4. show spanning-tree
+    # =========================================================================
+    - name: "4. show spanning-tree - État STP"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show spanning-tree"
+      args:
+        executable: python3
+      register: cmd_stp
+
+    - name: "Résultat: show spanning-tree"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show spanning-tree
+          ============================================
+          UTILITÉ: État du Spanning Tree Protocol par VLAN
+                   Identifie Root Bridge, port states, etc.
+          {{ cmd_stp.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 5. show dtp interface
+    # =========================================================================
+    - name: "5. show dtp interface - État DTP"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show dtp interface {{ trunk_interface }}"
+      args:
+        executable: python3
+      register: cmd_dtp
+
+    - name: "Résultat: show dtp interface"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show dtp interface {{ trunk_interface }}
+          ============================================
+          UTILITÉ: État de la négociation DTP sur l'interface
+          {{ cmd_dtp.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 6. show running-config interface
+    # =========================================================================
+    - name: "6. show running-config interface - Config actuelle"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show running-config interface {{ trunk_interface }}"
+      args:
+        executable: python3
+      register: cmd_running
+
+    - name: "Résultat: show running-config interface"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show running-config interface {{ trunk_interface }}
+          ============================================
+          UTILITÉ: Configuration actuelle de l'interface
+          {{ cmd_running.stdout }}
+          ============================================
+
+    - name: "=== RÉSUMÉ DES COMMANDES CCNA ==="
+      debug:
+        msg: |
+          ============================================
+          COMMANDES À RETENIR POUR LE CCNA
+          ============================================
+
+          VLANS:
+            show vlan brief              - Liste des VLANs
+            show vlan id <id>            - Détails d'un VLAN
+
+          TRUNK:
+            show interfaces trunk        - Trunks actifs
+            show interfaces <if> switchport - Détails d'un port
+            show dtp interface <if>      - État DTP
+
+          STP:
+            show spanning-tree           - État STP global
+            show spanning-tree vlan <id> - STP pour un VLAN
+
+          CONFIG:
+            show running-config          - Config complète
+            show running-config interface <if> - Config d'une interface
+
+          ============================================

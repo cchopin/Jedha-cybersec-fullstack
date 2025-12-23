@@ -1,0 +1,166 @@
+---
+# =============================================================================
+# Exercice 5: Sécurisation des Trunk Ports
+# =============================================================================
+# Objectif: Appliquer les best practices de sécurité sur les ports trunk
+#
+# Menaces:
+#   - VLAN Hopping (double tagging attack)
+#   - DTP spoofing (négociation trunk non autorisée)
+#   - MAC flooding
+#
+# Best Practices:
+#   1. Désactiver DTP (nonegotiate)
+#   2. Changer le Native VLAN (pas VLAN 1)
+#   3. Limiter les VLANs autorisés
+#   4. Activer port-security si applicable
+#   5. Ne pas utiliser VLAN 1 pour le trafic utilisateur
+# =============================================================================
+
+- name: "Exercice Sécurité - Hardening des ports trunk"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  vars:
+    # VLAN dédié pour le native (pas VLAN 1!)
+    secure_native_vlan: 999
+
+    # VLANs autorisés (uniquement ceux nécessaires)
+    secure_allowed_vlans: "10,20,30"
+
+  tasks:
+    - name: "Info - Sécurisation"
+      debug:
+        msg: |
+          ============================================
+          SÉCURISATION DES PORTS TRUNK
+          ============================================
+          Best practices appliquées:
+          1. switchport nonegotiate (désactive DTP)
+          2. Native VLAN {{ secure_native_vlan }} (pas VLAN 1)
+          3. VLANs limités à {{ secure_allowed_vlans }}
+          4. Mode trunk explicite (pas de négociation)
+          ============================================
+
+    # =========================================================================
+    # Étape 1: Créer le VLAN natif sécurisé
+    # =========================================================================
+    - name: "Créer le VLAN natif sécurisé sur SW1"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --commands "enable;configure terminal;vlan {{ secure_native_vlan }};name NATIVE_UNUSED;exit"
+      args:
+        executable: python3
+
+    - name: "Créer le VLAN natif sécurisé sur SW2"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw2_console_port }}
+        --commands "enable;configure terminal;vlan {{ secure_native_vlan }};name NATIVE_UNUSED;exit"
+      args:
+        executable: python3
+
+    # =========================================================================
+    # Étape 2: Appliquer le hardening sur SW1
+    # =========================================================================
+    - name: "Hardening SW1 - Interface trunk"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --commands "enable;configure terminal;interface {{ trunk_interface }};switchport trunk encapsulation dot1q;switchport mode trunk;switchport nonegotiate;switchport trunk native vlan {{ secure_native_vlan }};switchport trunk allowed vlan {{ secure_allowed_vlans }};end;write memory"
+      args:
+        executable: python3
+      register: sw1_hardening
+
+    - name: "Afficher résultat SW1"
+      debug:
+        var: sw1_hardening.stdout_lines
+
+    # =========================================================================
+    # Étape 3: Appliquer le hardening sur SW2
+    # =========================================================================
+    - name: "Hardening SW2 - Interface trunk"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw2_console_port }}
+        --commands "enable;configure terminal;interface {{ trunk_interface }};switchport trunk encapsulation dot1q;switchport mode trunk;switchport nonegotiate;switchport trunk native vlan {{ secure_native_vlan }};switchport trunk allowed vlan {{ secure_allowed_vlans }};end;write memory"
+      args:
+        executable: python3
+      register: sw2_hardening
+
+    - name: "Afficher résultat SW2"
+      debug:
+        var: sw2_hardening.stdout_lines
+
+    # =========================================================================
+    # Étape 4: Vérification de la sécurisation
+    # =========================================================================
+    - name: "Vérifier configuration SW1"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show interfaces {{ trunk_interface }} switchport"
+      args:
+        executable: python3
+      register: sw1_verify
+
+    - name: "Afficher vérification SW1"
+      debug:
+        msg: |
+          ============================================
+          VÉRIFICATION SÉCURITÉ SW1
+          ============================================
+          {{ sw1_verify.stdout }}
+
+          POINTS À VÉRIFIER:
+          ✓ Administrative Mode: trunk
+          ✓ Negotiation of Trunking: Off (nonegotiate)
+          ✓ Access Mode VLAN: aucun
+          ✓ Trunking Native Mode VLAN: {{ secure_native_vlan }}
+          ✓ Trunking VLANs Enabled: {{ secure_allowed_vlans }}
+          ============================================
+
+    - name: "Vérifier trunk actif"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show interfaces trunk"
+      args:
+        executable: python3
+      register: trunk_verify
+
+    - name: "Afficher trunks"
+      debug:
+        var: trunk_verify.stdout_lines
+
+    - name: "Résumé sécurité"
+      debug:
+        msg: |
+          ============================================
+          SÉCURISATION TERMINÉE
+          ============================================
+
+          Configuration appliquée sur SW1 et SW2:
+
+          interface {{ trunk_interface }}
+           switchport trunk encapsulation dot1q
+           switchport mode trunk
+           switchport nonegotiate              ← DTP désactivé
+           switchport trunk native vlan {{ secure_native_vlan }}  ← Pas VLAN 1
+           switchport trunk allowed vlan {{ secure_allowed_vlans }}
+
+          PROTECTION CONTRE:
+          ✓ VLAN Hopping (native VLAN isolé)
+          ✓ DTP Spoofing (nonegotiate)
+          ✓ Propagation VLANs non autorisés
+          ============================================

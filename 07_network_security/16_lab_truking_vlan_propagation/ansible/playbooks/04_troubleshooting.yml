@@ -1,0 +1,227 @@
+---
+# =============================================================================
+# Exercice 4: Troubleshooting Trunking
+# =============================================================================
+# Objectif: Diagnostiquer et corriger les problèmes courants de trunking
+#
+# Problèmes simulés:
+#   1. Native VLAN mismatch (SW1: VLAN 99, SW2: VLAN 1)
+#   2. Trunk allowed VLANs mismatch
+#   3. Encapsulation mismatch
+#
+# Commandes de diagnostic:
+#   - show interfaces trunk
+#   - show interfaces <if> switchport
+#   - show vlan brief
+#   - show spanning-tree
+# =============================================================================
+
+- name: "Exercice Troubleshooting - Créer et diagnostiquer des problèmes"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  vars:
+    # Type de problème à simuler
+    problem_type: "native_vlan_mismatch"  # Options: native_vlan_mismatch, allowed_vlan_mismatch, fix_all
+
+  tasks:
+    # =========================================================================
+    # PARTIE 1: Créer le problème (Native VLAN Mismatch)
+    # =========================================================================
+    - name: "PROBLÈME: Créer un Native VLAN mismatch"
+      when: problem_type == "native_vlan_mismatch"
+      block:
+        - name: "Info - Création du problème"
+          debug:
+            msg: |
+              ============================================
+              CRÉATION DU PROBLÈME: Native VLAN Mismatch
+              ============================================
+              SW1: Native VLAN 99
+              SW2: Native VLAN 1 (défaut)
+
+              Ce mismatch cause:
+              - Erreurs CDP/STP
+              - Traffic non tagué mal routé
+              - Messages d'erreur dans les logs
+              ============================================
+
+        - name: "Configurer SW1 avec Native VLAN 99"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;configure terminal;interface {{ trunk_interface }};switchport trunk native vlan 99;end"
+          args:
+            executable: python3
+
+        - name: "Configurer SW2 avec Native VLAN 1 (défaut)"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw2_console_port }}
+            --commands "enable;configure terminal;interface {{ trunk_interface }};switchport trunk native vlan 1;end"
+          args:
+            executable: python3
+
+        - name: "Attendre propagation"
+          pause:
+            seconds: 3
+
+        - name: "DIAGNOSTIC: Vérifier le mismatch sur SW1"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show interfaces trunk"
+          args:
+            executable: python3
+          register: diag_sw1
+
+        - name: "Afficher diagnostic SW1"
+          debug:
+            msg: |
+              ============================================
+              DIAGNOSTIC SW1
+              ============================================
+              {{ diag_sw1.stdout }}
+
+              CHERCHEZ:
+              - Native VLAN: devrait afficher 99
+              - Messages d'erreur CDP native vlan mismatch
+              ============================================
+
+        - name: "DIAGNOSTIC: Vérifier le mismatch sur SW2"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw2_console_port }}
+            --show "show interfaces trunk"
+          args:
+            executable: python3
+          register: diag_sw2
+
+        - name: "Afficher diagnostic SW2"
+          debug:
+            msg: |
+              ============================================
+              DIAGNOSTIC SW2
+              ============================================
+              {{ diag_sw2.stdout }}
+
+              CHERCHEZ:
+              - Native VLAN: devrait afficher 1
+              - Le mismatch avec SW1
+              ============================================
+
+    # =========================================================================
+    # PARTIE 2: Créer le problème (Allowed VLAN Mismatch)
+    # =========================================================================
+    - name: "PROBLÈME: Créer un Allowed VLAN mismatch"
+      when: problem_type == "allowed_vlan_mismatch"
+      block:
+        - name: "Info - Création du problème"
+          debug:
+            msg: |
+              ============================================
+              CRÉATION DU PROBLÈME: Allowed VLAN Mismatch
+              ============================================
+              SW1: VLANs autorisés 10,20,30
+              SW2: VLANs autorisés 10,20 (manque 30!)
+
+              Résultat: VLAN 30 ne traverse pas le trunk
+              ============================================
+
+        - name: "Configurer SW1 avec VLANs 10,20,30"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;configure terminal;interface {{ trunk_interface }};switchport trunk allowed vlan 10,20,30;end"
+          args:
+            executable: python3
+
+        - name: "Configurer SW2 avec VLANs 10,20 seulement"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw2_console_port }}
+            --commands "enable;configure terminal;interface {{ trunk_interface }};switchport trunk allowed vlan 10,20;end"
+          args:
+            executable: python3
+
+        - name: "DIAGNOSTIC: Comparer les VLANs autorisés"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show interfaces trunk"
+          args:
+            executable: python3
+          register: trunk_info
+
+        - name: "Afficher le mismatch"
+          debug:
+            msg: |
+              {{ trunk_info.stdout }}
+
+              PROBLÈME IDENTIFIÉ:
+              - SW1 autorise VLAN 30, SW2 non
+              - Le traffic VLAN 30 sera bloqué
+
+    # =========================================================================
+    # PARTIE 3: Corriger tous les problèmes
+    # =========================================================================
+    - name: "CORRECTION: Réparer tous les problèmes"
+      when: problem_type == "fix_all"
+      block:
+        - name: "Info - Correction"
+          debug:
+            msg: |
+              ============================================
+              CORRECTION DE TOUS LES PROBLÈMES
+              ============================================
+              - Native VLAN: 99 sur les deux switches
+              - Allowed VLANs: 10,20,30 sur les deux
+              - Mode: trunk forcé
+              ============================================
+
+        - name: "Corriger SW1"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;configure terminal;interface {{ trunk_interface }};switchport trunk encapsulation dot1q;switchport mode trunk;switchport trunk native vlan 99;switchport trunk allowed vlan 10,20,30;end;write memory"
+          args:
+            executable: python3
+
+        - name: "Corriger SW2"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw2_console_port }}
+            --commands "enable;configure terminal;interface {{ trunk_interface }};switchport trunk encapsulation dot1q;switchport mode trunk;switchport trunk native vlan 99;switchport trunk allowed vlan 10,20,30;end;write memory"
+          args:
+            executable: python3
+
+        - name: "Vérification finale"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show interfaces trunk"
+          args:
+            executable: python3
+          register: final_check
+
+        - name: "Afficher configuration corrigée"
+          debug:
+            msg: |
+              ============================================
+              CONFIGURATION CORRIGÉE
+              ============================================
+              {{ final_check.stdout }}
+              ============================================

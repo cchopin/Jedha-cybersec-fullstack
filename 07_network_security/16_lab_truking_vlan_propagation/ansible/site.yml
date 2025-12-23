@@ -1,0 +1,17 @@
+---
+# =============================================================================
+# Lab Trunking et VLAN Propagation - Playbook Principal
+# =============================================================================
+# Usage:
+#   ansible-playbook -i inventory.yml site.yml
+#
+# Ce playbook exécute:
+#   1. Création de la topologie GNS3 (2 switches + trunk)
+#   2. Configuration des VLANs et du trunk
+# =============================================================================
+
+- name: "Étape 1: Création de la topologie GNS3"
+  import_playbook: playbooks/01_create_topology.yml
+
+- name: "Étape 2: Configuration des switches"
+  import_playbook: playbooks/02_configure_switches.yml

@@ -1,0 +1,113 @@
+---
+# Playbook pour créer la topologie GNS3 (2 switches + trunk link)
+- name: Créer la topologie VLAN/Trunk dans GNS3
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    # 1. Ouvrir le projet
+    - name: Ouvrir le projet GNS3
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+      register: project_info
+
+    # 2. Supprimer les nodes existants (clean start)
+    - name: Récupérer les nodes existants
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+      register: existing_nodes
+
+    - name: Supprimer les nodes existants
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes/{{ item.node_id }}"
+        method: DELETE
+        status_code: [200, 204]
+      loop: "{{ existing_nodes.json }}"
+      when: existing_nodes.json | length > 0
+
+    # 3. Créer les switches
+    - name: Créer les switches IOU L2
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_iou_l2_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ item.name }}"
+          x: "{{ item.x }}"
+          y: "{{ item.y }}"
+        status_code: [200, 201]
+      loop: "{{ switches }}"
+      register: created_switches
+
+    - name: Afficher les switches créés
+      debug:
+        msg: "Switch {{ item.json.name }} créé - Node ID: {{ item.json.node_id }} - Console port: {{ item.json.console }}"
+      loop: "{{ created_switches.results }}"
+
+    # 4. Sauvegarder les node_ids pour le link
+    - name: Set node IDs
+      set_fact:
+        sw1_node_id: "{{ created_switches.results[0].json.node_id }}"
+        sw2_node_id: "{{ created_switches.results[1].json.node_id }}"
+        sw1_console_port: "{{ created_switches.results[0].json.console }}"
+        sw2_console_port: "{{ created_switches.results[1].json.console }}"
+
+    # 5. Créer le lien trunk entre les switches (Ethernet0/0 <-> Ethernet0/0)
+    - name: Créer le lien trunk entre SW1 et SW2
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ sw1_node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ sw2_node_id }}"
+              port_number: 0
+        status_code: [200, 201]
+      register: trunk_link
+
+    - name: Afficher le lien créé
+      debug:
+        msg: "Lien trunk créé - Link ID: {{ trunk_link.json.link_id }}"
+
+    # 6. Démarrer les switches
+    - name: Démarrer tous les nodes
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: Attendre que les switches démarrent
+      pause:
+        seconds: 30
+        prompt: "Attente du boot des switches IOU..."
+
+    # 7. Sauvegarder les infos de connexion pour le prochain playbook
+    - name: Sauvegarder les infos des switches
+      copy:
+        content: |
+          sw1_console_port: {{ sw1_console_port }}
+          sw2_console_port: {{ sw2_console_port }}
+          sw1_node_id: {{ sw1_node_id }}
+          sw2_node_id: {{ sw2_node_id }}
+        dest: "{{ playbook_dir }}/../switch_info.yml"
+
+    - name: Résumé
+      debug:
+        msg: |
+          ========================================
+          TOPOLOGIE CRÉÉE AVEC SUCCÈS
+          ========================================
+          SW1 - Console: telnet 192.168.139.14 {{ sw1_console_port }}
+          SW2 - Console: telnet 192.168.139.14 {{ sw2_console_port }}
+
+          Lien trunk: SW1 (e0/0) <---> SW2 (e0/0)
+
+          Lancez maintenant: ansible-playbook -i inventory.yml 02_configure_switches.yml
+          ========================================
