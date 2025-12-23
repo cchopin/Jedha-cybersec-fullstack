@@ -1,378 +1,444 @@
-# Cheatsheet IPv4 - Calculs Reseau
+# Cheatsheet IPv4 - Version Simple
 
-## Table des puissances de 2
+## C'est quoi une adresse IP ?
 
-```
-Position:    8     7     6     5     4    3    2    1
-Valeur:    128    64    32    16     8    4    2    1
-```
-
-| Puissance | 2^0 | 2^1 | 2^2 | 2^3 | 2^4 | 2^5 | 2^6 | 2^7 | 2^8 | 2^9 | 2^10 |
-|-----------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|------|
-| Valeur    | 1   | 2   | 4   | 8   | 16  | 32  | 64  | 128 | 256 | 512 | 1024 |
-
----
-
-## Conversion Decimal → Binaire
-
-**Methode : Soustraire les puissances de 2**
-
-Pour convertir un nombre (0-255) en binaire sur 8 bits :
+Une adresse IP c'est 4 nombres séparés par des points :
 
 ```
-Valeurs: 128  64  32  16   8   4   2   1
+185.161.233.68
 ```
 
-**Exemple : 197 → binaire**
+Chaque nombre s'appelle un **octet** et va de 0 à 255.
 
 ```
-197 >= 128 ? OUI → 1, reste 197-128 = 69
- 69 >=  64 ? OUI → 1, reste  69-64  =  5
-  5 >=  32 ? NON → 0
-  5 >=  16 ? NON → 0
-  5 >=   8 ? NON → 0
-  5 >=   4 ? OUI → 1, reste   5-4   =  1
-  1 >=   2 ? NON → 0
-  1 >=   1 ? OUI → 1, reste   1-1   =  0
-
-Resultat: 11000101
-```
-
-**Exemple : 45 → binaire**
-
-```
-45 >= 128 ? NON → 0
-45 >=  64 ? NON → 0
-45 >=  32 ? OUI → 1, reste 45-32 = 13
-13 >=  16 ? NON → 0
-13 >=   8 ? OUI → 1, reste 13-8  =  5
- 5 >=   4 ? OUI → 1, reste  5-4  =  1
- 1 >=   2 ? NON → 0
- 1 >=   1 ? OUI → 1, reste  1-1  =  0
-
-Resultat: 00101101
+Octet 1 . Octet 2 . Octet 3 . Octet 4
+  185   .   161   .   233   .   68
 ```
 
 ---
 
-## Conversion Binaire → Decimal
+## C'est quoi un bit ?
 
-**Methode : Additionner les valeurs des bits a 1**
+Un bit c'est comme un interrupteur : soit **0** (éteint), soit **1** (allumé).
 
-```
-Binaire:   1  0  1  1  0  1  0  0
-Valeurs: 128 64 32 16  8  4  2  1
-           ↓     ↓  ↓     ↓
-         128 +  32+16 +  4      = 180
-```
-
-**Exemple : 11001010**
+Avec plusieurs bits, on peut compter :
 
 ```
-1   1   0   0   1   0   1   0
-128 64  32  16  8   4   2   1
-↓   ↓           ↓       ↓
-128+64        + 8   +   2   = 202
+1 bit  = 2 possibilités    (0, 1)
+2 bits = 4 possibilités    (00, 01, 10, 11)
+3 bits = 8 possibilités
+4 bits = 16 possibilités
+5 bits = 32 possibilités
+6 bits = 64 possibilités
+7 bits = 128 possibilités
+8 bits = 256 possibilités  (de 0 à 255)
+```
+
+**Chaque octet = 8 bits = 256 possibilités (0 à 255)**
+
+Une adresse IP = 4 octets = 32 bits au total.
+
+---
+
+## C'est quoi le /XX (CIDR) ?
+
+Le /XX dit combien de bits sont pour le **RÉSEAU**.
+
+```
+/12 = les 12 premiers bits sont le réseau
+/24 = les 24 premiers bits sont le réseau
+```
+
+Le reste des bits = les **MACHINES** (hôtes) dans ce réseau.
+
+---
+
+## Comment savoir quel octet calculer ?
+
+**Soustrais 8 jusqu'à tomber entre 0 et 8 :**
+
+```
+/12 :  12 - 8 = 4       → 4 bits dans l'octet 2
+/20 :  20 - 8 - 8 = 4   → 4 bits dans l'octet 3
+/27 :  27 - 8 - 8 - 8 = 3  → 3 bits dans l'octet 4
+```
+
+**Tableau récap :**
+
+| CIDR | Octet à calculer |
+|------|------------------|
+| /1 à /8 | Octet 1 |
+| /9 à /16 | Octet 2 |
+| /17 à /24 | Octet 3 |
+| /25 à /32 | Octet 4 |
+
+---
+
+## LA TABLE MAGIQUE 
+
+Cette table te dit la **taille du bloc** selon le nombre de bits :
+
+```
+Bits dans l'octet │ Taille du bloc │ On compte de X en X
+──────────────────┼────────────────┼─────────────────────
+        0         │      256       │  0, 256 (tout l'octet)
+        1         │      128       │  0, 128
+        2         │       64       │  0, 64, 128, 192
+        3         │       32       │  0, 32, 64, 96, 128...
+        4         │       16       │  0, 16, 32, 48, 64...
+        5         │        8       │  0, 8, 16, 24, 32...
+        6         │        4       │  0, 4, 8, 12, 16...
+        7         │        2       │  0, 2, 4, 6, 8...
+        8         │        1       │  0, 1, 2, 3, 4...
+```
+
+**Astuce :** Bloc = 2^(8 - bits)
+---
+
+## TROUVER L'ADRESSE RÉSEAU 
+
+### Exemple : 185.161.233.68/12
+
+**ÉTAPE 1 : Où coupe le /12 ?**
+
+```
+/12 = 12 bits
+
+Octet 1 : 8 bits   → 12 - 8 = 4 restants
+Octet 2 : 4 bits   → c'est ICI qu'on calcule
+Octet 3 : 0 bits   → devient 0
+Octet 4 : 0 bits   → devient 0
+```
+
+**ÉTAPE 2 : Que faire avec chaque octet ?**
+
+```
+185  .  161  .  233  .  68
+
+ ↓       ↓       ↓      ↓
+
+GARDE   CALCULE  → 0   → 0
+```
+
+**ÉTAPE 3 : Calculer l'octet 2**
+
+4 bits = bloc de **16** (voir la table magique)
+
+On compte de 16 en 16 pour trouver où tombe 161 :
+
+```
+0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192...
+                                      │         │
+                                      └── 161 ──┘
+                                      est entre
+                                      160 et 176
+```
+
+161 est dans le bloc qui commence à **160**.
+
+**ÉTAPE 4 : Assembler**
+
+```
+185.160.0.0
 ```
 
 ---
 
-## Table des masques CIDR
-
-| CIDR | Masque | Binaire (dernier octet) | Bloc | Hotes | Usage |
-|------|--------|-------------------------|------|-------|-------|
-| /32 | 255.255.255.255 | 11111111 | 1 | 1 | Host route |
-| /31 | 255.255.255.254 | 11111110 | 2 | 2 | Point-to-point |
-| /30 | 255.255.255.252 | 11111100 | 4 | 2 | Point-to-point |
-| /29 | 255.255.255.248 | 11111000 | 8 | 6 | Petit reseau |
-| /28 | 255.255.255.240 | 11110000 | 16 | 14 | Petit reseau |
-| /27 | 255.255.255.224 | 11100000 | 32 | 30 | Petit reseau |
-| /26 | 255.255.255.192 | 11000000 | 64 | 62 | Moyen |
-| /25 | 255.255.255.128 | 10000000 | 128 | 126 | Moyen |
-| /24 | 255.255.255.0 | 00000000 | 256 | 254 | Standard |
-| /23 | 255.255.254.0 | - | 512 | 510 | |
-| /22 | 255.255.252.0 | - | 1024 | 1022 | |
-| /21 | 255.255.248.0 | - | 2048 | 2046 | |
-| /20 | 255.255.240.0 | - | 4096 | 4094 | |
-| /16 | 255.255.0.0 | - | 65536 | 65534 | Classe B |
-| /8 | 255.0.0.0 | - | 16M | 16M-2 | Classe A |
-
-**Formules :**
-- Taille du bloc = 256 - valeur du masque (pour le dernier octet non-255)
-- Nombre d'hotes = 2^(32-prefix) - 2
-
----
-
-## Valeurs magiques des masques
-
-Pour le dernier octet significatif du masque :
-
-| Valeur masque | CIDR (si 4e octet) | Bloc |
-|---------------|-------------------|------|
-| 0 | /24 | 256 |
-| 128 | /25 | 128 |
-| 192 | /26 | 64 |
-| 224 | /27 | 32 |
-| 240 | /28 | 16 |
-| 248 | /29 | 8 |
-| 252 | /30 | 4 |
-| 254 | /31 | 2 |
-| 255 | /32 | 1 |
-
-**Astuce :** Bloc = 256 - masque
+## FORMULE RAPIDE POUR TROUVER LE DÉBUT DU BLOC
 
 ```
-/26 → masque 192 → bloc = 256 - 192 = 64
-/27 → masque 224 → bloc = 256 - 224 = 32
+Début du bloc = (valeur ÷ taille) × taille
+```
+
+**Exemple : octet = 161, bloc = 16**
+
+```
+161 ÷ 16 = 10,06...
+On garde que 10 (partie entière)
+10 × 16 = 160
+```
+
+**Exemple : octet = 233, bloc = 32**
+
+```
+233 ÷ 32 = 7,28...
+On garde que 7
+7 × 32 = 224
 ```
 
 ---
 
-## Calcul de l'adresse reseau
+## TROUVER L'ADRESSE BROADCAST
 
-**Formule : IP AND Masque**
+Le broadcast c'est la **dernière adresse** du bloc (juste avant le bloc suivant).
 
-**Operation AND bit a bit :**
+**Formule :**
 ```
-1 AND 1 = 1
-1 AND 0 = 0
-0 AND 1 = 0
-0 AND 0 = 0
+Broadcast de l'octet = Début du bloc + Taille - 1
 ```
 
-**Exemple : 192.168.45.130/26**
+**Exemple : 185.161.233.68/12**
 
-1. Masque /26 = 255.255.255.192
-2. Calcul octet par octet :
+- Octet 2 : début = 160, taille = 16
+- Broadcast octet 2 = 160 + 16 - 1 = **175**
+- Octets 3 et 4 : tout à la fin = **255**
 
 ```
-Octet 1: 192 AND 255 = 192
-Octet 2: 168 AND 255 = 168
-Octet 3:  45 AND 255 = 45
-Octet 4: 130 AND 192 = ?
-```
-
-3. Detail octet 4 :
-```
-130 = 10000010
-192 = 11000000
-AND = 10000000 = 128
-```
-
-**Adresse reseau = 192.168.45.128**
-
-### Methode rapide (sans binaire)
-
-Pour /26 (bloc de 64), les adresses reseau sont : 0, 64, 128, 192
-→ 130 est dans le bloc qui commence a 128
-
----
-
-## Calcul de l'adresse broadcast
-
-**Formule : Adresse reseau + (Taille bloc - 1)**
-
-Ou : Mettre tous les bits hote a 1
-
-**Exemple : 192.168.45.128/26**
-
-- Bloc = 64
-- Broadcast = 128 + 64 - 1 = **191**
-- Adresse broadcast = 192.168.45.191
-
-**Plage complete :**
-```
-Reseau:    192.168.45.128  (reserve)
-Premier:   192.168.45.129
-Dernier:   192.168.45.190
-Broadcast: 192.168.45.191  (reserve)
+Réseau :    185.160.0.0
+Broadcast : 185.175.255.255
 ```
 
 ---
 
-## Verifier si une IP appartient a un reseau
+## EXEMPLES COMPLETS
 
-**Methode : Calculer l'adresse reseau de l'IP et comparer**
+### Exemple 1 : 192.168.45.130/24
 
-**Exemple : 10.45.67.89 appartient a 10.45.64.0/22 ?**
-
-1. Masque /22 = 255.255.252.0 (bloc de 4 sur 3e octet)
-2. Calculer 67 AND 252 :
+**Étape 1 : Où coupe /24 ?**
 ```
- 67 = 01000011
-252 = 11111100
-AND = 01000000 = 64
+24 - 8 - 8 - 8 = 0 bits dans l'octet 4
 ```
-3. Reseau de l'IP = 10.45.64.0
-4. Compare avec 10.45.64.0 → **IDENTIQUE = OUI**
+Donc : octets 1, 2, 3 = GARDE, octet 4 = calcule
 
-**Exemple : 10.45.70.89 appartient a 10.45.64.0/22 ?**
+**Étape 2 : 0 bits = bloc de 256**
 
-1. Calculer 70 AND 252 :
+Tout l'octet 4 devient 0 (réseau) ou 255 (broadcast).
+
+**Réponse :**
 ```
- 70 = 01000110
-252 = 11111100
-AND = 01000100 = 68
-```
-2. Reseau de l'IP = 10.45.68.0
-3. Compare avec 10.45.64.0 → **DIFFERENT = NON**
-
-### Methode rapide
-
-Pour /22 (bloc de 4 sur 3e octet) :
-- Reseaux possibles : .0, .4, .8, .12, .16... .64, .68, .72...
-- 67 est dans le bloc 64-67
-- 70 est dans le bloc 68-71
-
----
-
-## Classes historiques (Classful)
-
-| Classe | Premier octet | Masque par defaut | Bits de depart |
-|--------|---------------|-------------------|----------------|
-| A | 0 - 127 | /8 (255.0.0.0) | 0xxxxxxx |
-| B | 128 - 191 | /16 (255.255.0.0) | 10xxxxxx |
-| C | 192 - 223 | /24 (255.255.255.0) | 110xxxxx |
-| D | 224 - 239 | Multicast | 1110xxxx |
-| E | 240 - 255 | Reserve | 1111xxxx |
-
-**Astuce rapide :**
-```
-< 128      → Classe A → /8
-128 - 191  → Classe B → /16
-192 - 223  → Classe C → /24
+Réseau :    192.168.45.0
+Broadcast : 192.168.45.255
 ```
 
 ---
 
-## Adresses speciales
+### Exemple 2 : 10.45.123.89/20
 
-| Plage | Type | Usage |
-|-------|------|-------|
-| 10.0.0.0/8 | Prive | Classe A privee |
-| 172.16.0.0/12 | Prive | Classe B privee (172.16-31.x.x) |
-| 192.168.0.0/16 | Prive | Classe C privee |
-| 127.0.0.0/8 | Loopback | Interface locale (127.0.0.1) |
-| 169.254.0.0/16 | Link-local | APIPA (auto-config sans DHCP) |
-| 224.0.0.0/4 | Multicast | Diffusion groupe |
-| 255.255.255.255 | Broadcast | Broadcast limite |
-
----
-
-## Division en sous-reseaux (Subnetting)
-
-**Pour diviser un reseau en N sous-reseaux :**
-
-1. Trouver combien de bits emprunter : 2^n >= N
-2. Nouveau prefix = ancien prefix + n
-3. Taille de chaque bloc = 2^(32 - nouveau prefix)
-
-**Exemple : Diviser 192.168.1.0/24 en 4 sous-reseaux**
-
-1. 2^2 = 4, donc emprunter 2 bits
-2. Nouveau prefix = 24 + 2 = /26
-3. Bloc = 64
-
+**Étape 1 : Où coupe /20 ?**
 ```
-Sous-reseau 1: 192.168.1.0/26   (0-63)
-Sous-reseau 2: 192.168.1.64/26  (64-127)
-Sous-reseau 3: 192.168.1.128/26 (128-191)
-Sous-reseau 4: 192.168.1.192/26 (192-255)
+20 - 8 - 8 = 4 bits dans l'octet 3
 ```
 
-**Table rapide :**
+**Étape 2 : 4 bits = bloc de 16**
 
-| Sous-reseaux | Bits | Ajout au prefix |
-|--------------|------|-----------------|
-| 2 | 1 | +1 |
-| 4 | 2 | +2 |
-| 8 | 3 | +3 |
-| 16 | 4 | +4 |
-| 32 | 5 | +5 |
-| 64 | 6 | +6 |
+Octet 3 = 123. Dans quel bloc de 16 ?
+```
+123 ÷ 16 = 7,68 → 7
+7 × 16 = 112
+```
 
----
-
-## Trouver le prefix pour N hotes
-
-**Formule : 2^(32-prefix) - 2 >= N**
-
-| Hotes necessaires | Bits hotes | Prefix |
-|-------------------|------------|--------|
-| 1-2 | 2 | /30 |
-| 3-6 | 3 | /29 |
-| 7-14 | 4 | /28 |
-| 15-30 | 5 | /27 |
-| 31-62 | 6 | /26 |
-| 63-126 | 7 | /25 |
-| 127-254 | 8 | /24 |
-| 255-510 | 9 | /23 |
-| 511-1022 | 10 | /22 |
+**Étape 3 : Assembler**
+```
+Réseau :    10.45.112.0
+Broadcast : 10.45.127.255  (112 + 16 - 1 = 127)
+```
 
 ---
 
-## Checklist des operations
+### Exemple 3 : 172.16.85.200/27
 
-### Pour trouver l'adresse reseau :
-- [ ] Identifier le masque (/XX → table)
-- [ ] Faire IP AND Masque (ou methode du bloc)
-- [ ] Le resultat est l'adresse reseau
+**Étape 1 : Où coupe /27 ?**
+```
+27 - 8 - 8 - 8 = 3 bits dans l'octet 4
+```
 
-### Pour trouver le broadcast :
-- [ ] Calculer l'adresse reseau
-- [ ] Ajouter (taille bloc - 1) au dernier octet variable
-- [ ] Ou : adresse avant le prochain reseau - 1
+**Étape 2 : 3 bits = bloc de 32**
 
-### Pour verifier l'appartenance :
-- [ ] Calculer le reseau de l'IP testee (IP AND Masque)
-- [ ] Comparer avec le reseau donne
-- [ ] Si identiques → OUI, sinon → NON
+Octet 4 = 200. Dans quel bloc de 32 ?
+```
+200 ÷ 32 = 6,25 → 6
+6 × 32 = 192
+```
 
-### Pour diviser un reseau :
-- [ ] Combien de sous-reseaux ? → trouver n (2^n)
-- [ ] Nouveau prefix = ancien + n
-- [ ] Calculer la taille des blocs
-- [ ] Enumerer les adresses reseau
+**Étape 3 : Assembler**
+```
+Réseau :    172.16.85.192
+Broadcast : 172.16.85.223  (192 + 32 - 1 = 223)
+```
 
 ---
 
-## Exercices pratiques
+## VÉRIFIER SI UNE IP APPARTIENT À UN RÉSEAU
 
-**1. Convertir en binaire :**
-- 172 = ?
-- 53 = ?
-- 199 = ?
+**Question : 192.168.1.130 est dans 192.168.1.0/25 ?**
 
-**2. Trouver l'adresse reseau :**
-- 10.45.123.89/16
-- 172.16.45.200/20
-- 192.168.100.67/27
+**Étape 1 : Trouver le bloc**
+```
+/25 = 25 - 8 - 8 - 8 = 1 bit dans l'octet 4
+1 bit = bloc de 128
+```
 
-**3. L'IP appartient-elle au reseau ?**
-- 192.168.1.130 dans 192.168.1.0/25 ?
-- 10.0.50.100 dans 10.0.48.0/22 ?
+**Étape 2 : Quels sont les blocs possibles ?**
+```
+Bloc 1 : 0 à 127
+Bloc 2 : 128 à 255
+```
 
-**4. Diviser :**
-- 10.0.0.0/8 en 16 sous-reseaux
+**Étape 3 : L'IP (130) est dans quel bloc ?**
+```
+130 est entre 128 et 255 → bloc 2
+Réseau du bloc 2 = 192.168.1.128
+```
+
+**Étape 4 : Comparer**
+```
+Le réseau donné :    192.168.1.0   (bloc 1)
+L'IP testée (130) :  192.168.1.128 (bloc 2)
+
+Pas le même bloc → NON, l'IP n'appartient pas au réseau.
+```
 
 ---
 
-## Reponses
+## COMBIEN D'HÔTES DANS UN RÉSEAU ?
 
-**1. Conversions :**
-- 172 = 10101100
-- 53 = 00110101
-- 199 = 11000111
+**Formule :**
+```
+Nombre d'hôtes = Taille du bloc - 2
+```
 
-**2. Adresses reseau :**
-- 10.45.123.89/16 → 10.45.0.0
-- 172.16.45.200/20 → 172.16.32.0 (bloc de 16 sur 3e octet, 45 AND 240 = 32)
-- 192.168.100.67/27 → 192.168.100.64 (bloc de 32, 67 AND 224 = 64)
+On enlève 2 parce que :
+- La première adresse = réseau (pas utilisable)
+- La dernière adresse = broadcast (pas utilisable)
+
+**Exemples :**
+
+| CIDR | Bloc | Hôtes |
+|------|------|-------|
+| /24 | 256 | 254 |
+| /25 | 128 | 126 |
+| /26 | 64 | 62 |
+| /27 | 32 | 30 |
+| /28 | 16 | 14 |
+| /29 | 8 | 6 |
+| /30 | 4 | 2 |
+
+---
+
+## DIVISER UN RÉSEAU EN SOUS-RÉSEAUX
+
+**Question : Diviser 192.168.1.0/24 en 4 sous-réseaux**
+
+**Étape 1 : Combien de bits pour 4 ?**
+```
+2 bits = 4 possibilités (2×2 = 4)
+```
+
+**Étape 2 : Nouveau préfixe**
+```
+/24 + 2 = /26
+```
+
+**Étape 3 : Taille des nouveaux blocs**
+```
+/26 = 26 - 8 - 8 - 8 = 2 bits dans l'octet 4
+2 bits = bloc de 64
+```
+
+**Étape 4 : Lister les sous-réseaux**
+```
+Sous-réseau 1 : 192.168.1.0    (0 à 63)
+Sous-réseau 2 : 192.168.1.64   (64 à 127)
+Sous-réseau 3 : 192.168.1.128  (128 à 191)
+Sous-réseau 4 : 192.168.1.192  (192 à 255)
+```
+
+---
+
+## CLASSES HISTORIQUES (pour la culture)
+
+Avant, on n'utilisait pas /XX. On avait des "classes" :
+
+| Premier octet | Classe | Masque par défaut |
+|---------------|--------|-------------------|
+| 0 à 127 | A | /8 |
+| 128 à 191 | B | /16 |
+| 192 à 223 | C | /24 |
+
+**Exemple :**
+- 10.x.x.x → Classe A → /8
+- 172.16.x.x → Classe B → /16
+- 192.168.x.x → Classe C → /24
+
+---
+
+## ADRESSES SPÉCIALES À CONNAÎTRE
+
+| Plage | C'est quoi ? |
+|-------|--------------|
+| 10.0.0.0/8 | Privé (maison, entreprise) |
+| 172.16.0.0/12 | Privé |
+| 192.168.0.0/16 | Privé |
+| 127.0.0.1 | Localhost (toi-même) |
+| 169.254.x.x | Pas de DHCP (erreur) |
+
+---
+
+## CHECKLIST POUR CHAQUE EXERCICE
+
+### Trouver l'adresse réseau :
+
+```
+□ Étape 1 : Soustraire 8, 8, 8... pour trouver l'octet à calculer
+□ Étape 2 : Regarder la table → taille du bloc
+□ Étape 3 : Diviser l'octet par le bloc, garder la partie entière
+□ Étape 4 : Multiplier par le bloc = début du bloc
+□ Étape 5 : Les octets après = 0
+```
+
+### Trouver le broadcast :
+
+```
+□ Même chose que réseau, mais :
+□ Octet calculé = début + taille - 1
+□ Les octets après = 255
+```
+
+### Vérifier l'appartenance :
+
+```
+□ Calculer le réseau de l'IP testée
+□ Comparer avec le réseau donné
+□ Pareil = OUI, Différent = NON
+```
+
+---
+
+## EXERCICES POUR S'ENTRAÎNER
+
+**1. Trouve l'adresse réseau :**
+
+- 10.200.50.100/8
+- 172.20.100.200/16
+- 192.168.10.150/24
+- 10.50.200.75/12
+- 172.16.130.50/20
+
+**2. Trouve le broadcast :**
+
+- 192.168.1.0/26
+- 10.0.0.0/12
+
+**3. L'IP appartient-elle au réseau ?**
+
+- 192.168.1.200 dans 192.168.1.0/25 ?
+- 10.10.50.100 dans 10.10.48.0/22 ?
+
+---
+
+## RÉPONSES
+
+**1. Adresses réseau :**
+- 10.200.50.100/8 → 10.0.0.0
+- 172.20.100.200/16 → 172.20.0.0
+- 192.168.10.150/24 → 192.168.10.0
+- 10.50.200.75/12 → 10.48.0.0 (50÷16=3, 3×16=48)
+- 172.16.130.50/20 → 172.16.128.0 (130÷16=8, 8×16=128)
+
+**2. Broadcasts :**
+- 192.168.1.0/26 → 192.168.1.63 (bloc 64, 0+64-1=63)
+- 10.0.0.0/12 → 10.15.255.255 (bloc 16, 0+16-1=15)
 
 **3. Appartenance :**
-- 192.168.1.130 dans /25 ? Bloc=128. 130 est dans 128-255 → reseau 192.168.1.128 ≠ .0 → **NON**
-- 10.0.50.100 dans 10.0.48.0/22 ? 50 AND 252 = 48 → reseau 10.0.48.0 → **OUI**
-
-**4. Division :**
-- 10.0.0.0/8 en 16 → /12 (8+4 bits)
-- Blocs : 10.0.0.0, 10.16.0.0, 10.32.0.0, 10.48.0.0... jusqu'a 10.240.0.0
+- 192.168.1.200 dans /25 ? Bloc=128. 200 est dans 128-255. Réseau=192.168.1.128 ≠ .0 → **NON**
+- 10.10.50.100 dans 10.10.48.0/22 ? Bloc=4. 50÷4=12, 12×4=48. Réseau=10.10.48.0 → **OUI**
