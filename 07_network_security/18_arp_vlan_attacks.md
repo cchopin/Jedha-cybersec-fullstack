@@ -2,13 +2,13 @@
 
 ## Objectifs du cours
 
-Bien que le CCNA prépare aux meilleures pratiques en matière de réseau et de sécurité, il est tout aussi important de comprendre comment pensent les attaquants. En apprenant la perspective Red Team, vous pouvez mieux défendre votre réseau contre ces menaces.
+Bien que le CCNA prépare aux meilleures pratiques en matière de réseau et de sécurité, il est tout aussi important de comprendre comment pensent les attaquants. En apprenant la perspective Red Team, il devient possible de mieux défendre un réseau contre ces menaces.
 
 Compétences visées :
 - Comprendre comment les attaquants exploitent ARP pour les attaques Man-in-the-Middle (MitM)
 - Apprendre les techniques de VLAN hopping, incluant switch spoofing et double-tagging
 - Acquérir une expérience pratique avec les outils d'attaque ARP comme ettercap, bettercap et arpspoof
-- Explorer les techniques de détection et stratégies de mitigation pour sécuriser votre réseau
+- Explorer les techniques de détection et stratégies de mitigation pour sécuriser un réseau
 - Comprendre comment utiliser ARPwatch et les solutions automatisées pour protéger contre l'ARP spoofing
 
 ---

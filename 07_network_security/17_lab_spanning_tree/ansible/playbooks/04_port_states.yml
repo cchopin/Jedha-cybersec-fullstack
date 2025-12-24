@@ -1,0 +1,192 @@
+# =============================================================================
+# 04_port_states.yml - Observation des états et rôles des ports STP
+# =============================================================================
+# Ce playbook permet de comprendre les différents états et rôles des ports :
+#
+# RÔLES des ports :
+#   - Root (RP)       : Meilleur chemin vers le Root Bridge
+#   - Designated (DP) : Port qui forward vers un segment
+#   - Alternate (AP)  : Backup du Root Port (bloqué)
+#   - Backup (BP)     : Backup du Designated Port (bloqué)
+#
+# ÉTATS des ports :
+#   - Blocking   : Ne transmet pas (redondant)
+#   - Listening  : Écoute les BPDU (transition)
+#   - Learning   : Apprend les MAC (transition)
+#   - Forwarding : Transmet les trames
+#   - Disabled   : Désactivé manuellement
+# =============================================================================
+
+---
+- name: Observation des états des ports STP
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    # =========================================================================
+    # THÉORIE : États et Rôles des ports
+    # =========================================================================
+
+    - name: "THÉORIE - États et Rôles des ports"
+      debug:
+        msg: |
+          ============================================================
+          COMPRENDRE LES PORTS STP
+          ============================================================
+
+          RÔLES des ports  :
+          ┌─────────────┬────────────────────────────────────────────┐
+          │ Root (RP)   │ Le MEILLEUR chemin vers le Root Bridge     │
+          │             │ Chaque switch non-root en a exactement 1   │
+          ├─────────────┼────────────────────────────────────────────┤
+          │ Designated  │ Port qui FORWARD vers un segment réseau    │
+          │ (DP)        │ Le Root Bridge a tous ses ports Designated │
+          ├─────────────┼────────────────────────────────────────────┤
+          │ Alternate   │ BACKUP du Root Port (chemin alternatif)    │
+          │ (AP)        │ Bloqué, prêt à prendre le relais           │
+          ├─────────────┼────────────────────────────────────────────┤
+          │ Backup (BP) │ BACKUP du Designated Port (même segment)   │
+          │             │ Rare, utilisé avec des hubs                │
+          └─────────────┴────────────────────────────────────────────┘
+
+          ÉTATS des ports  :
+          ┌────────────┬──────────────────────────────────────────────┐
+          │ Blocking   │ Reçoit BPDU, ne forward pas (15-20 sec max) │
+          ├────────────┼──────────────────────────────────────────────┤
+          │ Listening  │ Écoute BPDU, prépare le forwarding (15 sec) │
+          ├────────────┼──────────────────────────────────────────────┤
+          │ Learning   │ Apprend les MAC addresses (15 sec)          │
+          ├────────────┼──────────────────────────────────────────────┤
+          │ Forwarding │ Transmet les trames normalement (FWD)       │
+          ├────────────┼──────────────────────────────────────────────┤
+          │ Disabled   │ Port administrativement désactivé           │
+          └────────────┴──────────────────────────────────────────────┘
+
+          Transition normale : Blocking → Listening → Learning → Forwarding
+                               (peut prendre 30-50 secondes)
+          ============================================================
+
+    # =========================================================================
+    # OBSERVATION : État actuel des ports
+    # =========================================================================
+
+    - name: "Récupérer l'état détaillé des ports STP"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ item.console_port }}
+        --show "show spanning-tree vlan 1"
+      args:
+        executable: python3
+      loop: "{{ switches_info }}"
+      register: stp_details
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: "ANALYSE - État des ports par switch"
+      debug:
+        msg: |
+          ============================================================
+          {{ item.item.name }} - Analyse des ports
+          ============================================================
+          {{ item.stdout }}
+      loop: "{{ stp_details.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    # =========================================================================
+    # COMMANDES UTILES
+    # =========================================================================
+
+    - name: "Afficher les coûts et priorités des ports"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switches_info[0].console_port }}
+        --show "show spanning-tree interface ethernet 0/0 detail"
+      args:
+        executable: python3
+      register: port_detail
+
+    - name: "DÉTAIL - Port STP (SW1 Et0/0)"
+      debug:
+        msg: |
+          ============================================================
+          Détails du port Ethernet0/0 sur SW1
+          ============================================================
+          {{ port_detail.stdout }}
+
+          Paramètres importants :
+          - Port Cost : Coût utilisé pour calculer le chemin vers Root
+          - Port Priority : Utilisé pour départager les ports de même coût
+          ============================================================
+
+    # =========================================================================
+    # RÉSUMÉ VISUEL
+    # =========================================================================
+
+    - name: "RÉSUMÉ VISUEL"
+      debug:
+        msg: |
+          ============================================================
+          TOPOLOGIE STP ACTUELLE
+          ============================================================
+
+                        SW1 (Root Bridge)
+                       [All ports Desg FWD]
+                      /         \
+                   e0/0         e0/1
+                   [FWD]        [FWD]
+                  /               \
+               SW2               SW3
+              e0/0              e0/0
+              [Root FWD]       [Root FWD]
+               |                 |
+              e0/1              e0/1
+              [Desg FWD]       [Altn BLK] ← Port bloqué!
+                   \             /
+                    \           /
+                     -----------
+
+          Légende :
+          - Root FWD  : Root Port, Forwarding
+          - Desg FWD  : Designated Port, Forwarding
+          - Altn BLK  : Alternate Port, Blocking
+
+          Le port Et0/1 de SW3 est bloqué car :
+          1. SW3 a déjà un chemin vers Root via Et0/0
+          2. Et0/1 est un chemin redondant via SW2
+          3. SW2 a une MAC plus basse donc son port "gagne"
+          ============================================================
+
+    # =========================================================================
+    # EXERCICE : Modification du coût
+    # =========================================================================
+
+    - name: "EXERCICE - Changer le port bloqué"
+      debug:
+        msg: |
+          ============================================================
+          EXERCICE : Forcer un autre port à être bloqué
+          ============================================================
+
+          Pour changer quel port est bloqué, on peut modifier le COÛT.
+
+          Exemple : Augmenter le coût sur SW2 Et0/0 pour forcer
+                    SW3 à avoir un meilleur chemin
+
+          Commandes :
+            SW2(config)# interface ethernet 0/0
+            SW2(config-if)# spanning-tree cost 200
+
+          Résultat attendu :
+          - SW2 Et0/0 devient plus "coûteux"
+          - SW3 pourrait avoir un meilleur chemin via son Et0/1
+          - Un port différent sera bloqué
+
+          Pour tester :
+            ansible-playbook playbooks/04_port_states.yml -e "modify_cost=true"
+          ============================================================

@@ -1,0 +1,310 @@
+---
+# =============================================================================
+# Exercice 6: Commandes de Vérification ARP/Switching
+# =============================================================================
+# Objectif: Maîtriser toutes les commandes de diagnostic pour le CCNA
+# =============================================================================
+
+- name: "Exercice Vérification - Commandes de diagnostic CCNA"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    - name: "=== COMMANDES DE VÉRIFICATION ARP/SWITCHING ==="
+      debug:
+        msg: |
+          Ce playbook exécute toutes les commandes de diagnostic
+          importantes pour le CCNA concernant ARP et Switching.
+
+    # =========================================================================
+    # 1. show ip arp
+    # =========================================================================
+    - name: "1. show ip arp - Table ARP"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show ip arp"
+      args:
+        executable: python3
+      register: cmd_arp
+
+    - name: "Résultat: show ip arp"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show ip arp
+          ============================================
+          UTILITÉ: Affiche la table de résolution ARP
+                   (correspondances IP ↔ MAC)
+
+          COLONNES:
+            Protocol  - Type de protocole (Internet = IPv4)
+            Address   - Adresse IP
+            Age       - Minutes depuis la dernière mise à jour
+            Hardware  - Adresse MAC associée
+            Type      - Type d'encapsulation (ARPA = Ethernet)
+            Interface - Interface locale utilisée
+          {{ cmd_arp.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 2. show mac address-table
+    # =========================================================================
+    - name: "2. show mac address-table - Table MAC"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show mac address-table"
+      args:
+        executable: python3
+      register: cmd_mac
+
+    - name: "Résultat: show mac address-table"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show mac address-table
+          ============================================
+          UTILITÉ: Affiche la table CAM du switch
+                   (correspondances MAC ↔ Port)
+
+          COLONNES:
+            Vlan    - VLAN associé
+            Mac     - Adresse MAC
+            Type    - DYNAMIC, STATIC ou SECURE
+            Ports   - Port de sortie pour cette MAC
+          {{ cmd_mac.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 3. show mac address-table dynamic
+    # =========================================================================
+    - name: "3. show mac address-table dynamic - Entrées dynamiques"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show mac address-table dynamic"
+      args:
+        executable: python3
+      register: cmd_mac_dynamic
+
+    - name: "Résultat: show mac address-table dynamic"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show mac address-table dynamic
+          ============================================
+          UTILITÉ: Affiche uniquement les entrées apprises
+                   automatiquement (pas les statiques)
+          {{ cmd_mac_dynamic.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 4. show mac address-table count
+    # =========================================================================
+    - name: "4. show mac address-table count - Compteur"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show mac address-table count"
+      args:
+        executable: python3
+      register: cmd_mac_count
+
+    - name: "Résultat: show mac address-table count"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show mac address-table count
+          ============================================
+          UTILITÉ: Affiche le nombre d'entrées MAC par VLAN
+                   et la capacité totale de la table
+          {{ cmd_mac_count.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 5. show mac address-table aging-time
+    # =========================================================================
+    - name: "5. show mac address-table aging-time - Timer"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show mac address-table aging-time"
+      args:
+        executable: python3
+      register: cmd_aging
+
+    - name: "Résultat: show mac address-table aging-time"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show mac address-table aging-time
+          ============================================
+          UTILITÉ: Affiche le délai d'expiration des entrées
+                   dynamiques (défaut: 300 secondes)
+          {{ cmd_aging.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 6. show interfaces status
+    # =========================================================================
+    - name: "6. show interfaces status - État des ports"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show interfaces status"
+      args:
+        executable: python3
+      register: cmd_status
+
+    - name: "Résultat: show interfaces status"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show interfaces status
+          ============================================
+          UTILITÉ: Vue d'ensemble rapide de tous les ports
+                   (status, VLAN, duplex, speed)
+          {{ cmd_status.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 7. show interfaces trunk
+    # =========================================================================
+    - name: "7. show interfaces trunk - Trunks actifs"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show interfaces trunk"
+      args:
+        executable: python3
+      register: cmd_trunk
+
+    - name: "Résultat: show interfaces trunk"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show interfaces trunk
+          ============================================
+          UTILITÉ: Affiche les ports en mode trunk,
+                   native VLAN, VLANs autorisés et actifs
+          {{ cmd_trunk.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 8. show spanning-tree
+    # =========================================================================
+    - name: "8. show spanning-tree - État STP"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show spanning-tree"
+      args:
+        executable: python3
+      register: cmd_stp
+
+    - name: "Résultat: show spanning-tree"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show spanning-tree
+          ============================================
+          UTILITÉ: État du Spanning Tree Protocol par VLAN
+                   Identifie Root Bridge, port states, etc.
+          {{ cmd_stp.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 9. show ip interface brief
+    # =========================================================================
+    - name: "9. show ip interface brief - Interfaces IP"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show ip interface brief"
+      args:
+        executable: python3
+      register: cmd_ip_brief
+
+    - name: "Résultat: show ip interface brief"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show ip interface brief
+          ============================================
+          UTILITÉ: Vue rapide des interfaces avec leurs IPs
+                   (notamment les interfaces VLAN)
+          {{ cmd_ip_brief.stdout }}
+          ============================================
+
+    # =========================================================================
+    # 10. show vlan brief
+    # =========================================================================
+    - name: "10. show vlan brief - Liste des VLANs"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show vlan brief"
+      args:
+        executable: python3
+      register: cmd_vlan
+
+    - name: "Résultat: show vlan brief"
+      debug:
+        msg: |
+          ============================================
+          COMMANDE: show vlan brief
+          ============================================
+          UTILITÉ: Liste tous les VLANs et leurs ports assignés
+          {{ cmd_vlan.stdout }}
+          ============================================
+
+    - name: "=== RÉSUMÉ DES COMMANDES CCNA ==="
+      debug:
+        msg: |
+          ============================================
+          COMMANDES À RETENIR POUR LE CCNA
+          ============================================
+
+          ARP:
+            show ip arp                 - Table ARP complète
+            clear ip arp                - Vider le cache ARP
+            debug arp                   - Debug ARP en temps réel
+
+          TABLE MAC:
+            show mac address-table           - Table MAC complète
+            show mac address-table dynamic   - Entrées dynamiques
+            show mac address-table count     - Nombre d'entrées
+            show mac address-table aging-time - Timer d'expiration
+            clear mac address-table dynamic  - Vider les dynamiques
+
+          INTERFACES:
+            show interfaces status           - État de tous les ports
+            show interfaces trunk            - Trunks actifs
+            show ip interface brief          - IPs des interfaces
+
+          VLANs:
+            show vlan brief                  - Liste des VLANs
+
+          STP:
+            show spanning-tree               - État STP global
+            show spanning-tree summary       - Résumé STP
+
+          LINUX/WINDOWS:
+            ip neigh show / arp -a           - Table ARP locale
+            ip neigh flush all               - Vider cache ARP
+
+          ============================================

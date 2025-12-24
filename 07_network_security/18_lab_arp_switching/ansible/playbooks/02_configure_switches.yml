@@ -1,0 +1,86 @@
+---
+# =============================================================================
+# Playbook pour configurer les switches (VLANs + Trunk + IPs)
+# =============================================================================
+# Configuration:
+#   - VLANs 10 (USERS), 20 (SERVERS), 30 (MANAGEMENT)
+#   - Trunk 802.1Q sur Ethernet0/0
+#   - Interfaces VLAN avec IPs pour tests ARP
+# =============================================================================
+
+- name: Configurer les switches (VLANs + Trunk + IPs pour ARP)
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    - name: Configurer SW1
+      script: >
+        ../scripts/configure_switch.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --hostname SW1
+        --vlans '{{ vlans | to_json }}'
+        --trunk-interface {{ trunk_interface }}
+        --trunk-vlans "{{ trunk_allowed_vlans }}"
+        --native-vlan {{ native_vlan }}
+        --vlan-ips '{{ switch_ips.sw1 | to_json }}'
+        --netmask {{ netmask }}
+      args:
+        executable: python3
+      register: sw1_config
+
+    - name: Afficher résultat SW1
+      debug:
+        var: sw1_config.stdout_lines
+
+    - name: Configurer SW2
+      script: >
+        ../scripts/configure_switch.py
+        --host {{ gns3_host }}
+        --port {{ sw2_console_port }}
+        --hostname SW2
+        --vlans '{{ vlans | to_json }}'
+        --trunk-interface {{ trunk_interface }}
+        --trunk-vlans "{{ trunk_allowed_vlans }}"
+        --native-vlan {{ native_vlan }}
+        --vlan-ips '{{ switch_ips.sw2 | to_json }}'
+        --netmask {{ netmask }}
+      args:
+        executable: python3
+      register: sw2_config
+
+    - name: Afficher résultat SW2
+      debug:
+        var: sw2_config.stdout_lines
+
+    - name: Résumé de la configuration
+      debug:
+        msg: |
+          ========================================
+          CONFIGURATION TERMINÉE
+          ========================================
+          VLANs créés: {% for v in vlans %}{{ v.id }} ({{ v.name }}){% if not loop.last %}, {% endif %}{% endfor %}
+
+          Interfaces VLAN configurées pour tests ARP:
+            SW1:
+              - VLAN 10: {{ switch_ips.sw1.vlan10 }}
+              - VLAN 20: {{ switch_ips.sw1.vlan20 }}
+              - VLAN 30: {{ switch_ips.sw1.vlan30 }}
+            SW2:
+              - VLAN 10: {{ switch_ips.sw2.vlan10 }}
+              - VLAN 20: {{ switch_ips.sw2.vlan20 }}
+              - VLAN 30: {{ switch_ips.sw2.vlan30 }}
+
+          Trunk configuré sur {{ trunk_interface }}:
+            - Encapsulation: 802.1Q
+            - VLANs autorisés: {{ trunk_allowed_vlans }}
+            - Native VLAN: {{ native_vlan }}
+
+          Pour vérifier:
+            telnet {{ gns3_host }} {{ sw1_console_port }}
+            > show ip arp
+            > show mac address-table
+          ========================================

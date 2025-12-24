@@ -1,0 +1,120 @@
+# =============================================================================
+# all.yml - Variables globales du Lab Spanning Tree Protocol
+# =============================================================================
+# Pourquoi ce fichier ?
+# - Centralise TOUTES les variables du lab
+# - Permet de modifier la config sans toucher aux playbooks
+# - Ansible charge automatiquement ce fichier pour tous les hosts
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Serveur GNS3 (redondant avec inventory.yml mais pratique pour les scripts)
+# -----------------------------------------------------------------------------
+gns3_host: "192.168.139.14"
+gns3_server: "http://192.168.139.14:80"
+project_id: "a30a2c3b-fb44-47a7-bc10-cf32c4bfa575"
+template_iou_l2_id: "54a678c9-e848-4b41-9b8c-7737ace0194a"
+
+# -----------------------------------------------------------------------------
+# Configuration des Switches
+# -----------------------------------------------------------------------------
+# On crée 3 switches pour former une boucle (triangle)
+# Positions x,y pour l'affichage dans GNS3
+#
+#          SW1 (x=0, y=-100)   <- En haut au centre
+#         /   \
+#       SW2   SW3              <- En bas à gauche et droite
+#   (x=-150)  (x=150)
+# -----------------------------------------------------------------------------
+switches:
+  - name: "SW1"
+    x: 0
+    y: -100
+    role: "root"           # On veut que SW1 soit le Root Bridge
+  - name: "SW2"
+    x: -150
+    y: 100
+    role: "non-root"
+  - name: "SW3"
+    x: 150
+    y: 100
+    role: "non-root"
+
+# -----------------------------------------------------------------------------
+# Liens entre les switches (topologie en triangle)
+# -----------------------------------------------------------------------------
+# Chaque lien connecte 2 switches via leurs ports Ethernet
+# Format: adapter_number/port_number (sur IOU: 0/0 = Ethernet0/0)
+# -----------------------------------------------------------------------------
+links:
+  - name: "SW1-SW2"
+    from_switch: 0         # Index dans la liste 'switches' (SW1)
+    from_adapter: 0
+    from_port: 0           # Ethernet0/0
+    to_switch: 1           # Index SW2
+    to_adapter: 0
+    to_port: 0             # Ethernet0/0
+
+  - name: "SW1-SW3"
+    from_switch: 0         # SW1
+    from_adapter: 0
+    from_port: 1           # Ethernet0/1
+    to_switch: 2           # SW3
+    to_adapter: 0
+    to_port: 0             # Ethernet0/0
+
+  - name: "SW2-SW3"
+    from_switch: 1         # SW2
+    from_adapter: 0
+    from_port: 1           # Ethernet0/1
+    to_switch: 2           # SW3
+    to_adapter: 0
+    to_port: 1             # Ethernet0/1
+
+# -----------------------------------------------------------------------------
+# Configuration STP
+# -----------------------------------------------------------------------------
+# Bridge Priority : Valeur de 0 à 65535, par pas de 4096
+# Plus la valeur est BASSE, plus le switch a de chances d'être Root Bridge
+#
+# Valeurs courantes:
+#   - 4096  : Root Bridge primaire
+#   - 8192  : Root Bridge secondaire (backup)
+#   - 32768 : Valeur par défaut (0x8000)
+# -----------------------------------------------------------------------------
+stp:
+  # VLAN sur lequel on travaille (STP fonctionne par VLAN en mode PVST)
+  vlan: 1
+
+  # Priorités pour l'élection du Root Bridge
+  priorities:
+    root_primary: 4096      # SW1 sera Root Bridge primaire
+    root_secondary: 8192    # Pour un éventuel backup
+    default: 32768          # Valeur par défaut Cisco
+
+  # Mode STP
+  modes:
+    pvst: "spanning-tree mode pvst"              # Par défaut sur Cisco
+    rapid_pvst: "spanning-tree mode rapid-pvst"  # RSTP (plus rapide)
+    mst: "spanning-tree mode mst"                # Multiple Spanning Tree
+
+# -----------------------------------------------------------------------------
+# Commandes de diagnostic STP (pour référence)
+# -----------------------------------------------------------------------------
+stp_commands:
+  show_tree: "show spanning-tree"
+  show_tree_vlan: "show spanning-tree vlan 1"
+  show_root: "show spanning-tree root"
+  show_bridge: "show spanning-tree bridge"
+  show_interface: "show spanning-tree interface"
+  show_summary: "show spanning-tree summary"
+
+# -----------------------------------------------------------------------------
+# États des ports STP (pour référence)
+# -----------------------------------------------------------------------------
+# Blocking    : Port bloqué, ne transmet pas de données
+# Listening   : Écoute les BPDU, ne transmet pas encore
+# Learning    : Apprend les MAC addresses, ne transmet pas encore
+# Forwarding  : Port actif, transmet les données
+# Disabled    : Port désactivé manuellement
+# -----------------------------------------------------------------------------

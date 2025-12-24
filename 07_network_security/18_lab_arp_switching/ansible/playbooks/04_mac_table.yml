@@ -1,0 +1,338 @@
+---
+# =============================================================================
+# Exercice 4: Table MAC et Logique de Switching
+# =============================================================================
+# Objectif: Comprendre le fonctionnement des tables MAC
+#
+# Les switches Layer 2 utilisent les tables MAC pour:
+#   1. APPRENDRE: Quand une trame arrive, le switch note la MAC source
+#      et le port d'entrée dans sa table MAC
+#   2. TRANSFÉRER: Le switch consulte la table pour trouver le port
+#      de sortie associé à la MAC destination
+#   3. INONDER: Si la MAC destination est inconnue, le switch flood
+#      la trame sur tous les ports (sauf celui d'entrée)
+#
+# Types d'entrées MAC:
+#   - DYNAMIC: Apprise automatiquement (expire après ~300s)
+#   - STATIC: Configurée manuellement (ne expire pas)
+#   - SECURE: Configurée via port-security
+# =============================================================================
+
+- name: "Exercice MAC Table - Logique de Switching"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  vars:
+    exercise: "view_mac"  # Options: view_mac, learn_mac, clear_mac, aging
+
+  tasks:
+    # =========================================================================
+    # Exercice 1: Visualiser la table MAC
+    # =========================================================================
+    - name: "EXERCICE 1: Visualiser la table MAC"
+      when: exercise == "view_mac"
+      block:
+        - name: "Info - Table MAC"
+          debug:
+            msg: |
+              ============================================
+              EXERCICE: TABLE D'ADRESSES MAC
+              ============================================
+              La table MAC (CAM table) associe:
+                - Adresse MAC → Port de sortie
+
+              Format de la sortie:
+                Vlan  Mac Address      Type     Ports
+                10    aabb.ccdd.eeff   DYNAMIC  Et0/0
+
+              Types d'entrées:
+                - DYNAMIC: Apprise automatiquement
+                - STATIC: Configurée manuellement
+                - SECURE: Via port-security
+              ============================================
+
+        - name: "Voir la table MAC sur SW1"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show mac address-table"
+          args:
+            executable: python3
+          register: sw1_mac
+
+        - name: "Table MAC SW1"
+          debug:
+            msg: |
+              ============================================
+              TABLE MAC - SW1
+              ============================================
+              {{ sw1_mac.stdout }}
+              ============================================
+
+        - name: "Voir la table MAC sur SW2"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw2_console_port }}
+            --show "show mac address-table"
+          args:
+            executable: python3
+          register: sw2_mac
+
+        - name: "Table MAC SW2"
+          debug:
+            msg: |
+              ============================================
+              TABLE MAC - SW2
+              ============================================
+              {{ sw2_mac.stdout }}
+              ============================================
+
+        - name: "Voir le compteur de MAC par VLAN"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show mac address-table count"
+          args:
+            executable: python3
+          register: mac_count
+
+        - name: "Compteur MAC"
+          debug:
+            msg: |
+              {{ mac_count.stdout }}
+
+    # =========================================================================
+    # Exercice 2: Observer l'apprentissage MAC
+    # =========================================================================
+    - name: "EXERCICE 2: Apprentissage MAC dynamique"
+      when: exercise == "learn_mac"
+      block:
+        - name: "Info - Apprentissage MAC"
+          debug:
+            msg: |
+              ============================================
+              EXERCICE: APPRENTISSAGE MAC DYNAMIQUE
+              ============================================
+              Processus d'apprentissage:
+
+              1. SW1 reçoit une trame de SW2
+              2. SW1 lit l'adresse MAC SOURCE de la trame
+              3. SW1 associe cette MAC au port d'entrée (e0/0)
+              4. L'entrée est marquée DYNAMIC avec un timer
+
+              Nous allons:
+              1. Vider la table MAC
+              2. Générer du trafic (ping)
+              3. Observer les nouvelles entrées
+              ============================================
+
+        - name: "Vider la table MAC de SW1"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;clear mac address-table dynamic"
+          args:
+            executable: python3
+
+        - name: "Table MAC AVANT traffic"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show mac address-table dynamic"
+          args:
+            executable: python3
+          register: mac_before
+
+        - name: "Afficher avant"
+          debug:
+            msg: |
+              ============================================
+              TABLE MAC DYNAMIQUE AVANT TRAFIC
+              ============================================
+              {{ mac_before.stdout }}
+              ============================================
+
+        - name: "Générer du trafic (ping SW2)"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;ping {{ switch_ips.sw2.vlan10 }} repeat 5"
+          args:
+            executable: python3
+          register: ping_result
+
+        - name: "Résultat ping"
+          debug:
+            var: ping_result.stdout_lines
+
+        - name: "Table MAC APRÈS traffic"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show mac address-table dynamic"
+          args:
+            executable: python3
+          register: mac_after
+
+        - name: "Afficher après"
+          debug:
+            msg: |
+              ============================================
+              TABLE MAC DYNAMIQUE APRÈS TRAFIC
+              ============================================
+              {{ mac_after.stdout }}
+
+              OBSERVATION:
+              - Nouvelle entrée pour la MAC de SW2
+              - Associée au port Ethernet0/0 (trunk)
+              - Type: DYNAMIC
+              ============================================
+
+    # =========================================================================
+    # Exercice 3: Vider la table MAC
+    # =========================================================================
+    - name: "EXERCICE 3: Vider la table MAC"
+      when: exercise == "clear_mac"
+      block:
+        - name: "Info - Clear MAC"
+          debug:
+            msg: |
+              ============================================
+              EXERCICE: VIDER LA TABLE MAC
+              ============================================
+              Commandes disponibles:
+
+              clear mac address-table dynamic
+                → Supprime toutes les entrées dynamiques
+
+              clear mac address-table dynamic vlan 10
+                → Supprime les dynamiques du VLAN 10
+
+              clear mac address-table dynamic address xxxx.xxxx.xxxx
+                → Supprime une MAC spécifique
+              ============================================
+
+        - name: "Table MAC avant clear"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show mac address-table"
+          args:
+            executable: python3
+          register: mac_before_clear
+
+        - name: "Avant clear"
+          debug:
+            var: mac_before_clear.stdout_lines
+
+        - name: "Vider toutes les entrées dynamiques"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;clear mac address-table dynamic"
+          args:
+            executable: python3
+
+        - name: "Attendre"
+          pause:
+            seconds: 2
+
+        - name: "Table MAC après clear"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show mac address-table"
+          args:
+            executable: python3
+          register: mac_after_clear
+
+        - name: "Après clear"
+          debug:
+            msg: |
+              ============================================
+              TABLE MAC APRÈS CLEAR
+              ============================================
+              {{ mac_after_clear.stdout }}
+
+              Les entrées DYNAMIC ont été supprimées.
+              Les entrées STATIC persistent.
+              ============================================
+
+    # =========================================================================
+    # Exercice 4: MAC Address Aging
+    # =========================================================================
+    - name: "EXERCICE 4: MAC Address Aging Timer"
+      when: exercise == "aging"
+      block:
+        - name: "Info - Aging Timer"
+          debug:
+            msg: |
+              ============================================
+              EXERCICE: MAC ADDRESS AGING
+              ============================================
+              Les entrées dynamiques expirent après un délai
+              (par défaut 300 secondes = 5 minutes).
+
+              Commandes:
+                show mac address-table aging-time
+                  → Voir le timer actuel
+
+                mac address-table aging-time <seconds>
+                  → Modifier le timer (0 = désactivé)
+              ============================================
+
+        - name: "Voir l'aging time actuel"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show mac address-table aging-time"
+          args:
+            executable: python3
+          register: aging_time
+
+        - name: "Aging time"
+          debug:
+            msg: |
+              ============================================
+              MAC AGING TIME
+              ============================================
+              {{ aging_time.stdout }}
+
+              Par défaut: 300 secondes
+              Après ce délai sans trafic, l'entrée est supprimée.
+              ============================================
+
+    - name: "Résumé des exercices disponibles"
+      debug:
+        msg: |
+          ============================================
+          EXERCICES MAC TABLE DISPONIBLES
+          ============================================
+
+          1. Visualiser la table MAC:
+             ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e "exercise=view_mac"
+
+          2. Observer l'apprentissage MAC:
+             ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e "exercise=learn_mac"
+
+          3. Vider la table MAC:
+             ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e "exercise=clear_mac"
+
+          4. MAC Aging Timer:
+             ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e "exercise=aging"
+
+          ============================================

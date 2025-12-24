@@ -1,0 +1,389 @@
+---
+# =============================================================================
+# Exercice 5: Troubleshooting ARP et Switching
+# =============================================================================
+# Objectif: Diagnostiquer et corriger les problèmes courants
+#
+# Problèmes ARP courants:
+#   - Entrées ARP obsolètes (stale)
+#   - ARP Spoofing/Poisoning
+#   - Broadcast storms
+#
+# Problèmes Switching courants:
+#   - MAC Table Overflow
+#   - Port Security Violations
+#   - Network Loops (sans STP)
+# =============================================================================
+
+- name: "Exercice Troubleshooting - ARP et Switching"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  vars:
+    problem_type: "diagnose"  # Options: diagnose, stale_arp, mac_overflow_info, loop_detection
+
+  tasks:
+    # =========================================================================
+    # DIAGNOSTIC COMPLET
+    # =========================================================================
+    - name: "DIAGNOSTIC: Vérification complète ARP/Switching"
+      when: problem_type == "diagnose"
+      block:
+        - name: "Info - Diagnostic"
+          debug:
+            msg: |
+              ============================================
+              DIAGNOSTIC COMPLET ARP/SWITCHING
+              ============================================
+              Vérifications effectuées:
+              1. Table ARP
+              2. Table MAC
+              3. État des interfaces
+              4. Spanning Tree
+              5. Statistiques d'interface
+              ============================================
+
+        # 1. Table ARP
+        - name: "1. Vérifier la table ARP"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show ip arp"
+          args:
+            executable: python3
+          register: diag_arp
+
+        - name: "Table ARP"
+          debug:
+            msg: |
+              ============================================
+              1. TABLE ARP
+              ============================================
+              {{ diag_arp.stdout }}
+
+              POINTS À VÉRIFIER:
+              - Age des entrées (entries trop vieilles?)
+              - MACs cohérentes avec le réseau connu
+              - Pas de doublons IP avec différentes MAC (spoofing?)
+              ============================================
+
+        # 2. Table MAC
+        - name: "2. Vérifier la table MAC"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show mac address-table"
+          args:
+            executable: python3
+          register: diag_mac
+
+        - name: "Table MAC"
+          debug:
+            msg: |
+              ============================================
+              2. TABLE MAC
+              ============================================
+              {{ diag_mac.stdout }}
+
+              POINTS À VÉRIFIER:
+              - MACs attendues présentes?
+              - Pas de MAC sur plusieurs ports (loop?)
+              - Nombre d'entrées raisonnable?
+              ============================================
+
+        # 3. État des interfaces
+        - name: "3. Vérifier l'état des interfaces"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show interfaces status"
+          args:
+            executable: python3
+          register: diag_interfaces
+
+        - name: "Interfaces"
+          debug:
+            msg: |
+              ============================================
+              3. ÉTAT DES INTERFACES
+              ============================================
+              {{ diag_interfaces.stdout }}
+
+              POINTS À VÉRIFIER:
+              - Interfaces attendues UP?
+              - Pas d'interface err-disabled?
+              - VLAN correct assigné?
+              ============================================
+
+        # 4. Spanning Tree
+        - name: "4. Vérifier Spanning Tree"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show spanning-tree summary"
+          args:
+            executable: python3
+          register: diag_stp
+
+        - name: "Spanning Tree"
+          debug:
+            msg: |
+              ============================================
+              4. SPANNING TREE
+              ============================================
+              {{ diag_stp.stdout }}
+
+              POINTS À VÉRIFIER:
+              - STP actif? (protection contre les boucles)
+              - Root bridge identifié?
+              - Ports en état correct (FWD/BLK)?
+              ============================================
+
+        # 5. Statistiques
+        - name: "5. Vérifier les statistiques du trunk"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show interfaces {{ trunk_interface }}"
+          args:
+            executable: python3
+          register: diag_stats
+
+        - name: "Statistiques interface"
+          debug:
+            msg: |
+              ============================================
+              5. STATISTIQUES INTERFACE TRUNK
+              ============================================
+              {{ diag_stats.stdout }}
+
+              POINTS À VÉRIFIER:
+              - Erreurs CRC?
+              - Collisions excessives?
+              - Input/Output errors?
+              - Runts/Giants?
+              ============================================
+
+    # =========================================================================
+    # Problème: Entrées ARP obsolètes
+    # =========================================================================
+    - name: "PROBLÈME: Entrées ARP obsolètes (stale)"
+      when: problem_type == "stale_arp"
+      block:
+        - name: "Info - Stale ARP"
+          debug:
+            msg: |
+              ============================================
+              PROBLÈME: ENTRÉES ARP OBSOLÈTES
+              ============================================
+              Symptômes:
+              - Communication intermittente
+              - Ping échoue puis fonctionne
+              - Latence initiale élevée
+
+              Causes:
+              - Changement de carte réseau
+              - VM migrée
+              - Configuration IP changée
+
+              Solution:
+              - clear ip arp (vide le cache ARP)
+              ============================================
+
+        - name: "Voir les entrées ARP avec leur âge"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show ip arp"
+          args:
+            executable: python3
+          register: stale_check
+
+        - name: "Table ARP actuelle"
+          debug:
+            msg: |
+              {{ stale_check.stdout }}
+
+              Regardez la colonne "Age (min)".
+              Les entrées très anciennes peuvent être obsolètes.
+
+        - name: "Vider le cache ARP pour résoudre"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;clear ip arp"
+          args:
+            executable: python3
+
+        - name: "Forcer la résolution ARP avec un ping"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;ping {{ switch_ips.sw2.vlan10 }} repeat 2"
+          args:
+            executable: python3
+
+        - name: "Vérifier la nouvelle table ARP"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show ip arp"
+          args:
+            executable: python3
+          register: fresh_arp
+
+        - name: "Table ARP rafraîchie"
+          debug:
+            msg: |
+              ============================================
+              TABLE ARP APRÈS RAFRAÎCHISSEMENT
+              ============================================
+              {{ fresh_arp.stdout }}
+
+              Les entrées ont maintenant un âge de 0 ou très faible.
+              ============================================
+
+    # =========================================================================
+    # Info: MAC Table Overflow
+    # =========================================================================
+    - name: "INFO: MAC Table Overflow Attack"
+      when: problem_type == "mac_overflow_info"
+      block:
+        - name: "Info - MAC Overflow"
+          debug:
+            msg: |
+              ============================================
+              ATTAQUE: MAC TABLE OVERFLOW
+              ============================================
+              Description:
+              Un attaquant envoie des milliers de trames avec
+              des MAC sources aléatoires pour remplir la table MAC.
+
+              Impact:
+              Quand la table est pleine, le switch ne peut plus
+              apprendre de nouvelles MAC → il FLOOD tout le trafic
+              → l'attaquant peut sniffer tout le réseau!
+
+              Détection:
+              - Table MAC pleine ou proche de la limite
+              - Trafic broadcast anormalement élevé
+              - Performances réseau dégradées
+
+              Commandes de vérification:
+              ============================================
+
+        - name: "Voir la capacité de la table MAC"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show mac address-table count"
+          args:
+            executable: python3
+          register: mac_capacity
+
+        - name: "Capacité MAC"
+          debug:
+            msg: |
+              ============================================
+              CAPACITÉ TABLE MAC
+              ============================================
+              {{ mac_capacity.stdout }}
+
+              PROTECTION: Port Security
+              configure terminal
+              interface e0/1
+                switchport mode access
+                switchport port-security
+                switchport port-security maximum 3
+                switchport port-security violation shutdown
+              ============================================
+
+    # =========================================================================
+    # Info: Détection de boucle
+    # =========================================================================
+    - name: "INFO: Détection de boucle réseau"
+      when: problem_type == "loop_detection"
+      block:
+        - name: "Info - Network Loop"
+          debug:
+            msg: |
+              ============================================
+              PROBLÈME: BOUCLE RÉSEAU
+              ============================================
+              Symptômes:
+              - CPU switch à 100%
+              - Réseau très lent ou inaccessible
+              - LEDs des ports clignotent frénétiquement
+              - Broadcast storm
+
+              Cause:
+              - Câble reliant deux ports du même switch
+              - Deux chemins vers le même switch sans STP
+
+              Protection:
+              - Spanning Tree Protocol (STP) - ACTIF par défaut
+              - BPDU Guard sur les ports access
+              ============================================
+
+        - name: "Vérifier l'état STP"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show spanning-tree"
+          args:
+            executable: python3
+          register: stp_status
+
+        - name: "État STP"
+          debug:
+            msg: |
+              ============================================
+              ÉTAT SPANNING TREE
+              ============================================
+              {{ stp_status.stdout }}
+
+              VÉRIFIEZ:
+              - "Spanning tree enabled" → STP actif
+              - Ports en état FWD (Forwarding) ou BLK (Blocking)
+              - Root Bridge identifié
+
+              PROTECTION BPDU Guard:
+              configure terminal
+              interface e0/1
+                spanning-tree bpduguard enable
+              ============================================
+
+    - name: "Résumé des exercices disponibles"
+      debug:
+        msg: |
+          ============================================
+          EXERCICES TROUBLESHOOTING DISPONIBLES
+          ============================================
+
+          1. Diagnostic complet:
+             ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e "problem_type=diagnose"
+
+          2. Résoudre entrées ARP obsolètes:
+             ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e "problem_type=stale_arp"
+
+          3. Info sur MAC Table Overflow:
+             ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e "problem_type=mac_overflow_info"
+
+          4. Info sur détection de boucle:
+             ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e "problem_type=loop_detection"
+
+          ============================================

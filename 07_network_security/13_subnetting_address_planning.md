@@ -2,7 +2,7 @@
 
 ## Objectifs du cours
 
-Maintenant que vous avez appris les masques de sous-réseau et les bases des classes IP, il est temps de découvrir des concepts de subnetting plus avancés comme CIDR, VLSM et le supernetting. Ces sujets permettent de planifier et gérer votre réseau plus efficacement, en permettant une meilleure utilisation des adresses, une segmentation réseau optimisée et un routage plus efficient.
+Après avoir assimilé les masques de sous-réseau et les bases des classes IP, il est temps de découvrir des concepts de subnetting plus avancés comme CIDR, VLSM et le supernetting. Ces sujets permettent de planifier et gérer un réseau plus efficacement, en permettant une meilleure utilisation des adresses, une segmentation réseau optimisée et un routage plus efficient.
 
 Compétences visées :
 - Comprendre et utiliser la notation CIDR pour gérer efficacement l'espace d'adressage IP
@@ -95,7 +95,7 @@ Donc, un sous-réseau /24 fournit 254 adresses d'hôtes utilisables.
 
 ### Nombre de sous-réseaux dans un bloc CIDR
 
-Pour déterminer combien de sous-réseaux vous pouvez créer à partir d'un réseau plus large, vous devez emprunter des bits de la portion hôte de l'adresse.
+Pour déterminer combien de sous-réseaux peuvent être créés à partir d'un réseau plus large, il faut emprunter des bits de la portion hôte de l'adresse.
 
 **Formule :**
 
@@ -103,7 +103,7 @@ Pour déterminer combien de sous-réseaux vous pouvez créer à partir d'un rés
 Nombre de sous-réseaux = 2^(nombre de bits empruntés)
 ```
 
-**Exemple :** Si vous avez un réseau /24 et avez besoin de 4 sous-réseaux, vous devez emprunter 2 bits de la portion hôte, changeant le masque de sous-réseau en /26.
+**Exemple :** Avec un réseau /24 et un besoin de 4 sous-réseaux, il faut emprunter 2 bits de la portion hôte, changeant le masque de sous-réseau en /26.
 
 ```
 Bits empruntés : 2
@@ -126,11 +126,11 @@ Donc, un masque de sous-réseau /26 fournit 4 sous-réseaux, chacun avec 62 hôt
 
 Dans les réseaux réels, tous les sous-réseaux n'ont pas besoin du même nombre d'hôtes. Certains sous-réseaux peuvent nécessiter seulement une poignée d'hôtes, tandis que d'autres peuvent en nécessiter des centaines ou même des milliers. C'est là qu'intervient le Variable Length Subnet Masking (VLSM).
 
-Avec VLSM, vous pouvez assigner différents masques de sous-réseau à différents sous-réseaux au sein du même réseau. Par exemple, vous pouvez avoir un sous-réseau /26 pour un département, un sous-réseau /24 pour un autre, et un sous-réseau /30 pour une petite connexion point-à-point, le tout à partir du même réseau plus large.
+Avec VLSM, il est possible d'assigner différents masques de sous-réseau à différents sous-réseaux au sein du même réseau. Par exemple, un sous-réseau /26 pour un département, un sous-réseau /24 pour un autre, et un sous-réseau /30 pour une petite connexion point-à-point, le tout à partir du même réseau plus large.
 
 ### Exemple de VLSM
 
-Supposons que vous ayez un réseau `192.168.1.0/24`, et que vous ayez besoin de créer 4 sous-réseaux avec des tailles variables :
+Considérons un réseau `192.168.1.0/24` avec le besoin de créer 4 sous-réseaux de tailles variables :
 
 - Sous-réseau A : Besoin de 50 hôtes
 - Sous-réseau B : Besoin de 30 hôtes
@@ -155,7 +155,7 @@ Sous-réseau C : 192.168.1.96/28   (192.168.1.96 - 192.168.1.111)
 Sous-réseau D : 192.168.1.112/29  (192.168.1.112 - 192.168.1.119)
 ```
 
-Cette méthode d'allocation flexible assure une utilisation efficace de votre espace d'adressage IP tout en répondant aux besoins spécifiques de chaque sous-réseau.
+Cette méthode d'allocation flexible assure une utilisation efficace de l'espace d'adressage IP tout en répondant aux besoins spécifiques de chaque sous-réseau.
 
 ---
 
@@ -165,7 +165,7 @@ Dans les grands réseaux, gérer de nombreux petits sous-réseaux peut conduire 
 
 ### Exemple de supernetting
 
-Imaginons que vous ayez les quatre réseaux suivants :
+Considérons les quatre réseaux suivants :
 
 ```
 192.168.0.0/24
@@ -174,7 +174,7 @@ Imaginons que vous ayez les quatre réseaux suivants :
 192.168.3.0/24
 ```
 
-Plutôt que d'avoir quatre routes séparées, vous pouvez créer un supernet qui englobe tous les quatre réseaux. La question clé est : comment trouver la bonne longueur de préfixe (/22) ?
+Plutôt que d'avoir quatre routes séparées, il est possible de créer un supernet qui englobe tous les quatre réseaux. La question clé est : comment trouver la bonne longueur de préfixe (/22) ?
 
 **Étape 1 : Écrire les adresses en binaire**
 
@@ -227,13 +227,13 @@ Donc le supernet est `192.168.0.0/22`, qui couvre toutes les adresses de 192.168
 
 ### Résumé final
 
-Pour résumer les quatre sous-réseaux, vous pouvez les remplacer par :
+Pour résumer les quatre sous-réseaux, il suffit de les remplacer par :
 
 ```
 192.168.0.0/22
 ```
 
-Cela signifie qu'une seule route couvre maintenant tous les quatre réseaux, réduisant drastiquement la taille de votre table de routage.
+Cela signifie qu'une seule route couvre maintenant tous les quatre réseaux, réduisant drastiquement la taille de la table de routage.
 
 ---
 
@@ -241,7 +241,7 @@ Cela signifie qu'une seule route couvre maintenant tous les quatre réseaux, ré
 
 ### Scénario
 
-Vous disposez du réseau `10.0.0.0/16` et devez créer les sous-réseaux suivants :
+À partir du réseau `10.0.0.0/16`, créer les sous-réseaux suivants :
 - Département IT : 500 hôtes
 - Département Marketing : 200 hôtes
 - Département RH : 50 hôtes

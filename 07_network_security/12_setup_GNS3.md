@@ -2,7 +2,7 @@
 
 ## Objectifs du cours
 
-GNS3 (Graphical Network Simulator-3) est un outil de simulation réseau qui permet de concevoir, tester et simuler des réseaux complexes. Le client GNS3 peut être installé sur votre machine locale et connecté à un serveur distant pour effectuer des simulations exploitant des ressources et des images plus puissantes.
+GNS3 (Graphical Network Simulator-3) est un outil de simulation réseau qui permet de concevoir, tester et simuler des réseaux complexes. Le client GNS3 peut être installé sur une machine locale et connecté à un serveur distant pour effectuer des simulations exploitant des ressources et des images plus puissantes.
 
 Compétences visées :
 - Installer le client GNS3 sur différents systèmes d'exploitation

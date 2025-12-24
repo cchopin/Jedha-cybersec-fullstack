@@ -1,0 +1,189 @@
+# =============================================================================
+# 03_root_election.yml - Manipulation de l'élection Root Bridge
+# =============================================================================
+# Ce playbook démontre ce qui se passe quand on change le Root Bridge :
+# - Les ports changent de rôle
+# - Un port différent peut être bloqué
+# - La convergence STP prend du temps
+# =============================================================================
+
+---
+- name: Manipulation de l'élection Root Bridge
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  # Variable pour choisir le scénario
+  vars:
+    # Par défaut: faire de SW2 le nouveau Root
+    new_root: "{{ scenario | default('sw2_root') }}"
+
+  tasks:
+
+    # =========================================================================
+    # ÉTAT INITIAL
+    # =========================================================================
+
+    - name: "INTRODUCTION"
+      debug:
+        msg: |
+          ============================================================
+          EXERCICE : Changement du Root Bridge
+          ============================================================
+          Scénario: {{ new_root }}
+
+          Actuellement:
+          - SW1 est Root Bridge (priority 4097)
+          - SW2 et SW3 ont la priorité par défaut (32769)
+          - Le port Et0/1 de SW3 est bloqué
+
+          On va faire de SW2 le nouveau Root Bridge et observer:
+          - Le changement de rôles des ports
+          - Le nouveau port bloqué
+          - Le temps de convergence
+          ============================================================
+
+    - name: "État STP avant changement"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ item.console_port }}
+        --show "show spanning-tree vlan 1 | include Root|Interface|Et0"
+      args:
+        executable: python3
+      loop: "{{ switches_info }}"
+      register: stp_before
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: "Résumé avant changement"
+      debug:
+        msg: "{{ item.item.name }}: {{ item.stdout_lines[-10:] | join(' ') }}"
+      loop: "{{ stp_before.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    # =========================================================================
+    # SCÉNARIO 1 : SW2 devient Root Bridge
+    # =========================================================================
+
+    - name: "SCÉNARIO - SW2 devient Root Bridge"
+      debug:
+        msg: |
+          ============================================================
+          Configuration de SW2 comme Root Bridge
+          ============================================================
+          Commande: spanning-tree vlan 1 priority 0
+
+          Priority 0 = la plus basse possible
+          Résultat: 0 + 1 (VLAN) = 1
+          ============================================================
+      when: new_root == "sw2_root"
+
+    - name: "Configurer SW2 avec priority 0"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switches_info[1].console_port }}
+        --commands "enable;configure terminal;spanning-tree vlan 1 priority 0;end;write memory"
+      args:
+        executable: python3
+      when: new_root == "sw2_root"
+
+    - name: "Attendre la convergence STP (30 secondes)"
+      pause:
+        seconds: 35
+        prompt: |
+          Attente de la convergence STP...
+
+          STP prend du temps car :
+          - Listening state : 15 secondes
+          - Learning state  : 15 secondes
+          - Total           : 30 secondes minimum
+
+          Pendant ce temps, les switches recalculent leurs chemins...
+      when: new_root == "sw2_root"
+
+    # =========================================================================
+    # VÉRIFICATION APRÈS CHANGEMENT
+    # =========================================================================
+
+    - name: "Vérifier le nouvel état STP"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ item.console_port }}
+        --show "show spanning-tree vlan 1"
+      args:
+        executable: python3
+      loop: "{{ switches_info }}"
+      register: stp_after
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: "RÉSULTAT - Nouvel état STP"
+      debug:
+        msg: |
+          ============================================================
+          {{ item.item.name }}
+          ============================================================
+          {{ item.stdout }}
+      loop: "{{ stp_after.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    # =========================================================================
+    # ANALYSE
+    # =========================================================================
+
+    - name: "ANALYSE FINALE"
+      debug:
+        msg: |
+          ============================================================
+          ANALYSE DU CHANGEMENT DE ROOT BRIDGE
+          ============================================================
+
+          AVANT:
+            - Root Bridge: SW1 (priority 4097)
+            - Port bloqué: SW3 Et0/1
+
+          APRÈS:
+            - Root Bridge: SW2 (priority 1)
+            - Nouveau calcul des chemins
+
+          Ce qui a changé:
+          1. SW2 est maintenant le Root (tous ses ports sont Designated)
+          2. SW1 a maintenant un Root Port (vers SW2)
+          3. SW3 a recalculé son chemin vers le nouveau Root
+          4. Un nouveau port peut être bloqué (selon les coûts)
+
+          Points clés CCNA:
+          - Le Root Bridge a TOUS ses ports en Designated/Forwarding
+          - Les autres switches ont UN Root Port vers le Root
+          - Les ports redondants sont bloqués
+
+          Pour restaurer SW1 comme Root:
+            ansible-playbook playbooks/03_root_election.yml -e "scenario=restore_sw1"
+          ============================================================
+
+    # =========================================================================
+    # SCÉNARIO 2 : Restaurer SW1 comme Root
+    # =========================================================================
+
+    - name: "RESTAURATION - SW1 redevient Root"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switches_info[1].console_port }}
+        --commands "enable;configure terminal;spanning-tree vlan 1 priority 32768;end;write memory"
+      args:
+        executable: python3
+      when: new_root == "restore_sw1"
+
+    - name: "Attendre la convergence (restauration)"
+      pause:
+        seconds: 35
+        prompt: "Restauration en cours - SW1 reprend le rôle de Root..."
+      when: new_root == "restore_sw1"

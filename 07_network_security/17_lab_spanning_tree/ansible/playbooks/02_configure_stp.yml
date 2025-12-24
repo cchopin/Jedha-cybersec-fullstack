@@ -1,0 +1,170 @@
+# =============================================================================
+# 02_configure_stp.yml - Configuration STP de base
+# =============================================================================
+# Ce playbook montre comment :
+# - Vérifier l'état STP actuel
+# - Configurer explicitement le Root Bridge
+# - Observer les rôles des ports
+# =============================================================================
+
+---
+- name: Configuration Spanning Tree Protocol
+  hosts: localhost
+  gather_facts: false
+
+  # ---------------------------------------------------------------------------
+  # Charger les infos des switches (créées par 01_create_topology.yml)
+  # ---------------------------------------------------------------------------
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+
+    # =========================================================================
+    # PARTIE 1 : État STP actuel (avant modification)
+    # =========================================================================
+
+    - name: "PARTIE 1 - Afficher l'état STP AVANT modification"
+      debug:
+        msg: |
+          ============================================================
+          ÉTAPE 1 : Vérification de l'état STP actuel
+          ============================================================
+          On va d'abord observer comment STP s'est configuré automatiquement
+          SANS intervention manuelle.
+
+          Points à observer:
+          - Quel switch est Root Bridge ? (celui avec la MAC la plus basse)
+          - Quels ports sont bloqués ?
+          - Quel est le coût vers le Root ?
+          ============================================================
+
+    # Pour chaque switch, on exécute "show spanning-tree"
+    - name: "Vérifier STP sur chaque switch"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ item.console_port }}
+        --show "show spanning-tree vlan 1"
+      args:
+        executable: python3
+      loop: "{{ switches_info }}"
+      register: stp_before
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: "Résumé STP AVANT modification"
+      debug:
+        msg: |
+          {{ item.item.name }}:
+          {{ item.stdout_lines | join('\n') }}
+      loop: "{{ stp_before.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    # =========================================================================
+    # PARTIE 2 : Configurer SW1 comme Root Bridge
+    # =========================================================================
+    # On baisse la priorité de SW1 à 4096 pour le forcer à être Root
+    # Priorité = 4096 + VLAN ID (1) = 4097
+    # =========================================================================
+
+    - name: "PARTIE 2 - Configurer SW1 comme Root Bridge"
+      debug:
+        msg: |
+          ============================================================
+          ÉTAPE 2 : Configuration du Root Bridge
+          ============================================================
+          On va configurer SW1 comme Root Bridge en baissant sa priorité.
+
+          Commande Cisco:
+            spanning-tree vlan 1 priority 4096
+
+          Priorité résultante: 4096 + 1 (VLAN) = 4097
+          (plus basse = plus prioritaire pour devenir Root)
+          ============================================================
+
+    - name: "Configurer la priorité STP sur SW1"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switches_info[0].console_port }}
+        --commands "enable;configure terminal;spanning-tree vlan 1 priority 4096;end;write memory"
+      args:
+        executable: python3
+      register: sw1_config
+
+    - name: "Attendre la convergence STP"
+      pause:
+        seconds: 10
+        prompt: |
+          Attente de la convergence STP...
+          (les switches recalculent leurs chemins)
+
+    # =========================================================================
+    # PARTIE 3 : Vérifier les changements
+    # =========================================================================
+
+    - name: "PARTIE 3 - Vérifier les changements"
+      debug:
+        msg: |
+          ============================================================
+          ÉTAPE 3 : Vérification après modification
+          ============================================================
+          SW1 devrait maintenant avoir:
+          - Priority: 4097 (4096 + VLAN 1)
+          - Root ID: son propre Bridge ID
+
+          Les autres switches devraient montrer:
+          - Root ID: celui de SW1 (priority 4097)
+          - Root Port: le port qui mène à SW1
+          ============================================================
+
+    - name: "Vérifier STP après modification"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ item.console_port }}
+        --show "show spanning-tree vlan 1"
+      args:
+        executable: python3
+      loop: "{{ switches_info }}"
+      register: stp_after
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: "Résumé STP APRÈS modification"
+      debug:
+        msg: |
+          {{ item.item.name }}:
+          {{ item.stdout_lines | join('\n') }}
+      loop: "{{ stp_after.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    # =========================================================================
+    # RÉSUMÉ FINAL
+    # =========================================================================
+
+    - name: "RÉSUMÉ FINAL"
+      debug:
+        msg: |
+          ============================================================
+          CONFIGURATION STP TERMINÉE
+          ============================================================
+
+          Ce qu'on a fait:
+          1. Observé l'état STP automatique (Root = MAC la plus basse)
+          2. Configuré SW1 comme Root Bridge (priority 4096)
+          3. Vérifié que SW1 est bien le Root
+
+          Concepts clés:
+          - Bridge Priority : Plus c'est bas = plus prioritaire
+          - Root Port : Port qui mène au Root Bridge
+          - Designated Port : Port qui forward vers un segment
+          - Blocked Port : Port désactivé pour éviter les boucles
+
+          Prochaine étape (optionnel):
+            ansible-playbook playbooks/03_root_election.yml
+            (pour voir ce qui se passe si on change le Root)
+          ============================================================

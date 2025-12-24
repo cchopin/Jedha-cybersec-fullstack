@@ -1,0 +1,31 @@
+# =============================================================================
+# inventory.yml - Configuration de connexion Ansible
+# =============================================================================
+# Ce fichier définit COMMENT Ansible se connecte au serveur GNS3
+#
+# Structure Ansible:
+#   all:          -> Groupe racine (tous les hosts)
+#     hosts:      -> Liste des machines cibles
+#     vars:       -> Variables partagées par tous les hosts
+# =============================================================================
+
+all:
+  hosts:
+    # On exécute Ansible localement (pas via SSH)
+    localhost:
+      ansible_connection: local    # Connexion locale, pas de SSH
+
+  vars:
+    # URL du serveur GNS3 (API REST)
+    # Format: http://IP:PORT
+    gns3_server: "http://192.168.139.14:80"
+
+    # ID unique du projet GNS3 "17_lab_spanning_tree"
+    # Trouvé via: curl http://192.168.139.14/v2/projects
+    project_id: "a30a2c3b-fb44-47a7-bc10-cf32c4bfa575"
+
+    # ID du template IOU L2 (switch Cisco)
+    # C'est le "moule" pour créer des switches
+    # Le même template sert à créer SW1, SW2, SW3...
+    # Trouvé via: curl http://192.168.139.14/v2/templates
+    template_iou_l2_id: "54a678c9-e848-4b41-9b8c-7737ace0194a"

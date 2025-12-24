@@ -1,0 +1,301 @@
+---
+# =============================================================================
+# Exercice 3: ARP - Address Resolution Protocol
+# =============================================================================
+# Objectif: Comprendre le fonctionnement d'ARP
+#
+# ARP résout les adresses IP en adresses MAC:
+#   1. L'émetteur broadcast une requête ARP "Who has IP X?"
+#   2. Le périphérique avec cette IP répond en unicast "IP X is at MAC Y"
+#   3. L'émetteur stocke cette association dans sa table ARP
+#
+# Commandes clés:
+#   show ip arp        - Affiche la table ARP
+#   clear ip arp       - Vide la table ARP
+#   debug arp          - Active le debug ARP en temps réel
+# =============================================================================
+
+- name: "Exercice ARP - Comprendre le protocole ARP"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  vars:
+    # Type d'exercice à effectuer
+    exercise: "view_arp"  # Options: view_arp, generate_arp, clear_arp, debug_arp
+
+  tasks:
+    # =========================================================================
+    # Exercice 1: Visualiser la table ARP
+    # =========================================================================
+    - name: "EXERCICE 1: Visualiser les tables ARP"
+      when: exercise == "view_arp"
+      block:
+        - name: "Info - Table ARP"
+          debug:
+            msg: |
+              ============================================
+              EXERCICE: VISUALISER LA TABLE ARP
+              ============================================
+              La table ARP stocke les associations IP <-> MAC
+              apprises dynamiquement ou configurées statiquement.
+
+              Format de la sortie:
+                Protocol  Address       Age  Hardware Addr    Type  Interface
+                Internet  192.168.10.2  5    aabb.ccdd.eeff   ARPA  Vlan10
+
+              - Protocol: Type de protocole (Internet = IPv4)
+              - Address: Adresse IP
+              - Age: Temps depuis la dernière mise à jour (minutes)
+              - Hardware Addr: Adresse MAC associée
+              - Type: Type d'encapsulation (ARPA = Ethernet)
+              - Interface: Interface locale
+              ============================================
+
+        - name: "Voir la table ARP sur SW1"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show ip arp"
+          args:
+            executable: python3
+          register: sw1_arp
+
+        - name: "Afficher table ARP SW1"
+          debug:
+            msg: |
+              ============================================
+              TABLE ARP - SW1
+              ============================================
+              {{ sw1_arp.stdout }}
+              ============================================
+
+        - name: "Voir la table ARP sur SW2"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw2_console_port }}
+            --show "show ip arp"
+          args:
+            executable: python3
+          register: sw2_arp
+
+        - name: "Afficher table ARP SW2"
+          debug:
+            msg: |
+              ============================================
+              TABLE ARP - SW2
+              ============================================
+              {{ sw2_arp.stdout }}
+              ============================================
+
+    # =========================================================================
+    # Exercice 2: Générer du trafic ARP avec ping
+    # =========================================================================
+    - name: "EXERCICE 2: Générer du trafic ARP"
+      when: exercise == "generate_arp"
+      block:
+        - name: "Info - Génération ARP"
+          debug:
+            msg: |
+              ============================================
+              EXERCICE: GÉNÉRER DU TRAFIC ARP
+              ============================================
+              Un ping vers une IP inconnue déclenche:
+              1. Requête ARP broadcast
+              2. Réponse ARP unicast
+              3. Mise à jour de la table ARP
+              4. Envoi du ping ICMP
+
+              Nous allons pinger SW2 depuis SW1 pour
+              observer le processus ARP.
+              ============================================
+
+        - name: "Vider la table ARP de SW1 d'abord"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;clear ip arp"
+          args:
+            executable: python3
+
+        - name: "Voir table ARP avant ping (devrait être vide/réduite)"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show ip arp"
+          args:
+            executable: python3
+          register: arp_before
+
+        - name: "Table ARP AVANT ping"
+          debug:
+            msg: |
+              {{ arp_before.stdout }}
+
+        - name: "Pinger SW2 depuis SW1 (via VLAN 10)"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;ping {{ switch_ips.sw2.vlan10 }} repeat 3"
+          args:
+            executable: python3
+          register: ping_result
+
+        - name: "Résultat du ping"
+          debug:
+            var: ping_result.stdout_lines
+
+        - name: "Voir table ARP après ping"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show ip arp"
+          args:
+            executable: python3
+          register: arp_after
+
+        - name: "Table ARP APRÈS ping"
+          debug:
+            msg: |
+              ============================================
+              TABLE ARP APRÈS PING
+              ============================================
+              {{ arp_after.stdout }}
+
+              OBSERVATION:
+              Une nouvelle entrée pour {{ switch_ips.sw2.vlan10 }}
+              devrait apparaître avec l'adresse MAC de SW2.
+              ============================================
+
+    # =========================================================================
+    # Exercice 3: Vider la table ARP
+    # =========================================================================
+    - name: "EXERCICE 3: Vider la table ARP"
+      when: exercise == "clear_arp"
+      block:
+        - name: "Info - Clear ARP"
+          debug:
+            msg: |
+              ============================================
+              EXERCICE: VIDER LA TABLE ARP
+              ============================================
+              La commande "clear ip arp" supprime toutes
+              les entrées dynamiques de la table ARP.
+
+              Utile pour:
+              - Forcer la résolution ARP
+              - Troubleshooting
+              - Tests de sécurité
+              ============================================
+
+        - name: "Table ARP AVANT clear"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show ip arp"
+          args:
+            executable: python3
+          register: arp_before_clear
+
+        - name: "Afficher avant"
+          debug:
+            var: arp_before_clear.stdout_lines
+
+        - name: "Vider la table ARP"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --commands "enable;clear ip arp"
+          args:
+            executable: python3
+
+        - name: "Attendre un moment"
+          pause:
+            seconds: 2
+
+        - name: "Table ARP APRÈS clear"
+          script: >
+            ../scripts/cisco_cli.py
+            --host {{ gns3_host }}
+            --port {{ sw1_console_port }}
+            --show "show ip arp"
+          args:
+            executable: python3
+          register: arp_after_clear
+
+        - name: "Afficher après"
+          debug:
+            msg: |
+              ============================================
+              TABLE ARP APRÈS CLEAR
+              ============================================
+              {{ arp_after_clear.stdout }}
+
+              Les entrées dynamiques ont été supprimées.
+              Seules les entrées statiques persistent.
+              ============================================
+
+    # =========================================================================
+    # Exercice 4: Debug ARP
+    # =========================================================================
+    - name: "EXERCICE 4: Debug ARP (information)"
+      when: exercise == "debug_arp"
+      block:
+        - name: "Info - Debug ARP"
+          debug:
+            msg: |
+              ============================================
+              DEBUG ARP - MODE MANUEL
+              ============================================
+              Pour voir les requêtes/réponses ARP en temps réel:
+
+              1. Connectez-vous au switch:
+                 telnet {{ gns3_host }} {{ sw1_console_port }}
+
+              2. Activez le debug ARP:
+                 SW1# debug arp
+
+              3. Depuis un autre terminal, générez du trafic:
+                 - Ping vers une nouvelle IP
+                 - Clear ARP puis ping
+
+              4. Observez les messages:
+                 *Mar  1 00:03:22.069: ARP: sent request for 192.168.10.2
+                 *Mar  1 00:03:22.089: ARP: received reply from 192.168.10.2
+
+              5. Désactivez le debug:
+                 SW1# undebug all
+
+              ATTENTION: Le debug consomme des ressources!
+              ============================================
+
+    - name: "Résumé des exercices disponibles"
+      debug:
+        msg: |
+          ============================================
+          EXERCICES ARP DISPONIBLES
+          ============================================
+
+          1. Visualiser les tables ARP:
+             ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e "exercise=view_arp"
+
+          2. Générer du trafic ARP (ping):
+             ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e "exercise=generate_arp"
+
+          3. Vider la table ARP:
+             ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e "exercise=clear_arp"
+
+          4. Info sur le debug ARP:
+             ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e "exercise=debug_arp"
+
+          ============================================

@@ -1,0 +1,298 @@
+---
+# =============================================================================
+# MASTER PLAYBOOK - Lab ARP et Switching Fundamentals
+# =============================================================================
+# Lance tous les exercices du lab en une seule commande
+#
+# Usage:
+#   ansible-playbook playbooks/00_full_lab.yml
+#
+# Ou pour sauter certaines étapes:
+#   ansible-playbook playbooks/00_full_lab.yml --skip-tags "troubleshooting"
+#
+# Tags disponibles:
+#   - topology      : Création du projet GNS3 et topologie
+#   - config        : Configuration des switches
+#   - arp           : Exercices ARP
+#   - mac           : Exercices table MAC
+#   - troubleshoot  : Exercices troubleshooting
+#   - verify        : Commandes de vérification
+# =============================================================================
+
+# =============================================================================
+# ÉTAPE 1: Créer le projet GNS3 et la topologie
+# =============================================================================
+- name: "ÉTAPE 1/6: Création du projet GNS3 et topologie"
+  import_playbook: 01_create_topology.yml
+  tags: [topology, setup]
+
+# =============================================================================
+# ÉTAPE 2: Configurer les switches
+# =============================================================================
+- name: "ÉTAPE 2/6: Configuration des switches (VLANs, Trunk, IPs)"
+  import_playbook: 02_configure_switches.yml
+  tags: [config, setup]
+
+# =============================================================================
+# ÉTAPE 3: Exercices ARP
+# =============================================================================
+- name: "ÉTAPE 3/6: Exercices ARP"
+  hosts: localhost
+  gather_facts: false
+  tags: [arp, exercises]
+
+  vars_files:
+    - ../group_vars/all.yml
+    - ../switch_info.yml
+
+  tasks:
+    - name: "=== EXERCICES ARP ==="
+      debug:
+        msg: "Lancement des exercices ARP..."
+
+    - name: "3.1 Visualiser les tables ARP"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show ip arp"
+      args:
+        executable: python3
+      register: arp_table
+
+    - name: "Table ARP SW1"
+      debug:
+        msg: |
+          ============================================
+          TABLE ARP - SW1
+          ============================================
+          {{ arp_table.stdout }}
+
+    - name: "3.2 Générer du trafic ARP (ping SW2)"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --commands "enable;ping {{ switch_ips.sw2.vlan10 }} repeat 3"
+      args:
+        executable: python3
+      register: ping_result
+
+    - name: "Résultat ping"
+      debug:
+        var: ping_result.stdout_lines
+
+    - name: "3.3 Voir table ARP après ping"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show ip arp"
+      args:
+        executable: python3
+      register: arp_after
+
+    - name: "Table ARP après ping"
+      debug:
+        msg: |
+          ============================================
+          TABLE ARP APRÈS PING
+          ============================================
+          {{ arp_after.stdout }}
+
+          Nouvelle entrée pour {{ switch_ips.sw2.vlan10 }} visible!
+          ============================================
+
+# =============================================================================
+# ÉTAPE 4: Exercices Table MAC
+# =============================================================================
+- name: "ÉTAPE 4/6: Exercices Table MAC"
+  hosts: localhost
+  gather_facts: false
+  tags: [mac, exercises]
+
+  vars_files:
+    - ../group_vars/all.yml
+    - ../switch_info.yml
+
+  tasks:
+    - name: "=== EXERCICES TABLE MAC ==="
+      debug:
+        msg: "Lancement des exercices Table MAC..."
+
+    - name: "4.1 Visualiser la table MAC"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show mac address-table"
+      args:
+        executable: python3
+      register: mac_table
+
+    - name: "Table MAC SW1"
+      debug:
+        msg: |
+          ============================================
+          TABLE MAC - SW1
+          ============================================
+          {{ mac_table.stdout }}
+
+    - name: "4.2 Voir les entrées dynamiques"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show mac address-table dynamic"
+      args:
+        executable: python3
+      register: mac_dynamic
+
+    - name: "Entrées MAC dynamiques"
+      debug:
+        msg: |
+          ============================================
+          ENTRÉES MAC DYNAMIQUES
+          ============================================
+          {{ mac_dynamic.stdout }}
+
+    - name: "4.3 Compteur MAC"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show mac address-table count"
+      args:
+        executable: python3
+      register: mac_count
+
+    - name: "Compteur MAC"
+      debug:
+        var: mac_count.stdout_lines
+
+# =============================================================================
+# ÉTAPE 5: Troubleshooting
+# =============================================================================
+- name: "ÉTAPE 5/6: Diagnostic et Troubleshooting"
+  hosts: localhost
+  gather_facts: false
+  tags: [troubleshoot, exercises]
+
+  vars_files:
+    - ../group_vars/all.yml
+    - ../switch_info.yml
+
+  tasks:
+    - name: "=== DIAGNOSTIC COMPLET ==="
+      debug:
+        msg: "Lancement du diagnostic..."
+
+    - name: "5.1 État des interfaces"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show interfaces status"
+      args:
+        executable: python3
+      register: if_status
+
+    - name: "Interfaces"
+      debug:
+        msg: |
+          ============================================
+          ÉTAT DES INTERFACES
+          ============================================
+          {{ if_status.stdout }}
+
+    - name: "5.2 Spanning Tree"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show spanning-tree summary"
+      args:
+        executable: python3
+      register: stp_status
+
+    - name: "STP"
+      debug:
+        msg: |
+          ============================================
+          SPANNING TREE
+          ============================================
+          {{ stp_status.stdout }}
+
+    - name: "5.3 Trunk status"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ sw1_console_port }}
+        --show "show interfaces trunk"
+      args:
+        executable: python3
+      register: trunk_status
+
+    - name: "Trunks"
+      debug:
+        msg: |
+          ============================================
+          TRUNKS ACTIFS
+          ============================================
+          {{ trunk_status.stdout }}
+
+# =============================================================================
+# ÉTAPE 6: Résumé des commandes CCNA
+# =============================================================================
+- name: "ÉTAPE 6/6: Résumé des commandes de vérification"
+  hosts: localhost
+  gather_facts: false
+  tags: [verify, summary]
+
+  vars_files:
+    - ../group_vars/all.yml
+    - ../switch_info.yml
+
+  tasks:
+    - name: "=== RÉSUMÉ FINAL ==="
+      debug:
+        msg: |
+          ============================================
+          LAB ARP/SWITCHING TERMINÉ
+          ============================================
+
+          ACCÈS CONSOLE:
+            SW1: telnet {{ gns3_host }} {{ sw1_console_port }}
+            SW2: telnet {{ gns3_host }} {{ sw2_console_port }}
+
+          COMMANDES CCNA À RETENIR:
+
+          ARP:
+            show ip arp              - Table ARP
+            clear ip arp             - Vider le cache ARP
+            debug arp                - Debug temps réel
+
+          TABLE MAC:
+            show mac address-table          - Table complète
+            show mac address-table dynamic  - Entrées dynamiques
+            show mac address-table count    - Compteur
+            clear mac address-table dynamic - Vider
+
+          INTERFACES:
+            show interfaces status   - État des ports
+            show interfaces trunk    - Trunks actifs
+            show ip interface brief  - IPs des interfaces
+
+          STP:
+            show spanning-tree       - État STP
+
+          LINUX/WINDOWS:
+            ip neigh show / arp -a   - Table ARP locale
+
+          ============================================
+
+          POUR ALLER PLUS LOIN:
+            ansible-playbook playbooks/03_arp_exercise.yml -e "exercise=debug_arp"
+            ansible-playbook playbooks/05_troubleshooting.yml -e "problem_type=stale_arp"
+
+          ============================================

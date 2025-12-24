@@ -1,0 +1,16 @@
+# Fichier généré automatiquement par 01_create_topology.yml
+# Contient les ports console des switches pour les autres playbooks
+
+switches_info:
+  - name: "SW1"
+    node_id: "7cace039-f639-427d-b317-e1129d5e4d94"
+    console_port: 5000
+    console_cmd: "telnet 192.168.139.14 5000"
+  - name: "SW2"
+    node_id: "90d7bfde-8c73-49ad-86da-6d3467e6424c"
+    console_port: 5001
+    console_cmd: "telnet 192.168.139.14 5001"
+  - name: "SW3"
+    node_id: "ccb617ed-3350-4cb9-b287-f06c48cffffa"
+    console_port: 5002
+    console_cmd: "telnet 192.168.139.14 5002"
