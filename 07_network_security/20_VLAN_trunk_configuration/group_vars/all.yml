@@ -20,7 +20,7 @@ project_name: "Lab_20_VLAN_Trunk"
 #                 │                                           │
 #   PC_IT_1 ──────┤                                           ├── PC_HR_2
 #                 │                                           │
-#   PC_Admin_1 ───┼──── IOU1 ════════ IOU2 ════════ IOU3 ────┼── PC_Sales_2
+#   PC_Admin_1 ───┼──── IOU1 ════════ IOU2 ════════ IOU3 ─────┼── PC_Sales_2
 #                 │                    │
 #   PC_HR_1 ──────┤              ┌─────┴─────┐
 #                 │              │           │
@@ -63,7 +63,7 @@ vpcs:
   # Switch IOU1
   - name: "PC_Admin_1"
     switch: "IOU1"
-    port: 2          # e0/2
+    port: 2 # e0/2
     vlan: 10
     ip: "192.168.10.10"
     gateway: "192.168.10.254"
@@ -71,7 +71,7 @@ vpcs:
     y: 100
   - name: "PC_HR_1"
     switch: "IOU1"
-    port: 3          # e0/3
+    port: 3 # e0/3
     vlan: 20
     ip: "192.168.20.10"
     gateway: "192.168.20.254"
@@ -79,7 +79,7 @@ vpcs:
     y: 100
   - name: "PC_Sales_3"
     switch: "IOU1"
-    port: 4          # e1/0
+    port: 4 # e1/0
     vlan: 30
     ip: "192.168.30.30"
     gateway: "192.168.30.254"
@@ -87,7 +87,7 @@ vpcs:
     y: 100
   - name: "PC_IT_1"
     switch: "IOU1"
-    port: 5          # e1/1
+    port: 5 # e1/1
     vlan: 40
     ip: "192.168.40.10"
     gateway: "192.168.40.254"
@@ -95,7 +95,7 @@ vpcs:
     y: -100
   - name: "PC_Guests_1"
     switch: "IOU1"
-    port: 6          # e1/2
+    port: 6 # e1/2
     vlan: 50
     ip: "192.168.50.10"
     gateway: "192.168.50.254"
@@ -105,7 +105,7 @@ vpcs:
   # Switch IOU2
   - name: "PC_Admin_2"
     switch: "IOU2"
-    port: 2          # e0/2
+    port: 2 # e0/2
     vlan: 10
     ip: "192.168.10.20"
     gateway: "192.168.10.254"
@@ -113,7 +113,7 @@ vpcs:
     y: 100
   - name: "PC_IT_2"
     switch: "IOU2"
-    port: 3          # e0/3
+    port: 3 # e0/3
     vlan: 40
     ip: "192.168.40.20"
     gateway: "192.168.40.254"
@@ -123,7 +123,7 @@ vpcs:
   # Switch IOU3
   - name: "PC_HR_2"
     switch: "IOU3"
-    port: 2          # e0/2
+    port: 2 # e0/2
     vlan: 20
     ip: "192.168.20.20"
     gateway: "192.168.20.254"
@@ -131,7 +131,7 @@ vpcs:
     y: 100
   - name: "PC_Sales_2"
     switch: "IOU3"
-    port: 3          # e0/3
+    port: 3 # e0/3
     vlan: 30
     ip: "192.168.30.20"
     gateway: "192.168.30.254"
@@ -139,7 +139,7 @@ vpcs:
     y: 100
   - name: "PC_Guests_2"
     switch: "IOU3"
-    port: 4          # e1/0
+    port: 4 # e1/0
     vlan: 50
     ip: "192.168.50.20"
     gateway: "192.168.50.254"
@@ -150,13 +150,13 @@ vpcs:
 # e0/0 et e0/1 sont reserves pour les trunks
 trunk_links:
   - switch1: "IOU1"
-    port1: 0         # e0/0
+    port1: 0 # e0/0
     switch2: "IOU2"
-    port2: 0         # e0/0
+    port2: 0 # e0/0
   - switch1: "IOU2"
-    port1: 1         # e0/1
+    port1: 1 # e0/1
     switch2: "IOU3"
-    port2: 0         # e0/0
+    port2: 0 # e0/0
 
 # VLANs autorises sur les trunks
 trunk_allowed_vlans: "10,20,30,40,50"

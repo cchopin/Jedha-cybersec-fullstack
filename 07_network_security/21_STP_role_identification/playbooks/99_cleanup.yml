@@ -1,0 +1,47 @@
+---
+# =============================================================================
+# Lab 21: STP Role Identification
+# Playbook 99: Nettoyage - Suppression du projet GNS3
+# =============================================================================
+
+- name: Nettoyer le projet GNS3
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: "Recuperer les projets existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+        return_content: true
+      register: existing_projects
+
+    - name: "Trouver le projet"
+      set_fact:
+        project_to_delete: "{{ existing_projects.json | selectattr('name', 'equalto', project_name) | list }}"
+
+    - name: "Fermer le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ item.project_id }}/close"
+        method: POST
+        status_code: [200, 201, 204, 404]
+      loop: "{{ project_to_delete }}"
+      when: project_to_delete | length > 0
+
+    - name: "Supprimer le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ item.project_id }}"
+        method: DELETE
+        status_code: [200, 204, 404]
+      loop: "{{ project_to_delete }}"
+      when: project_to_delete | length > 0
+
+    - name: "Resultat"
+      debug:
+        msg: "Projet {{ project_name }} supprime"
+      when: project_to_delete | length > 0
+
+    - name: "Aucun projet trouve"
+      debug:
+        msg: "Aucun projet {{ project_name }} trouve"
+      when: project_to_delete | length == 0

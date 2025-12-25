@@ -1,0 +1,71 @@
+---
+# =============================================================================
+# Lab 21: STP Role Identification
+# Playbook 02: Configuration des VLANs et Trunks
+# =============================================================================
+
+- name: Configurer VLANs et Trunks pour STP
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../group_vars/all.yml
+    - ../switch_info.yml
+
+  vars:
+    script_path: "{{ playbook_dir }}/../scripts/cisco_cli.py"
+    switch1_cmds: "enable;configure terminal;vlan 10;name USERS;exit;interface Ethernet0/0;switchport trunk encapsulation dot1q;switchport mode trunk;switchport trunk allowed vlan 1,10;exit;interface Ethernet0/1;switchport trunk encapsulation dot1q;switchport mode trunk;switchport trunk allowed vlan 1,10;exit;interface Ethernet0/2;switchport mode access;switchport access vlan 10;exit;end;write memory"
+    switch2_cmds: "enable;configure terminal;vlan 10;name USERS;exit;interface Ethernet0/0;switchport trunk encapsulation dot1q;switchport mode trunk;switchport trunk allowed vlan 1,10;exit;interface Ethernet0/1;switchport trunk encapsulation dot1q;switchport mode trunk;switchport trunk allowed vlan 1,10;exit;interface Ethernet0/2;switchport mode access;switchport access vlan 10;exit;end;write memory"
+    switch3_cmds: "enable;configure terminal;vlan 10;name USERS;exit;interface Ethernet0/0;switchport trunk encapsulation dot1q;switchport mode trunk;switchport trunk allowed vlan 1,10;exit;interface Ethernet0/1;switchport trunk encapsulation dot1q;switchport mode trunk;switchport trunk allowed vlan 1,10;exit;interface Ethernet0/2;switchport mode access;switchport access vlan 10;exit;end;write memory"
+
+  tasks:
+    - name: "Attendre que les switches soient prets"
+      pause:
+        seconds: 15
+        prompt: "Attente de stabilisation (15s)..."
+
+    - name: "ETAPE 1: Configurer Switch1"
+      shell: 'python3 {{ script_path }} --host {{ gns3_host }} --port {{ switch1_console_port }} --commands "{{ switch1_cmds }}"'
+      register: switch1_result
+
+    - name: "Debug Switch1"
+      debug:
+        var: switch1_result.stdout_lines
+
+    - name: "Pause apres Switch1"
+      pause:
+        seconds: 3
+
+    - name: "ETAPE 2: Configurer Switch2"
+      shell: 'python3 {{ script_path }} --host {{ gns3_host }} --port {{ switch2_console_port }} --commands "{{ switch2_cmds }}"'
+      register: switch2_result
+
+    - name: "Debug Switch2"
+      debug:
+        var: switch2_result.stdout_lines
+
+    - name: "Pause apres Switch2"
+      pause:
+        seconds: 3
+
+    - name: "ETAPE 3: Configurer Switch3"
+      shell: 'python3 {{ script_path }} --host {{ gns3_host }} --port {{ switch3_console_port }} --commands "{{ switch3_cmds }}"'
+      register: switch3_result
+
+    - name: "Debug Switch3"
+      debug:
+        var: switch3_result.stdout_lines
+
+    - name: "Attendre convergence STP"
+      pause:
+        seconds: 30
+        prompt: "Attente de la convergence STP (30s)..."
+
+    - name: Resume
+      debug:
+        msg: |
+          ========================================
+          VLANS ET TRUNKS CONFIGURES
+          ========================================
+          Switch1, Switch2, Switch3 configures avec VLAN 10 et trunks 802.1Q
+          ========================================

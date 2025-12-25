@@ -1,0 +1,12 @@
+# Informations de connexion - Lab 21 STP Role Identification
+# Genere automatiquement
+
+project_id: "0d14da3e-edce-477d-a79e-7942b67bd8ce"
+
+switch1_console_port: 5038
+switch2_console_port: 5039
+switch3_console_port: 5040
+
+pc1_console_port: 5041
+pc2_console_port: 5043
+pc3_console_port: 5045

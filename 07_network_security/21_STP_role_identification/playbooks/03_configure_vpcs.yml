@@ -1,0 +1,72 @@
+---
+# =============================================================================
+# Lab 21: STP Role Identification
+# Playbook 03: Configuration des IPs sur les VPCs
+# =============================================================================
+
+- name: Configurer les IPs des VPCs
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../group_vars/all.yml
+    - ../switch_info.yml
+
+  vars:
+    script_path: "{{ playbook_dir }}/../scripts/cisco_cli.py"
+
+  tasks:
+    # =========================================================================
+    # Configurer PC1
+    # =========================================================================
+    - name: "Configurer PC1 - IP 192.168.10.1"
+      shell: 'python3 {{ script_path }} --host {{ gns3_host }} --port {{ pc1_console_port }} --commands ";ip 192.168.10.1 255.255.255.0;save"'
+      ignore_errors: true
+
+    - name: "Pause apres PC1"
+      pause:
+        seconds: 2
+
+    # =========================================================================
+    # Configurer PC2
+    # =========================================================================
+    - name: "Configurer PC2 - IP 192.168.10.2"
+      shell: 'python3 {{ script_path }} --host {{ gns3_host }} --port {{ pc2_console_port }} --commands ";ip 192.168.10.2 255.255.255.0;save"'
+      ignore_errors: true
+
+    - name: "Pause apres PC2"
+      pause:
+        seconds: 2
+
+    # =========================================================================
+    # Configurer PC3
+    # =========================================================================
+    - name: "Configurer PC3 - IP 192.168.10.3"
+      shell: 'python3 {{ script_path }} --host {{ gns3_host }} --port {{ pc3_console_port }} --commands ";ip 192.168.10.3 255.255.255.0;save"'
+      ignore_errors: true
+
+    # =========================================================================
+    # Resume
+    # =========================================================================
+    - name: Resume
+      debug:
+        msg: |
+          ========================================
+          VPCs CONFIGURES
+          ========================================
+
+          IPs configurees:
+            PC1: 192.168.10.1/24
+            PC2: 192.168.10.2/24
+            PC3: 192.168.10.3/24
+
+          Tous dans le VLAN 10.
+
+          ========================================
+          PROCHAINE ETAPE
+          ========================================
+
+          Verifier STP:
+          ansible-playbook playbooks/04_verify_stp.yml
+
+          ========================================

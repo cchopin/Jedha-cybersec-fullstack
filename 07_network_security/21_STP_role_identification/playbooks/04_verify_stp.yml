@@ -1,0 +1,114 @@
+---
+# =============================================================================
+# Lab 21: STP Role Identification
+# Playbook 04: Verification de la configuration STP
+# =============================================================================
+# Ce playbook affiche les informations STP sur chaque switch:
+# - Root Bridge
+# - Root Port
+# - Designated Ports
+# - Blocked Ports
+# =============================================================================
+
+- name: Verifier la configuration STP
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../group_vars/all.yml
+    - ../switch_info.yml
+
+  vars:
+    verify_switch: "all"  # all, Switch1, Switch2, ou Switch3
+    script_path: "{{ playbook_dir }}/../scripts/cisco_cli.py"
+
+  tasks:
+    # =========================================================================
+    # Verification Switch1
+    # =========================================================================
+    - name: "STP sur Switch1"
+      shell: 'python3 {{ script_path }} --host {{ gns3_host }} --port {{ switch1_console_port }} --show "show spanning-tree vlan 10"'
+      register: stp_switch1
+      when: verify_switch == "all" or verify_switch == "Switch1"
+
+    - name: "Afficher STP Switch1"
+      debug:
+        var: stp_switch1.stdout_lines
+      when: verify_switch == "all" or verify_switch == "Switch1"
+
+    # =========================================================================
+    # Verification Switch2
+    # =========================================================================
+    - name: "STP sur Switch2"
+      shell: 'python3 {{ script_path }} --host {{ gns3_host }} --port {{ switch2_console_port }} --show "show spanning-tree vlan 10"'
+      register: stp_switch2
+      when: verify_switch == "all" or verify_switch == "Switch2"
+
+    - name: "Afficher STP Switch2"
+      debug:
+        var: stp_switch2.stdout_lines
+      when: verify_switch == "all" or verify_switch == "Switch2"
+
+    # =========================================================================
+    # Verification Switch3
+    # =========================================================================
+    - name: "STP sur Switch3"
+      shell: 'python3 {{ script_path }} --host {{ gns3_host }} --port {{ switch3_console_port }} --show "show spanning-tree vlan 10"'
+      register: stp_switch3
+      when: verify_switch == "all" or verify_switch == "Switch3"
+
+    - name: "Afficher STP Switch3"
+      debug:
+        var: stp_switch3.stdout_lines
+      when: verify_switch == "all" or verify_switch == "Switch3"
+
+    # =========================================================================
+    # Guide d'analyse
+    # =========================================================================
+    - name: Guide d'analyse STP
+      debug:
+        msg: |
+          ========================================
+          GUIDE D'ANALYSE STP
+          ========================================
+
+          ROLES DES SWITCHES:
+          -------------------
+          - Root Bridge: Switch avec la priorite la plus basse
+            (ou MAC la plus basse si priorites egales)
+
+          ROLES DES PORTS:
+          ----------------
+          - Root Port (Root): Port avec le meilleur chemin vers le Root Bridge
+          - Designated Port (Desg): Port qui forward le trafic sur un segment
+          - Alternate/Blocked (Altn/BLK): Port bloque pour eviter les boucles
+
+          ETATS DES PORTS:
+          ----------------
+          - FWD (Forwarding): Transmet le trafic
+          - BLK (Blocking): Bloque le trafic (evite les boucles)
+          - LRN (Learning): Apprend les MAC
+          - LIS (Listening): Ecoute les BPDU
+
+          ========================================
+          COMMANDES UTILES (sur les switches)
+          ========================================
+
+          show spanning-tree
+          show spanning-tree vlan 10
+          show spanning-tree root
+          show spanning-tree bridge
+          show spanning-tree interface e0/0
+
+          ========================================
+          EXERCICE: FORCER LE ROOT BRIDGE
+          ========================================
+
+          Pour forcer Switch1 comme Root Bridge:
+
+          Switch1# configure terminal
+          Switch1(config)# spanning-tree vlan 10 priority 4096
+          Switch1(config)# end
+          Switch1# show spanning-tree vlan 10
+
+          ========================================

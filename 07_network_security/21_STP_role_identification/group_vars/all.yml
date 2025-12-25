@@ -1,0 +1,126 @@
+# =============================================================================
+# Lab 21: STP Role Identification
+# =============================================================================
+# Topologie en triangle avec 3 switches et 3 VPCs
+# Objectif: Identifier les roles STP (Root Bridge, Root Port, Designated Port, Blocked Port)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Configuration GNS3
+# -----------------------------------------------------------------------------
+gns3_server: "http://192.168.156.183:80"
+gns3_host: "192.168.156.183"
+project_name: "Lab_21_STP_Role_Identification"
+
+# -----------------------------------------------------------------------------
+# VLANs - Tous les PCs dans le VLAN 10
+# -----------------------------------------------------------------------------
+vlans:
+  - id: 10
+    name: "USERS"
+    network: "192.168.10.0/24"
+
+# -----------------------------------------------------------------------------
+# Switches - Topologie en TRIANGLE
+# -----------------------------------------------------------------------------
+#
+#           Switch1
+#           /     \
+#      Et0/0       Et0/1
+#         /         \
+#    Switch2 ----- Switch3
+#           Et0/0
+#
+# -----------------------------------------------------------------------------
+switches:
+  - name: "Switch1"
+    x: 0
+    y: -150
+  - name: "Switch2"
+    x: -200
+    y: 100
+  - name: "Switch3"
+    x: 200
+    y: 100
+
+# -----------------------------------------------------------------------------
+# Liens Trunk entre Switches (Triangle)
+# -----------------------------------------------------------------------------
+trunk_links:
+  # Switch1 <-> Switch2
+  - switch1: "Switch1"
+    adapter1: 0
+    port1: 0
+    switch2: "Switch2"
+    adapter2: 0
+    port2: 0
+  # Switch1 <-> Switch3
+  - switch1: "Switch1"
+    adapter1: 0
+    port1: 1
+    switch2: "Switch3"
+    adapter2: 0
+    port2: 1
+  # Switch2 <-> Switch3
+  - switch1: "Switch2"
+    adapter1: 0
+    port1: 1
+    switch2: "Switch3"
+    adapter2: 0
+    port2: 0
+
+trunk_allowed_vlans: "10"
+
+# -----------------------------------------------------------------------------
+# VPCs - Un par switch, tous dans VLAN 10
+# -----------------------------------------------------------------------------
+vpcs:
+  - name: "PC1"
+    switch: "Switch1"
+    adapter: 0
+    port: 2
+    vlan: 10
+    ip: "192.168.10.1"
+    mask: "255.255.255.0"
+    x: 0
+    y: -250
+  - name: "PC2"
+    switch: "Switch2"
+    adapter: 0
+    port: 2
+    vlan: 10
+    ip: "192.168.10.2"
+    mask: "255.255.255.0"
+    x: -300
+    y: 100
+  - name: "PC3"
+    switch: "Switch3"
+    adapter: 0
+    port: 2
+    vlan: 10
+    ip: "192.168.10.3"
+    mask: "255.255.255.0"
+    x: 300
+    y: 100
+
+# -----------------------------------------------------------------------------
+# Configuration STP
+# -----------------------------------------------------------------------------
+stp:
+  vlan: 10
+  mode: "pvst"  # Per-VLAN Spanning Tree
+  priorities:
+    root_primary: 4096      # Pour forcer un switch comme Root Bridge
+    root_secondary: 8192    # Backup Root Bridge
+    default: 32768          # Priorite par defaut Cisco
+
+# -----------------------------------------------------------------------------
+# Commandes de verification STP
+# -----------------------------------------------------------------------------
+stp_commands:
+  show_tree: "show spanning-tree"
+  show_tree_vlan: "show spanning-tree vlan 10"
+  show_root: "show spanning-tree root"
+  show_bridge: "show spanning-tree bridge"
+  show_detail: "show spanning-tree detail"
+  show_interface: "show spanning-tree interface"
