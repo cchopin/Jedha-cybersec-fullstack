@@ -1,0 +1,78 @@
+---
+# =============================================================================
+# Lab 20: VLAN and Trunk Configuration
+# Playbook 04: Verification de la configuration
+# =============================================================================
+# Ce playbook verifie:
+# - Les VLANs sur chaque switch (show vlan brief)
+# - Les trunks (show interfaces trunk)
+# - Les tables MAC (show mac address-table)
+# =============================================================================
+
+- name: Verifier la configuration
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  vars:
+    verify_switch: "IOU1"  # Switch a verifier (IOU1, IOU2, IOU3)
+
+  tasks:
+    # =========================================================================
+    # Selection du switch
+    # =========================================================================
+    - name: Definir le port console
+      set_fact:
+        console_port: "{{ iou1_console_port }}"
+      when: verify_switch == "IOU1"
+
+    - name: Definir le port console IOU2
+      set_fact:
+        console_port: "{{ iou2_console_port }}"
+      when: verify_switch == "IOU2"
+
+    - name: Definir le port console IOU3
+      set_fact:
+        console_port: "{{ iou3_console_port }}"
+      when: verify_switch == "IOU3"
+
+    # =========================================================================
+    # Verifications
+    # =========================================================================
+    - name: "Verification: show vlan brief"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ console_port }} --show "show vlan brief"
+      register: vlan_output
+
+    - name: "Verification: show interfaces trunk"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ console_port }} --show "show interfaces trunk"
+      register: trunk_output
+
+    - name: "Verification: show mac address-table"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ console_port }} --show "show mac address-table"
+      register: mac_output
+
+    - name: Afficher les resultats
+      debug:
+        msg: |
+          ========================================
+          VERIFICATION {{ verify_switch }}
+          ========================================
+
+          Pour verifier un autre switch:
+          ansible-playbook playbooks/04_verify.yml -e "verify_switch=IOU2"
+
+          ========================================
+          COMMANDES MANUELLES UTILES
+          ========================================
+
+          telnet {{ gns3_host }} {{ console_port }}
+
+          # Dans le switch:
+          show vlan brief
+          show interfaces trunk
+          show mac address-table
+          show spanning-tree
+
+          ========================================

@@ -1,0 +1,348 @@
+---
+# =============================================================================
+# Lab Détection des Attaques ARP et VLAN - Blue Team
+# =============================================================================
+# Ce playbook couvre les outils et méthodes de détection.
+#
+# Exercices:
+#   exercise=arpwatch       - ARPwatch (Linux)
+#   exercise=wireshark      - Analyse Wireshark
+#   exercise=cisco_logs     - Logs et alertes Cisco
+#   exercise=monitoring     - Monitoring réseau
+# =============================================================================
+
+- name: "Lab Détection - Blue Team"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  vars:
+    exercise: "arpwatch"
+
+  tasks:
+    # =========================================================================
+    # ARPwatch
+    # =========================================================================
+    - name: "ARPWATCH: Guide d'utilisation"
+      debug:
+        msg: |
+          ========================================
+          ARPWATCH - SURVEILLANCE ARP
+          ========================================
+
+          ARPwatch surveille le trafic ARP et alerte sur les changements
+          d'associations IP-MAC.
+
+          INSTALLATION (Linux):
+          ========================================
+          # Debian/Ubuntu
+          sudo apt-get install arpwatch
+
+          # CentOS/RHEL
+          sudo yum install arpwatch
+
+          # macOS
+          brew install arpwatch
+
+          CONFIGURATION:
+          ========================================
+          # Fichier de config principal
+          /etc/default/arpwatch        # Debian
+          /etc/sysconfig/arpwatch      # RHEL
+
+          # Base de données des associations
+          /var/lib/arpwatch/arp.dat
+
+          DÉMARRAGE:
+          ========================================
+          # Démarrer sur une interface
+          sudo arpwatch -i eth0
+
+          # Avec email d'alerte
+          sudo arpwatch -i eth0 -m admin@example.com
+
+          # En mode verbose (debug)
+          sudo arpwatch -i eth0 -d
+
+          # Comme service
+          sudo systemctl start arpwatch
+          sudo systemctl enable arpwatch
+
+          TYPES D'ALERTES:
+          ========================================
+          ┌─────────────────────┬─────────────────────────────────────────┐
+          │ Message             │ Signification                           │
+          ├─────────────────────┼─────────────────────────────────────────┤
+          │ new station         │ Nouveau host détecté (IP + MAC)         │
+          │ new activity        │ Host connu mais inactif depuis longtemps│
+          │ changed ethernet    │ MAC a changé pour une IP connue ⚠️       │
+          │ flip flop           │ MAC alterne entre 2 valeurs ⚠️           │
+          │ reused old ethernet │ Ancienne MAC réutilisée                 │
+          └─────────────────────┴─────────────────────────────────────────┘
+
+          ⚠️  = Indicateurs possibles d'ARP spoofing
+
+          LECTURE DES LOGS:
+          ========================================
+          # Voir les logs en temps réel
+          tail -f /var/log/syslog | grep arpwatch
+
+          # Exemple de log suspect (flip flop):
+          arpwatch: flip flop 192.168.10.254 00:11:22:33:44:55 (00:aa:bb:cc:dd:ee)
+
+          # Cela signifie que l'IP 192.168.10.254 a changé de MAC
+          # → Possible ARP spoofing sur la gateway!
+
+          BASE DE DONNÉES:
+          ========================================
+          # Format du fichier arp.dat
+          cat /var/lib/arpwatch/arp.dat
+          # MAC            IP              Timestamp    Hostname
+          # 00:11:22:33:44:55 192.168.10.1  1234567890  sw1.local
+
+          ========================================
+      when: exercise == "arpwatch"
+
+    # =========================================================================
+    # Wireshark
+    # =========================================================================
+    - name: "WIRESHARK: Analyse du trafic ARP"
+      debug:
+        msg: |
+          ========================================
+          WIRESHARK - ANALYSE ARP
+          ========================================
+
+          FILTRES D'AFFICHAGE UTILES:
+          ========================================
+
+          # Tout le trafic ARP
+          arp
+
+          # ARP requests seulement
+          arp.opcode == 1
+
+          # ARP replies seulement
+          arp.opcode == 2
+
+          # Gratuitous ARP (sender IP = target IP)
+          arp.src.proto_ipv4 == arp.dst.proto_ipv4
+
+          # ARP pour une IP spécifique
+          arp.src.proto_ipv4 == 192.168.10.254 or arp.dst.proto_ipv4 == 192.168.10.254
+
+          # Potentiel ARP spoofing (expert info)
+          arp.duplicate-address-detected
+
+          # ARP depuis une MAC spécifique
+          arp.src.hw_mac == aa:bb:cc:dd:ee:ff
+
+          COLONNES RECOMMANDÉES:
+          ========================================
+          - Time
+          - Source MAC
+          - Destination MAC
+          - Source IP (arp.src.proto_ipv4)
+          - Target IP (arp.dst.proto_ipv4)
+          - Info
+
+          DÉTECTION D'ANOMALIES:
+          ========================================
+
+          1. TROP DE REPLIES SANS REQUEST
+             - Normal: Request → Reply
+             - Suspect: Beaucoup de Replies non sollicités
+             - Filtre: arp.opcode == 2
+
+          2. MÊME IP, MAC DIFFÉRENTES
+             Statistics → Resolved Addresses
+             Chercher les IPs avec plusieurs MACs
+
+          3. GRATUITOUS ARP EXCESSIFS
+             - Filtre: arp.src.proto_ipv4 == arp.dst.proto_ipv4
+             - Quelques-uns au démarrage = normal
+             - Flux continu = suspect
+
+          4. ARP STORM
+             - Beaucoup de requêtes broadcast en peu de temps
+             - Statistics → IO Graphs avec filtre "arp"
+
+          CAPTURE DEPUIS GNS3:
+          ========================================
+          # Dans GNS3: Clic droit sur un lien → Start Capture
+          # Wireshark s'ouvre automatiquement
+
+          # Ou via tcpdump sur un host Linux:
+          sudo tcpdump -i eth0 -w capture.pcap arp
+
+          ========================================
+      when: exercise == "wireshark"
+
+    # =========================================================================
+    # Logs Cisco
+    # =========================================================================
+    - name: "CISCO_LOGS: Logging et alertes"
+      debug:
+        msg: |
+          ========================================
+          CISCO - LOGGING ET ALERTES
+          ========================================
+
+          ACTIVER LE LOGGING:
+          ========================================
+          Switch(config)# logging buffered 16384
+          Switch(config)# logging console notifications
+          Switch(config)# service timestamps log datetime msec
+
+          # Envoyer vers un serveur syslog
+          Switch(config)# logging host 192.168.30.10
+          Switch(config)# logging trap informational
+
+          DEBUG ARP (attention: CPU intensive):
+          ========================================
+          Switch# debug arp
+          Switch# debug ip arp
+
+          # Désactiver après analyse
+          Switch# undebug all
+
+          LOGS PERTINENTS À SURVEILLER:
+          ========================================
+
+          1. PORT-SECURITY VIOLATIONS
+             %PORT_SECURITY-2-PSECURE_VIOLATION: Security violation
+             occurred, caused by MAC address xxxx.xxxx.xxxx on port Ethernet0/1
+
+          2. DAI VIOLATIONS (Dynamic ARP Inspection)
+             %SW_DAI-4-DHCP_SNOOPING_DENY: ARP request from host with
+             MAC xxxx.xxxx.xxxx, IP 192.168.10.x is denied
+
+          3. DHCP SNOOPING
+             %DHCP_SNOOPING-5-DHCP_SNOOPING_MATCH_MAC_FAIL:
+             MAC address verification failed
+
+          4. STP CHANGES
+             %SPANTREE-2-RECV_PVID_ERR: Received BPDU with inconsistent
+             peer vlan id
+
+          5. DTP NÉGOCIATION
+             %DTP-5-TRUNKPORTON: Port Ethernet0/0 has become dot1q trunk
+
+          VOIR LES LOGS:
+          ========================================
+          Switch# show logging
+          Switch# show logging | include DAI
+          Switch# show logging | include SECURITY
+
+          ========================================
+      when: exercise == "cisco_logs"
+
+    - name: "CISCO_LOGS: Voir les logs actuels SW1"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --show "show logging"
+      when: exercise == "cisco_logs"
+      ignore_errors: true
+
+    # =========================================================================
+    # Monitoring général
+    # =========================================================================
+    - name: "MONITORING: Outils et stratégies"
+      debug:
+        msg: |
+          ========================================
+          MONITORING RÉSEAU - VUE D'ENSEMBLE
+          ========================================
+
+          1. SURVEILLANCE PASSIVE
+          ========================================
+
+          ┌─────────────────────────────────────────────────────────────┐
+          │ OUTIL          │ USAGE                                     │
+          ├────────────────┼───────────────────────────────────────────┤
+          │ ARPwatch       │ Changements ARP                           │
+          │ Wireshark      │ Analyse paquets                           │
+          │ tcpdump        │ Capture CLI                               │
+          │ NetworkMiner   │ Analyse forensique                        │
+          └────────────────┴───────────────────────────────────────────┘
+
+          2. OUTILS IDS/IPS
+          ========================================
+
+          SNORT (règles ARP):
+            alert arp any any -> any any (msg:"ARP Spoofing Detected";
+            arp.opcode:2; threshold:type both, track by_src, count 50,
+            seconds 10; sid:1000001;)
+
+          SURICATA:
+            Configuration similaire à Snort
+            Meilleure performance multi-thread
+
+          ZEEK (Bro):
+            Script pour détecter les anomalies ARP
+            Génère des logs détaillés
+
+          3. SOLUTIONS COMMERCIALES
+          ========================================
+
+          - Cisco ISE (Identity Services Engine)
+          - Aruba ClearPass
+          - Fortinet FortiNAC
+          - ForeScout CounterACT
+
+          4. SCRIPTS PERSONNALISÉS
+          ========================================
+
+          # Python - Détection simple
+          from scapy.all import *
+
+          arp_table = {}
+
+          def detect_spoof(pkt):
+              if ARP in pkt and pkt[ARP].op == 2:  # is-at
+                  ip = pkt[ARP].psrc
+                  mac = pkt[ARP].hwsrc
+
+                  if ip in arp_table:
+                      if arp_table[ip] != mac:
+                          print(f"[!] ARP Spoofing détecté!")
+                          print(f"    IP: {ip}")
+                          print(f"    Ancienne MAC: {arp_table[ip]}")
+                          print(f"    Nouvelle MAC: {mac}")
+                  arp_table[ip] = mac
+
+          sniff(filter="arp", prn=detect_spoof)
+
+          5. BASELINE ET ALERTES
+          ========================================
+
+          Établir une baseline normale:
+            - Mapper IP → MAC pour tous les hosts
+            - Documenter les MACs des gateways
+            - Lister les serveurs DHCP légitimes
+
+          Alerter sur:
+            - Nouvelles MACs pour IPs connues
+            - MACs broadcast inhabituelles
+            - Trafic ARP excessif
+
+          ========================================
+      when: exercise == "monitoring"
+
+    - name: Résumé
+      debug:
+        msg: |
+          ========================================
+          LAB DÉTECTION - RÉSUMÉ
+          ========================================
+
+          Exercices disponibles:
+            -e "exercise=arpwatch"     # ARPwatch
+            -e "exercise=wireshark"    # Analyse Wireshark
+            -e "exercise=cisco_logs"   # Logs Cisco
+            -e "exercise=monitoring"   # Vue d'ensemble
+
+          Prochaine étape - Mitigation:
+            ansible-playbook playbooks/06_mitigation.yml
+
+          ========================================

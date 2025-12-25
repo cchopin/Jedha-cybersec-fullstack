@@ -1,0 +1,212 @@
+---
+# =============================================================================
+# Ajouter une VM Kali Linux au lab
+# =============================================================================
+# Ce playbook remplace le VPCS ATTACKER par une vraie VM Kali Linux
+# avec tous les outils d'attaque préinstallés.
+# =============================================================================
+
+- name: Ajouter Kali Linux au lab
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    project_name: "Lab_18_ARP_VLAN_Attacks"
+    kali_template_name: "kalilinux-kali-rolling"
+
+  tasks:
+    # =========================================================================
+    # ÉTAPE 1: Récupérer les templates
+    # =========================================================================
+    - name: "ÉTAPE 1: Récupérer les templates GNS3"
+      uri:
+        url: "{{ gns3_server }}/v2/templates"
+        method: GET
+        return_content: true
+      register: templates
+
+    - name: Trouver le template Kali
+      set_fact:
+        kali_template_id: "{{ (templates.json | selectattr('name', 'equalto', kali_template_name) | first).template_id }}"
+
+    - name: Afficher template Kali
+      debug:
+        msg: "Template Kali trouvé: {{ kali_template_id }}"
+
+    # =========================================================================
+    # ÉTAPE 2: Récupérer le projet
+    # =========================================================================
+    - name: "ÉTAPE 2: Récupérer les projets"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+        return_content: true
+      register: projects
+
+    - name: Trouver le projet
+      set_fact:
+        project: "{{ projects.json | selectattr('name', 'equalto', project_name) | first }}"
+
+    - name: Ouvrir le projet
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    # =========================================================================
+    # ÉTAPE 3: Récupérer les nodes existants
+    # =========================================================================
+    - name: "ÉTAPE 3: Récupérer les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: nodes
+
+    - name: Liste des nodes
+      set_fact:
+        node_names: "{{ nodes.json | map(attribute='name') | list }}"
+
+    - name: Trouver SW1
+      set_fact:
+        sw1: "{{ nodes.json | selectattr('name', 'equalto', 'SW1') | first }}"
+
+    - name: Trouver ATTACKER (si existe)
+      set_fact:
+        attacker_vpcs: "{{ nodes.json | selectattr('name', 'equalto', 'ATTACKER') | list | first | default(None) }}"
+
+    # =========================================================================
+    # ÉTAPE 4: Supprimer le VPCS ATTACKER (si existe)
+    # =========================================================================
+    - name: "ÉTAPE 4: Supprimer le VPCS ATTACKER"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes/{{ attacker_vpcs.node_id }}"
+        method: DELETE
+        status_code: [200, 204]
+      when: attacker_vpcs is not none and attacker_vpcs.node_type == 'vpcs'
+
+    # =========================================================================
+    # ÉTAPE 5: Créer la VM Kali
+    # =========================================================================
+    - name: "ÉTAPE 5: Créer la VM Kali"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/templates/{{ kali_template_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "KALI-ATTACKER"
+          x: 0
+          y: -150
+        status_code: [200, 201]
+      when: "'KALI-ATTACKER' not in node_names"
+      register: kali_created
+
+    # =========================================================================
+    # ÉTAPE 6: Récupérer le node Kali
+    # =========================================================================
+    - name: "ÉTAPE 6: Récupérer les nodes (avec Kali)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: all_nodes
+
+    - name: Trouver Kali
+      set_fact:
+        kali: "{{ all_nodes.json | selectattr('name', 'equalto', 'KALI-ATTACKER') | first }}"
+
+    # =========================================================================
+    # ÉTAPE 7: Connecter Kali à SW1 (e0/1)
+    # =========================================================================
+    - name: "ÉTAPE 7: Connecter KALI à SW1 (e0/1)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ kali.node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ sw1.node_id }}"
+              port_number: 1
+        status_code: [200, 201, 409]
+
+    # =========================================================================
+    # ÉTAPE 8: Démarrer Kali
+    # =========================================================================
+    - name: "ÉTAPE 8: Démarrer Kali"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes/{{ kali.node_id }}/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: Attendre le démarrage
+      pause:
+        seconds: 10
+        prompt: "Attente du démarrage de Kali (10s)..."
+
+    # =========================================================================
+    # ÉTAPE 9: Sauvegarder les infos
+    # =========================================================================
+    - name: "ÉTAPE 9: Mettre à jour switch_info.yml"
+      lineinfile:
+        path: "{{ playbook_dir }}/../switch_info.yml"
+        regexp: "^kali_"
+        line: |
+          kali_node_id: "{{ kali.node_id }}"
+          kali_console_port: {{ kali.console }}
+        create: false
+      ignore_errors: true
+
+    # =========================================================================
+    # Résumé
+    # =========================================================================
+    - name: Résumé
+      debug:
+        msg: |
+          ========================================
+          KALI LINUX AJOUTÉE AU LAB
+          ========================================
+
+          Node: KALI-ATTACKER
+          Console: telnet {{ gns3_host }} {{ kali.console }}
+
+          ========================================
+          CONNEXION À KALI
+          ========================================
+
+          1. Connecte-toi via telnet:
+             telnet {{ gns3_host }} {{ kali.console }}
+
+          2. Configure l'IP (dans Kali):
+             ip addr add 192.168.10.100/24 dev eth0
+             ip link set eth0 up
+             ip route add default via 192.168.10.254
+
+          3. Teste la connectivité:
+             ping 192.168.10.10   # ALICE
+             ping 192.168.10.20   # BOB
+
+          ========================================
+          OUTILS D'ATTAQUE DISPONIBLES
+          ========================================
+
+          # Installer les outils (première fois)
+          apt update && apt install -y ettercap-text-only arpwatch dsniff tcpdump nmap
+
+          # ARP Spoofing - Ettercap
+          ettercap -T -M arp:remote /192.168.10.10// /192.168.10.20//
+
+          # ARP Spoofing - Arpspoof
+          echo 1 > /proc/sys/net/ipv4/ip_forward
+          arpspoof -i eth0 -t 192.168.10.10 -r 192.168.10.20
+
+          # Sniffer le trafic
+          tcpdump -i eth0 -n
+
+          # Scanner le réseau
+          nmap -sn 192.168.10.0/24
+
+          ========================================

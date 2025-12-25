@@ -1,0 +1,181 @@
+# =============================================================================
+# Lab 18: ARP and VLAN Attacks - Red Team / Blue Team
+# =============================================================================
+# Ce lab couvre les attaques ARP Spoofing et VLAN Hopping
+# ainsi que les techniques de détection et mitigation.
+# =============================================================================
+
+# Serveur GNS3
+gns3_server: "http://192.168.156.183:80"
+gns3_host: "192.168.156.183"
+
+# Nom du projet GNS3
+project_name: "Lab_18_ARP_VLAN_Attacks"
+
+# =============================================================================
+# TOPOLOGIE DU LAB
+# =============================================================================
+#
+#                     ┌─────────────┐
+#                     │  ATTACKER   │ (VPCS/Kali)
+#                     │ 192.168.10.100
+#                     └──────┬──────┘
+#                            │ e0/1 (VLAN 10)
+#     ┌─────────┐     ┌──────┴──────┐     ┌─────────┐
+#     │  ALICE  │     │     SW1     │     │   BOB   │
+#     │ Victim1 │─────│  (Target)   │─────│ Victim2 │
+#     │.10.10   │e0/2 │             │e0/3 │.10.20   │
+#     └─────────┘     └──────┬──────┘     └─────────┘
+#                            │ e0/0 (trunk)
+#                     ┌──────┴──────┐
+#                     │     SW2     │
+#                     │ (Gateway)   │
+#                     │ DAI/PortSec │
+#                     └─────────────┘
+#
+# =============================================================================
+
+# Configuration des switches
+switches:
+  - name: "SW1"
+    x: 0
+    y: 0
+    role: "target"      # Switch cible des attaques
+  - name: "SW2"
+    x: 0
+    y: 150
+    role: "gateway"     # Switch avec protections
+
+# Configuration des VPCs (machines)
+vpcs:
+  - name: "ATTACKER"
+    x: 0
+    y: -150
+    ip: "192.168.10.100"
+    gateway: "192.168.10.254"
+    role: "attacker"
+  - name: "ALICE"
+    x: -200
+    y: 0
+    ip: "192.168.10.10"
+    gateway: "192.168.10.254"
+    role: "victim"
+  - name: "BOB"
+    x: 200
+    y: 0
+    ip: "192.168.10.20"
+    gateway: "192.168.10.254"
+    role: "victim"
+
+# Configuration des VLANs
+vlans:
+  - id: 10
+    name: "USERS"
+    network: "192.168.10.0/24"
+  - id: 20
+    name: "SERVERS"
+    network: "192.168.20.0/24"
+  - id: 30
+    name: "MANAGEMENT"
+    network: "192.168.30.0/24"
+  - id: 99
+    name: "NATIVE"
+    network: "192.168.99.0/24"
+
+# Configuration trunk
+trunk_allowed_vlans: "10,20,30"
+trunk_interface: "Ethernet0/0"
+
+# Native VLAN (sécurisé = pas VLAN 1)
+native_vlan: 99
+
+# =============================================================================
+# CONFIGURATION IP POUR LES SWITCHES (Interfaces VLAN)
+# =============================================================================
+switch_ips:
+  sw1:
+    vlan10: "192.168.10.1"
+    vlan20: "192.168.20.1"
+    vlan30: "192.168.30.1"
+  sw2:
+    vlan10: "192.168.10.254"   # Gateway pour VLAN 10
+    vlan20: "192.168.20.254"   # Gateway pour VLAN 20
+    vlan30: "192.168.30.254"   # Gateway pour VLAN 30
+
+netmask: "255.255.255.0"
+
+# =============================================================================
+# CONFIGURATION DES ATTAQUES (Red Team)
+# =============================================================================
+
+# ARP Spoofing - Cibles
+arp_spoofing:
+  attacker_mac: "AA:BB:CC:DD:EE:FF"  # MAC spoofée (fictive pour demo)
+  target1_ip: "192.168.10.10"        # Alice
+  target2_ip: "192.168.10.20"        # Bob
+  gateway_ip: "192.168.10.254"       # Gateway
+
+# VLAN Hopping
+vlan_hopping:
+  # Double-tagging attack
+  outer_vlan: 99    # Native VLAN (sera strippé)
+  inner_vlan: 20    # VLAN cible
+  # Switch spoofing (DTP)
+  dtp_domain: "ATTACK"
+
+# =============================================================================
+# CONFIGURATION DES PROTECTIONS (Blue Team)
+# =============================================================================
+
+# Dynamic ARP Inspection (DAI)
+dai:
+  enabled: true
+  vlans: "10,20,30"
+  rate_limit: 15    # pps (packets per second)
+
+# Port Security
+port_security:
+  enabled: true
+  max_mac: 1
+  violation_mode: "shutdown"  # shutdown, restrict, protect
+
+# DHCP Snooping (requis pour DAI)
+dhcp_snooping:
+  enabled: true
+  vlans: "10,20,30"
+  trusted_ports:
+    - "Ethernet0/0"   # Trunk vers SW2
+
+# BPDU Guard (protection STP)
+bpdu_guard:
+  enabled: true
+  ports:
+    - "Ethernet0/1"
+    - "Ethernet0/2"
+    - "Ethernet0/3"
+
+# Storm Control
+storm_control:
+  broadcast_level: 10   # % of bandwidth
+  multicast_level: 10
+  unicast_level: 10
+
+# =============================================================================
+# OUTILS D'ATTAQUE (pour référence - installés sur machine attaquante)
+# =============================================================================
+# - ettercap : ARP spoofing, MITM
+# - bettercap : Framework moderne, ARP/DNS spoofing
+# - arpspoof : Outil simple dsniff
+# - macof : MAC flooding (dsniff)
+# - yersinia : Attaques Layer 2 (DTP, STP, CDP)
+# - scapy : Crafting de paquets Python
+# =============================================================================
+
+# =============================================================================
+# OUTILS DE DETECTION (pour référence)
+# =============================================================================
+# - arpwatch : Monitoring ARP
+# - Wireshark : Capture et analyse
+# - tcpdump : Capture CLI
+# - nmap : Scan réseau
+# =============================================================================

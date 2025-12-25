@@ -1,0 +1,62 @@
+# =============================================================================
+# Lab 15: Trunking et VLAN Propagation
+# =============================================================================
+
+# Serveur GNS3
+gns3_server: "http://192.168.156.183:80"
+gns3_host: "192.168.156.183"
+
+# Nom du projet GNS3
+project_name: "Lab_15_Trunking_VLAN"
+
+# =============================================================================
+# TOPOLOGIE DU LAB
+# =============================================================================
+#
+#   ┌─────────┐                    ┌─────────┐
+#   │   SW1   │════════════════════│   SW2   │
+#   │         │     Trunk e0/0     │         │
+#   └─────────┘                    └─────────┘
+#
+# =============================================================================
+
+# Configuration des switches
+switches:
+  - name: "SW1"
+    x: -200
+    y: 0
+  - name: "SW2"
+    x: 200
+    y: 0
+
+# Configuration des VLANs
+vlans:
+  - id: 10
+    name: "VENTES"
+  - id: 20
+    name: "IT"
+  - id: 30
+    name: "DIRECTION"
+
+# Configuration trunk
+trunk_allowed_vlans: "10,20,30"
+trunk_interface: "Ethernet0/0"
+
+# Native VLAN (different de VLAN 1 pour la securite)
+native_vlan: 99
+
+# =============================================================================
+# Modes DTP (Dynamic Trunking Protocol)
+# =============================================================================
+# - trunk          : Force le mode trunk (pas de negociation)
+# - access         : Force le mode access (pas de trunk)
+# - dynamic auto   : Devient trunk si l'autre cote est trunk ou dynamic desirable
+# - dynamic desirable : Tente activement de devenir trunk
+# =============================================================================
+
+dtp_modes:
+  trunk: "switchport mode trunk"
+  access: "switchport mode access"
+  dynamic_auto: "switchport mode dynamic auto"
+  dynamic_desirable: "switchport mode dynamic desirable"
+  nonegotiate: "switchport nonegotiate"

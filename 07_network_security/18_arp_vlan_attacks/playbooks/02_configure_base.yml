@@ -1,0 +1,210 @@
+---
+# =============================================================================
+# Configuration de base des switches et VPCs
+# =============================================================================
+# Configure:
+# - VLANs sur les switches
+# - Trunk entre SW1 et SW2
+# - Ports access pour les VPCs
+# - IPs sur les VPCs
+# - Interface VLAN sur SW2 (Gateway)
+# =============================================================================
+
+- name: Configuration de base du lab ARP & VLAN Attacks
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    # =========================================================================
+    # ÉTAPE 1: Configuration SW1 (Switch cible)
+    # =========================================================================
+    - name: "ÉTAPE 1: Configurer SW1"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          - "hostname SW1"
+          # Création des VLANs
+          - "vlan 10"
+          - "name USERS"
+          - "vlan 20"
+          - "name SERVERS"
+          - "vlan 30"
+          - "name MANAGEMENT"
+          - "vlan 99"
+          - "name NATIVE"
+          - "exit"
+          # Configuration du trunk vers SW2
+          - "interface Ethernet0/0"
+          - "switchport trunk encapsulation dot1q"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan 10,20,30"
+          - "switchport trunk native vlan 99"
+          - "no shutdown"
+          - "exit"
+          # Port ATTACKER (e0/1) - VLAN 10
+          - "interface Ethernet0/1"
+          - "switchport mode access"
+          - "switchport access vlan 10"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          # Port ALICE (e0/2) - VLAN 10
+          - "interface Ethernet0/2"
+          - "switchport mode access"
+          - "switchport access vlan 10"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          # Port BOB (e0/3) - VLAN 10
+          - "interface Ethernet0/3"
+          - "switchport mode access"
+          - "switchport access vlan 10"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          # Interface VLAN pour monitoring
+          - "interface vlan 10"
+          - "ip address 192.168.10.1 255.255.255.0"
+          - "no shutdown"
+          - "exit"
+          - "end"
+          - "write memory"
+      register: sw1_config
+
+    - name: Afficher config SW1
+      debug:
+        msg: "SW1 configuré avec VLANs et trunk"
+
+    # =========================================================================
+    # ÉTAPE 2: Configuration SW2 (Gateway)
+    # =========================================================================
+    - name: "ÉTAPE 2: Configurer SW2 (Gateway)"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw2_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          - "hostname SW2-Gateway"
+          # Création des VLANs
+          - "vlan 10"
+          - "name USERS"
+          - "vlan 20"
+          - "name SERVERS"
+          - "vlan 30"
+          - "name MANAGEMENT"
+          - "vlan 99"
+          - "name NATIVE"
+          - "exit"
+          # Configuration du trunk vers SW1
+          - "interface Ethernet0/0"
+          - "switchport trunk encapsulation dot1q"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan 10,20,30"
+          - "switchport trunk native vlan 99"
+          - "no shutdown"
+          - "exit"
+          # Interface VLAN 10 - Gateway pour les users
+          - "interface vlan 10"
+          - "ip address 192.168.10.254 255.255.255.0"
+          - "no shutdown"
+          - "exit"
+          # Interface VLAN 20 - Gateway pour les servers
+          - "interface vlan 20"
+          - "ip address 192.168.20.254 255.255.255.0"
+          - "no shutdown"
+          - "exit"
+          # Interface VLAN 30 - Gateway pour management
+          - "interface vlan 30"
+          - "ip address 192.168.30.254 255.255.255.0"
+          - "no shutdown"
+          - "exit"
+          # Activer le routage inter-VLAN
+          - "ip routing"
+          - "end"
+          - "write memory"
+      register: sw2_config
+
+    - name: Afficher config SW2
+      debug:
+        msg: "SW2 configuré comme Gateway avec IP routing"
+
+    # =========================================================================
+    # ÉTAPE 3: Configuration des VPCs
+    # =========================================================================
+    - name: "ÉTAPE 3a: Configurer ATTACKER"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ attacker_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "ip 192.168.10.100/24 192.168.10.254"
+          - "save"
+      register: attacker_config
+
+    - name: "ÉTAPE 3b: Configurer ALICE"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ alice_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "ip 192.168.10.10/24 192.168.10.254"
+          - "save"
+      register: alice_config
+
+    - name: "ÉTAPE 3c: Configurer BOB"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ bob_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "ip 192.168.10.20/24 192.168.10.254"
+          - "save"
+      register: bob_config
+
+    - name: Résumé VPCs
+      debug:
+        msg: |
+          VPCs configurés:
+            ATTACKER: 192.168.10.100/24 (GW: 192.168.10.254)
+            ALICE:    192.168.10.10/24  (GW: 192.168.10.254)
+            BOB:      192.168.10.20/24  (GW: 192.168.10.254)
+
+    # =========================================================================
+    # ÉTAPE 4: Vérification
+    # =========================================================================
+    - name: "ÉTAPE 4: Attendre la convergence"
+      pause:
+        seconds: 5
+        prompt: "Attente de la convergence réseau..."
+
+    - name: Résumé final
+      debug:
+        msg: |
+          ========================================
+          CONFIGURATION DE BASE TERMINÉE
+          ========================================
+
+          SWITCHES:
+            SW1 (Target)  - 192.168.10.1
+            SW2 (Gateway) - 192.168.10.254 / .20.254 / .30.254
+
+          VPCS (tous en VLAN 10):
+            ATTACKER - 192.168.10.100
+            ALICE    - 192.168.10.10
+            BOB      - 192.168.10.20
+
+          TRUNK: SW1 <--> SW2 (VLANs 10,20,30 / Native 99)
+
+          TESTS SUGGÉRÉS:
+            # Depuis ATTACKER (telnet {{ gns3_host }} {{ attacker_console_port }})
+            ping 192.168.10.10    # ALICE
+            ping 192.168.10.20    # BOB
+            ping 192.168.10.254   # Gateway
+
+          Prochaines étapes:
+            ansible-playbook playbooks/03_arp_spoofing.yml
+          ========================================

@@ -1,0 +1,11 @@
+# Informations de connexion - Lab 16 Spanning Tree
+# Genere automatiquement
+
+project_id: "9f9c7d0e-8c51-4f41-93f1-02a8ded43a3f"
+
+sw1_console_port: 5033
+sw1_node_id: "7f084ada-5d18-4ac9-a368-69cf071c28e3"
+sw2_console_port: 5034
+sw2_node_id: "1cc12002-edb3-4e83-85ce-c8cf778ac0ff"
+sw3_console_port: 5035
+sw3_node_id: "91f5e93b-dc0e-443d-8089-598d491c8500"

@@ -1,0 +1,12 @@
+---
+# =============================================================================
+# Site Playbook - Setup de base (topologie + configuration)
+# =============================================================================
+# Usage: ansible-playbook site.yml
+# =============================================================================
+
+- name: "Création de la topologie GNS3"
+  import_playbook: playbooks/01_create_topology.yml
+
+- name: "Configuration de base"
+  import_playbook: playbooks/02_configure_base.yml

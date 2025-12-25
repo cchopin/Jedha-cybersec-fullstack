@@ -1,0 +1,175 @@
+# =============================================================================
+# Lab 20: VLAN and Trunk Configuration
+# =============================================================================
+# Ce lab configure des VLANs par departement et des trunks entre switches.
+# Aucun routage inter-VLAN - isolation Layer 2 uniquement.
+# =============================================================================
+
+# Serveur GNS3
+gns3_server: "http://192.168.156.183:80"
+gns3_host: "192.168.156.183"
+
+# Nom du projet GNS3
+project_name: "Lab_20_VLAN_Trunk"
+
+# =============================================================================
+# TOPOLOGIE DU LAB (basee sur le screenshot)
+# =============================================================================
+#
+#   PC_Guests_1 ──┐                                           ┌── PC_Guests_2
+#                 │                                           │
+#   PC_IT_1 ──────┤                                           ├── PC_HR_2
+#                 │                                           │
+#   PC_Admin_1 ───┼──── IOU1 ════════ IOU2 ════════ IOU3 ────┼── PC_Sales_2
+#                 │                    │
+#   PC_HR_1 ──────┤              ┌─────┴─────┐
+#                 │              │           │
+#   PC_Sales_3 ───┘         PC_Admin_2   PC_IT_2
+#
+# =============================================================================
+
+# Configuration des VLANs
+vlans:
+  - id: 10
+    name: "Administration"
+    network: "192.168.10.0/24"
+  - id: 20
+    name: "HR"
+    network: "192.168.20.0/24"
+  - id: 30
+    name: "Sales"
+    network: "192.168.30.0/24"
+  - id: 40
+    name: "IT"
+    network: "192.168.40.0/24"
+  - id: 50
+    name: "Guests"
+    network: "192.168.50.0/24"
+
+# Configuration des switches
+switches:
+  - name: "IOU1"
+    x: -200
+    y: 0
+  - name: "IOU2"
+    x: 0
+    y: 0
+  - name: "IOU3"
+    x: 200
+    y: 0
+
+# Configuration des VPCs avec leur VLAN et switch
+vpcs:
+  # Switch IOU1
+  - name: "PC_Admin_1"
+    switch: "IOU1"
+    port: 2          # e0/2
+    vlan: 10
+    ip: "192.168.10.10"
+    gateway: "192.168.10.254"
+    x: -300
+    y: 100
+  - name: "PC_HR_1"
+    switch: "IOU1"
+    port: 3          # e0/3
+    vlan: 20
+    ip: "192.168.20.10"
+    gateway: "192.168.20.254"
+    x: -200
+    y: 100
+  - name: "PC_Sales_3"
+    switch: "IOU1"
+    port: 4          # e1/0
+    vlan: 30
+    ip: "192.168.30.30"
+    gateway: "192.168.30.254"
+    x: -100
+    y: 100
+  - name: "PC_IT_1"
+    switch: "IOU1"
+    port: 5          # e1/1
+    vlan: 40
+    ip: "192.168.40.10"
+    gateway: "192.168.40.254"
+    x: -300
+    y: -100
+  - name: "PC_Guests_1"
+    switch: "IOU1"
+    port: 6          # e1/2
+    vlan: 50
+    ip: "192.168.50.10"
+    gateway: "192.168.50.254"
+    x: -300
+    y: -200
+
+  # Switch IOU2
+  - name: "PC_Admin_2"
+    switch: "IOU2"
+    port: 2          # e0/2
+    vlan: 10
+    ip: "192.168.10.20"
+    gateway: "192.168.10.254"
+    x: 0
+    y: 100
+  - name: "PC_IT_2"
+    switch: "IOU2"
+    port: 3          # e0/3
+    vlan: 40
+    ip: "192.168.40.20"
+    gateway: "192.168.40.254"
+    x: 0
+    y: -100
+
+  # Switch IOU3
+  - name: "PC_HR_2"
+    switch: "IOU3"
+    port: 2          # e0/2
+    vlan: 20
+    ip: "192.168.20.20"
+    gateway: "192.168.20.254"
+    x: 200
+    y: 100
+  - name: "PC_Sales_2"
+    switch: "IOU3"
+    port: 3          # e0/3
+    vlan: 30
+    ip: "192.168.30.20"
+    gateway: "192.168.30.254"
+    x: 300
+    y: 100
+  - name: "PC_Guests_2"
+    switch: "IOU3"
+    port: 4          # e1/0
+    vlan: 50
+    ip: "192.168.50.20"
+    gateway: "192.168.50.254"
+    x: 300
+    y: -100
+
+# Liens trunk entre switches
+# e0/0 et e0/1 sont reserves pour les trunks
+trunk_links:
+  - switch1: "IOU1"
+    port1: 0         # e0/0
+    switch2: "IOU2"
+    port2: 0         # e0/0
+  - switch1: "IOU2"
+    port1: 1         # e0/1
+    switch2: "IOU3"
+    port2: 0         # e0/0
+
+# VLANs autorises sur les trunks
+trunk_allowed_vlans: "10,20,30,40,50"
+
+# =============================================================================
+# TESTS DE CONNECTIVITE
+# =============================================================================
+# Apres configuration, ces pings doivent fonctionner (meme VLAN):
+#   PC_Admin_1 (192.168.10.10) <-> PC_Admin_2 (192.168.10.20)
+#   PC_HR_1 (192.168.20.10) <-> PC_HR_2 (192.168.20.20)
+#   PC_IT_1 (192.168.40.10) <-> PC_IT_2 (192.168.40.20)
+#   PC_Guests_1 (192.168.50.10) <-> PC_Guests_2 (192.168.50.20)
+#
+# Ces pings NE doivent PAS fonctionner (VLANs differents):
+#   PC_Admin_1 -> PC_HR_1 (VLAN 10 vs VLAN 20)
+# =============================================================================

@@ -1,0 +1,9 @@
+# Informations de connexion - Lab 15 Trunking/VLAN
+# Genere automatiquement
+
+project_id: "0a7d76c3-beb9-4704-bb5a-8d0f3aa54acf"
+
+sw1_console_port: 5031
+sw1_node_id: "763c6f56-982c-46be-9906-85c550c8ca76"
+sw2_console_port: 5032
+sw2_node_id: "8f0f53ee-fe25-45d1-9e0d-0de32065779e"

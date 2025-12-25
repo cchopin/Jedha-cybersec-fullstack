@@ -1,0 +1,19 @@
+# Informations de connexion - Lab 20 VLAN Trunk
+# Genere automatiquement
+
+project_id: "782528aa-3afc-43ac-b054-7d4bb3ef6e92"
+
+iou1_console_port: 5008
+iou2_console_port: 5009
+iou3_console_port: 5010
+
+pc_admin_1_console_port: 5011
+pc_hr_1_console_port: 5013
+pc_sales_3_console_port: 5015
+pc_it_1_console_port: 5017
+pc_guests_1_console_port: 5019
+pc_admin_2_console_port: 5021
+pc_it_2_console_port: 5023
+pc_hr_2_console_port: 5025
+pc_sales_2_console_port: 5027
+pc_guests_2_console_port: 5029

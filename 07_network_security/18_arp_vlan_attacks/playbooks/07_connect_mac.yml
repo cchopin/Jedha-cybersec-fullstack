@@ -1,0 +1,213 @@
+---
+# =============================================================================
+# Connecter le Mac au lab GNS3 via Cloud node
+# =============================================================================
+# Ce playbook :
+# 1. Ajoute un Cloud node connecté à eth0 du serveur GNS3
+# 2. Connecte le Cloud à SW1
+# 3. Configure la route sur le Mac
+#
+# Après exécution, le Mac pourra communiquer avec le réseau 192.168.10.x
+# =============================================================================
+
+- name: Connecter le Mac au lab GNS3
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    project_name: "Lab_18_ARP_VLAN_Attacks"
+    mac_network: "192.168.10.0/24"
+    gns3_gateway: "192.168.156.183"
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    # =========================================================================
+    # ÉTAPE 1: Récupérer le projet
+    # =========================================================================
+    - name: "ÉTAPE 1: Récupérer les projets GNS3"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+        return_content: true
+      register: projects
+
+    - name: Trouver le projet
+      set_fact:
+        project: "{{ projects.json | selectattr('name', 'equalto', project_name) | first }}"
+
+    - name: Ouvrir le projet
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    # =========================================================================
+    # ÉTAPE 2: Vérifier les nodes existants
+    # =========================================================================
+    - name: "ÉTAPE 2: Récupérer les nodes existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: existing_nodes
+
+    - name: Liste des nodes existants
+      set_fact:
+        existing_node_names: "{{ existing_nodes.json | map(attribute='name') | list }}"
+
+    - name: Trouver SW1
+      set_fact:
+        sw1: "{{ existing_nodes.json | selectattr('name', 'equalto', 'SW1') | first }}"
+
+    # =========================================================================
+    # ÉTAPE 3: Créer le Cloud node (si n'existe pas)
+    # =========================================================================
+    - name: "ÉTAPE 3: Créer le Cloud node"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes"
+        method: POST
+        body_format: json
+        body:
+          name: "MAC-Cloud"
+          node_type: "cloud"
+          compute_id: "local"
+          x: 300
+          y: -150
+          properties:
+            ports_mapping:
+              - name: "eth0"
+                port_number: 0
+                type: "ethernet"
+                interface: "eth0"
+        status_code: [200, 201]
+      when: "'MAC-Cloud' not in existing_node_names"
+      register: cloud_created
+
+    # =========================================================================
+    # ÉTAPE 4: Récupérer le Cloud node
+    # =========================================================================
+    - name: "ÉTAPE 4: Récupérer les nodes (avec Cloud)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: all_nodes
+
+    - name: Trouver le Cloud node
+      set_fact:
+        cloud_node: "{{ all_nodes.json | selectattr('name', 'equalto', 'MAC-Cloud') | first }}"
+
+    # =========================================================================
+    # ÉTAPE 5: Connecter le Cloud à SW1 (e1/0)
+    # =========================================================================
+    - name: "ÉTAPE 5: Connecter MAC-Cloud à SW1 (e1/0)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ cloud_node.node_id }}"
+              port_number: 0
+            - adapter_number: 1
+              node_id: "{{ sw1.node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+      register: link_result
+
+    # =========================================================================
+    # ÉTAPE 6: Démarrer le Cloud node
+    # =========================================================================
+    - name: "ÉTAPE 6: Démarrer le Cloud node"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes/{{ cloud_node.node_id }}/start"
+        method: POST
+        status_code: [200, 204]
+
+    # =========================================================================
+    # ÉTAPE 7: Configurer la route sur le Mac
+    # =========================================================================
+    - name: "ÉTAPE 7: Vérifier si la route existe"
+      command: netstat -rn
+      register: routes
+      changed_when: false
+
+    - name: Ajouter la route vers 192.168.10.0/24
+      command: route -n add -net 192.168.10.0/24 {{ gns3_gateway }}
+      become: true
+      when: "'192.168.10' not in routes.stdout"
+      register: route_added
+      ignore_errors: true
+
+    # =========================================================================
+    # ÉTAPE 8: Configurer le port SW1 e1/0 en access VLAN 10
+    # =========================================================================
+    - name: "ÉTAPE 8: Configurer SW1 e1/0 pour le Mac"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          - "interface Ethernet1/0"
+          - "switchport mode access"
+          - "switchport access vlan 10"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "end"
+          - "write memory"
+
+    # =========================================================================
+    # Résumé
+    # =========================================================================
+    - name: Résumé
+      debug:
+        msg: |
+          ========================================
+          MAC CONNECTÉ AU LAB GNS3
+          ========================================
+
+          Cloud node: MAC-Cloud
+          Connecté à: SW1 (Ethernet1/0) - VLAN 10
+
+          CONFIGURATION DU MAC:
+          ========================================
+
+          1. La route a été ajoutée (ou existait déjà):
+             route vers 192.168.10.0/24 via {{ gns3_gateway }}
+
+          2. Configure une IP sur ton Mac dans le réseau 192.168.10.x:
+
+             # Créer une interface alias (temporaire)
+             sudo ifconfig utun6 alias 192.168.10.200 255.255.255.0
+
+             # Ou plus simple, juste utiliser l'IP existante
+             # et laisser le routage faire le travail
+
+          3. Teste la connectivité:
+             ping 192.168.10.10   # ALICE
+             ping 192.168.10.20   # BOB
+             ping 192.168.10.254  # Gateway (SW2)
+
+          OUTILS D'ATTAQUE (sur ton Mac):
+          ========================================
+
+          # Installer les outils (si pas déjà fait)
+          brew install ettercap
+          brew install bettercap
+          pip3 install scapy
+
+          # ARP Spoofing avec ettercap
+          sudo ettercap -T -M arp:remote /192.168.10.10// /192.168.10.20//
+
+          # ARP Spoofing avec arpspoof (nécessite dsniff)
+          sudo arpspoof -i utun6 -t 192.168.10.10 -r 192.168.10.20
+
+          # Voir la table ARP
+          arp -a
+
+          ========================================

@@ -1,0 +1,89 @@
+# =============================================================================
+# Lab 16: Spanning Tree Protocol
+# =============================================================================
+
+# Serveur GNS3
+gns3_server: "http://192.168.156.183:80"
+gns3_host: "192.168.156.183"
+
+# Nom du projet GNS3
+project_name: "Lab_16_Spanning_Tree"
+
+# =============================================================================
+# TOPOLOGIE DU LAB (Triangle pour forcer STP)
+# =============================================================================
+#
+#            SW1 (Root)
+#           /   \
+#         SW2---SW3
+#
+# La boucle forcera STP a bloquer un port !
+# =============================================================================
+
+# Configuration des Switches
+switches:
+  - name: "SW1"
+    x: 0
+    y: -100
+    role: "root"           # SW1 sera le Root Bridge
+  - name: "SW2"
+    x: -150
+    y: 100
+    role: "non-root"
+  - name: "SW3"
+    x: 150
+    y: 100
+    role: "non-root"
+
+# Liens entre les switches (topologie en triangle)
+links:
+  - name: "SW1-SW2"
+    from_switch: "SW1"
+    from_adapter: 0
+    from_port: 0           # Ethernet0/0
+    to_switch: "SW2"
+    to_adapter: 0
+    to_port: 0             # Ethernet0/0
+
+  - name: "SW1-SW3"
+    from_switch: "SW1"
+    from_adapter: 0
+    from_port: 1           # Ethernet0/1
+    to_switch: "SW3"
+    to_adapter: 0
+    to_port: 0             # Ethernet0/0
+
+  - name: "SW2-SW3"
+    from_switch: "SW2"
+    from_adapter: 0
+    from_port: 1           # Ethernet0/1
+    to_switch: "SW3"
+    to_adapter: 0
+    to_port: 1             # Ethernet0/1
+
+# =============================================================================
+# Configuration STP
+# =============================================================================
+stp:
+  vlan: 1
+
+  # Priorites pour l'election du Root Bridge
+  priorities:
+    root_primary: 4096      # SW1 sera Root Bridge primaire
+    root_secondary: 8192    # Pour un eventuel backup
+    default: 32768          # Valeur par defaut Cisco
+
+  # Mode STP
+  modes:
+    pvst: "spanning-tree mode pvst"
+    rapid_pvst: "spanning-tree mode rapid-pvst"
+    mst: "spanning-tree mode mst"
+
+# Commandes de diagnostic STP
+stp_commands:
+  show_tree: "show spanning-tree"
+  show_tree_vlan: "show spanning-tree vlan 1"
+  show_root: "show spanning-tree root"
+  show_bridge: "show spanning-tree bridge"
+  show_interface: "show spanning-tree interface"
+  show_summary: "show spanning-tree summary"

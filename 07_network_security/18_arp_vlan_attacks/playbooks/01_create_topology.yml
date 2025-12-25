@@ -1,0 +1,339 @@
+---
+# =============================================================================
+# Playbook pour créer la topologie du lab ARP & VLAN Attacks
+# =============================================================================
+# Topologie créée:
+#
+#                     ┌─────────────┐
+#                     │  ATTACKER   │ (VPCS)
+#                     │ 192.168.10.100
+#                     └──────┬──────┘
+#                            │ e0/1
+#     ┌─────────┐     ┌──────┴──────┐     ┌─────────┐
+#     │  ALICE  │     │     SW1     │     │   BOB   │
+#     │.10.10   │─────│  (Target)   │─────│.10.20   │
+#     └─────────┘ e0/2│             │e0/3 └─────────┘
+#                     └──────┬──────┘
+#                            │ e0/0 (trunk)
+#                     ┌──────┴──────┐
+#                     │     SW2     │
+#                     │ (Gateway)   │
+#                     │ .10.254     │
+#                     └─────────────┘
+# =============================================================================
+
+- name: Creer le projet GNS3 pour le lab ARP & VLAN Attacks
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    # =========================================================================
+    # ÉTAPE 0: Récupérer les templates dynamiquement
+    # =========================================================================
+    - name: "ÉTAPE 0: Récupérer la liste des templates GNS3"
+      uri:
+        url: "{{ gns3_server }}/v2/templates"
+        method: GET
+        return_content: true
+      register: templates_response
+
+    - name: Extraire l'ID du template IOU L2
+      set_fact:
+        template_iou_l2_id: "{{ templates_response.json | selectattr('name', 'equalto', 'Cisco IOU L2') | map(attribute='template_id') | first }}"
+
+    - name: Afficher les templates trouvés
+      debug:
+        msg: |
+          Templates détectés:
+            - Cisco IOU L2: {{ template_iou_l2_id }}
+
+    # =========================================================================
+    # ÉTAPE 1: Créer ou récupérer le projet GNS3 (idempotent)
+    # =========================================================================
+    - name: "ÉTAPE 1a: Vérifier si le projet existe déjà"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+        return_content: true
+      register: existing_projects
+
+    - name: Chercher le projet existant
+      set_fact:
+        existing_project: "{{ existing_projects.json | selectattr('name', 'equalto', project_name) | list | first | default(None) }}"
+
+    - name: "ÉTAPE 1b: Créer le projet (si n'existe pas)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ project_name }}"
+          auto_close: false
+          auto_open: true
+          auto_start: false
+        status_code: [200, 201]
+      register: new_project
+      when: existing_project is none
+
+    - name: Sauvegarder le project_id
+      set_fact:
+        project_id: "{{ existing_project.project_id if existing_project else new_project.json.project_id }}"
+        project_status: "{{ 'existant' if existing_project else 'créé' }}"
+
+    - name: Afficher le projet
+      debug:
+        msg: |
+          ============================================
+          PROJET GNS3 ({{ project_status }})
+          ============================================
+          Nom: {{ project_name }}
+          Project ID: {{ project_id }}
+          ============================================
+
+    # =========================================================================
+    # ÉTAPE 2: Ouvrir le projet et récupérer les nodes existants
+    # =========================================================================
+    - name: "ÉTAPE 2a: Ouvrir le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    - name: "ÉTAPE 2b: Récupérer les nodes existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: existing_nodes
+
+    - name: Créer une liste des noms de nodes existants
+      set_fact:
+        existing_node_names: "{{ existing_nodes.json | map(attribute='name') | list }}"
+
+    # =========================================================================
+    # ÉTAPE 3: Créer les switches (si n'existent pas)
+    # =========================================================================
+    - name: "ÉTAPE 3: Créer les switches IOU L2"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_iou_l2_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ item.name }}"
+          x: "{{ item.x }}"
+          y: "{{ item.y }}"
+        status_code: [200, 201]
+      loop: "{{ switches }}"
+      when: item.name not in existing_node_names
+      register: created_switches
+
+    # =========================================================================
+    # ÉTAPE 4: Créer les VPCs (si n'existent pas)
+    # =========================================================================
+    - name: "ÉTAPE 4: Créer les VPCs"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ item.name }}"
+          node_type: "vpcs"
+          compute_id: "local"
+          x: "{{ item.x }}"
+          y: "{{ item.y }}"
+        status_code: [200, 201]
+      loop: "{{ vpcs }}"
+      when: item.name not in existing_node_names
+      register: created_vpcs
+
+    # =========================================================================
+    # ÉTAPE 5: Récupérer tous les nodes (existants + nouveaux)
+    # =========================================================================
+    - name: "ÉTAPE 5: Récupérer la liste finale des nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: all_nodes
+
+    - name: Set node IDs - Switches
+      set_fact:
+        sw1_node_id: "{{ (all_nodes.json | selectattr('name', 'equalto', 'SW1') | first).node_id }}"
+        sw2_node_id: "{{ (all_nodes.json | selectattr('name', 'equalto', 'SW2') | first).node_id }}"
+        sw1_console_port: "{{ (all_nodes.json | selectattr('name', 'equalto', 'SW1') | first).console }}"
+        sw2_console_port: "{{ (all_nodes.json | selectattr('name', 'equalto', 'SW2') | first).console }}"
+
+    - name: Set node IDs - VPCs
+      set_fact:
+        attacker_node_id: "{{ (all_nodes.json | selectattr('name', 'equalto', 'ATTACKER') | first).node_id }}"
+        alice_node_id: "{{ (all_nodes.json | selectattr('name', 'equalto', 'ALICE') | first).node_id }}"
+        bob_node_id: "{{ (all_nodes.json | selectattr('name', 'equalto', 'BOB') | first).node_id }}"
+        attacker_console_port: "{{ (all_nodes.json | selectattr('name', 'equalto', 'ATTACKER') | first).console }}"
+        alice_console_port: "{{ (all_nodes.json | selectattr('name', 'equalto', 'ALICE') | first).console }}"
+        bob_console_port: "{{ (all_nodes.json | selectattr('name', 'equalto', 'BOB') | first).console }}"
+
+    - name: Afficher les nodes
+      debug:
+        msg: |
+          Nodes dans le projet:
+            SW1:      {{ sw1_node_id }} (console: {{ sw1_console_port }})
+            SW2:      {{ sw2_node_id }} (console: {{ sw2_console_port }})
+            ATTACKER: {{ attacker_node_id }} (console: {{ attacker_console_port }})
+            ALICE:    {{ alice_node_id }} (console: {{ alice_console_port }})
+            BOB:      {{ bob_node_id }} (console: {{ bob_console_port }})
+
+    # =========================================================================
+    # ÉTAPE 6: Créer les liens (idempotent - ignore si existe déjà)
+    # =========================================================================
+    - name: "ÉTAPE 6: Récupérer les liens existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: GET
+        return_content: true
+      register: existing_links
+
+    - name: Compter les liens existants
+      set_fact:
+        links_count: "{{ existing_links.json | length }}"
+
+    # Trunk: SW1 (e0/0) <---> SW2 (e0/0)
+    - name: "ÉTAPE 6a: Créer le lien trunk SW1-SW2"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ sw1_node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ sw2_node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+      register: link_trunk
+
+    # ATTACKER -> SW1 (e0/1)
+    - name: "ÉTAPE 6b: Connecter ATTACKER à SW1 (e0/1)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ attacker_node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ sw1_node_id }}"
+              port_number: 1
+        status_code: [200, 201, 409]
+
+    # ALICE -> SW1 (e0/2)
+    - name: "ÉTAPE 6c: Connecter ALICE à SW1 (e0/2)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ alice_node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ sw1_node_id }}"
+              port_number: 2
+        status_code: [200, 201, 409]
+
+    # BOB -> SW1 (e0/3)
+    - name: "ÉTAPE 6d: Connecter BOB à SW1 (e0/3)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ bob_node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ sw1_node_id }}"
+              port_number: 3
+        status_code: [200, 201, 409]
+
+    - name: Afficher les liens
+      debug:
+        msg: |
+          Liens configurés:
+            - SW1 (e0/0) <--trunk--> SW2 (e0/0)
+            - ATTACKER <---> SW1 (e0/1)
+            - ALICE <---> SW1 (e0/2)
+            - BOB <---> SW1 (e0/3)
+
+    # =========================================================================
+    # ÉTAPE 7: Démarrer tous les nodes
+    # =========================================================================
+    - name: "ÉTAPE 7: Démarrer tous les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: Attendre que les équipements démarrent
+      pause:
+        seconds: 30
+        prompt: "Attente du boot des switches IOU (30s)..."
+
+    # =========================================================================
+    # ÉTAPE 8: Sauvegarder les infos
+    # =========================================================================
+    - name: "ÉTAPE 8: Sauvegarder les infos du projet"
+      copy:
+        content: |
+          # Généré automatiquement par 01_create_topology.yml
+          # Projet: {{ project_name }}
+          project_id: "{{ project_id }}"
+
+          # Switches
+          sw1_node_id: "{{ sw1_node_id }}"
+          sw2_node_id: "{{ sw2_node_id }}"
+          sw1_console_port: {{ sw1_console_port }}
+          sw2_console_port: {{ sw2_console_port }}
+
+          # VPCs
+          attacker_node_id: "{{ attacker_node_id }}"
+          alice_node_id: "{{ alice_node_id }}"
+          bob_node_id: "{{ bob_node_id }}"
+          attacker_console_port: {{ attacker_console_port }}
+          alice_console_port: {{ alice_console_port }}
+          bob_console_port: {{ bob_console_port }}
+        dest: "{{ playbook_dir }}/../switch_info.yml"
+
+    - name: Résumé
+      debug:
+        msg: |
+          ========================================
+          TOPOLOGIE CRÉÉE AVEC SUCCÈS
+          ========================================
+          Projet: {{ project_name }}
+          Project ID: {{ project_id }}
+
+          SWITCHES:
+            SW1 - telnet {{ gns3_host }} {{ sw1_console_port }}
+            SW2 - telnet {{ gns3_host }} {{ sw2_console_port }}
+
+          VPCS (Machines):
+            ATTACKER - telnet {{ gns3_host }} {{ attacker_console_port }}
+            ALICE    - telnet {{ gns3_host }} {{ alice_console_port }}
+            BOB      - telnet {{ gns3_host }} {{ bob_console_port }}
+
+          TOPOLOGIE:
+                        ATTACKER
+                           │
+               ALICE ── SW1 ── BOB
+                           │ trunk
+                          SW2 (Gateway)
+
+          Lancez maintenant:
+            ansible-playbook playbooks/02_configure_base.yml
+          ========================================

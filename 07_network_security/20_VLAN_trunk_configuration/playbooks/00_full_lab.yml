@@ -1,0 +1,28 @@
+---
+# =============================================================================
+# Lab 20: VLAN and Trunk Configuration
+# Playbook 00: Setup complet du lab
+# =============================================================================
+# Ce playbook execute tous les playbooks dans l'ordre:
+# 1. Cree la topologie GNS3
+# 2. Configure les VLANs et trunks
+# 3. Configure les VPCs
+# =============================================================================
+
+- name: Setup complet du lab VLAN
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: "PHASE 1: Creation de la topologie"
+      debug:
+        msg: "Creation des switches et VPCs..."
+
+- name: Creer la topologie
+  import_playbook: 01_create_topology.yml
+
+- name: Configurer VLANs et Trunks
+  import_playbook: 02_configure_vlans.yml
+
+- name: Configurer les VPCs
+  import_playbook: 03_configure_vpcs.yml

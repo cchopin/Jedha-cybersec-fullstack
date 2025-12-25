@@ -1,8 +1,0 @@
-all:
-  hosts:
-    localhost:
-      ansible_connection: local
-  vars:
-    gns3_server: "http://192.168.139.14:80"
-    project_id: "8307c6e0-1320-41e7-8216-0b509af19fc7"
-    template_iou_l2_id: "54a678c9-e848-4b41-9b8c-7737ace0194a"

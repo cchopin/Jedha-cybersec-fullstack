@@ -1,0 +1,27 @@
+---
+# =============================================================================
+# MASTER PLAYBOOK - Lab ARP & VLAN Attacks
+# =============================================================================
+# Lance le setup complet du lab en une seule commande
+#
+# Usage:
+#   ansible-playbook playbooks/00_full_lab.yml              # Setup complet
+#   ansible-playbook playbooks/00_full_lab.yml --tags setup # Setup seulement
+#
+# Pour les exercices individuels, lancez les playbooks séparément:
+#   ansible-playbook playbooks/03_arp_spoofing.yml -e "exercise=view_arp"
+#   ansible-playbook playbooks/04_vlan_hopping.yml -e "exercise=explain"
+#   ansible-playbook playbooks/06_mitigation.yml -e "exercise=apply_all"
+# =============================================================================
+
+- name: "SETUP: Création de la topologie"
+  import_playbook: 01_create_topology.yml
+  tags:
+    - setup
+    - topology
+
+- name: "SETUP: Configuration de base"
+  import_playbook: 02_configure_base.yml
+  tags:
+    - setup
+    - config

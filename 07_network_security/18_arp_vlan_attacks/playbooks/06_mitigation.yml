@@ -1,0 +1,491 @@
+---
+# =============================================================================
+# Lab Mitigation des Attaques ARP et VLAN - Blue Team
+# =============================================================================
+# Ce playbook configure les protections sur les switches Cisco.
+#
+# Exercices:
+#   exercise=dai              - Dynamic ARP Inspection
+#   exercise=port_security    - Port Security
+#   exercise=dhcp_snooping    - DHCP Snooping (prérequis DAI)
+#   exercise=vlan_security    - Sécurisation VLAN (DTP, Native VLAN)
+#   exercise=bpdu_guard       - BPDU Guard (protection STP)
+#   exercise=storm_control    - Storm Control
+#   exercise=apply_all        - Appliquer toutes les protections
+#   exercise=verify           - Vérifier les protections
+# =============================================================================
+
+- name: "Lab Mitigation - Blue Team"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  vars:
+    exercise: "verify"
+
+  tasks:
+    # =========================================================================
+    # DAI - Dynamic ARP Inspection
+    # =========================================================================
+    - name: "DAI: Explication"
+      debug:
+        msg: |
+          ========================================
+          DYNAMIC ARP INSPECTION (DAI)
+          ========================================
+
+          DAI valide les paquets ARP en comparant avec la base de données
+          DHCP Snooping ou des ACLs ARP statiques.
+
+          PRÉREQUIS:
+            - DHCP Snooping doit être activé
+            - Ou ACL ARP statiques configurées
+
+          FONCTIONNEMENT:
+          ========================================
+          1. Un paquet ARP arrive sur un port UNTRUSTED
+          2. DAI vérifie: IP source == MAC source dans DHCP Snooping DB?
+          3. Si OK → Forward
+          4. Si KO → Drop + Log + Rate-limit possible
+
+          CONFIGURATION:
+          ========================================
+          ! Activer DHCP Snooping d'abord
+          ip dhcp snooping
+          ip dhcp snooping vlan 10,20,30
+
+          ! Activer DAI
+          ip arp inspection vlan 10,20,30
+
+          ! Rate limiting (protection DoS)
+          interface Ethernet0/1
+            ip arp inspection limit rate 15
+
+          ! Port trusted (uplink vers router/serveur DHCP)
+          interface Ethernet0/0
+            ip arp inspection trust
+
+          VÉRIFICATION:
+          ========================================
+          show ip arp inspection
+          show ip arp inspection vlan 10
+          show ip arp inspection statistics
+          show ip dhcp snooping binding
+
+          ========================================
+      when: exercise == "dai"
+
+    - name: "DAI: Configurer sur SW1"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          # DHCP Snooping (prérequis)
+          - "ip dhcp snooping"
+          - "ip dhcp snooping vlan 10,20,30"
+          - "no ip dhcp snooping information option"
+          # Port trusted (trunk)
+          - "interface Ethernet0/0"
+          - "ip dhcp snooping trust"
+          - "exit"
+          # DAI
+          - "ip arp inspection vlan 10,20,30"
+          # Rate limiting sur ports access
+          - "interface range Ethernet0/1 - 3"
+          - "ip arp inspection limit rate 15"
+          - "exit"
+          # Port trusted pour DAI
+          - "interface Ethernet0/0"
+          - "ip arp inspection trust"
+          - "exit"
+          - "end"
+          - "write memory"
+      when: exercise == "dai" or exercise == "apply_all"
+
+    # =========================================================================
+    # DHCP Snooping
+    # =========================================================================
+    - name: "DHCP_SNOOPING: Explication"
+      debug:
+        msg: |
+          ========================================
+          DHCP SNOOPING
+          ========================================
+
+          DHCP Snooping construit une base de données des associations
+          MAC-IP légitimes obtenues via DHCP.
+
+          FONCTIONNEMENT:
+          ========================================
+          1. Switch écoute le trafic DHCP
+          2. Enregistre: MAC client, IP attribuée, VLAN, Port, Lease time
+          3. Bloque les serveurs DHCP non autorisés (rogue DHCP)
+          4. Fournit la DB pour DAI
+
+          CONFIGURATION:
+          ========================================
+          ip dhcp snooping
+          ip dhcp snooping vlan 10,20,30
+
+          ! Désactiver option 82 si pas de relay
+          no ip dhcp snooping information option
+
+          ! Port trusted (où se trouve le serveur DHCP)
+          interface Ethernet0/0
+            ip dhcp snooping trust
+
+          ! Rate limiting
+          interface Ethernet0/1
+            ip dhcp snooping limit rate 10
+
+          VÉRIFICATION:
+          ========================================
+          show ip dhcp snooping
+          show ip dhcp snooping binding
+          show ip dhcp snooping database
+
+          ========================================
+      when: exercise == "dhcp_snooping"
+
+    # =========================================================================
+    # Port Security
+    # =========================================================================
+    - name: "PORT_SECURITY: Explication"
+      debug:
+        msg: |
+          ========================================
+          PORT SECURITY
+          ========================================
+
+          Port Security limite le nombre de MACs autorisées par port
+          et peut bloquer les MACs non autorisées.
+
+          PROTECTION CONTRE:
+            - MAC Flooding (saturation table MAC)
+            - Changements non autorisés de machines
+            - ARP Spoofing (indirectement)
+
+          MODES DE VIOLATION:
+          ========================================
+          ┌──────────┬─────────────────────────────────────────────┐
+          │ Mode     │ Action                                      │
+          ├──────────┼─────────────────────────────────────────────┤
+          │ shutdown │ Port err-disabled, log, incrémente counter  │
+          │ restrict │ Drop packets, log, incrémente counter       │
+          │ protect  │ Drop packets (silencieux)                   │
+          └──────────┴─────────────────────────────────────────────┘
+
+          CONFIGURATION:
+          ========================================
+          interface Ethernet0/1
+            switchport mode access
+            switchport port-security
+            switchport port-security maximum 1
+            switchport port-security violation shutdown
+            switchport port-security mac-address sticky
+
+          ! Pour réactiver un port err-disabled
+          interface Ethernet0/1
+            shutdown
+            no shutdown
+
+          ! Ou auto-recovery
+          errdisable recovery cause psecure-violation
+          errdisable recovery interval 300
+
+          VÉRIFICATION:
+          ========================================
+          show port-security
+          show port-security interface Ethernet0/1
+          show port-security address
+
+          ========================================
+      when: exercise == "port_security"
+
+    - name: "PORT_SECURITY: Configurer sur SW1"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          # Port Security sur ports access
+          - "interface Ethernet0/1"
+          - "switchport mode access"
+          - "switchport port-security"
+          - "switchport port-security maximum 2"
+          - "switchport port-security violation restrict"
+          - "switchport port-security mac-address sticky"
+          - "exit"
+          - "interface Ethernet0/2"
+          - "switchport mode access"
+          - "switchport port-security"
+          - "switchport port-security maximum 2"
+          - "switchport port-security violation restrict"
+          - "switchport port-security mac-address sticky"
+          - "exit"
+          - "interface Ethernet0/3"
+          - "switchport mode access"
+          - "switchport port-security"
+          - "switchport port-security maximum 2"
+          - "switchport port-security violation restrict"
+          - "switchport port-security mac-address sticky"
+          - "exit"
+          # Auto-recovery
+          - "errdisable recovery cause psecure-violation"
+          - "errdisable recovery interval 300"
+          - "end"
+          - "write memory"
+      when: exercise == "port_security" or exercise == "apply_all"
+
+    # =========================================================================
+    # VLAN Security (DTP, Native VLAN)
+    # =========================================================================
+    - name: "VLAN_SECURITY: Explication"
+      debug:
+        msg: |
+          ========================================
+          SÉCURISATION VLAN
+          ========================================
+
+          PROTECTION CONTRE:
+            - Switch Spoofing (DTP attack)
+            - Double Tagging
+            - VLAN Hopping
+
+          1. DÉSACTIVER DTP
+          ========================================
+          ! Sur les ports access
+          interface Ethernet0/1
+            switchport mode access
+            switchport nonegotiate
+
+          ! Sur les trunks (forcer le mode)
+          interface Ethernet0/0
+            switchport mode trunk
+            switchport nonegotiate
+
+          2. NATIVE VLAN SÉCURISÉ
+          ========================================
+          ! Utiliser un VLAN dédié (pas VLAN 1, pas VLAN utilisateur)
+          interface Ethernet0/0
+            switchport trunk native vlan 999
+
+          ! Ou taguer le native VLAN (protection double-tagging)
+          vlan dot1q tag native
+
+          3. LIMITER LES VLANs SUR TRUNK
+          ========================================
+          interface Ethernet0/0
+            switchport trunk allowed vlan 10,20,30
+
+          4. PORTS INUTILISÉS
+          ========================================
+          ! Désactiver et mettre dans un VLAN "blackhole"
+          vlan 666
+            name BLACKHOLE
+          interface range Ethernet1/0 - 3
+            switchport mode access
+            switchport access vlan 666
+            shutdown
+
+          ========================================
+      when: exercise == "vlan_security"
+
+    - name: "VLAN_SECURITY: Configurer sur SW1"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          # Désactiver DTP sur ports access
+          - "interface range Ethernet0/1 - 3"
+          - "switchport nonegotiate"
+          - "exit"
+          # Trunk sécurisé
+          - "interface Ethernet0/0"
+          - "switchport mode trunk"
+          - "switchport nonegotiate"
+          - "switchport trunk native vlan 99"
+          - "switchport trunk allowed vlan 10,20,30"
+          - "exit"
+          - "end"
+          - "write memory"
+      when: exercise == "vlan_security" or exercise == "apply_all"
+
+    # =========================================================================
+    # BPDU Guard
+    # =========================================================================
+    - name: "BPDU_GUARD: Explication"
+      debug:
+        msg: |
+          ========================================
+          BPDU GUARD
+          ========================================
+
+          PROTECTION CONTRE:
+            - Rogue switches
+            - STP manipulation attacks
+            - Topology changes non autorisées
+
+          FONCTIONNEMENT:
+          ========================================
+          Si un BPDU est reçu sur un port PortFast,
+          le port passe en err-disabled.
+
+          CONFIGURATION:
+          ========================================
+          ! Sur un port spécifique
+          interface Ethernet0/1
+            spanning-tree portfast
+            spanning-tree bpduguard enable
+
+          ! Globalement pour tous les ports PortFast
+          spanning-tree portfast default
+          spanning-tree portfast bpduguard default
+
+          VÉRIFICATION:
+          ========================================
+          show spanning-tree interface Ethernet0/1 detail
+          show spanning-tree summary
+
+          ========================================
+      when: exercise == "bpdu_guard"
+
+    - name: "BPDU_GUARD: Configurer sur SW1"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          # BPDU Guard sur ports access
+          - "interface Ethernet0/1"
+          - "spanning-tree portfast"
+          - "spanning-tree bpduguard enable"
+          - "exit"
+          - "interface Ethernet0/2"
+          - "spanning-tree portfast"
+          - "spanning-tree bpduguard enable"
+          - "exit"
+          - "interface Ethernet0/3"
+          - "spanning-tree portfast"
+          - "spanning-tree bpduguard enable"
+          - "exit"
+          # Auto-recovery
+          - "errdisable recovery cause bpduguard"
+          - "errdisable recovery interval 300"
+          - "end"
+          - "write memory"
+      when: exercise == "bpdu_guard" or exercise == "apply_all"
+
+    # =========================================================================
+    # Storm Control
+    # =========================================================================
+    - name: "STORM_CONTROL: Explication"
+      debug:
+        msg: |
+          ========================================
+          STORM CONTROL
+          ========================================
+
+          PROTECTION CONTRE:
+            - Broadcast storms
+            - Unicast floods
+            - Multicast floods
+
+          CONFIGURATION:
+          ========================================
+          interface Ethernet0/1
+            storm-control broadcast level 10
+            storm-control multicast level 10
+            storm-control unicast level 10
+            storm-control action shutdown
+
+          ! En pourcentage ou pps
+          storm-control broadcast level pps 500
+
+          VÉRIFICATION:
+          ========================================
+          show storm-control
+          show storm-control broadcast
+          show storm-control interface Ethernet0/1
+
+          ========================================
+      when: exercise == "storm_control"
+
+    - name: "STORM_CONTROL: Configurer sur SW1"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          - "interface range Ethernet0/1 - 3"
+          - "storm-control broadcast level 10"
+          - "storm-control multicast level 10"
+          - "storm-control action trap"
+          - "exit"
+          - "end"
+          - "write memory"
+      when: exercise == "storm_control" or exercise == "apply_all"
+
+    # =========================================================================
+    # Vérification
+    # =========================================================================
+    - name: "VERIFY: Port Security"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --show "show port-security"
+      when: exercise == "verify"
+      ignore_errors: true
+
+    - name: "VERIFY: DAI"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --show "show ip arp inspection"
+      when: exercise == "verify"
+      ignore_errors: true
+
+    - name: "VERIFY: DHCP Snooping"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --show "show ip dhcp snooping"
+      when: exercise == "verify"
+      ignore_errors: true
+
+    - name: "VERIFY: Interfaces Trunk"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --show "show interfaces trunk"
+      when: exercise == "verify"
+
+    - name: "VERIFY: Spanning-tree"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --show "show spanning-tree summary"
+      when: exercise == "verify"
+      ignore_errors: true
+
+    - name: Résumé
+      debug:
+        msg: |
+          ========================================
+          LAB MITIGATION - RÉSUMÉ
+          ========================================
+
+          Exercices disponibles:
+            -e "exercise=dai"            # Dynamic ARP Inspection
+            -e "exercise=dhcp_snooping"  # DHCP Snooping
+            -e "exercise=port_security"  # Port Security
+            -e "exercise=vlan_security"  # Sécurisation VLAN/DTP
+            -e "exercise=bpdu_guard"     # BPDU Guard
+            -e "exercise=storm_control"  # Storm Control
+            -e "exercise=apply_all"      # Toutes les protections
+            -e "exercise=verify"         # Vérifier l'état
+
+          BEST PRACTICES RÉSUMÉES:
+          ========================================
+          1. Port Security: max 1-2 MACs, mode restrict/shutdown
+          2. DAI + DHCP Snooping: valider les paquets ARP
+          3. BPDU Guard: sur tous les ports access
+          4. DTP off: switchport nonegotiate
+          5. Native VLAN: dédié (pas VLAN 1)
+          6. Storm Control: limiter broadcast/multicast
+
+          ========================================

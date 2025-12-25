@@ -1,0 +1,217 @@
+---
+# =============================================================================
+# Lab 20: VLAN and Trunk Configuration
+# Playbook 02: Configuration des VLANs et Trunks
+# =============================================================================
+# Ce playbook configure:
+# - VLANs 10, 20, 30, 40, 50 sur chaque switch
+# - Ports access pour les VPCs
+# - Ports trunk entre les switches (802.1Q)
+# =============================================================================
+
+- name: Configurer VLANs et Trunks
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    # =========================================================================
+    # ETAPE 1: Configurer IOU1
+    # =========================================================================
+    - name: "ETAPE 1: Configurer IOU1 - VLANs"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ iou1_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          # Creer les VLANs
+          - "vlan 10"
+          - "name Administration"
+          - "vlan 20"
+          - "name HR"
+          - "vlan 30"
+          - "name Sales"
+          - "vlan 40"
+          - "name IT"
+          - "vlan 50"
+          - "name Guests"
+          - "exit"
+          # Trunk vers IOU2 (e0/0)
+          - "interface Ethernet0/0"
+          - "switchport trunk encapsulation dot1q"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan 10,20,30,40,50"
+          - "no shutdown"
+          - "exit"
+          # Access ports
+          - "interface Ethernet0/2"
+          - "switchport mode access"
+          - "switchport access vlan 10"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "interface Ethernet0/3"
+          - "switchport mode access"
+          - "switchport access vlan 20"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "interface Ethernet1/0"
+          - "switchport mode access"
+          - "switchport access vlan 30"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "interface Ethernet1/1"
+          - "switchport mode access"
+          - "switchport access vlan 40"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "interface Ethernet1/2"
+          - "switchport mode access"
+          - "switchport access vlan 50"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "end"
+          - "write memory"
+
+    # =========================================================================
+    # ETAPE 2: Configurer IOU2
+    # =========================================================================
+    - name: "ETAPE 2: Configurer IOU2 - VLANs"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ iou2_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          # Creer les VLANs
+          - "vlan 10"
+          - "name Administration"
+          - "vlan 20"
+          - "name HR"
+          - "vlan 30"
+          - "name Sales"
+          - "vlan 40"
+          - "name IT"
+          - "vlan 50"
+          - "name Guests"
+          - "exit"
+          # Trunk vers IOU1 (e0/0)
+          - "interface Ethernet0/0"
+          - "switchport trunk encapsulation dot1q"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan 10,20,30,40,50"
+          - "no shutdown"
+          - "exit"
+          # Trunk vers IOU3 (e0/1)
+          - "interface Ethernet0/1"
+          - "switchport trunk encapsulation dot1q"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan 10,20,30,40,50"
+          - "no shutdown"
+          - "exit"
+          # Access ports
+          - "interface Ethernet0/2"
+          - "switchport mode access"
+          - "switchport access vlan 10"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "interface Ethernet0/3"
+          - "switchport mode access"
+          - "switchport access vlan 40"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "end"
+          - "write memory"
+
+    # =========================================================================
+    # ETAPE 3: Configurer IOU3
+    # =========================================================================
+    - name: "ETAPE 3: Configurer IOU3 - VLANs"
+      script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ iou3_console_port }} --commands "{{ commands | join(';') }}"
+      vars:
+        commands:
+          - ""
+          - "enable"
+          - "configure terminal"
+          # Creer les VLANs
+          - "vlan 10"
+          - "name Administration"
+          - "vlan 20"
+          - "name HR"
+          - "vlan 30"
+          - "name Sales"
+          - "vlan 40"
+          - "name IT"
+          - "vlan 50"
+          - "name Guests"
+          - "exit"
+          # Trunk vers IOU2 (e0/0)
+          - "interface Ethernet0/0"
+          - "switchport trunk encapsulation dot1q"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan 10,20,30,40,50"
+          - "no shutdown"
+          - "exit"
+          # Access ports
+          - "interface Ethernet0/2"
+          - "switchport mode access"
+          - "switchport access vlan 20"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "interface Ethernet0/3"
+          - "switchport mode access"
+          - "switchport access vlan 30"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "interface Ethernet1/0"
+          - "switchport mode access"
+          - "switchport access vlan 50"
+          - "spanning-tree portfast"
+          - "no shutdown"
+          - "exit"
+          - "end"
+          - "write memory"
+
+    # =========================================================================
+    # Resume
+    # =========================================================================
+    - name: Resume
+      debug:
+        msg: |
+          ========================================
+          VLANS ET TRUNKS CONFIGURES
+          ========================================
+
+          VLANs crees sur tous les switches:
+            VLAN 10: Administration
+            VLAN 20: HR
+            VLAN 30: Sales
+            VLAN 40: IT
+            VLAN 50: Guests
+
+          Trunks configures:
+            IOU1 (e0/0) <--> IOU2 (e0/0)
+            IOU2 (e0/1) <--> IOU3 (e0/0)
+
+          ========================================
+          PROCHAINE ETAPE
+          ========================================
+
+          1. Configurer les IPs des VPCs:
+             ansible-playbook playbooks/03_configure_vpcs.yml
+
+          2. Verifier la config:
+             ansible-playbook playbooks/04_verify.yml
+
+          ========================================

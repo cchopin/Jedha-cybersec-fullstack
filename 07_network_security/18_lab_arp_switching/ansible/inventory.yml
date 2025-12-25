@@ -1,9 +1,0 @@
-all:
-  hosts:
-    localhost:
-      ansible_connection: local
-  vars:
-    gns3_server: "http://192.168.139.14:80"
-    # Le project_id est généré dynamiquement par 01_create_topology.yml
-    # et sauvegardé dans switch_info.yml
-    template_iou_l2_id: "54a678c9-e848-4b41-9b8c-7737ace0194a"

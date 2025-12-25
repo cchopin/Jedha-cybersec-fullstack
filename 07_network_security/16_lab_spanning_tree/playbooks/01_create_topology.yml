@@ -1,0 +1,221 @@
+---
+# =============================================================================
+# Lab 16: Spanning Tree Protocol
+# Playbook 01: Creation de la topologie GNS3
+# =============================================================================
+# Ce playbook cree une topologie en triangle pour etudier STP :
+#
+#          SW1
+#         /   \
+#       SW2---SW3
+#
+# La boucle forcera STP a bloquer un port !
+# =============================================================================
+
+- name: Creer la topologie Spanning Tree
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    # =========================================================================
+    # ETAPE 0: Recuperer les templates GNS3
+    # =========================================================================
+    - name: "ETAPE 0: Recuperer la liste des templates GNS3"
+      uri:
+        url: "{{ gns3_server }}/v2/templates"
+        method: GET
+        return_content: true
+      register: templates_response
+
+    - name: Extraire l'ID du template IOU L2
+      set_fact:
+        template_iou_l2_id: "{{ templates_response.json | selectattr('name', 'equalto', 'Cisco IOU L2') | map(attribute='template_id') | first }}"
+
+    - name: Afficher le template trouve
+      debug:
+        msg: "Template IOU L2: {{ template_iou_l2_id }}"
+
+    # =========================================================================
+    # ETAPE 1: Creer ou recuperer le projet
+    # =========================================================================
+    - name: "ETAPE 1: Recuperer les projets existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+        return_content: true
+      register: existing_projects
+
+    - name: Verifier si le projet existe
+      set_fact:
+        project_exists: "{{ existing_projects.json | selectattr('name', 'equalto', project_name) | list | length > 0 }}"
+
+    - name: Recuperer le projet existant
+      set_fact:
+        project_id: "{{ (existing_projects.json | selectattr('name', 'equalto', project_name) | first).project_id }}"
+      when: project_exists
+
+    - name: Creer le projet GNS3
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ project_name }}"
+          auto_close: false
+        status_code: [200, 201]
+      register: new_project
+      when: not project_exists
+
+    - name: Definir project_id pour nouveau projet
+      set_fact:
+        project_id: "{{ new_project.json.project_id }}"
+      when: not project_exists
+
+    - name: Ouvrir le projet
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    - name: Afficher le projet
+      debug:
+        msg: "Projet: {{ project_name }} ({{ project_id }})"
+
+    # =========================================================================
+    # ETAPE 2: Recuperer les nodes existants
+    # =========================================================================
+    - name: "ETAPE 2: Recuperer les nodes existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: existing_nodes
+
+    - name: Liste des nodes existants
+      set_fact:
+        existing_node_names: "{{ existing_nodes.json | map(attribute='name') | list }}"
+
+    # =========================================================================
+    # ETAPE 3: Creer les switches
+    # =========================================================================
+    - name: "ETAPE 3: Creer les switches IOU L2"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_iou_l2_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ item.name }}"
+          x: "{{ item.x }}"
+          y: "{{ item.y }}"
+        status_code: [200, 201]
+      loop: "{{ switches }}"
+      when: item.name not in existing_node_names
+
+    # =========================================================================
+    # ETAPE 4: Recuperer tous les nodes
+    # =========================================================================
+    - name: "ETAPE 4: Recuperer tous les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: all_nodes
+
+    - name: Creer dictionnaire des nodes
+      set_fact:
+        nodes_dict: "{{ nodes_dict | default({}) | combine({item.name: item}) }}"
+      loop: "{{ all_nodes.json }}"
+
+    # =========================================================================
+    # ETAPE 5: Creer les liens (topologie en triangle)
+    # =========================================================================
+    - name: "ETAPE 5: Creer les liens entre switches"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: "{{ item.from_adapter }}"
+              node_id: "{{ nodes_dict[item.from_switch].node_id }}"
+              port_number: "{{ item.from_port }}"
+            - adapter_number: "{{ item.to_adapter }}"
+              node_id: "{{ nodes_dict[item.to_switch].node_id }}"
+              port_number: "{{ item.to_port }}"
+        status_code: [200, 201, 409]
+      loop: "{{ links }}"
+
+    # =========================================================================
+    # ETAPE 6: Demarrer les switches
+    # =========================================================================
+    - name: "ETAPE 6: Demarrer tous les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: Attendre le demarrage
+      pause:
+        seconds: 20
+        prompt: "Attente du demarrage des switches (20s)..."
+
+    # =========================================================================
+    # ETAPE 7: Sauvegarder les infos
+    # =========================================================================
+    - name: "ETAPE 7: Recuperer les nodes avec ports console"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: final_nodes
+
+    - name: Sauvegarder switch_info.yml
+      copy:
+        content: |
+          # Informations de connexion - Lab 16 Spanning Tree
+          # Genere automatiquement
+
+          project_id: "{{ project_id }}"
+
+          {% for node in final_nodes.json | selectattr('node_type', 'equalto', 'iou') | sort(attribute='name') %}
+          {{ node.name | lower }}_console_port: {{ node.console }}
+          {{ node.name | lower }}_node_id: "{{ node.node_id }}"
+          {% endfor %}
+        dest: "{{ playbook_dir }}/../switch_info.yml"
+
+    # =========================================================================
+    # Resume
+    # =========================================================================
+    - name: Resume
+      debug:
+        msg: |
+          ========================================
+          TOPOLOGIE STP CREEE AVEC SUCCES
+          ========================================
+
+          Projet: {{ project_name }}
+
+          SWITCHES:
+          {% for node in final_nodes.json | selectattr('node_type', 'equalto', 'iou') | sort(attribute='name') %}
+            {{ node.name }}: telnet {{ gns3_host }} {{ node.console }}
+          {% endfor %}
+
+          Topologie:
+                    SW1
+                   /   \
+                 SW2---SW3
+
+          Liens:
+            - SW1 (e0/0) <---> SW2 (e0/0)
+            - SW1 (e0/1) <---> SW3 (e0/0)
+            - SW2 (e0/1) <---> SW3 (e0/1)
+
+          IMPORTANT: STP va bloquer un port pour eviter la boucle!
+
+          ========================================
+          PROCHAINE ETAPE
+          ========================================
+
+          ansible-playbook playbooks/02_configure_stp.yml
+
+          ========================================
