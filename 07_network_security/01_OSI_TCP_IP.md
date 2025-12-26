@@ -714,3 +714,14 @@ Une attaque sophistiquée implique souvent plusieurs couches :
 - Cisco CCNA
 - CEH (Certified Ethical Hacker)
 - OSCP
+
+---
+
+## Labs TryHackMe
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Intro to Networking** | Introduction aux concepts fondamentaux du réseau | https://tryhackme.com/room/introtonetworking |
+| **OSI Model** | Comprendre les 7 couches du modèle OSI | https://tryhackme.com/room/osimodelzi |
+| **Packets & Frames** | Analyse des paquets et trames réseau | https://tryhackme.com/room/packetsframes |
+| **What is Networking?** | Concepts de base du réseau | https://tryhackme.com/room/whatisnetworking |

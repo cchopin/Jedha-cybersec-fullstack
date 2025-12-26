@@ -652,3 +652,15 @@ ipconfig /flushdns
 | https://github.com/OWASP/Amass | Amass - Énumération de surface d'attaque |
 | https://www.sans.org/white-papers/34152/ | SANS - DNS Tunneling Detection |
 | https://unit42.paloaltonetworks.com | Threat Intelligence incluant DNS |
+
+---
+
+## Labs TryHackMe
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **DNS in Detail** | Comprendre le fonctionnement du DNS | https://tryhackme.com/room/dnsindetail |
+| **Passive Reconnaissance** | Techniques de reconnaissance DNS passive | https://tryhackme.com/room/passiverecon |
+| **Active Reconnaissance** | Reconnaissance DNS active et enumeration | https://tryhackme.com/room/activerecon |
+| **Red Team Recon** | Reconnaissance pour les operations Red Team | https://tryhackme.com/room/redteamrecon |
+| **Threat Intelligence Tools** | Outils de threat intelligence incluant DNS | https://tryhackme.com/room/threatinteltools |

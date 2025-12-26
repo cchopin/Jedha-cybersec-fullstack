@@ -818,3 +818,14 @@ Guidelines for the Secure Deployment of IPv6 : https://csrc.nist.gov/publication
 | RFC 4861 | NDP (Neighbor Discovery for IPv6) |
 | RFC 3971 | SEND (SEcure Neighbor Discovery) |
 | RFC 4941 | Privacy Extensions for SLAAC |
+
+---
+
+## Labs TryHackMe
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Intro to Networking** | Introduction aux concepts fondamentaux du réseau (IP, subnetting) | https://tryhackme.com/room/introtonetworking |
+| **What is Networking?** | Concepts de base du réseau et adressage IP | https://tryhackme.com/room/whatisnetworking |
+| **Networking Essentials** | Fondamentaux du réseau incluant IPv4/IPv6 | https://tryhackme.com/room/dvwa |
+| **Layer 2 MAC Flooding & ARP Spoofing** | Attaques sur ARP et NDP | https://tryhackme.com/r/room/dvwa |

@@ -656,6 +656,3 @@ show ip dhcp snooping binding
 
 > **Mindset securite** : Le routage controle ou va le trafic. Controler le routage = controler le reseau. En tant que pentester, cherchez a manipuler les routes. En tant que defenseur, authentifiez et surveillez tout.
 
----
-
-*Cours 23 - Fondamentaux du Routage et Routage Inter-VLAN*

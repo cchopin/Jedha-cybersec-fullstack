@@ -290,3 +290,14 @@ Switch# show interfaces switchport
 - Cisco VLAN Configuration Guide : [Cisco Documentation](https://www.cisco.com/c/en/us/support/docs/lan-switching/8021q/)
 - IEEE 802.1Q Standard : [IEEE Standards](https://standards.ieee.org/standard/802_1Q-2018.html)
 - VLAN Hopping Attacks : [SANS Paper](https://www.sans.org/white-papers/37242/)
+
+---
+
+## Labs TryHackMe
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Layer 2 MAC Flooding & ARP Spoofing** | Attaques Layer 2 incluant VLAN hopping | https://tryhackme.com/r/room/dvwa |
+| **Network Services** | Services réseau et segmentation | https://tryhackme.com/room/networkservices |
+| **Network Services 2** | Suite des services réseau | https://tryhackme.com/room/networkservices2 |
+| **Intro to Networking** | Fondamentaux réseau incluant VLANs | https://tryhackme.com/room/introtonetworking |

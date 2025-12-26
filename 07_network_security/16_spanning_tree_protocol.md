@@ -409,3 +409,15 @@ Fa0/1            Desg FWD 19        128.3    P2p Edge
 | Cisco STP Documentation | https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/ |
 | Understanding STP | https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/5234-5.html |
 | RSTP Configuration Guide | https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3750/software/release/12-2_55_se/configuration/guide/scg3750/swstp.html |
+
+---
+
+## Labs TryHackMe
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Layer 2 MAC Flooding & ARP Spoofing** | Attaques Layer 2 incluant manipulation STP | https://tryhackme.com/r/room/dvwa |
+| **Intro to Networking** | Fondamentaux réseau et topologies | https://tryhackme.com/room/introtonetworking |
+| **Networking Essentials** | Concepts essentiels du réseau | https://tryhackme.com/room/dvwa |
+
+> **Note** : Il n'existe pas de room TryHackMe spécifiquement dédiée à STP. Les concepts sont généralement pratiqués sur des environnements de lab comme GNS3 ou Packet Tracer.

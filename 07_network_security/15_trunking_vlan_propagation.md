@@ -355,3 +355,15 @@ Switch# show logging | include trunk
 | Cisco VLAN Configuration Guide | https://www.cisco.com/c/en/us/support/docs/lan-switching/vlan/ |
 | Dynamic Trunking Protocol (DTP) | https://www.cisco.com/c/en/us/support/docs/lan-switching/vtp/ |
 | CCNA Exam Blueprint | https://www.cisco.com/c/en/us/training-events/training-certifications/certifications/associate/ccna.html |
+
+---
+
+## Labs TryHackMe
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Layer 2 MAC Flooding & ARP Spoofing** | Attaques Layer 2 et manipulation de VLANs | https://tryhackme.com/r/room/dvwa |
+| **Intro to Networking** | Fondamentaux reseau incluant switching | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services reseau et configuration | https://tryhackme.com/room/networkservices |
+
+> **Note** : Les concepts de trunking sont principalement pratiques sur GNS3 ou Packet Tracer car TryHackMe ne propose pas de labs specifiques a la configuration de switches Cisco.

@@ -475,3 +475,14 @@ Pour pratiquer ces concepts d'attaque et de défense, utilisez GNS3 sur la plate
 - Ettercap Official Site : [ettercap-project.org](https://www.ettercap-project.org/)
 - ARPWatch Documentation : [Linux man pages](https://linux.die.net/man/8/arpwatch)
 - CCNA Security Best Practices : [Cisco Press](https://www.ciscopress.com/)
+
+---
+
+## Labs TryHackMe
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Layer 2 MAC Flooding & ARP Spoofing** | Pratique des attaques ARP spoofing et MAC flooding | https://tryhackme.com/r/room/dvwa |
+| **Wireshark: The Basics** | Détection d'attaques ARP avec Wireshark | https://tryhackme.com/room/wiresharkthebasics |
+| **Intro to LAN** | Fondamentaux LAN et attaques Layer 2 | https://tryhackme.com/room/introtolan |
+| **Network Services** | Services réseau et vulnérabilités | https://tryhackme.com/room/networkservices |

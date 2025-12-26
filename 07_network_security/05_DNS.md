@@ -690,3 +690,14 @@ ipconfig /displaydns
 | https://dnsviz.net | Visualisation et diagnostic DNSSEC |
 | https://mxtoolbox.com | Outils DNS en ligne |
 | https://securitytrails.com | Historique DNS et reconnaissance |
+
+---
+
+## Labs TryHackMe
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **DNS in Detail** | Fonctionnement complet du DNS et types d'enregistrements | https://tryhackme.com/room/dnsindetail |
+| **Passive Reconnaissance** | Reconnaissance DNS passive (dig, nslookup, whois) | https://tryhackme.com/room/passiverecon |
+| **Active Reconnaissance** | Techniques actives de reconnaissance DNS | https://tryhackme.com/room/activerecon |
+| **Content Discovery** | Enumeration de sous-domaines et découverte de contenu | https://tryhackme.com/room/contentdiscovery |
