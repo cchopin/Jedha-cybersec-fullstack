@@ -1,0 +1,115 @@
+---
+# =============================================================================
+# Playbook pour configurer les VPCs (victimes)
+# =============================================================================
+# Configure les adresses IP des VPCs pour le lab ARP Spoofing
+#
+# Configuration:
+#   VPC1: 192.168.10.10/24
+#   VPC2: 192.168.10.20/24
+# =============================================================================
+
+- name: Configurer les VPCs pour le lab ARP Spoofing
+  hosts: localhost
+  gather_facts: false
+  tags: [vpcs]
+
+  vars:
+    # Charger les infos du projet
+    switch_info: "{{ lookup('file', playbook_dir + '/../switch_info.yml') | from_yaml }}"
+
+  tasks:
+    - name: Afficher les informations chargées
+      debug:
+        msg: |
+          Configuration des VPCs:
+            VPC1: telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}
+            VPC2: telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}
+
+    # =========================================================================
+    # Configuration VPC1
+    # =========================================================================
+    - name: "Configurer VPC1 (192.168.10.10)"
+      shell: |
+        (
+          sleep 2
+          echo ""
+          sleep 1
+          echo "ip 192.168.10.10/24 192.168.10.1"
+          sleep 1
+          echo "save"
+          sleep 1
+        ) | nc {{ gns3_host }} {{ switch_info.vpc1_console_port }} | LC_ALL=C tr -cd '\11\12\15\40-\176'
+      args:
+        executable: /bin/bash
+      register: vpc1_config
+
+    - name: Résultat VPC1
+      debug:
+        msg: "VPC1 configuré: 192.168.10.10/24"
+
+    # =========================================================================
+    # Configuration VPC2
+    # =========================================================================
+    - name: "Configurer VPC2 (192.168.10.20)"
+      shell: |
+        (
+          sleep 2
+          echo ""
+          sleep 1
+          echo "ip 192.168.10.20/24 192.168.10.1"
+          sleep 1
+          echo "save"
+          sleep 1
+        ) | nc {{ gns3_host }} {{ switch_info.vpc2_console_port }} | LC_ALL=C tr -cd '\11\12\15\40-\176'
+      args:
+        executable: /bin/bash
+      register: vpc2_config
+
+    - name: Résultat VPC2
+      debug:
+        msg: "VPC2 configuré: 192.168.10.20/24"
+
+    # =========================================================================
+    # Vérification
+    # =========================================================================
+    - name: Attendre la configuration
+      pause:
+        seconds: 3
+        prompt: "Application des configurations..."
+
+    - name: Résumé
+      debug:
+        msg: |
+          ========================================
+          VPCS CONFIGURÉS
+          ========================================
+
+          VPC1: 192.168.10.10/24
+            Console: telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}
+
+          VPC2: 192.168.10.20/24
+            Console: telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}
+
+          ========================================
+          VÉRIFICATION
+          ========================================
+
+          Connectez-vous aux VPCs pour vérifier:
+
+            telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}
+            > show ip
+
+            telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}
+            > show ip
+
+          Test de connectivité (depuis VPC1):
+            > ping 192.168.10.20
+
+          ========================================
+          PROCHAINE ÉTAPE
+          ========================================
+
+            ansible-playbook playbooks/03_add_kali.yml
+
+          ========================================

@@ -1,0 +1,36 @@
+---
+# =============================================================================
+# Site playbook - Setup complet du lab ARP Spoofing
+# =============================================================================
+# Usage:
+#   ansible-playbook site.yml
+#
+# Ce playbook exécute les étapes suivantes:
+#   1. Création de la topologie GNS3
+#   2. Configuration des VPCs
+#   3. Ajout de Kali Linux
+# =============================================================================
+
+- name: Setup Lab 22 - ARP Spoofing
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: "Étape 1: Créer la topologie"
+      include_tasks: playbooks/01_create_topology.yml
+
+    - name: "Étape 2: Configurer les VPCs"
+      include_tasks: playbooks/02_configure_vpcs.yml
+
+    - name: Résumé
+      debug:
+        msg: |
+          ========================================
+          LAB ARP SPOOFING PRÊT
+          ========================================
+
+          Lancez maintenant:
+            ansible-playbook playbooks/03_add_kali.yml
+
+          Pour ajouter la VM Kali Linux.
+          ========================================

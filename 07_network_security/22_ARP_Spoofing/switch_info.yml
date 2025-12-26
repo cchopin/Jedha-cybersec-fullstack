@@ -1,0 +1,20 @@
+# Généré automatiquement par 01_create_topology.yml
+# Projet: Lab_22_ARP_Spoofing
+project_id: "44581bc8-7bfb-4137-81bd-b2e2a52a18f7"
+
+# Switch
+sw1_node_id: "7eb691b8-479b-462e-aa2f-b946a7de0f0b"
+sw1_console_port: 5000
+
+# VPCs (Victimes)
+vpc1_node_id: "cfa8948d-af00-481a-8b4d-ac56e43e205c"
+vpc2_node_id: "1f8e5fa3-556e-4a65-b1db-7de195aa7b97"
+vpc1_console_port: 5001
+vpc2_console_port: 5003
+# BEGIN KALI INFO
+# Kali Linux (Attacker)
+kali_node_id: "771f0269-e096-48cf-b46a-0faacbfad11f"
+kali_console_port: 5005
+# NAT (Internet)
+nat_node_id: "4abc94c1-3abb-4274-a06c-30801b898d58"
+# END KALI INFO

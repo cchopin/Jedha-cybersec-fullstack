@@ -1,0 +1,293 @@
+---
+# =============================================================================
+# Ajouter une VM Kali Linux + NAT au lab ARP Spoofing
+# =============================================================================
+# Ce playbook ajoute:
+#   - Une machine Kali Linux (Docker) connectée au switch sur eth0 (e0/1)
+#   - Un node NAT connecté à Kali sur eth1 pour l'accès Internet
+#
+# Le container Kali est minimaliste, il faut installer les outils via Internet.
+# =============================================================================
+
+- name: Ajouter Kali Linux et NAT au lab ARP Spoofing
+  hosts: localhost
+  gather_facts: false
+  tags: [kali]
+
+  vars:
+    kali_template_name: "kalilinux-kali-rolling"
+    switch_info: "{{ lookup('file', playbook_dir + '/../switch_info.yml') | from_yaml }}"
+
+  tasks:
+    # =========================================================================
+    # ÉTAPE 1: Récupérer les templates
+    # =========================================================================
+    - name: "ÉTAPE 1: Récupérer les templates GNS3"
+      uri:
+        url: "{{ gns3_server }}/v2/templates"
+        method: GET
+        return_content: true
+      register: templates
+
+    - name: Trouver le template Kali
+      set_fact:
+        kali_template_id: "{{ (templates.json | selectattr('name', 'equalto', kali_template_name) | first).template_id }}"
+
+    - name: Afficher template Kali
+      debug:
+        msg: "Template Kali trouvé: {{ kali_template_id }}"
+
+    # =========================================================================
+    # ÉTAPE 2: Ouvrir le projet
+    # =========================================================================
+    - name: "ÉTAPE 2: Ouvrir le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    # =========================================================================
+    # ÉTAPE 3: Récupérer les nodes existants
+    # =========================================================================
+    - name: "ÉTAPE 3: Récupérer les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: nodes
+
+    - name: Liste des nodes
+      set_fact:
+        node_names: "{{ nodes.json | map(attribute='name') | list }}"
+
+    - name: Trouver SW1
+      set_fact:
+        sw1: "{{ nodes.json | selectattr('name', 'equalto', 'SW1') | first }}"
+
+    # =========================================================================
+    # ÉTAPE 4: Créer la VM Kali (si n'existe pas)
+    # =========================================================================
+    - name: "ÉTAPE 4: Créer la VM Kali"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/templates/{{ kali_template_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "KALI-ATTACKER"
+          x: 0
+          y: -150
+        status_code: [200, 201]
+      when: "'KALI-ATTACKER' not in node_names"
+      register: kali_created
+
+    # =========================================================================
+    # ÉTAPE 5: Créer le node NAT (si n'existe pas)
+    # =========================================================================
+    - name: "ÉTAPE 5: Créer le node NAT"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/nodes"
+        method: POST
+        body_format: json
+        body:
+          name: "NAT"
+          node_type: "nat"
+          compute_id: "local"
+          x: 200
+          y: -150
+        status_code: [200, 201]
+      when: "'NAT' not in node_names"
+
+    # =========================================================================
+    # ÉTAPE 6: Récupérer tous les nodes
+    # =========================================================================
+    - name: "ÉTAPE 6: Récupérer les nodes (avec Kali et NAT)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: all_nodes
+
+    - name: Trouver Kali
+      set_fact:
+        kali: "{{ all_nodes.json | selectattr('name', 'equalto', 'KALI-ATTACKER') | first }}"
+
+    - name: Trouver NAT
+      set_fact:
+        nat: "{{ all_nodes.json | selectattr('name', 'equalto', 'NAT') | first }}"
+
+    # =========================================================================
+    # ÉTAPE 7: Connecter Kali à SW1 (eth0 -> e0/1)
+    # =========================================================================
+    - name: "ÉTAPE 7a: Connecter KALI à SW1 (eth0 -> e0/1)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ kali.node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ sw1.node_id }}"
+              port_number: 1
+        status_code: [200, 201, 409]
+
+    # =========================================================================
+    # ÉTAPE 8: Connecter Kali au NAT (eth1 -> nat0)
+    # =========================================================================
+    - name: "ÉTAPE 7b: Connecter KALI au NAT (eth1 -> nat0)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 1
+              node_id: "{{ kali.node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ nat.node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+
+    # =========================================================================
+    # ÉTAPE 9: Démarrer les nodes
+    # =========================================================================
+    - name: "ÉTAPE 8a: Démarrer NAT"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/nodes/{{ nat.node_id }}/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: "ÉTAPE 8b: Démarrer Kali"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/nodes/{{ kali.node_id }}/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: Attendre le démarrage
+      pause:
+        seconds: 10
+        prompt: "Attente du démarrage de Kali (10s)..."
+
+    # =========================================================================
+    # ÉTAPE 10: Configurer le réseau via l'API files
+    # =========================================================================
+    - name: "ÉTAPE 9a: Écrire /etc/network/interfaces"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/nodes/{{ kali.node_id }}/files/etc/network/interfaces"
+        method: POST
+        body: |
+          # Configuration réseau pour le lab ARP Spoofing
+
+          auto eth0
+          iface eth0 inet static
+              address 192.168.10.100
+              netmask 255.255.255.0
+
+          auto eth1
+          iface eth1 inet dhcp
+              hostname KALI-ATTACKER
+        headers:
+          Content-Type: "text/plain"
+        status_code: [200, 201, 204]
+
+    - name: "ÉTAPE 9b: Écrire /etc/resolv.conf (DNS)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ switch_info.project_id }}/nodes/{{ kali.node_id }}/files/etc/resolv.conf"
+        method: POST
+        body: |
+          # DNS pour accès Internet
+          nameserver 8.8.8.8
+          nameserver 8.8.4.4
+        headers:
+          Content-Type: "text/plain"
+        status_code: [200, 201, 204]
+
+    # =========================================================================
+    # ÉTAPE 11: Mettre à jour switch_info.yml
+    # =========================================================================
+    - name: "ÉTAPE 9: Mettre à jour switch_info.yml"
+      blockinfile:
+        path: "{{ playbook_dir }}/../switch_info.yml"
+        marker: "# {mark} KALI INFO"
+        block: |
+          # Kali Linux (Attacker)
+          kali_node_id: "{{ kali.node_id }}"
+          kali_console_port: {{ kali.console }}
+          # NAT (Internet)
+          nat_node_id: "{{ nat.node_id }}"
+        create: false
+
+    # =========================================================================
+    # Résumé avec instructions complètes
+    # =========================================================================
+    - name: Résumé
+      debug:
+        msg: |
+          ========================================
+          KALI LINUX + NAT CONFIGURÉS
+          ========================================
+
+          Node: KALI-ATTACKER
+          Console: telnet {{ gns3_host }} {{ kali.console }}
+
+          Config réseau pré-configurée:
+            - eth0: 192.168.10.100/24 (lab)
+            - eth1: DHCP (Internet via NAT)
+            - DNS: 8.8.8.8, 8.8.4.4
+
+          ========================================
+          IMPORTANT: REDÉMARRER KALI
+          ========================================
+
+          La config réseau a été écrite mais nécessite
+          un redémarrage pour être appliquée:
+
+          1. Dans GNS3 GUI: clic droit sur KALI-ATTACKER
+          2. Stop → Start
+
+          ========================================
+          CONNEXION À KALI
+          ========================================
+
+          telnet {{ gns3_host }} {{ kali.console }}
+          Login: root (mot de passe vide ou toor)
+
+          ========================================
+          INSTALLER LES OUTILS
+          ========================================
+
+          # Vérifier Internet
+          ping -c 2 8.8.8.8
+
+          # Installer les outils d'attaque
+          apt update && apt install -y dsniff ettercap-text-only tcpdump
+
+          ========================================
+          LANCER L'ATTAQUE
+          ========================================
+
+          # 1. Activer IP forwarding (obligatoire!)
+          echo 1 > /proc/sys/net/ipv4/ip_forward
+
+          # 2. Lancer l'attaque
+          ettercap -T -q -M arp:remote /192.168.10.10// /192.168.10.20//
+
+          ========================================
+          VÉRIFIER SUR LES VPCS
+          ========================================
+
+          # Connexion aux VPCs
+          telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}  # VPC1
+          telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}  # VPC2
+
+          # Commandes de vérification
+          > clear arp
+          > show arp
+
+          # La MAC de l'autre VPC devrait être
+          # remplacée par la MAC de Kali!
+
+          ========================================

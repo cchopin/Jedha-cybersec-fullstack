@@ -1,0 +1,115 @@
+# =============================================================================
+# Lab 22: ARP Spoofing - Man-in-the-Middle Attack
+# =============================================================================
+# Ce lab démontre une attaque ARP Spoofing dans un environnement contrôlé.
+# Un attaquant (Kali Linux) manipule les tables ARP de deux victimes (VPCs).
+# =============================================================================
+
+# Serveur GNS3
+gns3_server: "http://192.168.190.174:80"
+gns3_host: "192.168.190.174"
+
+# Nom du projet GNS3
+project_name: "Lab_22_ARP_Spoofing"
+
+# =============================================================================
+# TOPOLOGIE DU LAB
+# =============================================================================
+#
+#     ┌─────────────────┐
+#     │  KALI-ATTACKER  │  ← Machine Kali Linux (Docker)
+#     │  192.168.10.100 │     ettercap, arpspoof, tcpdump...
+#     └────────┬────────┘
+#              │ e0/1
+#       ┌──────┴──────┐
+#       │     SW1     │  ← Switch Layer 2 (IOU L2)
+#       │  (default)  │     Configuration minimale
+#       └──────┬──────┘
+#         e0/2 │ e0/3
+#    ┌─────────┴─────────┐
+#    │                   │
+# ┌──┴───┐           ┌───┴──┐
+# │ VPC1 │           │ VPC2 │
+# │.10.10│           │.10.20│
+# └──────┘           └──────┘
+#   Victime 1         Victime 2
+#
+# =============================================================================
+
+# Configuration du switch
+switches:
+  - name: "SW1"
+    x: 0
+    y: 0
+    role: "target"
+
+# Configuration des VPCs (victimes)
+vpcs:
+  - name: "VPC1"
+    x: -150
+    y: 150
+    ip: "192.168.10.10"
+    gateway: "192.168.10.1"
+    netmask: "24"
+    role: "victim"
+  - name: "VPC2"
+    x: 150
+    y: 150
+    ip: "192.168.10.20"
+    gateway: "192.168.10.1"
+    netmask: "24"
+    role: "victim"
+
+# Configuration de l'attaquant
+attacker:
+  name: "KALI-ATTACKER"
+  x: 0
+  y: -150
+  ip: "192.168.10.100"
+  gateway: "192.168.10.1"
+  netmask: "24"
+
+# Configuration réseau (tous sur le même segment VLAN 1 par défaut)
+network:
+  subnet: "192.168.10.0/24"
+  gateway: "192.168.10.1"
+  netmask: "255.255.255.0"
+
+# =============================================================================
+# CONFIGURATION DE L'ATTAQUE ARP SPOOFING
+# =============================================================================
+
+arp_spoofing:
+  # Cibles de l'attaque
+  target1:
+    name: "VPC1"
+    ip: "192.168.10.10"
+  target2:
+    name: "VPC2"
+    ip: "192.168.10.20"
+
+  # L'attaquant va se faire passer pour chaque victime auprès de l'autre
+  # VPC1 pensera que l'IP de VPC2 a la MAC de Kali
+  # VPC2 pensera que l'IP de VPC1 a la MAC de Kali
+  # => Tout le trafic entre VPC1 et VPC2 passera par Kali (MitM)
+
+# =============================================================================
+# OUTILS D'ATTAQUE (à installer sur Kali)
+# =============================================================================
+# ettercap       : Framework ARP spoofing / MITM
+# arpspoof       : Outil simple (package dsniff)
+# bettercap      : Framework moderne multi-protocoles
+# scapy          : Crafting de paquets Python
+# tcpdump        : Capture de trafic
+# wireshark      : Analyse graphique
+# nmap           : Scan réseau
+# =============================================================================
+
+# Commandes d'installation
+kali_packages:
+  - "ettercap-text-only"
+  - "dsniff"
+  - "tcpdump"
+  - "nmap"
+  - "net-tools"
+  - "arpwatch"
