@@ -1,0 +1,549 @@
+# OSPF - Open Shortest Path First
+
+## Objectifs du cours
+
+Ce cours presente OSPF (Open Shortest Path First), l'un des protocoles de routage interne (IGP) les plus utilises dans les reseaux d'entreprise. OSPF est un protocole a etat de liens qui offre une convergence rapide et une grande scalabilite.
+
+Competences visees :
+- Comprendre les principes du routage a etat de liens vs vecteur de distance
+- Maitriser la structure OSPF : aires, LSAs, election DR/BDR
+- Configurer la summarization manuelle et le filtrage de routes
+- Realiser la redistribution entre OSPF et d'autres protocoles
+- Identifier les vulnerabilites OSPF et les contre-mesures
+
+---
+
+## Glossaire
+
+### Concepts fondamentaux
+
+| Sigle | Nom complet | Description |
+|-------|-------------|-------------|
+| **OSPF** | Open Shortest Path First | Protocole de routage IGP a etat de liens (RFC 2328) |
+| **IGP** | Interior Gateway Protocol | Protocole de routage interne a un systeme autonome |
+| **EGP** | Exterior Gateway Protocol | Protocole de routage entre systemes autonomes (ex: BGP) |
+| **SPF** | Shortest Path First | Algorithme de Dijkstra pour calculer les chemins les plus courts |
+| **LSA** | Link-State Advertisement | Paquet contenant les informations de topologie |
+| **LSDB** | Link-State Database | Base de donnees contenant tous les LSAs |
+| **Cost** | Cout OSPF | Metrique basee sur la bande passante (reference_bandwidth / interface_bandwidth) |
+
+### Roles et elections
+
+| Sigle | Nom complet | Description |
+|-------|-------------|-------------|
+| **DR** | Designated Router | Routeur elu pour centraliser les echanges LSA sur un segment multi-acces |
+| **BDR** | Backup Designated Router | Routeur de secours du DR |
+| **DROTHER** | DR Other | Routeur ni DR ni BDR sur un segment |
+| **RID** | Router ID | Identifiant unique du routeur (format IP, souvent loopback) |
+| **Priority** | Priorite OSPF | Valeur 0-255 pour l'election DR/BDR (0 = ne participe pas) |
+
+### Types d'aires
+
+| Terme | Description |
+|-------|-------------|
+| **Area 0 / Backbone** | Aire centrale obligatoire, toutes les autres aires doivent s'y connecter |
+| **Standard Area** | Aire normale acceptant tous les types de LSAs |
+| **Stub Area** | Aire bloquant les LSAs Type 5 (externes), remplacees par une route par defaut |
+| **Totally Stubby Area** | Aire bloquant les LSAs Type 3, 4 et 5 (Cisco proprietary) |
+| **NSSA** | Not-So-Stubby Area - Permet l'injection limitee de routes externes via LSA Type 7 |
+| **Totally NSSA** | Combine Totally Stubby et NSSA |
+
+### Types de LSAs
+
+| Type | Nom | Description |
+|------|-----|-------------|
+| **Type 1** | Router LSA | Decrit les interfaces du routeur dans une aire |
+| **Type 2** | Network LSA | Genere par le DR, decrit les routeurs sur un segment multi-acces |
+| **Type 3** | Summary LSA | Annonce les reseaux entre aires (genere par ABR) |
+| **Type 4** | ASBR Summary LSA | Annonce la route vers l'ASBR |
+| **Type 5** | External LSA | Routes externes injectees dans OSPF (genere par ASBR) |
+| **Type 7** | NSSA External LSA | Routes externes dans une NSSA (converties en Type 5 a l'ABR) |
+
+### Roles des routeurs
+
+| Sigle | Nom complet | Description |
+|-------|-------------|-------------|
+| **ABR** | Area Border Router | Routeur connectant plusieurs aires OSPF |
+| **ASBR** | Autonomous System Boundary Router | Routeur injectant des routes externes dans OSPF |
+| **Internal Router** | Routeur interne | Routeur dont toutes les interfaces sont dans une seule aire |
+| **Backbone Router** | Routeur backbone | Routeur avec au moins une interface dans l'Area 0 |
+
+### Etats des voisins OSPF
+
+| Etat | Description |
+|------|-------------|
+| **Down** | Aucun Hello recu |
+| **Init** | Hello recu mais pas de bidirectionnalite |
+| **2-Way** | Communication bidirectionnelle etablie, election DR/BDR possible |
+| **ExStart** | Negociation du master/slave pour l'echange LSDB |
+| **Exchange** | Echange des Database Description (DBD) |
+| **Loading** | Demande des LSAs manquants (LSR/LSU) |
+| **Full** | Adjacence complete, LSDB synchronisee |
+
+### Termes de securite
+
+| Terme | Description |
+|-------|-------------|
+| **OSPF Authentication** | Authentification des paquets OSPF (null, simple password, MD5, SHA) |
+| **Route Injection** | Injection de fausses routes dans OSPF |
+| **OSPF Hijacking** | Prise de controle du routage via manipulation OSPF |
+| **Rogue Router** | Routeur non autorise participant au domaine OSPF |
+| **LSA Flooding Attack** | Saturation du reseau avec de faux LSAs |
+
+---
+
+## Principes du routage a etat de liens
+
+### Comparaison : Distance-Vector vs Link-State
+
+| Aspect | Distance-Vector (RIP) | Link-State (OSPF) |
+|--------|----------------------|-------------------|
+| **Vision du reseau** | Locale (voisins directs) | Globale (topologie complete) |
+| **Echange d'informations** | Table de routage entiere | LSAs (changements uniquement) |
+| **Algorithme** | Bellman-Ford | Dijkstra (SPF) |
+| **Convergence** | Lente (count to infinity) | Rapide |
+| **Boucles de routage** | Possibles | Impossibles (vue coherente) |
+| **Ressources CPU/RAM** | Faibles | Elevees |
+| **Scalabilite** | Limitee | Excellente (avec aires) |
+
+### L'algorithme SPF (Dijkstra)
+
+OSPF utilise l'algorithme de Dijkstra pour calculer le chemin le plus court vers chaque destination.
+
+![Algorithme de Dijkstra](assets/ospf_schema_1.png)
+
+**Fonctionnement :**
+
+1. Chaque routeur collecte les LSAs de tous les autres routeurs
+2. Construction de la LSDB (identique sur tous les routeurs d'une aire)
+3. Execution de l'algorithme SPF avec le routeur comme racine
+4. Calcul de l'arbre des plus courts chemins (SPT - Shortest Path Tree)
+5. Installation des meilleures routes dans la table de routage
+
+**Calcul du cout OSPF :**
+
+```
+Cost = Reference Bandwidth / Interface Bandwidth
+
+Par defaut (Cisco) : Reference = 100 Mbps
+
+Exemples :
+- FastEthernet (100 Mbps) : 100/100 = 1
+- GigabitEthernet (1 Gbps) : 100/1000 = 0.1 → arrondi a 1
+- 10 GigabitEthernet : 100/10000 = 0.01 → arrondi a 1
+
+Probleme : Tous les liens >= 100 Mbps ont le meme cout !
+
+Solution : Augmenter la reference bandwidth
+router ospf 1
+ auto-cost reference-bandwidth 10000  # 10 Gbps
+```
+
+---
+
+## LSAs et aires OSPF
+
+### Types de LSAs detailles
+
+Les LSAs sont le coeur du fonctionnement OSPF. Chaque type a un role specifique :
+
+| Type | Genere par | Portee | Contenu |
+|------|------------|--------|---------|
+| **1 - Router** | Tous les routeurs | Intra-aire | Liens et couts du routeur |
+| **2 - Network** | DR uniquement | Intra-aire | Routeurs connectes au segment |
+| **3 - Summary** | ABR | Inter-aire | Reseaux des autres aires |
+| **4 - ASBR Summary** | ABR | Inter-aire | Chemin vers l'ASBR |
+| **5 - External** | ASBR | Domaine OSPF | Routes redistribuees |
+| **7 - NSSA External** | ASBR dans NSSA | Intra-NSSA | Routes externes en NSSA |
+
+### Architecture multi-aires
+
+![Types d'aires OSPF](assets/ospf_schema_2.png)
+
+**Regles fondamentales :**
+
+1. **Area 0 est obligatoire** : Toutes les autres aires doivent s'y connecter
+2. **ABR = au moins 2 aires** : Une interface dans Area 0, une dans une autre aire
+3. **Virtual Link** : Solution de contournement si connexion directe a Area 0 impossible
+
+### Configuration des types d'aires
+
+**Stub Area :**
+```cisco
+router ospf 1
+ area 1 stub
+```
+- Bloque les LSAs Type 5
+- ABR injecte une route par defaut (0.0.0.0/0)
+
+**Totally Stubby Area (Cisco) :**
+```cisco
+! Sur l'ABR uniquement
+router ospf 1
+ area 1 stub no-summary
+```
+- Bloque les LSAs Type 3, 4 et 5
+- Seule la route par defaut est propagee
+
+**NSSA :**
+```cisco
+router ospf 1
+ area 1 nssa
+```
+- Permet l'injection de routes externes via Type 7
+- Type 7 converti en Type 5 a l'ABR
+
+**Totally NSSA :**
+```cisco
+router ospf 1
+ area 1 nssa no-summary
+```
+
+### Tableau recapitulatif des aires
+
+| Type d'aire | LSA 1-2 | LSA 3 | LSA 4-5 | LSA 7 | Route par defaut |
+|-------------|---------|-------|---------|-------|------------------|
+| Standard | Oui | Oui | Oui | Non | Non |
+| Stub | Oui | Oui | Non | Non | Oui |
+| Totally Stubby | Oui | Non | Non | Non | Oui |
+| NSSA | Oui | Oui | Non | Oui | Non |
+| Totally NSSA | Oui | Non | Non | Oui | Oui |
+
+---
+
+## Election DR/BDR
+
+### Pourquoi DR/BDR ?
+
+Sur un reseau multi-acces (Ethernet), sans DR/BDR, chaque routeur devrait former une adjacence complete avec tous les autres. Avec N routeurs, cela represente N*(N-1)/2 adjacences !
+
+**Avec DR/BDR :**
+- Tous les routeurs forment une adjacence FULL avec le DR et le BDR
+- Les DROTHER restent en etat 2-Way entre eux
+- Reduction drastique des adjacences et du trafic LSA
+
+![Election DR/BDR](assets/ospf_schema_3.png)
+
+### Processus d'election
+
+**Criteres (dans l'ordre) :**
+
+1. **Priorite la plus elevee** (1-255, defaut = 1)
+   - Priorite 0 = ne participe pas a l'election
+2. **Router ID le plus eleve** (en cas d'egalite de priorite)
+
+**Points importants :**
+
+- L'election n'est **PAS preemptive** : un routeur avec une meilleure priorite qui rejoint le segment ne devient pas DR
+- Le DR ne change que si le DR actuel tombe
+- Le BDR devient DR, puis une nouvelle election pour le BDR
+
+**Configuration de la priorite :**
+```cisco
+interface GigabitEthernet0/0
+ ip ospf priority 100
+```
+
+### Types de reseaux OSPF
+
+| Type | Election DR/BDR | Exemple |
+|------|-----------------|---------|
+| **Broadcast** | Oui | Ethernet |
+| **Non-Broadcast (NBMA)** | Oui | Frame Relay |
+| **Point-to-Point** | Non | Liens serie, tunnels |
+| **Point-to-Multipoint** | Non | Hub-and-spoke |
+
+---
+
+## Summarization et filtrage
+
+### Summarization manuelle
+
+OSPF ne fait **pas** de summarization automatique. Elle doit etre configuree manuellement aux frontieres :
+
+**Sur un ABR (inter-aire) :**
+```cisco
+router ospf 1
+ area 1 range 10.10.0.0 255.255.252.0
+```
+Summarize les routes de l'Area 1 avant de les annoncer dans Area 0.
+
+**Sur un ASBR (routes externes) :**
+```cisco
+router ospf 1
+ summary-address 192.168.0.0 255.255.0.0
+```
+
+### Filtrage de routes
+
+**Bloquer la redistribution d'un reseau specifique :**
+
+```cisco
+! ACL pour identifier le reseau a bloquer
+access-list 10 deny 192.168.100.0 0.0.0.255
+access-list 10 permit any
+
+! Route-map pour le filtrage
+route-map FILTER deny 10
+ match ip address 10
+route-map FILTER permit 20
+
+! Application lors de la redistribution
+router ospf 1
+ redistribute static subnets route-map FILTER
+```
+
+**Filtrage inter-aire (sur ABR) :**
+```cisco
+router ospf 1
+ area 1 range 10.10.0.0 255.255.252.0 not-advertise
+```
+
+---
+
+## Redistribution
+
+### Redistribution de routes statiques
+
+```cisco
+router ospf 1
+ redistribute static subnets
+```
+
+**Important :** Le mot-cle `subnets` est obligatoire pour redistribuer les routes avec masques variables (VLSM).
+
+### Redistribution entre OSPF et EIGRP
+
+**EIGRP vers OSPF :**
+```cisco
+router ospf 1
+ redistribute eigrp 100 subnets
+```
+
+**OSPF vers EIGRP :**
+```cisco
+router eigrp 100
+ redistribute ospf 1 metric 10000 100 255 1 1500
+```
+
+Les 5 parametres de metrique EIGRP :
+1. Bandwidth (Kbps)
+2. Delay (dizaines de microsecondes)
+3. Reliability (0-255)
+4. Load (0-255)
+5. MTU
+
+### Bonnes pratiques de redistribution
+
+| Pratique | Raison |
+|----------|--------|
+| Toujours definir une metrique | Evite les routes avec metrique infinie |
+| Utiliser des route-maps | Controle fin des routes redistribuees |
+| Eviter la redistribution bidirectionnelle | Risque de boucles |
+| Utiliser des tags | Identification et filtrage des routes redistribuees |
+
+---
+
+## Securite OSPF et implications cyber
+
+### Vulnerabilites OSPF
+
+| Attaque | Description | Impact |
+|---------|-------------|--------|
+| **Rogue Router** | Routeur non autorise injecte dans le domaine OSPF | Interception du trafic, blackhole |
+| **LSA Injection** | Injection de faux LSAs pour modifier la topologie | Redirection du trafic |
+| **DR Election Manipulation** | Devenir DR pour controler les LSAs | Controle du routage sur le segment |
+| **Route Injection** | Redistribution de fausses routes | MitM, deni de service |
+| **Hello Packet Spoofing** | Usurpation des paquets Hello | Disruption des adjacences |
+| **MaxAge Attack** | Envoi de LSAs avec MaxAge pour supprimer des routes | Deni de service |
+
+### Scenario d'attaque : Rogue OSPF Router
+
+```
+1. Attaquant connecte un routeur au reseau
+2. Le routeur etablit des adjacences OSPF
+3. Injection de routes avec metriques faibles
+4. Le trafic est redirige vers l'attaquant
+5. Interception, modification ou drop du trafic
+```
+
+**Conditions necessaires :**
+- Acces physique au reseau
+- Connaissance du processus OSPF (aire, authentification)
+- Absence d'authentification OSPF
+
+### Contre-mesures OSPF
+
+#### 1. Authentification OSPF
+
+**MD5 (legacy) :**
+```cisco
+interface GigabitEthernet0/0
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 1 md5 SecretKey123
+```
+
+**SHA (OSPFv2 avec keychain - recommande) :**
+```cisco
+key chain OSPF-KEYS
+ key 1
+  key-string SecretKey123
+  cryptographic-algorithm hmac-sha-256
+
+interface GigabitEthernet0/0
+ ip ospf authentication key-chain OSPF-KEYS
+```
+
+#### 2. Passive Interface
+
+Empeche OSPF d'envoyer des Hello sur les interfaces non necessaires :
+
+```cisco
+router ospf 1
+ passive-interface default
+ no passive-interface GigabitEthernet0/0
+ no passive-interface GigabitEthernet0/1
+```
+
+#### 3. Filtrage des routes
+
+Utiliser des prefix-lists et route-maps pour controler les routes acceptees :
+
+```cisco
+ip prefix-list VALID-ROUTES seq 10 permit 10.0.0.0/8 le 24
+ip prefix-list VALID-ROUTES seq 20 deny 0.0.0.0/0 le 32
+
+route-map FILTER-IN permit 10
+ match ip address prefix-list VALID-ROUTES
+
+router ospf 1
+ distribute-list route-map FILTER-IN in
+```
+
+#### 4. Securite physique et logique
+
+| Mesure | Implementation |
+|--------|----------------|
+| Port Security | Limiter les MAC sur les ports access |
+| 802.1X | Authentification des equipements reseau |
+| ACLs | Filtrer le trafic OSPF (protocole 89) |
+| Monitoring | Surveiller les changements de topologie |
+| Logging | Journaliser les evenements OSPF |
+
+### Checklist securite OSPF
+
+```
+[ ] Authentification MD5 ou SHA sur toutes les interfaces OSPF
+[ ] Passive-interface par defaut, activer explicitement
+[ ] Router ID configure manuellement (loopback)
+[ ] Filtrage des routes redistribuees
+[ ] Monitoring des adjacences et changements de topologie
+[ ] Segmentation en aires pour limiter la propagation
+[ ] Documentation de la topologie OSPF attendue
+[ ] Alertes sur nouveaux voisins OSPF
+```
+
+---
+
+## Configuration de base OSPF
+
+### Configuration minimale
+
+```cisco
+! Activer OSPF
+router ospf 1
+ router-id 1.1.1.1
+
+! Annoncer les reseaux
+ network 10.0.0.0 0.255.255.255 area 0
+ network 192.168.1.0 0.0.0.255 area 1
+
+! Ou par interface (methode moderne)
+interface GigabitEthernet0/0
+ ip ospf 1 area 0
+```
+
+### Commandes de verification
+
+```cisco
+! Vue d'ensemble OSPF
+show ip ospf
+
+! Voisins OSPF
+show ip ospf neighbor
+
+! Base de donnees LSDB
+show ip ospf database
+
+! Routes OSPF
+show ip route ospf
+
+! Detail d'une interface
+show ip ospf interface GigabitEthernet0/0
+
+! Statistiques
+show ip ospf statistics
+```
+
+### Exemple de sortie - show ip ospf neighbor
+
+```
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+2.2.2.2           1   FULL/DR         00:00:38    10.0.12.2       Gi0/0
+3.3.3.3           1   FULL/BDR        00:00:35    10.0.12.3       Gi0/0
+4.4.4.4           1   2WAY/DROTHER    00:00:33    10.0.12.4       Gi0/0
+```
+
+---
+
+## Depannage OSPF
+
+### Problemes courants
+
+| Probleme | Cause probable | Verification |
+|----------|----------------|--------------|
+| Adjacence bloquee en INIT | Hello unidirectionnel | ACL, firewall, MTU |
+| Adjacence bloquee en EXSTART | MTU mismatch | `show ip ospf interface` |
+| Pas de voisin | Aire differente, authentification | `debug ip ospf adj` |
+| Routes manquantes | Filtrage, summarization | `show ip ospf database` |
+| Cout incorrect | Reference bandwidth | `show ip ospf interface` |
+
+### Commandes de debug
+
+```cisco
+! Debug adjacences (utiliser avec precaution)
+debug ip ospf adj
+
+! Debug paquets OSPF
+debug ip ospf packet
+
+! Debug evenements
+debug ip ospf events
+
+! Desactiver tous les debugs
+undebug all
+```
+
+---
+
+## Ressources
+
+| Ressource | Description |
+|-----------|-------------|
+| [RFC 2328](https://tools.ietf.org/html/rfc2328) | Specification OSPFv2 |
+| [Cisco OSPF Design Guide](https://www.cisco.com/c/en/us/support/docs/ip/open-shortest-path-first-ospf/7039-1.html) | Guide de conception OSPF |
+| [NetworkLessons OSPF](https://networklessons.com/ospf) | Tutoriels OSPF detailles |
+| [OSPF Redistribution](https://www.cisco.com/c/en/us/support/docs/ip/open-shortest-path-first-ospf/13710-ext-ospf.html) | Guide de redistribution |
+
+---
+
+## Labs TryHackMe
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Intro to Networking** | Fondamentaux reseau incluant routage | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services reseau et protocoles | https://tryhackme.com/room/networkservices |
+| **Wireshark: The Basics** | Analyse de paquets (utile pour debug OSPF) | https://tryhackme.com/room/wiresharkthebasics |
+| **Attacking and Defending AWS** | Inclut des concepts de routage cloud | https://tryhackme.com/room/introtocloudpentest |
+
+> **Note** : TryHackMe ne propose pas de room specifiquement dediee a OSPF. Les concepts avances de routage sont generalement pratiques sur GNS3, EVE-NG ou Packet Tracer. Pour la pratique des attaques OSPF, un lab isole avec des routeurs virtuels est recommande.
