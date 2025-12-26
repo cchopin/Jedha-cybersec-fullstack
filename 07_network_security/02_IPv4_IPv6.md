@@ -8,7 +8,7 @@ Deux protocoles coexistent : IPv4 (1981) et IPv6 (plus récent, conçu pour pall
 
 ---
 
-## Glossaire des sigles et acronymes
+## Glossaire
 
 Avant de plonger dans le cours, voici les définitions des termes techniques utilisés :
 
@@ -799,7 +799,7 @@ THC-IPv6, IPv6 Toolkit, Scapy
 
 ---
 
-## Ressources complémentaires
+## Ressources
 
 ### Documentation Cisco
 

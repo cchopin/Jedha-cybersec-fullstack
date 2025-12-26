@@ -432,3 +432,15 @@ ipconfig /all
 | RFC 6598 - CGNAT | https://www.rfc-editor.org/rfc/rfc6598 |
 | Guide NAT Cisco | https://www.cisco.com/c/en/us/support/docs/ip/network-address-translation-nat/ |
 | IANA Special-Purpose Registry | https://www.iana.org/assignments/iana-ipv4-special-registry/ |
+
+---
+
+## Labs TryHackMe recommandés
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Intro to Networking** | Fondamentaux incluant adresses publiques/privées | [Accéder](https://tryhackme.com/room/introtonetworking) |
+| **Network Fundamentals** | Bases du réseau et adressage IP | [Accéder](https://tryhackme.com/room/whatisnetworking) |
+| **Passive Reconnaissance** | Techniques pour identifier les IPs publiques d'une cible | [Accéder](https://tryhackme.com/room/passiverecon) |
+| **Active Reconnaissance** | Scanning réseau et identification des plages | [Accéder](https://tryhackme.com/room/activerecon) |
+| **Nmap Live Host Discovery** | Découverte d'hôtes sur différentes plages réseau | [Accéder](https://tryhackme.com/room/nmap01) |

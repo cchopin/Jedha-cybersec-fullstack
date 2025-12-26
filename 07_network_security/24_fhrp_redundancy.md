@@ -15,7 +15,7 @@ Comprendre la redondance reseau est essentiel pour :
 
 ---
 
-## Glossaire des sigles et acronymes
+## Glossaire
 
 ### Protocoles de redondance
 

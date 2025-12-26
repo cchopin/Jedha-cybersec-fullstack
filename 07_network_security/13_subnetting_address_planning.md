@@ -260,3 +260,15 @@ Cela signifie qu'une seule route couvre maintenant tous les quatre réseaux, ré
 - Guide VLSM : [VLSM Tutorial](https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html)
 - Supernetting expliqué : [Supernetting Overview](https://www.networkacademy.io/ccna/ip-subnetting/supernetting)
 - Outil de pratique de subnetting : [Subnet Calculator](https://www.subnet-calculator.com/)
+
+---
+
+## Labs TryHackMe recommandés
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Intro to Networking** | Fondamentaux incluant CIDR et subnetting | [Accéder](https://tryhackme.com/room/introtonetworking) |
+| **Network Fundamentals** | Bases du réseau et adressage | [Accéder](https://tryhackme.com/room/whatisnetworking) |
+| **Passive Reconnaissance** | Reconnaissance incluant l'analyse de plages réseau | [Accéder](https://tryhackme.com/room/passiverecon) |
+| **Active Reconnaissance** | Scanning et énumération avec notations CIDR | [Accéder](https://tryhackme.com/room/activerecon) |
+| **Nmap Live Host Discovery** | Utilisation pratique de la notation CIDR pour le scanning | [Accéder](https://tryhackme.com/room/nmap01) |

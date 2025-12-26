@@ -13,7 +13,7 @@ Les modèles OSI et TCP/IP sont des frameworks qui décrivent comment les donné
 
 ---
 
-## Glossaire des sigles et acronymes
+## Glossaire
 
 ### Modèles et concepts généraux
 

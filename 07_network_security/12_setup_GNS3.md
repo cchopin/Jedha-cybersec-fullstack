@@ -280,3 +280,16 @@ ping 192.168.1.20
 - Documentation officielle GNS3 : [docs.gns3.com](https://docs.gns3.com/)
 - Guide de démarrage : [Getting Started](https://docs.gns3.com/docs/)
 - Forum communautaire : [gns3.com/community](https://www.gns3.com/community)
+
+---
+
+## Labs TryHackMe recommandés
+
+Ces rooms permettent de pratiquer les concepts réseau que vous simulerez ensuite dans GNS3 :
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Intro to Networking** | Fondamentaux à maîtriser avant les simulations | [Accéder](https://tryhackme.com/room/introtonetworking) |
+| **Network Fundamentals** | Bases du réseau : modèle OSI, TCP/IP | [Accéder](https://tryhackme.com/room/whatisnetworking) |
+| **Wireshark 101** | Analyse de trafic - complémentaire à GNS3 | [Accéder](https://tryhackme.com/room/wireshark) |
+| **Packets & Frames** | Comprendre la structure des paquets réseau | [Accéder](https://tryhackme.com/room/packetsframes) |

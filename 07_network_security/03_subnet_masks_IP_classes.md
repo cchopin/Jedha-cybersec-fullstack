@@ -794,3 +794,15 @@ ipcalc 192.168.1.0/26
 # Scanner un sous-réseau avec nmap
 nmap -sn 192.168.1.0/24
 ```
+
+---
+
+## Labs TryHackMe recommandés
+
+| Room | Description | Lien |
+|------|-------------|------|
+| **Intro to Networking** | Fondamentaux du networking incluant l'adressage IP | [Accéder](https://tryhackme.com/room/introtonetworking) |
+| **Networking Essentials** | Concepts essentiels : IP, subnetting, routage | [Accéder](https://tryhackme.com/room/dvwa) |
+| **Network Fundamentals** | Bases du réseau et modèle OSI/TCP-IP | [Accéder](https://tryhackme.com/room/whatisnetworking) |
+| **Passive Reconnaissance** | Reconnaissance passive incluant l'énumération réseau | [Accéder](https://tryhackme.com/room/passiverecon) |
+| **Active Reconnaissance** | Scanning et énumération de sous-réseaux | [Accéder](https://tryhackme.com/room/activerecon) |

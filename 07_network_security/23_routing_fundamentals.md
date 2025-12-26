@@ -15,7 +15,7 @@ Comprendre le routage est essentiel pour :
 
 ---
 
-## Glossaire des sigles et acronymes
+## Glossaire
 
 Avant de plonger dans le cours, voici les definitions des termes techniques utilises :
 
