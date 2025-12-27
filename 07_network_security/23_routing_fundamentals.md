@@ -355,6 +355,11 @@ interface GigabitEthernet0/0.20
  description VLAN 20 - Servers
  encapsulation dot1Q 20
  ip address 192.168.20.1 255.255.255.0
+
+interface GigabitEthernet0/0.30
+ description VLAN 30 - [à définir]
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
 ```
 
 ### 4.2 SVI (Switched Virtual Interface)
