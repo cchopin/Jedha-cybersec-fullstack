@@ -3,7 +3,7 @@
 ## Amazon VPC - Virtual Private Cloud
 
 ### Définition
-Un VPC est un réseau virtuel isolé logiquement dans AWS où vous déployez vos ressources. C'est votre propre datacenter virtuel dans le cloud.
+Un VPC est un réseau virtuel isolé logiquement dans AWS où les ressources sont déployées. Il s'agit d'un datacenter virtuel dans le cloud.
 
 ### Composants fondamentaux
 

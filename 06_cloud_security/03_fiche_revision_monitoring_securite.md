@@ -25,7 +25,7 @@
 ## AWS CloudTrail
 
 ### Description
-CloudTrail enregistre toutes les actions effectuées dans votre compte AWS (appels API, connexions console, etc.).
+CloudTrail enregistre toutes les actions effectuées dans un compte AWS (appels API, connexions console, etc.).
 
 ### Points clés
 - **Activé par défaut** : 90 jours d'historique gratuit
@@ -151,7 +151,7 @@ aws guardduty archive-findings \
 ## AWS Config
 
 ### Description
-Service qui évalue la conformité de vos ressources AWS par rapport à des règles définies.
+Service qui évalue la conformité des ressources AWS par rapport à des règles définies.
 
 ### Fonctionnalités
 - Inventaire des ressources

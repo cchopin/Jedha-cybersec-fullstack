@@ -28,8 +28,8 @@ Le cloud computing est l'accès à la demande à des ressources informatiques pa
 - Hyperviseur et systèmes hôtes
 - Disponibilité des services
 
-**Vous gérez** (sécurité DANS le cloud) :
-- Vos données et leur chiffrement
+**Le client gère** (sécurité DANS le cloud) :
+- Données et chiffrement
 - Gestion des identités et accès (IAM)
 - Configuration des applications
 - Paramètres réseau et firewall
