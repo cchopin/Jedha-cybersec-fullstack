@@ -1,4 +1,4 @@
-# AWS Network Security Services - Infrastructure VPC Three-Tier
+# AWS Network Security Services - Infrastructure VPC three-tier
 
 Ce projet automatise la creation d'une architecture VPC trois tiers complete sur AWS, incluant VPC, subnets, gateways, route tables, security groups et NACLs.
 
@@ -46,7 +46,7 @@ Ce projet automatise la creation d'une architecture VPC trois tiers complete sur
 - Un compte AWS avec les permissions appropriees
 - Bash shell
 
-## Deploiement Rapide
+## Deploiement rapide
 
 ```bash
 # Configurer la region (optionnel, defaut: eu-west-3)
@@ -64,7 +64,7 @@ chmod +x scripts/*.sh
 
 ---
 
-## Commandes CLI Detaillees par Phase
+## Commandes CLI detaillees par phase
 
 ### Phase 1: Creation du VPC
 
@@ -86,7 +86,7 @@ aws ec2 modify-vpc-attribute \
 
 ### Phase 2: Creation des Subnets
 
-#### Subnets Publics
+#### Subnets publics
 
 ```bash
 # Obtenir les zones de disponibilite
@@ -122,7 +122,7 @@ aws ec2 create-subnet \
     --output text
 ```
 
-#### Subnets Prives (App Tier)
+#### Subnets prives (app tier)
 
 ```bash
 # Private App Subnet AZ1 (10.0.3.0/24)
@@ -146,7 +146,7 @@ aws ec2 create-subnet \
     --output text
 ```
 
-#### Subnets Prives (Database Tier)
+#### Subnets prives (database tier)
 
 ```bash
 # Private DB Subnet AZ1 (10.0.5.0/24)
@@ -215,7 +215,7 @@ aws ec2 wait nat-gateway-available \
 
 ### Phase 5: Creation des Route Tables
 
-#### Route Table Publique
+#### Route table publique
 
 ```bash
 # Creer la route table publique
@@ -245,7 +245,7 @@ aws ec2 associate-route-table \
     --subnet-id <PUBLIC_SUBNET_2_ID>
 ```
 
-#### Route Table Privee (App Tier)
+#### Route table privee (app tier)
 
 ```bash
 # Creer la route table app
@@ -275,7 +275,7 @@ aws ec2 associate-route-table \
     --subnet-id <PRIVATE_APP_SUBNET_2_ID>
 ```
 
-#### Route Table Privee (Database Tier)
+#### Route table privee (database tier)
 
 ```bash
 # Creer la route table database (pas de route internet)
@@ -300,7 +300,7 @@ aws ec2 associate-route-table \
 
 ### Phase 6: Creation des Security Groups
 
-#### Web Tier Security Group
+#### Web tier security group
 
 ```bash
 # Creer le security group Web Tier
@@ -338,7 +338,7 @@ aws ec2 authorize-security-group-ingress \
     --cidr <VOTRE_IP>/32
 ```
 
-#### App Tier Security Group
+#### App tier security group
 
 ```bash
 # Creer le security group App Tier
@@ -368,7 +368,7 @@ aws ec2 authorize-security-group-ingress \
     --source-group <WEB_SG_ID>
 ```
 
-#### Database Tier Security Group
+#### Database tier security group
 
 ```bash
 # Creer le security group Database Tier
@@ -497,7 +497,7 @@ aws ec2 delete-vpc --region eu-west-3 --vpc-id <VPC_ID>
 
 ---
 
-## Structure du Projet
+## Structure du projet
 
 ```
 AWS_etwork_security_services/
@@ -510,7 +510,7 @@ AWS_etwork_security_services/
 └── README.md                           # Cette documentation
 ```
 
-## Tableau Recapitulatif des Ressources
+## Tableau recapitulatif des ressources
 
 | Ressource | Nom | CIDR/Config |
 |-----------|-----|-------------|
@@ -531,7 +531,7 @@ AWS_etwork_security_services/
 | DB SG | Database-Tier-SG | MySQL depuis App |
 | NACL DB | Database-NACL | MySQL depuis App |
 
-## Flux de Trafic
+## Flux de trafic
 
 ```
 Internet -> IGW -> Public Subnets (Web Tier)
