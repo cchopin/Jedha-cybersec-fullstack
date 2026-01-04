@@ -4,19 +4,19 @@
 
 ```
 +------------------------------------------------------------------+
-|                    AWS Security Services                          |
+|                    AWS Security Services                         |
 +------------------------------------------------------------------+
-|                                                                   |
+|                                                                  |
 |  [CloudTrail]     [GuardDuty]      [Config]      [Security Hub]  |
 |   Audit logs      Threat          Compliance      Unified        |
 |   API calls       detection       monitoring      dashboard      |
-|                                                                   |
+|                                                                  |
 +------------------------------------------------------------------+
-|                                                                   |
+|                                                                  |
 |  [CloudWatch]     [Inspector]     [Macie]        [Detective]     |
 |   Metrics &       Vulnerability   Data           Investigation   |
 |   Logs            scanning        protection                     |
-|                                                                   |
+|                                                                  |
 +------------------------------------------------------------------+
 ```
 
@@ -452,10 +452,10 @@ aws logs filter-log-events \
 
 ## Ressources
 
-- [AWS CloudTrail](https://docs.aws.amazon.com/cloudtrail/latest/userguide/)
+- [AWS CloudTrail](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html)
 - [Amazon GuardDuty](https://docs.aws.amazon.com/guardduty/latest/ug/)
 - [AWS Config](https://docs.aws.amazon.com/config/latest/developerguide/)
 - [AWS Security Hub](https://docs.aws.amazon.com/securityhub/latest/userguide/)
-- [Amazon CloudWatch](https://docs.aws.amazon.com/cloudwatch/latest/monitoring/)
+- [Amazon CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html)
 - [AWS CLI CloudWatch Reference](https://docs.aws.amazon.com/cli/latest/reference/cloudwatch/)
 - [AWS CLI Logs Reference](https://docs.aws.amazon.com/cli/latest/reference/logs/)
