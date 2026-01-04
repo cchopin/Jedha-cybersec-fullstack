@@ -1,4 +1,4 @@
-# StartupExcuses - Deploy a Basic 3-Tier App
+# StartupExcuses - Deploy a basic 3-tier app
 
 Application Flask deployee sur une architecture 3-tier AWS avec EC2 et RDS PostgreSQL.
 
@@ -47,7 +47,7 @@ Application Flask deployee sur une architecture 3-tier AWS avec EC2 et RDS Postg
 - Compte AWS avec permissions EC2/RDS/VPC
 - Bash shell
 
-## Deploiement Rapide
+## Deploiement rapide
 
 ```bash
 # Region par defaut: us-east-1
@@ -68,7 +68,7 @@ chmod +x scripts/*.sh
 
 ---
 
-## Commandes CLI Detaillees
+## Commandes CLI detaillees
 
 ### Phase 1: Creation du VPC
 
@@ -395,7 +395,7 @@ rm -f StartupExcusesKeyPair.pem
 
 ---
 
-## Structure du Projet
+## Structure du projet
 
 ```
 Deploy_basic_3-tier_app/
@@ -423,7 +423,7 @@ Deploy_basic_3-tier_app/
 ssh -i StartupExcusesKeyPair.pem ec2-user@<EC2_PUBLIC_IP>
 ```
 
-## Logs et Debug
+## Logs et debug
 
 ```bash
 # Voir les logs du user-data
@@ -439,7 +439,7 @@ sudo systemctl restart startupexcuses
 sudo journalctl -u startupexcuses -f
 ```
 
-## Tableau Recapitulatif
+## Tableau recapitulatif
 
 | Ressource | Nom | Configuration |
 |-----------|-----|---------------|
