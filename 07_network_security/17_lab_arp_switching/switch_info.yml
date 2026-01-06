@@ -1,9 +1,9 @@
 # Informations de connexion - Lab 17 ARP/Switching
 # Genere automatiquement
 
-project_id: "a641e503-6853-4d71-8547-57881b928435"
+project_id: "e93ca9c5-5174-470b-84e2-6bf990402120"
 
-sw1_console_port: 5036
-sw1_node_id: "9501cf2f-172f-4c00-b571-da95e76d6608"
-sw2_console_port: 5037
-sw2_node_id: "b384ef6e-7661-4398-8a21-aea50187635a"
+sw1_console_port: 5000
+sw1_node_id: "78851ed2-43f0-4239-9aed-5c568852323f"
+sw2_console_port: 5001
+sw2_node_id: "4dd037ee-2b00-4848-a263-0e97cbe7c826"

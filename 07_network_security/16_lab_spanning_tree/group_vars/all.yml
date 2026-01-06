@@ -3,8 +3,8 @@
 # =============================================================================
 
 # Serveur GNS3
-gns3_server: "http://192.168.156.183:80"
-gns3_host: "192.168.156.183"
+gns3_server: "http://192.168.190.174:80"
+gns3_host: "192.168.190.174"
 
 # Nom du projet GNS3
 project_name: "Lab_16_Spanning_Tree"
@@ -25,7 +25,7 @@ switches:
   - name: "SW1"
     x: 0
     y: -100
-    role: "root"           # SW1 sera le Root Bridge
+    role: "root" # SW1 sera le Root Bridge
   - name: "SW2"
     x: -150
     y: 100
@@ -40,26 +40,26 @@ links:
   - name: "SW1-SW2"
     from_switch: "SW1"
     from_adapter: 0
-    from_port: 0           # Ethernet0/0
+    from_port: 0 # Ethernet0/0
     to_switch: "SW2"
     to_adapter: 0
-    to_port: 0             # Ethernet0/0
+    to_port: 0 # Ethernet0/0
 
   - name: "SW1-SW3"
     from_switch: "SW1"
     from_adapter: 0
-    from_port: 1           # Ethernet0/1
+    from_port: 1 # Ethernet0/1
     to_switch: "SW3"
     to_adapter: 0
-    to_port: 0             # Ethernet0/0
+    to_port: 0 # Ethernet0/0
 
   - name: "SW2-SW3"
     from_switch: "SW2"
     from_adapter: 0
-    from_port: 1           # Ethernet0/1
+    from_port: 1 # Ethernet0/1
     to_switch: "SW3"
     to_adapter: 0
-    to_port: 1             # Ethernet0/1
+    to_port: 1 # Ethernet0/1
 
 # =============================================================================
 # Configuration STP
@@ -69,9 +69,9 @@ stp:
 
   # Priorites pour l'election du Root Bridge
   priorities:
-    root_primary: 4096      # SW1 sera Root Bridge primaire
-    root_secondary: 8192    # Pour un eventuel backup
-    default: 32768          # Valeur par defaut Cisco
+    root_primary: 4096 # SW1 sera Root Bridge primaire
+    root_secondary: 8192 # Pour un eventuel backup
+    default: 32768 # Valeur par defaut Cisco
 
   # Mode STP
   modes:
