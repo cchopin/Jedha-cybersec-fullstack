@@ -331,7 +331,6 @@ Ressources supprimées :
 
 ## 8. Dépannage
 
-### Erreur "This account is currently blocked"
 
 Cette erreur survient lors du lancement d'une instance EC2 :
 ```

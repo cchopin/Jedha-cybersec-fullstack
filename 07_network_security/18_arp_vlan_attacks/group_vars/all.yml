@@ -6,8 +6,8 @@
 # =============================================================================
 
 # Serveur GNS3
-gns3_server: "http://192.168.156.183:80"
-gns3_host: "192.168.156.183"
+gns3_server: "http://192.168.190.174:80"
+gns3_host: "192.168.190.174"
 
 # Nom du projet GNS3
 project_name: "Lab_18_ARP_VLAN_Attacks"
@@ -40,11 +40,11 @@ switches:
   - name: "SW1"
     x: 0
     y: 0
-    role: "target"      # Switch cible des attaques
+    role: "target" # Switch cible des attaques
   - name: "SW2"
     x: 0
     y: 150
-    role: "gateway"     # Switch avec protections
+    role: "gateway" # Switch avec protections
 
 # Configuration des VPCs (machines)
 vpcs:
@@ -98,9 +98,9 @@ switch_ips:
     vlan20: "192.168.20.1"
     vlan30: "192.168.30.1"
   sw2:
-    vlan10: "192.168.10.254"   # Gateway pour VLAN 10
-    vlan20: "192.168.20.254"   # Gateway pour VLAN 20
-    vlan30: "192.168.30.254"   # Gateway pour VLAN 30
+    vlan10: "192.168.10.254" # Gateway pour VLAN 10
+    vlan20: "192.168.20.254" # Gateway pour VLAN 20
+    vlan30: "192.168.30.254" # Gateway pour VLAN 30
 
 netmask: "255.255.255.0"
 
@@ -110,16 +110,16 @@ netmask: "255.255.255.0"
 
 # ARP Spoofing - Cibles
 arp_spoofing:
-  attacker_mac: "AA:BB:CC:DD:EE:FF"  # MAC spoofée (fictive pour demo)
-  target1_ip: "192.168.10.10"        # Alice
-  target2_ip: "192.168.10.20"        # Bob
-  gateway_ip: "192.168.10.254"       # Gateway
+  attacker_mac: "AA:BB:CC:DD:EE:FF" # MAC spoofée (fictive pour demo)
+  target1_ip: "192.168.10.10" # Alice
+  target2_ip: "192.168.10.20" # Bob
+  gateway_ip: "192.168.10.254" # Gateway
 
 # VLAN Hopping
 vlan_hopping:
   # Double-tagging attack
-  outer_vlan: 99    # Native VLAN (sera strippé)
-  inner_vlan: 20    # VLAN cible
+  outer_vlan: 99 # Native VLAN (sera strippé)
+  inner_vlan: 20 # VLAN cible
   # Switch spoofing (DTP)
   dtp_domain: "ATTACK"
 
@@ -131,20 +131,20 @@ vlan_hopping:
 dai:
   enabled: true
   vlans: "10,20,30"
-  rate_limit: 15    # pps (packets per second)
+  rate_limit: 15 # pps (packets per second)
 
 # Port Security
 port_security:
   enabled: true
   max_mac: 1
-  violation_mode: "shutdown"  # shutdown, restrict, protect
+  violation_mode: "shutdown" # shutdown, restrict, protect
 
 # DHCP Snooping (requis pour DAI)
 dhcp_snooping:
   enabled: true
   vlans: "10,20,30"
   trusted_ports:
-    - "Ethernet0/0"   # Trunk vers SW2
+    - "Ethernet0/0" # Trunk vers SW2
 
 # BPDU Guard (protection STP)
 bpdu_guard:
@@ -156,7 +156,7 @@ bpdu_guard:
 
 # Storm Control
 storm_control:
-  broadcast_level: 10   # % of bandwidth
+  broadcast_level: 10 # % of bandwidth
   multicast_level: 10
   unicast_level: 10
 

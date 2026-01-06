@@ -6,8 +6,8 @@
 # =============================================================================
 
 # Serveur GNS3
-gns3_server: "http://192.168.156.183:80"
-gns3_host: "192.168.156.183"
+gns3_server: "http://192.168.190.174:80"
+gns3_host: "192.168.190.174"
 
 # Nom du projet GNS3
 project_name: "Lab_20_VLAN_Trunk"

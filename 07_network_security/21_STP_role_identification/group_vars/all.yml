@@ -8,8 +8,8 @@
 # -----------------------------------------------------------------------------
 # Configuration GNS3
 # -----------------------------------------------------------------------------
-gns3_server: "http://192.168.156.183:80"
-gns3_host: "192.168.156.183"
+gns3_server: "http://192.168.190.174:80"
+gns3_host: "192.168.190.174"
 project_name: "Lab_21_STP_Role_Identification"
 
 # -----------------------------------------------------------------------------
@@ -108,11 +108,11 @@ vpcs:
 # -----------------------------------------------------------------------------
 stp:
   vlan: 10
-  mode: "pvst"  # Per-VLAN Spanning Tree
+  mode: "pvst" # Per-VLAN Spanning Tree
   priorities:
-    root_primary: 4096      # Pour forcer un switch comme Root Bridge
-    root_secondary: 8192    # Backup Root Bridge
-    default: 32768          # Priorite par defaut Cisco
+    root_primary: 4096 # Pour forcer un switch comme Root Bridge
+    root_secondary: 8192 # Backup Root Bridge
+    default: 32768 # Priorite par defaut Cisco
 
 # -----------------------------------------------------------------------------
 # Commandes de verification STP
