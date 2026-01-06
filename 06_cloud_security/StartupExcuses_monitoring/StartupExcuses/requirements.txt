@@ -1,0 +1,5 @@
+Flask
+psycopg2-binary
+python-dotenv
+dotenv
+boto3
