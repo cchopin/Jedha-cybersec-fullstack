@@ -61,14 +61,14 @@
   tasks:
     - name: "Afficher le scénario testé"
       debug:
-        msg: |
-          ============================================
-          TEST DTP: {{ scenario }}
-          ============================================
-          SW1 mode: {{ scenarios[scenario].sw1_mode }}
-          SW2 mode: {{ scenarios[scenario].sw2_mode }}
-          Résultat attendu: {{ scenarios[scenario].expected }}
-          ============================================
+        msg:
+          - "============================================"
+          - "TEST DTP: {{ scenario }}"
+          - "============================================"
+          - "SW1 mode: {{ scenarios[scenario].sw1_mode }}"
+          - "SW2 mode: {{ scenarios[scenario].sw2_mode }}"
+          - "Résultat attendu: {{ scenarios[scenario].expected }}"
+          - "============================================"
 
     - name: "Configurer SW1 en mode {{ scenarios[scenario].sw1_mode }}"
       script: >
@@ -123,18 +123,18 @@
 
     - name: "Résumé du test"
       debug:
-        msg: |
-          ============================================
-          RÉSULTAT DU TEST DTP
-          ============================================
-          Scénario: {{ scenario }}
-          SW1: {{ scenarios[scenario].sw1_mode }}
-          SW2: {{ scenarios[scenario].sw2_mode }}
-
-          Vérifiez dans la sortie ci-dessus si:
-          - "Operational Mode" correspond à {{ scenarios[scenario].expected }}
-          - Le trunk apparaît dans "show interfaces trunk"
-
-          Pour tester un autre scénario, modifiez la variable 'scenario'
-          ou lancez avec: -e "scenario=auto_desirable"
-          ============================================
+        msg:
+          - "============================================"
+          - "RÉSULTAT DU TEST DTP"
+          - "============================================"
+          - "Scénario: {{ scenario }}"
+          - "SW1: {{ scenarios[scenario].sw1_mode }}"
+          - "SW2: {{ scenarios[scenario].sw2_mode }}"
+          - ""
+          - "Vérifiez dans la sortie ci-dessus si:"
+          - "- 'Operational Mode' correspond à {{ scenarios[scenario].expected }}"
+          - "- Le trunk apparaît dans 'show interfaces trunk'"
+          - ""
+          - "Pour tester un autre scénario, modifiez la variable 'scenario'"
+          - "ou lancez avec: -e 'scenario=auto_desirable'"
+          - "============================================"

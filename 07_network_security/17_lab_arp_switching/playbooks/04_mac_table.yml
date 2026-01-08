@@ -37,22 +37,22 @@
       block:
         - name: "Info - Table MAC"
           debug:
-            msg: |
-              ============================================
-              EXERCICE: TABLE D'ADRESSES MAC
-              ============================================
-              La table MAC (CAM table) associe:
-                - Adresse MAC → Port de sortie
-
-              Format de la sortie:
-                Vlan  Mac Address      Type     Ports
-                10    aabb.ccdd.eeff   DYNAMIC  Et0/0
-
-              Types d'entrées:
-                - DYNAMIC: Apprise automatiquement
-                - STATIC: Configurée manuellement
-                - SECURE: Via port-security
-              ============================================
+            msg:
+              - "============================================"
+              - "EXERCICE: TABLE D'ADRESSES MAC"
+              - "============================================"
+              - "La table MAC (CAM table) associe:"
+              - "  - Adresse MAC -> Port de sortie"
+              - ""
+              - "Format de la sortie:"
+              - "  Vlan  Mac Address      Type     Ports"
+              - "  10    aabb.ccdd.eeff   DYNAMIC  Et0/0"
+              - ""
+              - "Types d'entrées:"
+              - "  - DYNAMIC: Apprise automatiquement"
+              - "  - STATIC: Configurée manuellement"
+              - "  - SECURE: Via port-security"
+              - "============================================"
 
         - name: "Voir la table MAC sur SW1"
           script: >
@@ -66,12 +66,14 @@
 
         - name: "Table MAC SW1"
           debug:
-            msg: |
-              ============================================
-              TABLE MAC - SW1
-              ============================================
-              {{ sw1_mac.stdout }}
-              ============================================
+            msg:
+              - "============================================"
+              - "TABLE MAC - SW1"
+              - "============================================"
+
+        - name: "Sortie table MAC SW1"
+          debug:
+            var: sw1_mac.stdout_lines
 
         - name: "Voir la table MAC sur SW2"
           script: >
@@ -85,12 +87,14 @@
 
         - name: "Table MAC SW2"
           debug:
-            msg: |
-              ============================================
-              TABLE MAC - SW2
-              ============================================
-              {{ sw2_mac.stdout }}
-              ============================================
+            msg:
+              - "============================================"
+              - "TABLE MAC - SW2"
+              - "============================================"
+
+        - name: "Sortie table MAC SW2"
+          debug:
+            var: sw2_mac.stdout_lines
 
         - name: "Voir le compteur de MAC par VLAN"
           script: >
@@ -104,8 +108,7 @@
 
         - name: "Compteur MAC"
           debug:
-            msg: |
-              {{ mac_count.stdout }}
+            var: mac_count.stdout_lines
 
     # =========================================================================
     # Exercice 2: Observer l'apprentissage MAC
@@ -115,22 +118,22 @@
       block:
         - name: "Info - Apprentissage MAC"
           debug:
-            msg: |
-              ============================================
-              EXERCICE: APPRENTISSAGE MAC DYNAMIQUE
-              ============================================
-              Processus d'apprentissage:
-
-              1. SW1 reçoit une trame de SW2
-              2. SW1 lit l'adresse MAC SOURCE de la trame
-              3. SW1 associe cette MAC au port d'entrée (e0/0)
-              4. L'entrée est marquée DYNAMIC avec un timer
-
-              Nous allons:
-              1. Vider la table MAC
-              2. Générer du trafic (ping)
-              3. Observer les nouvelles entrées
-              ============================================
+            msg:
+              - "============================================"
+              - "EXERCICE: APPRENTISSAGE MAC DYNAMIQUE"
+              - "============================================"
+              - "Processus d'apprentissage:"
+              - ""
+              - "1. SW1 reçoit une trame de SW2"
+              - "2. SW1 lit l'adresse MAC SOURCE de la trame"
+              - "3. SW1 associe cette MAC au port d'entrée (e0/0)"
+              - "4. L'entrée est marquée DYNAMIC avec un timer"
+              - ""
+              - "Nous allons:"
+              - "1. Vider la table MAC"
+              - "2. Générer du trafic (ping)"
+              - "3. Observer les nouvelles entrées"
+              - "============================================"
 
         - name: "Vider la table MAC de SW1"
           script: >
@@ -153,12 +156,14 @@
 
         - name: "Afficher avant"
           debug:
-            msg: |
-              ============================================
-              TABLE MAC DYNAMIQUE AVANT TRAFIC
-              ============================================
-              {{ mac_before.stdout }}
-              ============================================
+            msg:
+              - "============================================"
+              - "TABLE MAC DYNAMIQUE AVANT TRAFIC"
+              - "============================================"
+
+        - name: "Sortie table MAC avant trafic"
+          debug:
+            var: mac_before.stdout_lines
 
         - name: "Générer du trafic (ping SW2)"
           script: >
@@ -186,17 +191,23 @@
 
         - name: "Afficher après"
           debug:
-            msg: |
-              ============================================
-              TABLE MAC DYNAMIQUE APRÈS TRAFIC
-              ============================================
-              {{ mac_after.stdout }}
+            msg:
+              - "============================================"
+              - "TABLE MAC DYNAMIQUE APRÈS TRAFIC"
+              - "============================================"
 
-              OBSERVATION:
-              - Nouvelle entrée pour la MAC de SW2
-              - Associée au port Ethernet0/0 (trunk)
-              - Type: DYNAMIC
-              ============================================
+        - name: "Sortie table MAC après trafic"
+          debug:
+            var: mac_after.stdout_lines
+
+        - name: "Observation MAC après trafic"
+          debug:
+            msg:
+              - "OBSERVATION:"
+              - "- Nouvelle entrée pour la MAC de SW2"
+              - "- Associée au port Ethernet0/0 (trunk)"
+              - "- Type: DYNAMIC"
+              - "============================================"
 
     # =========================================================================
     # Exercice 3: Vider la table MAC
@@ -206,21 +217,21 @@
       block:
         - name: "Info - Clear MAC"
           debug:
-            msg: |
-              ============================================
-              EXERCICE: VIDER LA TABLE MAC
-              ============================================
-              Commandes disponibles:
-
-              clear mac address-table dynamic
-                → Supprime toutes les entrées dynamiques
-
-              clear mac address-table dynamic vlan 10
-                → Supprime les dynamiques du VLAN 10
-
-              clear mac address-table dynamic address xxxx.xxxx.xxxx
-                → Supprime une MAC spécifique
-              ============================================
+            msg:
+              - "============================================"
+              - "EXERCICE: VIDER LA TABLE MAC"
+              - "============================================"
+              - "Commandes disponibles:"
+              - ""
+              - "clear mac address-table dynamic"
+              - "  -> Supprime toutes les entrées dynamiques"
+              - ""
+              - "clear mac address-table dynamic vlan 10"
+              - "  -> Supprime les dynamiques du VLAN 10"
+              - ""
+              - "clear mac address-table dynamic address xxxx.xxxx.xxxx"
+              - "  -> Supprime une MAC spécifique"
+              - "============================================"
 
         - name: "Table MAC avant clear"
           script: >
@@ -261,15 +272,21 @@
 
         - name: "Après clear"
           debug:
-            msg: |
-              ============================================
-              TABLE MAC APRÈS CLEAR
-              ============================================
-              {{ mac_after_clear.stdout }}
+            msg:
+              - "============================================"
+              - "TABLE MAC APRÈS CLEAR"
+              - "============================================"
 
-              Les entrées DYNAMIC ont été supprimées.
-              Les entrées STATIC persistent.
-              ============================================
+        - name: "Sortie table MAC après clear"
+          debug:
+            var: mac_after_clear.stdout_lines
+
+        - name: "Note après clear MAC"
+          debug:
+            msg:
+              - "Les entrées DYNAMIC ont été supprimées."
+              - "Les entrées STATIC persistent."
+              - "============================================"
 
     # =========================================================================
     # Exercice 4: MAC Address Aging
@@ -279,20 +296,20 @@
       block:
         - name: "Info - Aging Timer"
           debug:
-            msg: |
-              ============================================
-              EXERCICE: MAC ADDRESS AGING
-              ============================================
-              Les entrées dynamiques expirent après un délai
-              (par défaut 300 secondes = 5 minutes).
-
-              Commandes:
-                show mac address-table aging-time
-                  → Voir le timer actuel
-
-                mac address-table aging-time <seconds>
-                  → Modifier le timer (0 = désactivé)
-              ============================================
+            msg:
+              - "============================================"
+              - "EXERCICE: MAC ADDRESS AGING"
+              - "============================================"
+              - "Les entrées dynamiques expirent après un délai"
+              - "(par défaut 300 secondes = 5 minutes)."
+              - ""
+              - "Commandes:"
+              - "  show mac address-table aging-time"
+              - "    -> Voir le timer actuel"
+              - ""
+              - "  mac address-table aging-time <seconds>"
+              - "    -> Modifier le timer (0 = désactivé)"
+              - "============================================"
 
         - name: "Voir l'aging time actuel"
           script: >
@@ -306,33 +323,39 @@
 
         - name: "Aging time"
           debug:
-            msg: |
-              ============================================
-              MAC AGING TIME
-              ============================================
-              {{ aging_time.stdout }}
+            msg:
+              - "============================================"
+              - "MAC AGING TIME"
+              - "============================================"
 
-              Par défaut: 300 secondes
-              Après ce délai sans trafic, l'entrée est supprimée.
-              ============================================
+        - name: "Sortie aging time"
+          debug:
+            var: aging_time.stdout_lines
+
+        - name: "Note aging time"
+          debug:
+            msg:
+              - "Par défaut: 300 secondes"
+              - "Après ce délai sans trafic, l'entrée est supprimée."
+              - "============================================"
 
     - name: "Résumé des exercices disponibles"
       debug:
-        msg: |
-          ============================================
-          EXERCICES MAC TABLE DISPONIBLES
-          ============================================
-
-          1. Visualiser la table MAC:
-             ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e "exercise=view_mac"
-
-          2. Observer l'apprentissage MAC:
-             ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e "exercise=learn_mac"
-
-          3. Vider la table MAC:
-             ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e "exercise=clear_mac"
-
-          4. MAC Aging Timer:
-             ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e "exercise=aging"
-
-          ============================================
+        msg:
+          - "============================================"
+          - "EXERCICES MAC TABLE DISPONIBLES"
+          - "============================================"
+          - ""
+          - "1. Visualiser la table MAC:"
+          - "   ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e \"exercise=view_mac\""
+          - ""
+          - "2. Observer l'apprentissage MAC:"
+          - "   ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e \"exercise=learn_mac\""
+          - ""
+          - "3. Vider la table MAC:"
+          - "   ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e \"exercise=clear_mac\""
+          - ""
+          - "4. MAC Aging Timer:"
+          - "   ansible-playbook -i inventory.yml playbooks/04_mac_table.yml -e \"exercise=aging\""
+          - ""
+          - "============================================"

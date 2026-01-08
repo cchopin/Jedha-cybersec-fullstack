@@ -67,48 +67,48 @@
     # =========================================================================
     - name: Guide d'analyse STP
       debug:
-        msg: |
-          ========================================
-          GUIDE D'ANALYSE STP
-          ========================================
-
-          ROLES DES SWITCHES:
-          -------------------
-          - Root Bridge: Switch avec la priorite la plus basse
-            (ou MAC la plus basse si priorites egales)
-
-          ROLES DES PORTS:
-          ----------------
-          - Root Port (Root): Port avec le meilleur chemin vers le Root Bridge
-          - Designated Port (Desg): Port qui forward le trafic sur un segment
-          - Alternate/Blocked (Altn/BLK): Port bloque pour eviter les boucles
-
-          ETATS DES PORTS:
-          ----------------
-          - FWD (Forwarding): Transmet le trafic
-          - BLK (Blocking): Bloque le trafic (evite les boucles)
-          - LRN (Learning): Apprend les MAC
-          - LIS (Listening): Ecoute les BPDU
-
-          ========================================
-          COMMANDES UTILES (sur les switches)
-          ========================================
-
-          show spanning-tree
-          show spanning-tree vlan 10
-          show spanning-tree root
-          show spanning-tree bridge
-          show spanning-tree interface e0/0
-
-          ========================================
-          EXERCICE: FORCER LE ROOT BRIDGE
-          ========================================
-
-          Pour forcer Switch1 comme Root Bridge:
-
-          Switch1# configure terminal
-          Switch1(config)# spanning-tree vlan 10 priority 4096
-          Switch1(config)# end
-          Switch1# show spanning-tree vlan 10
-
-          ========================================
+        msg:
+          - "========================================"
+          - "GUIDE D'ANALYSE STP"
+          - "========================================"
+          - ""
+          - "ROLES DES SWITCHES:"
+          - "-------------------"
+          - "- Root Bridge: Switch avec la priorite la plus basse"
+          - "  (ou MAC la plus basse si priorites egales)"
+          - ""
+          - "ROLES DES PORTS:"
+          - "----------------"
+          - "- Root Port (Root): Port avec le meilleur chemin vers le Root Bridge"
+          - "- Designated Port (Desg): Port qui forward le trafic sur un segment"
+          - "- Alternate/Blocked (Altn/BLK): Port bloque pour eviter les boucles"
+          - ""
+          - "ETATS DES PORTS:"
+          - "----------------"
+          - "- FWD (Forwarding): Transmet le trafic"
+          - "- BLK (Blocking): Bloque le trafic (evite les boucles)"
+          - "- LRN (Learning): Apprend les MAC"
+          - "- LIS (Listening): Ecoute les BPDU"
+          - ""
+          - "========================================"
+          - "COMMANDES UTILES (sur les switches)"
+          - "========================================"
+          - ""
+          - "show spanning-tree"
+          - "show spanning-tree vlan 10"
+          - "show spanning-tree root"
+          - "show spanning-tree bridge"
+          - "show spanning-tree interface e0/0"
+          - ""
+          - "========================================"
+          - "EXERCICE: FORCER LE ROOT BRIDGE"
+          - "========================================"
+          - ""
+          - "Pour forcer Switch1 comme Root Bridge:"
+          - ""
+          - "Switch1# configure terminal"
+          - "Switch1(config)# spanning-tree vlan 10 priority 4096"
+          - "Switch1(config)# end"
+          - "Switch1# show spanning-tree vlan 10"
+          - ""
+          - "========================================"

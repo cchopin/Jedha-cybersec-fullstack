@@ -1,0 +1,160 @@
+---
+# Playbook: Vérification de la configuration OSPF
+# Lab 35 - OSPF Basics
+
+- name: Vérifier la configuration OSPF
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../group_vars/all.yml
+
+  tasks:
+    # ============================================
+    # ÉTAPE 1: Récupérer les informations du projet
+    # ============================================
+    - name: Récupérer les projets
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+        return_content: true
+      register: projects_list
+
+    - name: Trouver le projet
+      ansible.builtin.set_fact:
+        project: "{{ projects_list.json | selectattr('name', 'equalto', project_name) | list | first }}"
+
+    - name: Récupérer les noeuds du projet
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: nodes_list
+
+    - name: Créer un dictionnaire des noeuds
+      ansible.builtin.set_fact:
+        nodes_dict: "{{ nodes_dict | default({}) | combine({item.name: item}) }}"
+      loop: "{{ nodes_list.json }}"
+
+    # ============================================
+    # ÉTAPE 2: Vérifier OSPF sur R1
+    # ============================================
+    - name: Vérifier OSPF sur R1 - Paris
+      ansible.builtin.script:
+        cmd: ../scripts/cisco_cli.py
+        executable: python3
+      environment:
+        ROUTER_HOST: "{{ gns3_host }}"
+        ROUTER_PORT: "{{ nodes_dict['R1'].console }}"
+        ROUTER_COMMANDS: |
+          show ip ospf neighbor
+          show ip route ospf
+          show ip ospf interface brief
+      register: r1_verify
+
+    - name: Afficher résultat R1
+      ansible.builtin.debug:
+        msg: "{{ r1_verify.stdout_lines | default(['Pas de sortie']) }}"
+
+    - name: Titre R1
+      ansible.builtin.debug:
+        msg: "========== R1 (Paris) - OSPF =========="
+
+    # ============================================
+    # ÉTAPE 3: Vérifier OSPF sur R2
+    # ============================================
+    - name: Vérifier OSPF sur R2 - Berlin
+      ansible.builtin.script:
+        cmd: ../scripts/cisco_cli.py
+        executable: python3
+      environment:
+        ROUTER_HOST: "{{ gns3_host }}"
+        ROUTER_PORT: "{{ nodes_dict['R2'].console }}"
+        ROUTER_COMMANDS: |
+          show ip ospf neighbor
+          show ip route ospf
+          show ip ospf interface brief
+      register: r2_verify
+
+    - name: Afficher résultat R2
+      ansible.builtin.debug:
+        msg: "{{ r2_verify.stdout_lines | default(['Pas de sortie']) }}"
+
+    - name: Titre R2
+      ansible.builtin.debug:
+        msg: "========== R2 (Berlin) - OSPF =========="
+
+    # ============================================
+    # ÉTAPE 4: Vérifier OSPF sur R3
+    # ============================================
+    - name: Vérifier OSPF sur R3 - Rome
+      ansible.builtin.script:
+        cmd: ../scripts/cisco_cli.py
+        executable: python3
+      environment:
+        ROUTER_HOST: "{{ gns3_host }}"
+        ROUTER_PORT: "{{ nodes_dict['R3'].console }}"
+        ROUTER_COMMANDS: |
+          show ip ospf neighbor
+          show ip route ospf
+          show ip ospf interface brief
+      register: r3_verify
+
+    - name: Afficher résultat R3
+      ansible.builtin.debug:
+        msg: "{{ r3_verify.stdout_lines | default(['Pas de sortie']) }}"
+
+    - name: Titre R3
+      ansible.builtin.debug:
+        msg: "========== R3 (Rome) - OSPF =========="
+
+    # ============================================
+    # ÉTAPE 5: Tests de connectivité
+    # ============================================
+    - name: Test ping R1 vers R2
+      ansible.builtin.script:
+        cmd: ../scripts/cisco_cli.py
+        executable: python3
+      environment:
+        ROUTER_HOST: "{{ gns3_host }}"
+        ROUTER_PORT: "{{ nodes_dict['R1'].console }}"
+        ROUTER_COMMANDS: |
+          ping 192.168.12.2
+          ping 192.168.23.2
+      register: ping_r1
+
+    - name: Afficher résultat ping depuis R1
+      ansible.builtin.debug:
+        msg: "{{ ping_r1.stdout_lines | default(['Pas de sortie']) }}"
+
+    - name: Titre Ping
+      ansible.builtin.debug:
+        msg: "========== Tests de connectivité depuis R1 =========="
+
+    # ============================================
+    # RÉSUMÉ
+    # ============================================
+    - name: Afficher le résumé de vérification
+      ansible.builtin.debug:
+        msg:
+          - "============================================"
+          - "VÉRIFICATION OSPF TERMINÉE"
+          - "============================================"
+          - ""
+          - "Points à vérifier :"
+          - ""
+          - "1. VOISINS OSPF (show ip ospf neighbor)"
+          - "   - Chaque routeur doit avoir 2 voisins"
+          - "   - État doit être FULL"
+          - ""
+          - "2. ROUTES OSPF (show ip route ospf)"
+          - "   - R1 doit apprendre 192.168.23.0/24"
+          - "   - R2 doit apprendre 192.168.31.0/24"
+          - "   - R3 doit apprendre 192.168.12.0/24"
+          - ""
+          - "3. INTERFACES OSPF (show ip ospf interface brief)"
+          - "   - 2 interfaces par routeur en Area 0"
+          - ""
+          - "4. CONNECTIVITÉ (ping)"
+          - "   - Tous les pings doivent réussir"
+          - ""
+          - "============================================"

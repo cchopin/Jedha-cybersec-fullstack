@@ -62,11 +62,14 @@
 
     - name: "Table ARP SW1"
       debug:
-        msg: |
-          ============================================
-          TABLE ARP - SW1
-          ============================================
-          {{ arp_table.stdout }}
+        msg:
+          - "============================================"
+          - "TABLE ARP - SW1"
+          - "============================================"
+
+    - name: "Sortie table ARP SW1"
+      debug:
+        var: arp_table.stdout_lines
 
     - name: "3.2 Générer du trafic ARP (ping SW2)"
       script: >
@@ -94,14 +97,20 @@
 
     - name: "Table ARP après ping"
       debug:
-        msg: |
-          ============================================
-          TABLE ARP APRÈS PING
-          ============================================
-          {{ arp_after.stdout }}
+        msg:
+          - "============================================"
+          - "TABLE ARP APRÈS PING"
+          - "============================================"
 
-          Nouvelle entrée pour {{ switch_ips.sw2.vlan10 }} visible!
-          ============================================
+    - name: "Sortie table ARP après ping"
+      debug:
+        var: arp_after.stdout_lines
+
+    - name: "Observation ARP"
+      debug:
+        msg:
+          - "Nouvelle entrée pour {{ switch_ips.sw2.vlan10 }} visible!"
+          - "============================================"
 
 # =============================================================================
 # ÉTAPE 4: Exercices Table MAC
@@ -132,11 +141,14 @@
 
     - name: "Table MAC SW1"
       debug:
-        msg: |
-          ============================================
-          TABLE MAC - SW1
-          ============================================
-          {{ mac_table.stdout }}
+        msg:
+          - "============================================"
+          - "TABLE MAC - SW1"
+          - "============================================"
+
+    - name: "Sortie table MAC SW1"
+      debug:
+        var: mac_table.stdout_lines
 
     - name: "4.2 Voir les entrées dynamiques"
       script: >
@@ -150,11 +162,14 @@
 
     - name: "Entrées MAC dynamiques"
       debug:
-        msg: |
-          ============================================
-          ENTRÉES MAC DYNAMIQUES
-          ============================================
-          {{ mac_dynamic.stdout }}
+        msg:
+          - "============================================"
+          - "ENTRÉES MAC DYNAMIQUES"
+          - "============================================"
+
+    - name: "Sortie entrées MAC dynamiques"
+      debug:
+        var: mac_dynamic.stdout_lines
 
     - name: "4.3 Compteur MAC"
       script: >
@@ -199,11 +214,14 @@
 
     - name: "Interfaces"
       debug:
-        msg: |
-          ============================================
-          ÉTAT DES INTERFACES
-          ============================================
-          {{ if_status.stdout }}
+        msg:
+          - "============================================"
+          - "ÉTAT DES INTERFACES"
+          - "============================================"
+
+    - name: "Sortie état des interfaces"
+      debug:
+        var: if_status.stdout_lines
 
     - name: "5.2 Spanning Tree"
       script: >
@@ -217,11 +235,14 @@
 
     - name: "STP"
       debug:
-        msg: |
-          ============================================
-          SPANNING TREE
-          ============================================
-          {{ stp_status.stdout }}
+        msg:
+          - "============================================"
+          - "SPANNING TREE"
+          - "============================================"
+
+    - name: "Sortie Spanning Tree"
+      debug:
+        var: stp_status.stdout_lines
 
     - name: "5.3 Trunk status"
       script: >
@@ -235,11 +256,14 @@
 
     - name: "Trunks"
       debug:
-        msg: |
-          ============================================
-          TRUNKS ACTIFS
-          ============================================
-          {{ trunk_status.stdout }}
+        msg:
+          - "============================================"
+          - "TRUNKS ACTIFS"
+          - "============================================"
+
+    - name: "Sortie Trunks actifs"
+      debug:
+        var: trunk_status.stdout_lines
 
 # =============================================================================
 # ÉTAPE 6: Résumé des commandes CCNA
@@ -256,43 +280,43 @@
   tasks:
     - name: "=== RÉSUMÉ FINAL ==="
       debug:
-        msg: |
-          ============================================
-          LAB ARP/SWITCHING TERMINÉ
-          ============================================
-
-          ACCÈS CONSOLE:
-            SW1: telnet {{ gns3_host }} {{ sw1_console_port }}
-            SW2: telnet {{ gns3_host }} {{ sw2_console_port }}
-
-          COMMANDES CCNA À RETENIR:
-
-          ARP:
-            show ip arp              - Table ARP
-            clear ip arp             - Vider le cache ARP
-            debug arp                - Debug temps réel
-
-          TABLE MAC:
-            show mac address-table          - Table complète
-            show mac address-table dynamic  - Entrées dynamiques
-            show mac address-table count    - Compteur
-            clear mac address-table dynamic - Vider
-
-          INTERFACES:
-            show interfaces status   - État des ports
-            show interfaces trunk    - Trunks actifs
-            show ip interface brief  - IPs des interfaces
-
-          STP:
-            show spanning-tree       - État STP
-
-          LINUX/WINDOWS:
-            ip neigh show / arp -a   - Table ARP locale
-
-          ============================================
-
-          POUR ALLER PLUS LOIN:
-            ansible-playbook playbooks/03_arp_exercise.yml -e "exercise=debug_arp"
-            ansible-playbook playbooks/05_troubleshooting.yml -e "problem_type=stale_arp"
-
-          ============================================
+        msg:
+          - "============================================"
+          - "LAB ARP/SWITCHING TERMINÉ"
+          - "============================================"
+          - ""
+          - "ACCÈS CONSOLE:"
+          - "  SW1: telnet {{ gns3_host }} {{ sw1_console_port }}"
+          - "  SW2: telnet {{ gns3_host }} {{ sw2_console_port }}"
+          - ""
+          - "COMMANDES CCNA À RETENIR:"
+          - ""
+          - "ARP:"
+          - "  show ip arp              - Table ARP"
+          - "  clear ip arp             - Vider le cache ARP"
+          - "  debug arp                - Debug temps réel"
+          - ""
+          - "TABLE MAC:"
+          - "  show mac address-table          - Table complète"
+          - "  show mac address-table dynamic  - Entrées dynamiques"
+          - "  show mac address-table count    - Compteur"
+          - "  clear mac address-table dynamic - Vider"
+          - ""
+          - "INTERFACES:"
+          - "  show interfaces status   - État des ports"
+          - "  show interfaces trunk    - Trunks actifs"
+          - "  show ip interface brief  - IPs des interfaces"
+          - ""
+          - "STP:"
+          - "  show spanning-tree       - État STP"
+          - ""
+          - "LINUX/WINDOWS:"
+          - "  ip neigh show / arp -a   - Table ARP locale"
+          - ""
+          - "============================================"
+          - ""
+          - "POUR ALLER PLUS LOIN:"
+          - "  ansible-playbook playbooks/03_arp_exercise.yml -e \"exercise=debug_arp\""
+          - "  ansible-playbook playbooks/05_troubleshooting.yml -e \"problem_type=stale_arp\""
+          - ""
+          - "============================================"

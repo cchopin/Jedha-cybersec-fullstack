@@ -34,34 +34,34 @@
 
     - name: "THÉORIE - Pourquoi RSTP ?"
       debug:
-        msg: |
-          ============================================================
-          RAPID SPANNING TREE PROTOCOL (RSTP) - 802.1w
-          ============================================================
-
-          PROBLÈME avec STP classique :
-          - Convergence lente : 30-50 secondes
-          - Pendant ce temps, pas de trafic sur les ports en transition
-          - Problématique pour les applications sensibles
-
-          SOLUTION : RSTP
-          - Convergence en quelques secondes
-          - Mécanisme de "proposal/agreement" pour négocier rapidement
-          - Compatible avec STP classique (interopérabilité)
-
-          COMPARAISON des états :
-          ┌────────────────┬──────────────────┐
-          │ STP classique  │ RSTP             │
-          ├────────────────┼──────────────────┤
-          │ Disabled       │ Discarding       │
-          │ Blocking       │ Discarding       │
-          │ Listening      │ Discarding       │
-          │ Learning       │ Learning         │
-          │ Forwarding     │ Forwarding       │
-          └────────────────┴──────────────────┘
-
-          Mode Cisco : rapid-pvst (Rapid Per-VLAN Spanning Tree)
-          ============================================================
+        msg:
+          - "============================================================"
+          - "RAPID SPANNING TREE PROTOCOL (RSTP) - 802.1w"
+          - "============================================================"
+          - ""
+          - "PROBLÈME avec STP classique :"
+          - "- Convergence lente : 30-50 secondes"
+          - "- Pendant ce temps, pas de trafic sur les ports en transition"
+          - "- Problématique pour les applications sensibles"
+          - ""
+          - "SOLUTION : RSTP"
+          - "- Convergence en quelques secondes"
+          - "- Mécanisme de \"proposal/agreement\" pour négocier rapidement"
+          - "- Compatible avec STP classique (interopérabilité)"
+          - ""
+          - "COMPARAISON des états :"
+          - "+----------------+------------------+"
+          - "| STP classique  | RSTP             |"
+          - "+----------------+------------------+"
+          - "| Disabled       | Discarding       |"
+          - "| Blocking       | Discarding       |"
+          - "| Listening      | Discarding       |"
+          - "| Learning       | Learning         |"
+          - "| Forwarding     | Forwarding       |"
+          - "+----------------+------------------+"
+          - ""
+          - "Mode Cisco : rapid-pvst (Rapid Per-VLAN Spanning Tree)"
+          - "============================================================"
 
     # =========================================================================
     # ÉTAT AVANT : STP classique
@@ -79,15 +79,21 @@
 
     - name: "AVANT - Mode STP actuel"
       debug:
-        msg: |
-          ============================================================
-          MODE STP AVANT MODIFICATION
-          ============================================================
-          {{ stp_mode_before.stdout }}
+        msg:
+          - "============================================================"
+          - "MODE STP AVANT MODIFICATION"
+          - "============================================================"
 
-          Le mode par défaut est généralement "ieee" (STP classique)
-          ou "pvst" (Per-VLAN Spanning Tree)
-          ============================================================
+    - name: "Sortie - Mode STP avant modification"
+      debug:
+        var: stp_mode_before.stdout_lines
+
+    - name: "AVANT - Note sur le mode par défaut"
+      debug:
+        msg:
+          - "Le mode par défaut est généralement \"ieee\" (STP classique)"
+          - "ou \"pvst\" (Per-VLAN Spanning Tree)"
+          - "============================================================"
 
     # =========================================================================
     # CONFIGURATION : Passer en RSTP
@@ -95,17 +101,17 @@
 
     - name: "Configuration RSTP sur tous les switches"
       debug:
-        msg: |
-          ============================================================
-          CONFIGURATION RSTP
-          ============================================================
-          Commande Cisco : spanning-tree mode rapid-pvst
-
-          Cette commande :
-          - Active RSTP sur tous les VLANs
-          - Permet une convergence plus rapide
-          - Est compatible avec les switches STP classiques
-          ============================================================
+        msg:
+          - "============================================================"
+          - "CONFIGURATION RSTP"
+          - "============================================================"
+          - "Commande Cisco : spanning-tree mode rapid-pvst"
+          - ""
+          - "Cette commande :"
+          - "- Active RSTP sur tous les VLANs"
+          - "- Permet une convergence plus rapide"
+          - "- Est compatible avec les switches STP classiques"
+          - "============================================================"
 
     - name: "Activer RSTP sur SW1"
       script: >
@@ -160,11 +166,17 @@
 
     - name: "APRÈS - Mode RSTP activé"
       debug:
-        msg: |
-          ============================================================
-          {{ item.item.name }} - RSTP
-          ============================================================
-          {{ item.stdout }}
+        msg:
+          - "============================================================"
+          - "{{ item.item.name }} - RSTP"
+          - "============================================================"
+      loop: "{{ rstp_status.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    - name: "Sortie - Mode RSTP activé"
+      debug:
+        var: item.stdout_lines
       loop: "{{ rstp_status.results }}"
       loop_control:
         label: "{{ item.item.name }}"
@@ -175,36 +187,36 @@
 
     - name: "FONCTIONNALITÉS RSTP"
       debug:
-        msg: |
-          ============================================================
-          FONCTIONNALITÉS RSTP AVANCÉES
-          ============================================================
-
-          1. EDGE PORTS (PortFast) :
-             - Ports connectés à des hôtes (pas des switches)
-             - Passent directement en Forwarding
-             - Commande : spanning-tree portfast edge
-
-          2. LINK TYPE :
-             - Point-to-point : Lien full-duplex entre 2 switches
-             - Shared : Lien half-duplex (hub)
-             - Commande : spanning-tree link-type point-to-point
-
-          3. BPDU GUARD :
-             - Désactive un port s'il reçoit un BPDU
-             - Protection contre les switches non autorisés
-             - Commande : spanning-tree bpduguard enable
-
-          4. ROOT GUARD :
-             - Empêche un port de devenir Root Port
-             - Protection contre les changements de topologie
-             - Commande : spanning-tree guard root
-
-          Exemple de configuration sécurisée :
-          interface range ethernet 1/0 - 3
-            spanning-tree portfast edge
-            spanning-tree bpduguard enable
-          ============================================================
+        msg:
+          - "============================================================"
+          - "FONCTIONNALITÉS RSTP AVANCÉES"
+          - "============================================================"
+          - ""
+          - "1. EDGE PORTS (PortFast) :"
+          - "   - Ports connectés à des hôtes (pas des switches)"
+          - "   - Passent directement en Forwarding"
+          - "   - Commande : spanning-tree portfast edge"
+          - ""
+          - "2. LINK TYPE :"
+          - "   - Point-to-point : Lien full-duplex entre 2 switches"
+          - "   - Shared : Lien half-duplex (hub)"
+          - "   - Commande : spanning-tree link-type point-to-point"
+          - ""
+          - "3. BPDU GUARD :"
+          - "   - Désactive un port s'il reçoit un BPDU"
+          - "   - Protection contre les switches non autorisés"
+          - "   - Commande : spanning-tree bpduguard enable"
+          - ""
+          - "4. ROOT GUARD :"
+          - "   - Empêche un port de devenir Root Port"
+          - "   - Protection contre les changements de topologie"
+          - "   - Commande : spanning-tree guard root"
+          - ""
+          - "Exemple de configuration sécurisée :"
+          - "interface range ethernet 1/0 - 3"
+          - "  spanning-tree portfast edge"
+          - "  spanning-tree bpduguard enable"
+          - "============================================================"
 
     # =========================================================================
     # RÉSUMÉ
@@ -212,26 +224,26 @@
 
     - name: "RÉSUMÉ FINAL"
       debug:
-        msg: |
-          ============================================================
-          RÉSUMÉ - RSTP CONFIGURÉ
-          ============================================================
-
-          Ce qui a été fait :
-          1. Activé "rapid-pvst" sur les 3 switches
-          2. La convergence est maintenant beaucoup plus rapide
-
-          Points clés CCNA :
-          - RSTP (802.1w) remplace STP (802.1D)
-          - Convergence : secondes au lieu de 30-50 sec
-          - Rétrocompatible avec STP classique
-          - Commande Cisco : spanning-tree mode rapid-pvst
-
-          Commandes de vérification :
-          - show spanning-tree summary
-          - show spanning-tree vlan 1
-          - show spanning-tree interface <if> detail
-
-          Pour revenir en STP classique :
-            spanning-tree mode pvst
-          ============================================================
+        msg:
+          - "============================================================"
+          - "RÉSUMÉ - RSTP CONFIGURÉ"
+          - "============================================================"
+          - ""
+          - "Ce qui a été fait :"
+          - "1. Activé \"rapid-pvst\" sur les 3 switches"
+          - "2. La convergence est maintenant beaucoup plus rapide"
+          - ""
+          - "Points clés CCNA :"
+          - "- RSTP (802.1w) remplace STP (802.1D)"
+          - "- Convergence : secondes au lieu de 30-50 sec"
+          - "- Rétrocompatible avec STP classique"
+          - "- Commande Cisco : spanning-tree mode rapid-pvst"
+          - ""
+          - "Commandes de vérification :"
+          - "- show spanning-tree summary"
+          - "- show spanning-tree vlan 1"
+          - "- show spanning-tree interface <if> detail"
+          - ""
+          - "Pour revenir en STP classique :"
+          - "  spanning-tree mode pvst"
+          - "============================================================"

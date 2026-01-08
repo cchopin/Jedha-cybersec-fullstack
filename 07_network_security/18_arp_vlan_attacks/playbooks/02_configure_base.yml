@@ -165,13 +165,13 @@
           - "save"
       register: bob_config
 
-    - name: Résumé VPCs
+    - name: Resume VPCs
       debug:
-        msg: |
-          VPCs configurés:
-            ATTACKER: 192.168.10.100/24 (GW: 192.168.10.254)
-            ALICE:    192.168.10.10/24  (GW: 192.168.10.254)
-            BOB:      192.168.10.20/24  (GW: 192.168.10.254)
+        msg:
+          - "VPCs configures:"
+          - "  ATTACKER: 192.168.10.100/24 (GW: 192.168.10.254)"
+          - "  ALICE:    192.168.10.10/24  (GW: 192.168.10.254)"
+          - "  BOB:      192.168.10.20/24  (GW: 192.168.10.254)"
 
     # =========================================================================
     # ÉTAPE 4: Vérification
@@ -181,30 +181,30 @@
         seconds: 5
         prompt: "Attente de la convergence réseau..."
 
-    - name: Résumé final
+    - name: Resume final
       debug:
-        msg: |
-          ========================================
-          CONFIGURATION DE BASE TERMINÉE
-          ========================================
-
-          SWITCHES:
-            SW1 (Target)  - 192.168.10.1
-            SW2 (Gateway) - 192.168.10.254 / .20.254 / .30.254
-
-          VPCS (tous en VLAN 10):
-            ATTACKER - 192.168.10.100
-            ALICE    - 192.168.10.10
-            BOB      - 192.168.10.20
-
-          TRUNK: SW1 <--> SW2 (VLANs 10,20,30 / Native 99)
-
-          TESTS SUGGÉRÉS:
-            # Depuis ATTACKER (telnet {{ gns3_host }} {{ attacker_console_port }})
-            ping 192.168.10.10    # ALICE
-            ping 192.168.10.20    # BOB
-            ping 192.168.10.254   # Gateway
-
-          Prochaines étapes:
-            ansible-playbook playbooks/03_arp_spoofing.yml
-          ========================================
+        msg:
+          - "========================================"
+          - "CONFIGURATION DE BASE TERMINEE"
+          - "========================================"
+          - ""
+          - "SWITCHES:"
+          - "  SW1 (Target)  - 192.168.10.1"
+          - "  SW2 (Gateway) - 192.168.10.254 / .20.254 / .30.254"
+          - ""
+          - "VPCS (tous en VLAN 10):"
+          - "  ATTACKER - 192.168.10.100"
+          - "  ALICE    - 192.168.10.10"
+          - "  BOB      - 192.168.10.20"
+          - ""
+          - "TRUNK: SW1 <--> SW2 (VLANs 10,20,30 / Native 99)"
+          - ""
+          - "TESTS SUGGERES:"
+          - "  # Depuis ATTACKER (telnet {{ gns3_host }} {{ attacker_console_port }})"
+          - "  ping 192.168.10.10    # ALICE"
+          - "  ping 192.168.10.20    # BOB"
+          - "  ping 192.168.10.254   # Gateway"
+          - ""
+          - "Prochaines etapes:"
+          - "  ansible-playbook playbooks/03_arp_spoofing.yml"
+          - "========================================"

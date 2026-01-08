@@ -15,9 +15,9 @@
   tasks:
     - name: "=== COMMANDES DE VÉRIFICATION ==="
       debug:
-        msg: |
-          Ce playbook exécute toutes les commandes de diagnostic
-          importantes pour le CCNA.
+        msg:
+          - "Ce playbook exécute toutes les commandes de diagnostic"
+          - "importantes pour le CCNA."
 
     # =========================================================================
     # 1. show vlan brief
@@ -34,13 +34,15 @@
 
     - name: "Résultat: show vlan brief"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show vlan brief
-          ============================================
-          UTILITÉ: Liste tous les VLANs et leurs ports assignés
-          {{ cmd_vlan_brief.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show vlan brief"
+          - "============================================"
+          - "UTILITÉ: Liste tous les VLANs et leurs ports assignés"
+
+    - name: "Sortie show vlan brief"
+      debug:
+        var: cmd_vlan_brief.stdout_lines
 
     # =========================================================================
     # 2. show interfaces trunk
@@ -57,14 +59,16 @@
 
     - name: "Résultat: show interfaces trunk"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show interfaces trunk
-          ============================================
-          UTILITÉ: Affiche les ports en mode trunk, native VLAN,
-                   VLANs autorisés et VLANs actifs
-          {{ cmd_trunk.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show interfaces trunk"
+          - "============================================"
+          - "UTILITÉ: Affiche les ports en mode trunk, native VLAN,"
+          - "         VLANs autorisés et VLANs actifs"
+
+    - name: "Sortie show interfaces trunk"
+      debug:
+        var: cmd_trunk.stdout_lines
 
     # =========================================================================
     # 3. show interfaces switchport
@@ -81,13 +85,15 @@
 
     - name: "Résultat: show interfaces switchport"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show interfaces {{ trunk_interface }} switchport
-          ============================================
-          UTILITÉ: Détails complets d'un port (mode, négociation, VLANs)
-          {{ cmd_switchport.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show interfaces {{ trunk_interface }} switchport"
+          - "============================================"
+          - "UTILITÉ: Détails complets d'un port (mode, négociation, VLANs)"
+
+    - name: "Sortie show interfaces switchport"
+      debug:
+        var: cmd_switchport.stdout_lines
 
     # =========================================================================
     # 4. show spanning-tree
@@ -104,14 +110,16 @@
 
     - name: "Résultat: show spanning-tree"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show spanning-tree
-          ============================================
-          UTILITÉ: État du Spanning Tree Protocol par VLAN
-                   Identifie Root Bridge, port states, etc.
-          {{ cmd_stp.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show spanning-tree"
+          - "============================================"
+          - "UTILITÉ: État du Spanning Tree Protocol par VLAN"
+          - "         Identifie Root Bridge, port states, etc."
+
+    - name: "Sortie show spanning-tree"
+      debug:
+        var: cmd_stp.stdout_lines
 
     # =========================================================================
     # 5. show dtp interface
@@ -128,13 +136,15 @@
 
     - name: "Résultat: show dtp interface"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show dtp interface {{ trunk_interface }}
-          ============================================
-          UTILITÉ: État de la négociation DTP sur l'interface
-          {{ cmd_dtp.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show dtp interface {{ trunk_interface }}"
+          - "============================================"
+          - "UTILITÉ: État de la négociation DTP sur l'interface"
+
+    - name: "Sortie show dtp interface"
+      debug:
+        var: cmd_dtp.stdout_lines
 
     # =========================================================================
     # 6. show running-config interface
@@ -151,36 +161,38 @@
 
     - name: "Résultat: show running-config interface"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show running-config interface {{ trunk_interface }}
-          ============================================
-          UTILITÉ: Configuration actuelle de l'interface
-          {{ cmd_running.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show running-config interface {{ trunk_interface }}"
+          - "============================================"
+          - "UTILITÉ: Configuration actuelle de l'interface"
+
+    - name: "Sortie show running-config interface"
+      debug:
+        var: cmd_running.stdout_lines
 
     - name: "=== RÉSUMÉ DES COMMANDES CCNA ==="
       debug:
-        msg: |
-          ============================================
-          COMMANDES À RETENIR POUR LE CCNA
-          ============================================
-
-          VLANS:
-            show vlan brief              - Liste des VLANs
-            show vlan id <id>            - Détails d'un VLAN
-
-          TRUNK:
-            show interfaces trunk        - Trunks actifs
-            show interfaces <if> switchport - Détails d'un port
-            show dtp interface <if>      - État DTP
-
-          STP:
-            show spanning-tree           - État STP global
-            show spanning-tree vlan <id> - STP pour un VLAN
-
-          CONFIG:
-            show running-config          - Config complète
-            show running-config interface <if> - Config d'une interface
-
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDES À RETENIR POUR LE CCNA"
+          - "============================================"
+          - ""
+          - "VLANS:"
+          - "  show vlan brief              - Liste des VLANs"
+          - "  show vlan id <id>            - Détails d'un VLAN"
+          - ""
+          - "TRUNK:"
+          - "  show interfaces trunk        - Trunks actifs"
+          - "  show interfaces <if> switchport - Détails d'un port"
+          - "  show dtp interface <if>      - État DTP"
+          - ""
+          - "STP:"
+          - "  show spanning-tree           - État STP global"
+          - "  show spanning-tree vlan <id> - STP pour un VLAN"
+          - ""
+          - "CONFIG:"
+          - "  show running-config          - Config complète"
+          - "  show running-config interface <if> - Config d'une interface"
+          - ""
+          - "============================================"

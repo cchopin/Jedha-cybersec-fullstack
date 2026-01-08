@@ -63,9 +63,9 @@
 
     - name: Resume
       debug:
-        msg: |
-          ========================================
-          VLANS ET TRUNKS CONFIGURES
-          ========================================
-          Switch1, Switch2, Switch3 configures avec VLAN 10 et trunks 802.1Q
-          ========================================
+        msg:
+          - "========================================"
+          - "VLANS ET TRUNKS CONFIGURES"
+          - "========================================"
+          - "Switch1, Switch2, Switch3 configures avec VLAN 10 et trunks 802.1Q"
+          - "========================================"

@@ -55,24 +55,24 @@
 
     - name: Afficher les resultats
       debug:
-        msg: |
-          ========================================
-          VERIFICATION {{ verify_switch }}
-          ========================================
-
-          Pour verifier un autre switch:
-          ansible-playbook playbooks/04_verify.yml -e "verify_switch=IOU2"
-
-          ========================================
-          COMMANDES MANUELLES UTILES
-          ========================================
-
-          telnet {{ gns3_host }} {{ console_port }}
-
-          # Dans le switch:
-          show vlan brief
-          show interfaces trunk
-          show mac address-table
-          show spanning-tree
-
-          ========================================
+        msg:
+          - "========================================"
+          - "VERIFICATION {{ verify_switch }}"
+          - "========================================"
+          - ""
+          - "Pour verifier un autre switch:"
+          - "ansible-playbook playbooks/04_verify.yml -e \"verify_switch=IOU2\""
+          - ""
+          - "========================================"
+          - "COMMANDES MANUELLES UTILES"
+          - "========================================"
+          - ""
+          - "telnet {{ gns3_host }} {{ console_port }}"
+          - ""
+          - "# Dans le switch:"
+          - "show vlan brief"
+          - "show interfaces trunk"
+          - "show mac address-table"
+          - "show spanning-tree"
+          - ""
+          - "========================================"

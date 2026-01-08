@@ -1,0 +1,11 @@
+# Fichier genere automatiquement par 01_create_topology.yml
+# Contient les ports console pour la configuration
+
+project_id: "aee83811-5877-4597-8dd5-b5fdad2b4639"
+
+# Ports console des switches
+switch1_console_port: 5011
+
+# Ports console des VPCs
+pc1_console_port: 5012
+pc2_console_port: 5014

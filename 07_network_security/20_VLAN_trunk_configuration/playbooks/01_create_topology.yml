@@ -35,10 +35,10 @@
 
     - name: Afficher les templates trouves
       debug:
-        msg: |
-          Templates GNS3:
-          - IOU L2: {{ template_iou_l2_id }}
-          - VPCS: {{ template_vpcs_id }}
+        msg:
+          - "Templates GNS3:"
+          - "- IOU L2: {{ template_iou_l2_id }}"
+          - "- VPCS: {{ template_vpcs_id }}"
 
     # =========================================================================
     # ETAPE 1: Creer ou recuperer le projet
@@ -235,27 +235,21 @@
     # =========================================================================
     - name: Resume
       debug:
-        msg: |
-          ========================================
-          TOPOLOGIE CREEE AVEC SUCCES
-          ========================================
-
-          Projet: {{ project_name }}
-
-          SWITCHES:
-          {% for node in final_nodes.json | selectattr('node_type', 'equalto', 'iou') | sort(attribute='name') %}
-            {{ node.name }}: telnet {{ gns3_host }} {{ node.console }}
-          {% endfor %}
-
-          VPCs:
-          {% for node in final_nodes.json | selectattr('node_type', 'equalto', 'vpcs') | sort(attribute='name') %}
-            {{ node.name }}: telnet {{ gns3_host }} {{ node.console }}
-          {% endfor %}
-
-          ========================================
-          PROCHAINE ETAPE
-          ========================================
-
-          ansible-playbook playbooks/02_configure_vlans.yml
-
-          ========================================
+        msg:
+          - "========================================"
+          - "TOPOLOGIE CREEE AVEC SUCCES"
+          - "========================================"
+          - ""
+          - "Projet: {{ project_name }}"
+          - ""
+          - "SWITCHES:"
+          - "{% for node in final_nodes.json | selectattr('node_type', 'equalto', 'iou') | sort(attribute='name') %}  {{ node.name }}: telnet {{ gns3_host }} {{ node.console }}\n{% endfor %}"
+          - "VPCs:"
+          - "{% for node in final_nodes.json | selectattr('node_type', 'equalto', 'vpcs') | sort(attribute='name') %}  {{ node.name }}: telnet {{ gns3_host }} {{ node.console }}\n{% endfor %}"
+          - "========================================"
+          - "PROCHAINE ETAPE"
+          - "========================================"
+          - ""
+          - "ansible-playbook playbooks/02_configure_vlans.yml"
+          - ""
+          - "========================================"

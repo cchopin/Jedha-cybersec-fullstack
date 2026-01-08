@@ -1,0 +1,62 @@
+---
+# Playbook: Lab complet OSPF Basics
+# Lab 35 - Exécute toutes les étapes
+
+- name: Lab 35 - OSPF Basics - Installation complète
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Afficher le début du lab
+      ansible.builtin.debug:
+        msg:
+          - "============================================"
+          - "LAB 35 - OSPF BASICS"
+          - "============================================"
+          - "Scénario: TechBridge Solutions"
+          - "Sites: Paris, Berlin, Rome"
+          - "Protocole: OSPF Area 0"
+          - "============================================"
+
+- name: Étape 1 - Créer la topologie
+  ansible.builtin.import_playbook: 01_create_topology.yml
+
+- name: Étape 2 - Configurer OSPF
+  ansible.builtin.import_playbook: 02_configure_ospf.yml
+
+- name: Étape 3 - Vérifier la configuration
+  ansible.builtin.import_playbook: 03_verify.yml
+
+- name: Fin du lab
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Afficher le résumé final
+      ansible.builtin.debug:
+        msg:
+          - "============================================"
+          - "LAB 35 - OSPF BASICS TERMINÉ"
+          - "============================================"
+          - ""
+          - "Topologie créée:"
+          - "  - R1 (Paris)   - 192.168.12.1, 192.168.31.1"
+          - "  - R2 (Berlin)  - 192.168.12.2, 192.168.23.1"
+          - "  - R3 (Rome)    - 192.168.23.2, 192.168.31.2"
+          - ""
+          - "Configuration OSPF:"
+          - "  - Process ID: 1"
+          - "  - Area: 0 (Backbone)"
+          - "  - Tous les réseaux annoncés"
+          - ""
+          - "Vérification:"
+          - "  - Voisins OSPF établis"
+          - "  - Routes apprises"
+          - "  - Connectivité testée"
+          - ""
+          - "============================================"
+          - "Pour des tests manuels, connectez-vous aux"
+          - "routeurs via GNS3 et utilisez:"
+          - "  - show ip ospf neighbor"
+          - "  - show ip route ospf"
+          - "  - show ip ospf database"
+          - "============================================"

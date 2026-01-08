@@ -1,17 +1,17 @@
 # Généré automatiquement par 01_create_topology.yml
 # Projet: Lab_18_ARP_VLAN_Attacks
-project_id: "00ffb9b0-6534-4d6e-96a1-6a8f214329d4"
+project_id: "0431f246-2795-41c1-8e65-6f26eb679b50"
 
 # Switches
-sw1_node_id: "a908e83f-5840-4cc3-93d8-caccec9d8f4b"
-sw2_node_id: "3d7a04a8-eb9e-419a-99db-6f7a0f90889f"
-sw1_console_port: 5002
-sw2_console_port: 5003
+sw1_node_id: "1628890b-a982-404c-b164-dd0a82fbf48a"
+sw2_node_id: "90eda823-99b2-4c7e-8035-d81016cc76b5"
+sw1_console_port: 5000
+sw2_console_port: 5001
 
 # VPCs
-attacker_node_id: "b808de21-ba97-4b8f-b9cb-7cf738e96cca"
-alice_node_id: "34a1294f-1f80-4b14-bfb9-d8eb62369dda"
-bob_node_id: "6b7a0379-d455-486b-a898-d1f2ed40a972"
-attacker_console_port: 5004
-alice_console_port: 5006
-bob_console_port: 5008
+attacker_node_id: "eb5b5b23-5b36-4daa-bc31-9595340ae878"
+alice_node_id: "3bce93d6-9432-43b0-beb2-dc4c48f0bba1"
+bob_node_id: "11e55b37-2945-459f-9e5b-d370e2cf731c"
+attacker_console_port: 5002
+alice_console_port: 5004
+bob_console_port: 5006

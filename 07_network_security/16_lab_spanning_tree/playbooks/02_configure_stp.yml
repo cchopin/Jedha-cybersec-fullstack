@@ -26,18 +26,18 @@
 
     - name: "PARTIE 1 - Afficher l'état STP AVANT modification"
       debug:
-        msg: |
-          ============================================================
-          ÉTAPE 1 : Vérification de l'état STP actuel
-          ============================================================
-          On va d'abord observer comment STP s'est configuré automatiquement
-          SANS intervention manuelle.
-
-          Points à observer:
-          - Quel switch est Root Bridge ? (celui avec la MAC la plus basse)
-          - Quels ports sont bloqués ?
-          - Quel est le coût vers le Root ?
-          ============================================================
+        msg:
+          - "============================================================"
+          - "ÉTAPE 1 : Vérification de l'état STP actuel"
+          - "============================================================"
+          - "On va d'abord observer comment STP s'est configuré automatiquement"
+          - "SANS intervention manuelle."
+          - ""
+          - "Points à observer:"
+          - "- Quel switch est Root Bridge ? (celui avec la MAC la plus basse)"
+          - "- Quels ports sont bloqués ?"
+          - "- Quel est le coût vers le Root ?"
+          - "============================================================"
 
     # Pour chaque switch, on exécute "show spanning-tree"
     - name: "Vérifier STP sur chaque switch"
@@ -55,9 +55,15 @@
 
     - name: "Résumé STP AVANT modification"
       debug:
-        msg: |
-          {{ item.item.name }}:
-          {{ item.stdout_lines | join('\n') }}
+        msg:
+          - "{{ item.item.name }}:"
+      loop: "{{ stp_before.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    - name: "Sortie STP AVANT modification"
+      debug:
+        var: item.stdout_lines
       loop: "{{ stp_before.results }}"
       loop_control:
         label: "{{ item.item.name }}"
@@ -71,18 +77,18 @@
 
     - name: "PARTIE 2 - Configurer SW1 comme Root Bridge"
       debug:
-        msg: |
-          ============================================================
-          ÉTAPE 2 : Configuration du Root Bridge
-          ============================================================
-          On va configurer SW1 comme Root Bridge en baissant sa priorité.
-
-          Commande Cisco:
-            spanning-tree vlan 1 priority 4096
-
-          Priorité résultante: 4096 + 1 (VLAN) = 4097
-          (plus basse = plus prioritaire pour devenir Root)
-          ============================================================
+        msg:
+          - "============================================================"
+          - "ÉTAPE 2 : Configuration du Root Bridge"
+          - "============================================================"
+          - "On va configurer SW1 comme Root Bridge en baissant sa priorité."
+          - ""
+          - "Commande Cisco:"
+          - "  spanning-tree vlan 1 priority 4096"
+          - ""
+          - "Priorité résultante: 4096 + 1 (VLAN) = 4097"
+          - "(plus basse = plus prioritaire pour devenir Root)"
+          - "============================================================"
 
     - name: "Configurer la priorité STP sur SW1"
       script: >
@@ -107,18 +113,18 @@
 
     - name: "PARTIE 3 - Vérifier les changements"
       debug:
-        msg: |
-          ============================================================
-          ÉTAPE 3 : Vérification après modification
-          ============================================================
-          SW1 devrait maintenant avoir:
-          - Priority: 4097 (4096 + VLAN 1)
-          - Root ID: son propre Bridge ID
-
-          Les autres switches devraient montrer:
-          - Root ID: celui de SW1 (priority 4097)
-          - Root Port: le port qui mène à SW1
-          ============================================================
+        msg:
+          - "============================================================"
+          - "ÉTAPE 3 : Vérification après modification"
+          - "============================================================"
+          - "SW1 devrait maintenant avoir:"
+          - "- Priority: 4097 (4096 + VLAN 1)"
+          - "- Root ID: son propre Bridge ID"
+          - ""
+          - "Les autres switches devraient montrer:"
+          - "- Root ID: celui de SW1 (priority 4097)"
+          - "- Root Port: le port qui mène à SW1"
+          - "============================================================"
 
     - name: "Vérifier STP après modification"
       script: >
@@ -135,9 +141,15 @@
 
     - name: "Résumé STP APRÈS modification"
       debug:
-        msg: |
-          {{ item.item.name }}:
-          {{ item.stdout_lines | join('\n') }}
+        msg:
+          - "{{ item.item.name }}:"
+      loop: "{{ stp_after.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    - name: "Sortie STP APRÈS modification"
+      debug:
+        var: item.stdout_lines
       loop: "{{ stp_after.results }}"
       loop_control:
         label: "{{ item.item.name }}"
@@ -148,23 +160,23 @@
 
     - name: "RÉSUMÉ FINAL"
       debug:
-        msg: |
-          ============================================================
-          CONFIGURATION STP TERMINÉE
-          ============================================================
-
-          Ce qu'on a fait:
-          1. Observé l'état STP automatique (Root = MAC la plus basse)
-          2. Configuré SW1 comme Root Bridge (priority 4096)
-          3. Vérifié que SW1 est bien le Root
-
-          Concepts clés:
-          - Bridge Priority : Plus c'est bas = plus prioritaire
-          - Root Port : Port qui mène au Root Bridge
-          - Designated Port : Port qui forward vers un segment
-          - Blocked Port : Port désactivé pour éviter les boucles
-
-          Prochaine étape (optionnel):
-            ansible-playbook playbooks/03_root_election.yml
-            (pour voir ce qui se passe si on change le Root)
-          ============================================================
+        msg:
+          - "============================================================"
+          - "CONFIGURATION STP TERMINÉE"
+          - "============================================================"
+          - ""
+          - "Ce qu'on a fait:"
+          - "1. Observé l'état STP automatique (Root = MAC la plus basse)"
+          - "2. Configuré SW1 comme Root Bridge (priority 4096)"
+          - "3. Vérifié que SW1 est bien le Root"
+          - ""
+          - "Concepts clés:"
+          - "- Bridge Priority : Plus c'est bas = plus prioritaire"
+          - "- Root Port : Port qui mène au Root Bridge"
+          - "- Designated Port : Port qui forward vers un segment"
+          - "- Blocked Port : Port désactivé pour éviter les boucles"
+          - ""
+          - "Prochaine étape (optionnel):"
+          - "  ansible-playbook playbooks/03_root_election.yml"
+          - "  (pour voir ce qui se passe si on change le Root)"
+          - "============================================================"

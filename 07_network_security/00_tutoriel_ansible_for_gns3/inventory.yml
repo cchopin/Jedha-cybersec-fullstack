@@ -1,0 +1,6 @@
+# Inventory Ansible pour GNS3
+# On utilise localhost car toutes les actions sont des appels API vers GNS3
+all:
+  hosts:
+    localhost:
+      ansible_connection: local

@@ -1,0 +1,57 @@
+# ============================================
+# Configuration pour le Mini Lab Tutoriel
+# ============================================
+
+# ============================================
+# CONNEXION GNS3 - A MODIFIER SELON VOTRE SETUP
+# ============================================
+
+# IP de votre serveur GNS3 (vérifier dans la VM GNS3)
+# Cette IP change souvent - vérifiez-la à chaque démarrage !
+gns3_server: "http://192.168.144.120:80"
+gns3_host: "192.168.144.120"
+
+# Nom du projet qui sera créé dans GNS3
+project_name: "Mini_Lab_Tutoriel"
+
+# ============================================
+# TOPOLOGIE
+# ============================================
+
+# Un seul switch pour commencer
+switches:
+  - name: "Switch1"
+    x: 0
+    y: 0
+
+# Deux VPCs (ordinateurs virtuels) connectés au switch
+vpcs:
+  - name: "PC1"
+    switch: "Switch1"
+    port: 2          # Interface e0/2 du switch
+    ip: "192.168.10.10"
+    mask: "255.255.255.0"
+    gateway: "192.168.10.1"
+    x: -100
+    y: 150
+
+  - name: "PC2"
+    switch: "Switch1"
+    port: 3          # Interface e0/3 du switch
+    ip: "192.168.10.20"
+    mask: "255.255.255.0"
+    gateway: "192.168.10.1"
+    x: 100
+    y: 150
+
+# ============================================
+# CONFIGURATION SWITCH
+# ============================================
+
+# Hostname du switch
+switch_hostname: "SW-TUTORIEL"
+
+# VLAN à créer (optionnel pour ce lab simple)
+vlans:
+  - id: 10
+    name: "LAN"
