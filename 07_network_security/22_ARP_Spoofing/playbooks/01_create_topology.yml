@@ -45,9 +45,9 @@
 
     - name: Afficher les templates trouvés
       debug:
-        msg: |
-          Template détecté:
-            - Cisco IOU L2: {{ template_iou_l2_id }}
+        msg:
+          - "Template détecté:"
+          - "  - Cisco IOU L2: {{ template_iou_l2_id }}"
 
     # =========================================================================
     # ÉTAPE 1: Créer ou récupérer le projet GNS3 (idempotent)
@@ -84,13 +84,13 @@
 
     - name: Afficher le projet
       debug:
-        msg: |
-          ============================================
-          PROJET GNS3 ({{ project_status }})
-          ============================================
-          Nom: {{ project_name }}
-          Project ID: {{ project_id }}
-          ============================================
+        msg:
+          - "============================================"
+          - "PROJET GNS3 ({{ project_status }})"
+          - "============================================"
+          - "Nom: {{ project_name }}"
+          - "Project ID: {{ project_id }}"
+          - "============================================"
 
     # =========================================================================
     # ÉTAPE 2: Ouvrir le projet et récupérer les nodes existants
@@ -172,11 +172,11 @@
 
     - name: Afficher les nodes
       debug:
-        msg: |
-          Nodes dans le projet:
-            SW1:  {{ sw1_node_id }} (console: {{ sw1_console_port }})
-            VPC1: {{ vpc1_node_id }} (console: {{ vpc1_console_port }})
-            VPC2: {{ vpc2_node_id }} (console: {{ vpc2_console_port }})
+        msg:
+          - "Nodes dans le projet:"
+          - "  SW1:  {{ sw1_node_id }} (console: {{ sw1_console_port }})"
+          - "  VPC1: {{ vpc1_node_id }} (console: {{ vpc1_console_port }})"
+          - "  VPC2: {{ vpc2_node_id }} (console: {{ vpc2_console_port }})"
 
     # =========================================================================
     # ÉTAPE 6: Créer les liens (idempotent - ignore si existe déjà)
@@ -226,11 +226,11 @@
 
     - name: Afficher les liens
       debug:
-        msg: |
-          Liens configurés:
-            - VPC1 <---> SW1 (e0/2)
-            - VPC2 <---> SW1 (e0/3)
-            - (e0/1 réservé pour Kali)
+        msg:
+          - "Liens configurés:"
+          - "  - VPC1 <---> SW1 (e0/2)"
+          - "  - VPC2 <---> SW1 (e0/3)"
+          - "  - (e0/1 réservé pour Kali)"
 
     # =========================================================================
     # ÉTAPE 7: Démarrer tous les nodes
@@ -269,26 +269,26 @@
 
     - name: Résumé
       debug:
-        msg: |
-          ========================================
-          TOPOLOGIE CRÉÉE AVEC SUCCÈS
-          ========================================
-          Projet: {{ project_name }}
-          Project ID: {{ project_id }}
-
-          SWITCH:
-            SW1 - telnet {{ gns3_host }} {{ sw1_console_port }}
-
-          VPCS (Victimes):
-            VPC1 - telnet {{ gns3_host }} {{ vpc1_console_port }}
-            VPC2 - telnet {{ gns3_host }} {{ vpc2_console_port }}
-
-          TOPOLOGIE:
-                    (e0/1 = Kali)
-                         │
-               VPC1 ── SW1 ── VPC2
-                e0/2         e0/3
-
-          Prochaine étape:
-            ansible-playbook playbooks/02_configure_vpcs.yml
-          ========================================
+        msg:
+          - "========================================"
+          - "TOPOLOGIE CRÉÉE AVEC SUCCÈS"
+          - "========================================"
+          - "Projet: {{ project_name }}"
+          - "Project ID: {{ project_id }}"
+          - ""
+          - "SWITCH:"
+          - "  SW1 - telnet {{ gns3_host }} {{ sw1_console_port }}"
+          - ""
+          - "VPCS (Victimes):"
+          - "  VPC1 - telnet {{ gns3_host }} {{ vpc1_console_port }}"
+          - "  VPC2 - telnet {{ gns3_host }} {{ vpc2_console_port }}"
+          - ""
+          - "TOPOLOGIE:"
+          - "          (e0/1 = Kali)"
+          - "               |"
+          - "     VPC1 -- SW1 -- VPC2"
+          - "      e0/2         e0/3"
+          - ""
+          - "Prochaine étape:"
+          - "  ansible-playbook playbooks/02_configure_vpcs.yml"
+          - "========================================"

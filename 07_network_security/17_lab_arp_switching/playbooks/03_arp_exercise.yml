@@ -35,24 +35,24 @@
       block:
         - name: "Info - Table ARP"
           debug:
-            msg: |
-              ============================================
-              EXERCICE: VISUALISER LA TABLE ARP
-              ============================================
-              La table ARP stocke les associations IP <-> MAC
-              apprises dynamiquement ou configurées statiquement.
-
-              Format de la sortie:
-                Protocol  Address       Age  Hardware Addr    Type  Interface
-                Internet  192.168.10.2  5    aabb.ccdd.eeff   ARPA  Vlan10
-
-              - Protocol: Type de protocole (Internet = IPv4)
-              - Address: Adresse IP
-              - Age: Temps depuis la dernière mise à jour (minutes)
-              - Hardware Addr: Adresse MAC associée
-              - Type: Type d'encapsulation (ARPA = Ethernet)
-              - Interface: Interface locale
-              ============================================
+            msg:
+              - "============================================"
+              - "EXERCICE: VISUALISER LA TABLE ARP"
+              - "============================================"
+              - "La table ARP stocke les associations IP <-> MAC"
+              - "apprises dynamiquement ou configurées statiquement."
+              - ""
+              - "Format de la sortie:"
+              - "  Protocol  Address       Age  Hardware Addr    Type  Interface"
+              - "  Internet  192.168.10.2  5    aabb.ccdd.eeff   ARPA  Vlan10"
+              - ""
+              - "- Protocol: Type de protocole (Internet = IPv4)"
+              - "- Address: Adresse IP"
+              - "- Age: Temps depuis la dernière mise à jour (minutes)"
+              - "- Hardware Addr: Adresse MAC associée"
+              - "- Type: Type d'encapsulation (ARPA = Ethernet)"
+              - "- Interface: Interface locale"
+              - "============================================"
 
         - name: "Voir la table ARP sur SW1"
           script: >
@@ -66,12 +66,14 @@
 
         - name: "Afficher table ARP SW1"
           debug:
-            msg: |
-              ============================================
-              TABLE ARP - SW1
-              ============================================
-              {{ sw1_arp.stdout }}
-              ============================================
+            msg:
+              - "============================================"
+              - "TABLE ARP - SW1"
+              - "============================================"
+
+        - name: "Afficher sortie table ARP SW1"
+          debug:
+            var: sw1_arp.stdout_lines
 
         - name: "Voir la table ARP sur SW2"
           script: >
@@ -85,12 +87,14 @@
 
         - name: "Afficher table ARP SW2"
           debug:
-            msg: |
-              ============================================
-              TABLE ARP - SW2
-              ============================================
-              {{ sw2_arp.stdout }}
-              ============================================
+            msg:
+              - "============================================"
+              - "TABLE ARP - SW2"
+              - "============================================"
+
+        - name: "Afficher sortie table ARP SW2"
+          debug:
+            var: sw2_arp.stdout_lines
 
     # =========================================================================
     # Exercice 2: Générer du trafic ARP avec ping
@@ -100,19 +104,19 @@
       block:
         - name: "Info - Génération ARP"
           debug:
-            msg: |
-              ============================================
-              EXERCICE: GÉNÉRER DU TRAFIC ARP
-              ============================================
-              Un ping vers une IP inconnue déclenche:
-              1. Requête ARP broadcast
-              2. Réponse ARP unicast
-              3. Mise à jour de la table ARP
-              4. Envoi du ping ICMP
-
-              Nous allons pinger SW2 depuis SW1 pour
-              observer le processus ARP.
-              ============================================
+            msg:
+              - "============================================"
+              - "EXERCICE: GÉNÉRER DU TRAFIC ARP"
+              - "============================================"
+              - "Un ping vers une IP inconnue déclenche:"
+              - "1. Requête ARP broadcast"
+              - "2. Réponse ARP unicast"
+              - "3. Mise à jour de la table ARP"
+              - "4. Envoi du ping ICMP"
+              - ""
+              - "Nous allons pinger SW2 depuis SW1 pour"
+              - "observer le processus ARP."
+              - "============================================"
 
         - name: "Vider la table ARP de SW1 d'abord"
           script: >
@@ -135,8 +139,7 @@
 
         - name: "Table ARP AVANT ping"
           debug:
-            msg: |
-              {{ arp_before.stdout }}
+            var: arp_before.stdout_lines
 
         - name: "Pinger SW2 depuis SW1 (via VLAN 10)"
           script: >
@@ -164,16 +167,22 @@
 
         - name: "Table ARP APRÈS ping"
           debug:
-            msg: |
-              ============================================
-              TABLE ARP APRÈS PING
-              ============================================
-              {{ arp_after.stdout }}
+            msg:
+              - "============================================"
+              - "TABLE ARP APRÈS PING"
+              - "============================================"
 
-              OBSERVATION:
-              Une nouvelle entrée pour {{ switch_ips.sw2.vlan10 }}
-              devrait apparaître avec l'adresse MAC de SW2.
-              ============================================
+        - name: "Afficher sortie table ARP après ping"
+          debug:
+            var: arp_after.stdout_lines
+
+        - name: "Observation"
+          debug:
+            msg:
+              - "OBSERVATION:"
+              - "Une nouvelle entrée pour {{ switch_ips.sw2.vlan10 }}"
+              - "devrait apparaître avec l'adresse MAC de SW2."
+              - "============================================"
 
     # =========================================================================
     # Exercice 3: Vider la table ARP
@@ -183,18 +192,18 @@
       block:
         - name: "Info - Clear ARP"
           debug:
-            msg: |
-              ============================================
-              EXERCICE: VIDER LA TABLE ARP
-              ============================================
-              La commande "clear ip arp" supprime toutes
-              les entrées dynamiques de la table ARP.
-
-              Utile pour:
-              - Forcer la résolution ARP
-              - Troubleshooting
-              - Tests de sécurité
-              ============================================
+            msg:
+              - "============================================"
+              - "EXERCICE: VIDER LA TABLE ARP"
+              - "============================================"
+              - "La commande 'clear ip arp' supprime toutes"
+              - "les entrées dynamiques de la table ARP."
+              - ""
+              - "Utile pour:"
+              - "- Forcer la résolution ARP"
+              - "- Troubleshooting"
+              - "- Tests de sécurité"
+              - "============================================"
 
         - name: "Table ARP AVANT clear"
           script: >
@@ -235,15 +244,21 @@
 
         - name: "Afficher après"
           debug:
-            msg: |
-              ============================================
-              TABLE ARP APRÈS CLEAR
-              ============================================
-              {{ arp_after_clear.stdout }}
+            msg:
+              - "============================================"
+              - "TABLE ARP APRÈS CLEAR"
+              - "============================================"
 
-              Les entrées dynamiques ont été supprimées.
-              Seules les entrées statiques persistent.
-              ============================================
+        - name: "Afficher sortie table ARP après clear"
+          debug:
+            var: arp_after_clear.stdout_lines
+
+        - name: "Note après clear"
+          debug:
+            msg:
+              - "Les entrées dynamiques ont été supprimées."
+              - "Seules les entrées statiques persistent."
+              - "============================================"
 
     # =========================================================================
     # Exercice 4: Debug ARP
@@ -253,49 +268,49 @@
       block:
         - name: "Info - Debug ARP"
           debug:
-            msg: |
-              ============================================
-              DEBUG ARP - MODE MANUEL
-              ============================================
-              Pour voir les requêtes/réponses ARP en temps réel:
-
-              1. Connectez-vous au switch:
-                 telnet {{ gns3_host }} {{ sw1_console_port }}
-
-              2. Activez le debug ARP:
-                 SW1# debug arp
-
-              3. Depuis un autre terminal, générez du trafic:
-                 - Ping vers une nouvelle IP
-                 - Clear ARP puis ping
-
-              4. Observez les messages:
-                 *Mar  1 00:03:22.069: ARP: sent request for 192.168.10.2
-                 *Mar  1 00:03:22.089: ARP: received reply from 192.168.10.2
-
-              5. Désactivez le debug:
-                 SW1# undebug all
-
-              ATTENTION: Le debug consomme des ressources!
-              ============================================
+            msg:
+              - "============================================"
+              - "DEBUG ARP - MODE MANUEL"
+              - "============================================"
+              - "Pour voir les requêtes/réponses ARP en temps réel:"
+              - ""
+              - "1. Connectez-vous au switch:"
+              - "   telnet {{ gns3_host }} {{ sw1_console_port }}"
+              - ""
+              - "2. Activez le debug ARP:"
+              - "   SW1# debug arp"
+              - ""
+              - "3. Depuis un autre terminal, générez du trafic:"
+              - "   - Ping vers une nouvelle IP"
+              - "   - Clear ARP puis ping"
+              - ""
+              - "4. Observez les messages:"
+              - "   *Mar  1 00:03:22.069: ARP: sent request for 192.168.10.2"
+              - "   *Mar  1 00:03:22.089: ARP: received reply from 192.168.10.2"
+              - ""
+              - "5. Désactivez le debug:"
+              - "   SW1# undebug all"
+              - ""
+              - "ATTENTION: Le debug consomme des ressources!"
+              - "============================================"
 
     - name: "Résumé des exercices disponibles"
       debug:
-        msg: |
-          ============================================
-          EXERCICES ARP DISPONIBLES
-          ============================================
-
-          1. Visualiser les tables ARP:
-             ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e "exercise=view_arp"
-
-          2. Générer du trafic ARP (ping):
-             ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e "exercise=generate_arp"
-
-          3. Vider la table ARP:
-             ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e "exercise=clear_arp"
-
-          4. Info sur le debug ARP:
-             ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e "exercise=debug_arp"
-
-          ============================================
+        msg:
+          - "============================================"
+          - "EXERCICES ARP DISPONIBLES"
+          - "============================================"
+          - ""
+          - "1. Visualiser les tables ARP:"
+          - "   ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e \"exercise=view_arp\""
+          - ""
+          - "2. Générer du trafic ARP (ping):"
+          - "   ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e \"exercise=generate_arp\""
+          - ""
+          - "3. Vider la table ARP:"
+          - "   ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e \"exercise=clear_arp\""
+          - ""
+          - "4. Info sur le debug ARP:"
+          - "   ansible-playbook -i inventory.yml playbooks/03_arp_exercise.yml -e \"exercise=debug_arp\""
+          - ""
+          - "============================================"

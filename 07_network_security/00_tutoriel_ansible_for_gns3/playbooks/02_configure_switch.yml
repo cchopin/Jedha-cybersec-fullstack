@@ -1,0 +1,81 @@
+---
+# ============================================
+# PLAYBOOK : CONFIGURATION DU SWITCH
+# ============================================
+# Ce playbook configure le switch Cisco IOU :
+# - Hostname
+# - Creation du VLAN
+# - Configuration des ports en mode access
+#
+# Prerequis: Avoir execute 01_create_topology.yml
+# Usage: ansible-playbook playbooks/02_configure_switch.yml
+
+- name: "ETAPE 2 : Configuration du switch"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    # Charger les ports console generes par l'etape 1
+    - ../switch_info.yml
+
+  tasks:
+    - name: "Afficher les variables chargees"
+      debug:
+        msg:
+          - "Port console Switch1 : {{ switch1_console_port }}"
+          - "Hostname a configurer : {{ switch_hostname }}"
+
+    # ==========================================
+    # Configuration de base du switch
+    # ==========================================
+    - name: "Configurer le hostname et le VLAN"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch1_console_port }}
+        --commands "{{ config_commands | join(';') }}"
+      vars:
+        config_commands:
+          - "enable"
+          - "configure terminal"
+          # Hostname
+          - "hostname {{ switch_hostname }}"
+          # Creer le VLAN 10
+          - "vlan 10"
+          - "name LAN"
+          - "exit"
+          # Configurer e0/2 en mode access VLAN 10 (pour PC1)
+          - "interface Ethernet0/2"
+          - "switchport mode access"
+          - "switchport access vlan 10"
+          - "no shutdown"
+          - "exit"
+          # Configurer e0/3 en mode access VLAN 10 (pour PC2)
+          - "interface Ethernet0/3"
+          - "switchport mode access"
+          - "switchport access vlan 10"
+          - "no shutdown"
+          - "exit"
+          # Sauvegarder
+          - "end"
+          - "write memory"
+      register: switch_config_result
+
+    - name: "Afficher le resultat"
+      debug:
+        msg: "Configuration du switch terminee !"
+
+    # ==========================================
+    # Pause pour laisser le switch appliquer
+    # ==========================================
+    - name: "Attendre que la config soit appliquee (5s)"
+      pause:
+        seconds: 5
+
+    - name: "Switch configure !"
+      debug:
+        msg:
+          - "Le switch {{ switch_hostname }} a ete configure :"
+          - "  - VLAN 10 cree"
+          - "  - Port e0/2 : access VLAN 10 (PC1)"
+          - "  - Port e0/3 : access VLAN 10 (PC2)"

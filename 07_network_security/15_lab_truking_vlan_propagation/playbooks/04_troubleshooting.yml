@@ -36,18 +36,18 @@
       block:
         - name: "Info - Création du problème"
           debug:
-            msg: |
-              ============================================
-              CRÉATION DU PROBLÈME: Native VLAN Mismatch
-              ============================================
-              SW1: Native VLAN 99
-              SW2: Native VLAN 1 (défaut)
-
-              Ce mismatch cause:
-              - Erreurs CDP/STP
-              - Traffic non tagué mal routé
-              - Messages d'erreur dans les logs
-              ============================================
+            msg:
+              - "============================================"
+              - "CRÉATION DU PROBLÈME: Native VLAN Mismatch"
+              - "============================================"
+              - "SW1: Native VLAN 99"
+              - "SW2: Native VLAN 1 (défaut)"
+              - ""
+              - "Ce mismatch cause:"
+              - "- Erreurs CDP/STP"
+              - "- Traffic non tagué mal routé"
+              - "- Messages d'erreur dans les logs"
+              - "============================================"
 
         - name: "Configurer SW1 avec Native VLAN 99"
           script: >
@@ -83,16 +83,18 @@
 
         - name: "Afficher diagnostic SW1"
           debug:
-            msg: |
-              ============================================
-              DIAGNOSTIC SW1
-              ============================================
-              {{ diag_sw1.stdout }}
+            msg:
+              - "============================================"
+              - "DIAGNOSTIC SW1"
+              - "============================================"
+              - "CHERCHEZ:"
+              - "- Native VLAN: devrait afficher 99"
+              - "- Messages d'erreur CDP native vlan mismatch"
+              - "============================================"
 
-              CHERCHEZ:
-              - Native VLAN: devrait afficher 99
-              - Messages d'erreur CDP native vlan mismatch
-              ============================================
+        - name: "Sortie SW1"
+          debug:
+            var: diag_sw1.stdout_lines
 
         - name: "DIAGNOSTIC: Vérifier le mismatch sur SW2"
           script: >
@@ -106,16 +108,18 @@
 
         - name: "Afficher diagnostic SW2"
           debug:
-            msg: |
-              ============================================
-              DIAGNOSTIC SW2
-              ============================================
-              {{ diag_sw2.stdout }}
+            msg:
+              - "============================================"
+              - "DIAGNOSTIC SW2"
+              - "============================================"
+              - "CHERCHEZ:"
+              - "- Native VLAN: devrait afficher 1"
+              - "- Le mismatch avec SW1"
+              - "============================================"
 
-              CHERCHEZ:
-              - Native VLAN: devrait afficher 1
-              - Le mismatch avec SW1
-              ============================================
+        - name: "Sortie SW2"
+          debug:
+            var: diag_sw2.stdout_lines
 
     # =========================================================================
     # PARTIE 2: Créer le problème (Allowed VLAN Mismatch)
@@ -125,15 +129,15 @@
       block:
         - name: "Info - Création du problème"
           debug:
-            msg: |
-              ============================================
-              CRÉATION DU PROBLÈME: Allowed VLAN Mismatch
-              ============================================
-              SW1: VLANs autorisés 10,20,30
-              SW2: VLANs autorisés 10,20 (manque 30!)
-
-              Résultat: VLAN 30 ne traverse pas le trunk
-              ============================================
+            msg:
+              - "============================================"
+              - "CRÉATION DU PROBLÈME: Allowed VLAN Mismatch"
+              - "============================================"
+              - "SW1: VLANs autorisés 10,20,30"
+              - "SW2: VLANs autorisés 10,20 (manque 30!)"
+              - ""
+              - "Résultat: VLAN 30 ne traverse pas le trunk"
+              - "============================================"
 
         - name: "Configurer SW1 avec VLANs 10,20,30"
           script: >
@@ -165,12 +169,14 @@
 
         - name: "Afficher le mismatch"
           debug:
-            msg: |
-              {{ trunk_info.stdout }}
+            msg:
+              - "PROBLÈME IDENTIFIÉ:"
+              - "- SW1 autorise VLAN 30, SW2 non"
+              - "- Le traffic VLAN 30 sera bloqué"
 
-              PROBLÈME IDENTIFIÉ:
-              - SW1 autorise VLAN 30, SW2 non
-              - Le traffic VLAN 30 sera bloqué
+        - name: "Sortie trunk"
+          debug:
+            var: trunk_info.stdout_lines
 
     # =========================================================================
     # PARTIE 3: Corriger tous les problèmes
@@ -180,14 +186,14 @@
       block:
         - name: "Info - Correction"
           debug:
-            msg: |
-              ============================================
-              CORRECTION DE TOUS LES PROBLÈMES
-              ============================================
-              - Native VLAN: 99 sur les deux switches
-              - Allowed VLANs: 10,20,30 sur les deux
-              - Mode: trunk forcé
-              ============================================
+            msg:
+              - "============================================"
+              - "CORRECTION DE TOUS LES PROBLÈMES"
+              - "============================================"
+              - "- Native VLAN: 99 sur les deux switches"
+              - "- Allowed VLANs: 10,20,30 sur les deux"
+              - "- Mode: trunk forcé"
+              - "============================================"
 
         - name: "Corriger SW1"
           script: >
@@ -219,9 +225,11 @@
 
         - name: "Afficher configuration corrigée"
           debug:
-            msg: |
-              ============================================
-              CONFIGURATION CORRIGÉE
-              ============================================
-              {{ final_check.stdout }}
-              ============================================
+            msg:
+              - "============================================"
+              - "CONFIGURATION CORRIGÉE"
+              - "============================================"
+
+        - name: "Sortie finale"
+          debug:
+            var: final_check.stdout_lines

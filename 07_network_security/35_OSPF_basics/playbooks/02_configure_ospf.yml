@@ -1,0 +1,191 @@
+---
+# Playbook: Configuration OSPF sur les routeurs
+# Lab 35 - OSPF Basics
+
+- name: Configurer OSPF sur les routeurs Cisco
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../group_vars/all.yml
+
+  tasks:
+    # ============================================
+    # ÉTAPE 1: Récupérer les informations du projet
+    # ============================================
+    - name: Récupérer les projets
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+        return_content: true
+      register: projects_list
+
+    - name: Trouver le projet
+      ansible.builtin.set_fact:
+        project: "{{ projects_list.json | selectattr('name', 'equalto', project_name) | list | first }}"
+
+    - name: Récupérer les noeuds du projet
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: nodes_list
+
+    - name: Créer un dictionnaire des noeuds
+      ansible.builtin.set_fact:
+        nodes_dict: "{{ nodes_dict | default({}) | combine({item.name: item}) }}"
+      loop: "{{ nodes_list.json }}"
+
+    # ============================================
+    # ÉTAPE 2: Configurer R1 (Paris)
+    # ============================================
+    - name: Configurer R1 - Paris
+      ansible.builtin.script:
+        cmd: ../scripts/cisco_cli.py
+        executable: python3
+      environment:
+        ROUTER_HOST: "{{ gns3_host }}"
+        ROUTER_PORT: "{{ nodes_dict['R1'].console }}"
+        ROUTER_COMMANDS: |
+          enable
+          configure terminal
+          hostname R1
+          !
+          interface FastEthernet0/0
+          description Lien vers R2 (Berlin)
+          ip address 192.168.12.1 255.255.255.0
+          no shutdown
+          exit
+          !
+          interface FastEthernet0/1
+          description Lien vers R3 (Rome)
+          ip address 192.168.31.1 255.255.255.0
+          no shutdown
+          exit
+          !
+          router ospf {{ ospf.process_id }}
+          network 192.168.12.0 0.0.0.255 area {{ ospf.area }}
+          network 192.168.31.0 0.0.0.255 area {{ ospf.area }}
+          exit
+          !
+          end
+          write memory
+      register: r1_config
+
+    - name: Afficher résultat R1
+      ansible.builtin.debug:
+        msg: "R1 (Paris) configuré"
+
+    # ============================================
+    # ÉTAPE 3: Configurer R2 (Berlin)
+    # ============================================
+    - name: Configurer R2 - Berlin
+      ansible.builtin.script:
+        cmd: ../scripts/cisco_cli.py
+        executable: python3
+      environment:
+        ROUTER_HOST: "{{ gns3_host }}"
+        ROUTER_PORT: "{{ nodes_dict['R2'].console }}"
+        ROUTER_COMMANDS: |
+          enable
+          configure terminal
+          hostname R2
+          !
+          interface FastEthernet0/0
+          description Lien vers R1 (Paris)
+          ip address 192.168.12.2 255.255.255.0
+          no shutdown
+          exit
+          !
+          interface FastEthernet0/1
+          description Lien vers R3 (Rome)
+          ip address 192.168.23.1 255.255.255.0
+          no shutdown
+          exit
+          !
+          router ospf {{ ospf.process_id }}
+          network 192.168.12.0 0.0.0.255 area {{ ospf.area }}
+          network 192.168.23.0 0.0.0.255 area {{ ospf.area }}
+          exit
+          !
+          end
+          write memory
+      register: r2_config
+
+    - name: Afficher résultat R2
+      ansible.builtin.debug:
+        msg: "R2 (Berlin) configuré"
+
+    # ============================================
+    # ÉTAPE 4: Configurer R3 (Rome)
+    # ============================================
+    - name: Configurer R3 - Rome
+      ansible.builtin.script:
+        cmd: ../scripts/cisco_cli.py
+        executable: python3
+      environment:
+        ROUTER_HOST: "{{ gns3_host }}"
+        ROUTER_PORT: "{{ nodes_dict['R3'].console }}"
+        ROUTER_COMMANDS: |
+          enable
+          configure terminal
+          hostname R3
+          !
+          interface FastEthernet0/0
+          description Lien vers R2 (Berlin)
+          ip address 192.168.23.2 255.255.255.0
+          no shutdown
+          exit
+          !
+          interface FastEthernet0/1
+          description Lien vers R1 (Paris)
+          ip address 192.168.31.2 255.255.255.0
+          no shutdown
+          exit
+          !
+          router ospf {{ ospf.process_id }}
+          network 192.168.23.0 0.0.0.255 area {{ ospf.area }}
+          network 192.168.31.0 0.0.0.255 area {{ ospf.area }}
+          exit
+          !
+          end
+          write memory
+      register: r3_config
+
+    - name: Afficher résultat R3
+      ansible.builtin.debug:
+        msg: "R3 (Rome) configuré"
+
+    # ============================================
+    # ÉTAPE 5: Attendre la convergence OSPF
+    # ============================================
+    - name: Attendre la convergence OSPF
+      ansible.builtin.pause:
+        seconds: 45
+        prompt: "Attente de la convergence OSPF (45 secondes)..."
+
+    # ============================================
+    # RÉSUMÉ
+    # ============================================
+    - name: Afficher le résumé
+      ansible.builtin.debug:
+        msg:
+          - "============================================"
+          - "CONFIGURATION OSPF TERMINÉE"
+          - "============================================"
+          - "R1 (Paris):"
+          - "  - f0/0: 192.168.12.1/24 (vers R2)"
+          - "  - f0/1: 192.168.31.1/24 (vers R3)"
+          - "  - OSPF: networks 192.168.12.0, 192.168.31.0"
+          - ""
+          - "R2 (Berlin):"
+          - "  - f0/0: 192.168.12.2/24 (vers R1)"
+          - "  - f0/1: 192.168.23.1/24 (vers R3)"
+          - "  - OSPF: networks 192.168.12.0, 192.168.23.0"
+          - ""
+          - "R3 (Rome):"
+          - "  - f0/0: 192.168.23.2/24 (vers R2)"
+          - "  - f0/1: 192.168.31.2/24 (vers R1)"
+          - "  - OSPF: networks 192.168.23.0, 192.168.31.0"
+          - ""
+          - "Prochaine étape: ansible-playbook playbooks/03_verify.yml"
+          - "============================================"

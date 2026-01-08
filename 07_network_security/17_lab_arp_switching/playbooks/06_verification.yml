@@ -15,9 +15,9 @@
   tasks:
     - name: "=== COMMANDES DE VÉRIFICATION ARP/SWITCHING ==="
       debug:
-        msg: |
-          Ce playbook exécute toutes les commandes de diagnostic
-          importantes pour le CCNA concernant ARP et Switching.
+        msg:
+          - "Ce playbook exécute toutes les commandes de diagnostic"
+          - "importantes pour le CCNA concernant ARP et Switching."
 
     # =========================================================================
     # 1. show ip arp
@@ -34,22 +34,25 @@
 
     - name: "Résultat: show ip arp"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show ip arp
-          ============================================
-          UTILITÉ: Affiche la table de résolution ARP
-                   (correspondances IP ↔ MAC)
+        msg:
+          - "============================================"
+          - "COMMANDE: show ip arp"
+          - "============================================"
+          - "UTILITÉ: Affiche la table de résolution ARP"
+          - "         (correspondances IP - MAC)"
+          - ""
+          - "COLONNES:"
+          - "  Protocol  - Type de protocole (Internet = IPv4)"
+          - "  Address   - Adresse IP"
+          - "  Age       - Minutes depuis la dernière mise à jour"
+          - "  Hardware  - Adresse MAC associée"
+          - "  Type      - Type d'encapsulation (ARPA = Ethernet)"
+          - "  Interface - Interface locale utilisée"
+          - "============================================"
 
-          COLONNES:
-            Protocol  - Type de protocole (Internet = IPv4)
-            Address   - Adresse IP
-            Age       - Minutes depuis la dernière mise à jour
-            Hardware  - Adresse MAC associée
-            Type      - Type d'encapsulation (ARPA = Ethernet)
-            Interface - Interface locale utilisée
-          {{ cmd_arp.stdout }}
-          ============================================
+    - name: "Sortie show ip arp"
+      debug:
+        var: cmd_arp.stdout_lines
 
     # =========================================================================
     # 2. show mac address-table
@@ -66,20 +69,23 @@
 
     - name: "Résultat: show mac address-table"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show mac address-table
-          ============================================
-          UTILITÉ: Affiche la table CAM du switch
-                   (correspondances MAC ↔ Port)
+        msg:
+          - "============================================"
+          - "COMMANDE: show mac address-table"
+          - "============================================"
+          - "UTILITÉ: Affiche la table CAM du switch"
+          - "         (correspondances MAC - Port)"
+          - ""
+          - "COLONNES:"
+          - "  Vlan    - VLAN associé"
+          - "  Mac     - Adresse MAC"
+          - "  Type    - DYNAMIC, STATIC ou SECURE"
+          - "  Ports   - Port de sortie pour cette MAC"
+          - "============================================"
 
-          COLONNES:
-            Vlan    - VLAN associé
-            Mac     - Adresse MAC
-            Type    - DYNAMIC, STATIC ou SECURE
-            Ports   - Port de sortie pour cette MAC
-          {{ cmd_mac.stdout }}
-          ============================================
+    - name: "Sortie show mac address-table"
+      debug:
+        var: cmd_mac.stdout_lines
 
     # =========================================================================
     # 3. show mac address-table dynamic
@@ -96,14 +102,17 @@
 
     - name: "Résultat: show mac address-table dynamic"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show mac address-table dynamic
-          ============================================
-          UTILITÉ: Affiche uniquement les entrées apprises
-                   automatiquement (pas les statiques)
-          {{ cmd_mac_dynamic.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show mac address-table dynamic"
+          - "============================================"
+          - "UTILITÉ: Affiche uniquement les entrées apprises"
+          - "         automatiquement (pas les statiques)"
+          - "============================================"
+
+    - name: "Sortie show mac address-table dynamic"
+      debug:
+        var: cmd_mac_dynamic.stdout_lines
 
     # =========================================================================
     # 4. show mac address-table count
@@ -120,14 +129,17 @@
 
     - name: "Résultat: show mac address-table count"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show mac address-table count
-          ============================================
-          UTILITÉ: Affiche le nombre d'entrées MAC par VLAN
-                   et la capacité totale de la table
-          {{ cmd_mac_count.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show mac address-table count"
+          - "============================================"
+          - "UTILITÉ: Affiche le nombre d'entrées MAC par VLAN"
+          - "         et la capacité totale de la table"
+          - "============================================"
+
+    - name: "Sortie show mac address-table count"
+      debug:
+        var: cmd_mac_count.stdout_lines
 
     # =========================================================================
     # 5. show mac address-table aging-time
@@ -144,14 +156,17 @@
 
     - name: "Résultat: show mac address-table aging-time"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show mac address-table aging-time
-          ============================================
-          UTILITÉ: Affiche le délai d'expiration des entrées
-                   dynamiques (défaut: 300 secondes)
-          {{ cmd_aging.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show mac address-table aging-time"
+          - "============================================"
+          - "UTILITÉ: Affiche le délai d'expiration des entrées"
+          - "         dynamiques (défaut: 300 secondes)"
+          - "============================================"
+
+    - name: "Sortie show mac address-table aging-time"
+      debug:
+        var: cmd_aging.stdout_lines
 
     # =========================================================================
     # 6. show interfaces status
@@ -168,14 +183,17 @@
 
     - name: "Résultat: show interfaces status"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show interfaces status
-          ============================================
-          UTILITÉ: Vue d'ensemble rapide de tous les ports
-                   (status, VLAN, duplex, speed)
-          {{ cmd_status.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show interfaces status"
+          - "============================================"
+          - "UTILITÉ: Vue d'ensemble rapide de tous les ports"
+          - "         (status, VLAN, duplex, speed)"
+          - "============================================"
+
+    - name: "Sortie show interfaces status"
+      debug:
+        var: cmd_status.stdout_lines
 
     # =========================================================================
     # 7. show interfaces trunk
@@ -192,14 +210,17 @@
 
     - name: "Résultat: show interfaces trunk"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show interfaces trunk
-          ============================================
-          UTILITÉ: Affiche les ports en mode trunk,
-                   native VLAN, VLANs autorisés et actifs
-          {{ cmd_trunk.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show interfaces trunk"
+          - "============================================"
+          - "UTILITÉ: Affiche les ports en mode trunk,"
+          - "         native VLAN, VLANs autorisés et actifs"
+          - "============================================"
+
+    - name: "Sortie show interfaces trunk"
+      debug:
+        var: cmd_trunk.stdout_lines
 
     # =========================================================================
     # 8. show spanning-tree
@@ -216,14 +237,17 @@
 
     - name: "Résultat: show spanning-tree"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show spanning-tree
-          ============================================
-          UTILITÉ: État du Spanning Tree Protocol par VLAN
-                   Identifie Root Bridge, port states, etc.
-          {{ cmd_stp.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show spanning-tree"
+          - "============================================"
+          - "UTILITÉ: État du Spanning Tree Protocol par VLAN"
+          - "         Identifie Root Bridge, port states, etc."
+          - "============================================"
+
+    - name: "Sortie show spanning-tree"
+      debug:
+        var: cmd_stp.stdout_lines
 
     # =========================================================================
     # 9. show ip interface brief
@@ -240,14 +264,17 @@
 
     - name: "Résultat: show ip interface brief"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show ip interface brief
-          ============================================
-          UTILITÉ: Vue rapide des interfaces avec leurs IPs
-                   (notamment les interfaces VLAN)
-          {{ cmd_ip_brief.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show ip interface brief"
+          - "============================================"
+          - "UTILITÉ: Vue rapide des interfaces avec leurs IPs"
+          - "         (notamment les interfaces VLAN)"
+          - "============================================"
+
+    - name: "Sortie show ip interface brief"
+      debug:
+        var: cmd_ip_brief.stdout_lines
 
     # =========================================================================
     # 10. show vlan brief
@@ -264,47 +291,50 @@
 
     - name: "Résultat: show vlan brief"
       debug:
-        msg: |
-          ============================================
-          COMMANDE: show vlan brief
-          ============================================
-          UTILITÉ: Liste tous les VLANs et leurs ports assignés
-          {{ cmd_vlan.stdout }}
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDE: show vlan brief"
+          - "============================================"
+          - "UTILITÉ: Liste tous les VLANs et leurs ports assignés"
+          - "============================================"
+
+    - name: "Sortie show vlan brief"
+      debug:
+        var: cmd_vlan.stdout_lines
 
     - name: "=== RÉSUMÉ DES COMMANDES CCNA ==="
       debug:
-        msg: |
-          ============================================
-          COMMANDES À RETENIR POUR LE CCNA
-          ============================================
-
-          ARP:
-            show ip arp                 - Table ARP complète
-            clear ip arp                - Vider le cache ARP
-            debug arp                   - Debug ARP en temps réel
-
-          TABLE MAC:
-            show mac address-table           - Table MAC complète
-            show mac address-table dynamic   - Entrées dynamiques
-            show mac address-table count     - Nombre d'entrées
-            show mac address-table aging-time - Timer d'expiration
-            clear mac address-table dynamic  - Vider les dynamiques
-
-          INTERFACES:
-            show interfaces status           - État de tous les ports
-            show interfaces trunk            - Trunks actifs
-            show ip interface brief          - IPs des interfaces
-
-          VLANs:
-            show vlan brief                  - Liste des VLANs
-
-          STP:
-            show spanning-tree               - État STP global
-            show spanning-tree summary       - Résumé STP
-
-          LINUX/WINDOWS:
-            ip neigh show / arp -a           - Table ARP locale
-            ip neigh flush all               - Vider cache ARP
-
-          ============================================
+        msg:
+          - "============================================"
+          - "COMMANDES À RETENIR POUR LE CCNA"
+          - "============================================"
+          - ""
+          - "ARP:"
+          - "  show ip arp                 - Table ARP complète"
+          - "  clear ip arp                - Vider le cache ARP"
+          - "  debug arp                   - Debug ARP en temps réel"
+          - ""
+          - "TABLE MAC:"
+          - "  show mac address-table           - Table MAC complète"
+          - "  show mac address-table dynamic   - Entrées dynamiques"
+          - "  show mac address-table count     - Nombre d'entrées"
+          - "  show mac address-table aging-time - Timer d'expiration"
+          - "  clear mac address-table dynamic  - Vider les dynamiques"
+          - ""
+          - "INTERFACES:"
+          - "  show interfaces status           - État de tous les ports"
+          - "  show interfaces trunk            - Trunks actifs"
+          - "  show ip interface brief          - IPs des interfaces"
+          - ""
+          - "VLANs:"
+          - "  show vlan brief                  - Liste des VLANs"
+          - ""
+          - "STP:"
+          - "  show spanning-tree               - État STP global"
+          - "  show spanning-tree summary       - Résumé STP"
+          - ""
+          - "LINUX/WINDOWS:"
+          - "  ip neigh show / arp -a           - Table ARP locale"
+          - "  ip neigh flush all               - Vider cache ARP"
+          - ""
+          - "============================================"

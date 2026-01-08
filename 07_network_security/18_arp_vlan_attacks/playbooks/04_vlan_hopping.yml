@@ -27,33 +27,33 @@
     # =========================================================================
     - name: "EXPLAIN: Vue d'ensemble VLAN Hopping"
       debug:
-        msg: |
-          ========================================
-          VLAN HOPPING - VUE D'ENSEMBLE
-          ========================================
-
-          OBJECTIF:
-            Accéder à un VLAN auquel on n'appartient pas,
-            contournant la segmentation réseau.
-
-          DEUX TECHNIQUES PRINCIPALES:
-
-          ┌─────────────────────────────────────────────────────────────┐
-          │  1. SWITCH SPOOFING                                         │
-          │     - L'attaquant se fait passer pour un switch             │
-          │     - Exploite DTP pour négocier un trunk                   │
-          │     - Accède à TOUS les VLANs du trunk                      │
-          └─────────────────────────────────────────────────────────────┘
-
-          ┌─────────────────────────────────────────────────────────────┐
-          │  2. DOUBLE TAGGING                                          │
-          │     - Envoie une trame avec 2 tags VLAN                     │
-          │     - Le premier tag (native VLAN) est strippé              │
-          │     - Le second tag atteint le VLAN cible                   │
-          │     - UNIDIRECTIONNEL (pas de retour)                       │
-          └─────────────────────────────────────────────────────────────┘
-
-          ========================================
+        msg:
+          - "========================================"
+          - "VLAN HOPPING - VUE D'ENSEMBLE"
+          - "========================================"
+          - ""
+          - "OBJECTIF:"
+          - "  Acceder a un VLAN auquel on n'appartient pas,"
+          - "  contournant la segmentation reseau."
+          - ""
+          - "DEUX TECHNIQUES PRINCIPALES:"
+          - ""
+          - "+-------------------------------------------------------------+"
+          - "|  1. SWITCH SPOOFING                                         |"
+          - "|     - L'attaquant se fait passer pour un switch             |"
+          - "|     - Exploite DTP pour negocier un trunk                   |"
+          - "|     - Accede a TOUS les VLANs du trunk                      |"
+          - "+-------------------------------------------------------------+"
+          - ""
+          - "+-------------------------------------------------------------+"
+          - "|  2. DOUBLE TAGGING                                          |"
+          - "|     - Envoie une trame avec 2 tags VLAN                     |"
+          - "|     - Le premier tag (native VLAN) est strippe              |"
+          - "|     - Le second tag atteint le VLAN cible                   |"
+          - "|     - UNIDIRECTIONNEL (pas de retour)                       |"
+          - "+-------------------------------------------------------------+"
+          - ""
+          - "========================================"
       when: exercise == "explain"
 
     # =========================================================================
@@ -61,59 +61,59 @@
     # =========================================================================
     - name: "SWITCH_SPOOFING: Explication"
       debug:
-        msg: |
-          ========================================
-          SWITCH SPOOFING (DTP ATTACK)
-          ========================================
-
-          PRINCIPE:
-            DTP (Dynamic Trunking Protocol) permet aux switches de
-            négocier automatiquement un lien trunk.
-
-            Si un port est en mode "dynamic auto" ou "dynamic desirable",
-            un attaquant peut envoyer des paquets DTP pour forcer
-            la création d'un trunk.
-
-          ========================================
-          ATTAQUE AVEC YERSINIA
-          ========================================
-
-          Yersinia est un outil pour attaquer les protocoles Layer 2.
-
-          # Lancer Yersinia en mode interactif
-          sudo yersinia -I
-
-          # Sélectionner le protocole DTP (touche 'd')
-          # Lancer l'attaque "enable trunking"
-
-          # Ou en ligne de commande:
-          sudo yersinia dtp -attack 1 -interface eth0
-
-          ========================================
-          MATRICE DE NÉGOCIATION DTP
-          ========================================
-
-          | Mode Local      | Mode Distant    | Résultat |
-          |-----------------|-----------------|----------|
-          | trunk           | trunk           | TRUNK    |
-          | trunk           | dynamic auto    | TRUNK    |
-          | trunk           | dynamic desir.  | TRUNK    |
-          | dynamic auto    | dynamic auto    | ACCESS   |
-          | dynamic auto    | dynamic desir.  | TRUNK    |
-          | dynamic desir.  | dynamic desir.  | TRUNK    |
-          | access          | *               | ACCESS   |
-
-          ========================================
-          VÉRIFICATION
-          ========================================
-
-          # Voir le mode DTP actuel
-          show dtp interface e0/1
-
-          # Voir les interfaces trunk
-          show interfaces trunk
-
-          ========================================
+        msg:
+          - "========================================"
+          - "SWITCH SPOOFING (DTP ATTACK)"
+          - "========================================"
+          - ""
+          - "PRINCIPE:"
+          - "  DTP (Dynamic Trunking Protocol) permet aux switches de"
+          - "  negocier automatiquement un lien trunk."
+          - ""
+          - "  Si un port est en mode \"dynamic auto\" ou \"dynamic desirable\","
+          - "  un attaquant peut envoyer des paquets DTP pour forcer"
+          - "  la creation d'un trunk."
+          - ""
+          - "========================================"
+          - "ATTAQUE AVEC YERSINIA"
+          - "========================================"
+          - ""
+          - "Yersinia est un outil pour attaquer les protocoles Layer 2."
+          - ""
+          - "# Lancer Yersinia en mode interactif"
+          - "sudo yersinia -I"
+          - ""
+          - "# Selectionner le protocole DTP (touche 'd')"
+          - "# Lancer l'attaque \"enable trunking\""
+          - ""
+          - "# Ou en ligne de commande:"
+          - "sudo yersinia dtp -attack 1 -interface eth0"
+          - ""
+          - "========================================"
+          - "MATRICE DE NEGOCIATION DTP"
+          - "========================================"
+          - ""
+          - "| Mode Local      | Mode Distant    | Resultat |"
+          - "|-----------------|-----------------|----------|"
+          - "| trunk           | trunk           | TRUNK    |"
+          - "| trunk           | dynamic auto    | TRUNK    |"
+          - "| trunk           | dynamic desir.  | TRUNK    |"
+          - "| dynamic auto    | dynamic auto    | ACCESS   |"
+          - "| dynamic auto    | dynamic desir.  | TRUNK    |"
+          - "| dynamic desir.  | dynamic desir.  | TRUNK    |"
+          - "| access          | *               | ACCESS   |"
+          - ""
+          - "========================================"
+          - "VERIFICATION"
+          - "========================================"
+          - ""
+          - "# Voir le mode DTP actuel"
+          - "show dtp interface e0/1"
+          - ""
+          - "# Voir les interfaces trunk"
+          - "show interfaces trunk"
+          - ""
+          - "========================================"
       when: exercise == "switch_spoofing"
 
     - name: "SWITCH_SPOOFING: Vérifier état DTP sur SW1"
@@ -130,106 +130,106 @@
     # =========================================================================
     - name: "DOUBLE_TAGGING: Explication"
       debug:
-        msg: |
-          ========================================
-          DOUBLE TAGGING ATTACK
-          ========================================
-
-          PRÉREQUIS:
-            1. L'attaquant doit être sur le Native VLAN du trunk
-            2. Ou le switch doit taguer le Native VLAN de manière incorrecte
-
-          PRINCIPE:
-
-            L'attaquant envoie une trame avec 2 tags 802.1Q:
-            ┌─────────┬─────────┬─────────────┐
-            │ Tag 1   │ Tag 2   │   Data      │
-            │ VLAN 99 │ VLAN 20 │   ...       │
-            │ (Native)│ (Target)│             │
-            └─────────┴─────────┴─────────────┘
-
-          DÉROULEMENT:
-
-            1. L'attaquant forge une trame avec:
-               - Tag externe: VLAN 99 (Native VLAN)
-               - Tag interne: VLAN 20 (VLAN cible)
-
-            2. Le premier switch (SW1) reçoit la trame:
-               - Voit le tag VLAN 99 = Native VLAN
-               - STRIPPE le premier tag (comportement normal)
-               - Forward la trame avec seulement le tag VLAN 20
-
-            3. Le second switch (SW2) reçoit la trame:
-               - Voit le tag VLAN 20
-               - Forward vers le VLAN 20!
-
-          ========================================
-          SCHÉMA DE L'ATTAQUE
-          ========================================
-
-          ATTACKER (VLAN 99)          SW1              SW2           TARGET (VLAN 20)
-               │                       │                │                 │
-               │ [Tag99][Tag20]Data    │                │                 │
-               ├──────────────────────►│                │                 │
-               │                       │ [Tag20]Data    │                 │
-               │                       ├───────────────►│                 │
-               │                       │                │ Data            │
-               │                       │                ├────────────────►│
-               │                       │                │                 │
-
-          LIMITATION: Attaque UNIDIRECTIONNELLE
-            - Les réponses retournent au VLAN 20, pas à l'attaquant
-            - Utilisé principalement pour des attaques de type "fire and forget"
-              (DoS, exploitation aveugle)
-
-          ========================================
-          ATTAQUE AVEC SCAPY (Python)
-          ========================================
-
-          from scapy.all import *
-
-          # Créer une trame double-taggée
-          packet = Ether(dst="ff:ff:ff:ff:ff:ff") / \
-                   Dot1Q(vlan=99) / \
-                   Dot1Q(vlan=20) / \
-                   IP(dst="192.168.20.100") / \
-                   ICMP()
-
-          sendp(packet, iface="eth0")
-
-          ========================================
-          AVEC YERSINIA
-          ========================================
-
-          sudo yersinia dot1q -attack 1 -interface eth0
-
-          ========================================
+        msg:
+          - "========================================"
+          - "DOUBLE TAGGING ATTACK"
+          - "========================================"
+          - ""
+          - "PREREQUIS:"
+          - "  1. L'attaquant doit etre sur le Native VLAN du trunk"
+          - "  2. Ou le switch doit taguer le Native VLAN de maniere incorrecte"
+          - ""
+          - "PRINCIPE:"
+          - ""
+          - "  L'attaquant envoie une trame avec 2 tags 802.1Q:"
+          - "  +---------+---------+-------------+"
+          - "  | Tag 1   | Tag 2   |   Data      |"
+          - "  | VLAN 99 | VLAN 20 |   ...       |"
+          - "  | (Native)| (Target)|             |"
+          - "  +---------+---------+-------------+"
+          - ""
+          - "DEROULEMENT:"
+          - ""
+          - "  1. L'attaquant forge une trame avec:"
+          - "     - Tag externe: VLAN 99 (Native VLAN)"
+          - "     - Tag interne: VLAN 20 (VLAN cible)"
+          - ""
+          - "  2. Le premier switch (SW1) recoit la trame:"
+          - "     - Voit le tag VLAN 99 = Native VLAN"
+          - "     - STRIPPE le premier tag (comportement normal)"
+          - "     - Forward la trame avec seulement le tag VLAN 20"
+          - ""
+          - "  3. Le second switch (SW2) recoit la trame:"
+          - "     - Voit le tag VLAN 20"
+          - "     - Forward vers le VLAN 20!"
+          - ""
+          - "========================================"
+          - "SCHEMA DE L'ATTAQUE"
+          - "========================================"
+          - ""
+          - "ATTACKER (VLAN 99)          SW1              SW2           TARGET (VLAN 20)"
+          - "     |                       |                |                 |"
+          - "     | [Tag99][Tag20]Data    |                |                 |"
+          - "     +---------------------->|                |                 |"
+          - "     |                       | [Tag20]Data    |                 |"
+          - "     |                       +--------------->|                 |"
+          - "     |                       |                | Data            |"
+          - "     |                       |                +---------------->|"
+          - "     |                       |                |                 |"
+          - ""
+          - "LIMITATION: Attaque UNIDIRECTIONNELLE"
+          - "  - Les reponses retournent au VLAN 20, pas a l'attaquant"
+          - "  - Utilise principalement pour des attaques de type \"fire and forget\""
+          - "    (DoS, exploitation aveugle)"
+          - ""
+          - "========================================"
+          - "ATTAQUE AVEC SCAPY (Python)"
+          - "========================================"
+          - ""
+          - "from scapy.all import *"
+          - ""
+          - "# Creer une trame double-taggee"
+          - "packet = Ether(dst=\"ff:ff:ff:ff:ff:ff\") / \\"
+          - "         Dot1Q(vlan=99) / \\"
+          - "         Dot1Q(vlan=20) / \\"
+          - "         IP(dst=\"192.168.20.100\") / \\"
+          - "         ICMP()"
+          - ""
+          - "sendp(packet, iface=\"eth0\")"
+          - ""
+          - "========================================"
+          - "AVEC YERSINIA"
+          - "========================================"
+          - ""
+          - "sudo yersinia dot1q -attack 1 -interface eth0"
+          - ""
+          - "========================================"
       when: exercise == "double_tagging"
 
     - name: "DOUBLE_TAGGING: Vérifier Native VLAN"
       script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --show "show interfaces trunk"
       when: exercise == "double_tagging"
 
-    - name: Résumé
+    - name: Resume
       debug:
-        msg: |
-          ========================================
-          LAB VLAN HOPPING - RÉSUMÉ
-          ========================================
-
-          Exercices disponibles:
-            -e "exercise=explain"           # Vue d'ensemble
-            -e "exercise=switch_spoofing"   # Attaque DTP
-            -e "exercise=double_tagging"    # Double Tagging
-            -e "exercise=check_dtp"         # État DTP
-
-          PROTECTIONS (voir playbook 06_mitigation.yml):
-            1. Désactiver DTP: switchport nonegotiate
-            2. Forcer le mode access: switchport mode access
-            3. Native VLAN dédié (pas VLAN 1 ou VLAN user)
-            4. Taguer le Native VLAN: vlan dot1q tag native
-
-          Prochaine étape:
-            ansible-playbook playbooks/06_mitigation.yml
-
-          ========================================
+        msg:
+          - "========================================"
+          - "LAB VLAN HOPPING - RESUME"
+          - "========================================"
+          - ""
+          - "Exercices disponibles:"
+          - "  -e \"exercise=explain\"           # Vue d'ensemble"
+          - "  -e \"exercise=switch_spoofing\"   # Attaque DTP"
+          - "  -e \"exercise=double_tagging\"    # Double Tagging"
+          - "  -e \"exercise=check_dtp\"         # Etat DTP"
+          - ""
+          - "PROTECTIONS (voir playbook 06_mitigation.yml):"
+          - "  1. Desactiver DTP: switchport nonegotiate"
+          - "  2. Forcer le mode access: switchport mode access"
+          - "  3. Native VLAN dedie (pas VLAN 1 ou VLAN user)"
+          - "  4. Taguer le Native VLAN: vlan dot1q tag native"
+          - ""
+          - "Prochaine etape:"
+          - "  ansible-playbook playbooks/06_mitigation.yml"
+          - ""
+          - "========================================"

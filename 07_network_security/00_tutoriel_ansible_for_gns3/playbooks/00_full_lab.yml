@@ -1,0 +1,50 @@
+---
+# ============================================
+# PLAYBOOK PRINCIPAL - MINI LAB TUTORIEL
+# ============================================
+# Ce playbook lance toutes les etapes dans l'ordre :
+# 1. Creation de la topologie (switch + VPCs)
+# 2. Configuration du switch
+# 3. Configuration des VPCs
+# 4. Verification
+#
+# Usage: ansible-playbook playbooks/00_full_lab.yml
+
+- name: "========== MINI LAB TUTORIEL =========="
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: "Afficher les infos du lab"
+      debug:
+        msg:
+          - "Serveur GNS3 : {{ gns3_server }}"
+          - "Projet : {{ project_name }}"
+          - "Switches : {{ switches | map(attribute='name') | list }}"
+          - "VPCs : {{ vpcs | map(attribute='name') | list }}"
+
+# Etape 1 : Creer la topologie
+- import_playbook: 01_create_topology.yml
+
+# Etape 2 : Configurer le switch
+- import_playbook: 02_configure_switch.yml
+
+# Etape 3 : Configurer les VPCs
+- import_playbook: 03_configure_vpcs.yml
+
+# Message final
+- name: "========== LAB TERMINE =========="
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: "Afficher le resume"
+      debug:
+        msg:
+          - "Le lab a ete cree avec succes !"
+          - ""
+          - "Vous pouvez maintenant :"
+          - "  1. Ouvrir GNS3 et voir le projet '{{ project_name }}'"
+          - "  2. Double-cliquer sur les equipements pour ouvrir leur console"
+          - "  3. Tester la connectivite : depuis PC1, faire 'ping 192.168.10.20'"
+          - ""
+          - "Pour verifier la config, lancez :"
+          - "  ansible-playbook playbooks/04_verify.yml"

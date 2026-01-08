@@ -34,17 +34,17 @@
       block:
         - name: "Info - Diagnostic"
           debug:
-            msg: |
-              ============================================
-              DIAGNOSTIC COMPLET ARP/SWITCHING
-              ============================================
-              Vérifications effectuées:
-              1. Table ARP
-              2. Table MAC
-              3. État des interfaces
-              4. Spanning Tree
-              5. Statistiques d'interface
-              ============================================
+            msg:
+              - "============================================"
+              - "DIAGNOSTIC COMPLET ARP/SWITCHING"
+              - "============================================"
+              - "Vérifications effectuées:"
+              - "1. Table ARP"
+              - "2. Table MAC"
+              - "3. État des interfaces"
+              - "4. Spanning Tree"
+              - "5. Statistiques d'interface"
+              - "============================================"
 
         # 1. Table ARP
         - name: "1. Vérifier la table ARP"
@@ -59,17 +59,23 @@
 
         - name: "Table ARP"
           debug:
-            msg: |
-              ============================================
-              1. TABLE ARP
-              ============================================
-              {{ diag_arp.stdout }}
+            msg:
+              - "============================================"
+              - "1. TABLE ARP"
+              - "============================================"
 
-              POINTS À VÉRIFIER:
-              - Age des entrées (entries trop vieilles?)
-              - MACs cohérentes avec le réseau connu
-              - Pas de doublons IP avec différentes MAC (spoofing?)
-              ============================================
+        - name: "Sortie table ARP diagnostic"
+          debug:
+            var: diag_arp.stdout_lines
+
+        - name: "Points à vérifier ARP"
+          debug:
+            msg:
+              - "POINTS À VÉRIFIER:"
+              - "- Age des entrées (entries trop vieilles?)"
+              - "- MACs cohérentes avec le réseau connu"
+              - "- Pas de doublons IP avec différentes MAC (spoofing?)"
+              - "============================================"
 
         # 2. Table MAC
         - name: "2. Vérifier la table MAC"
@@ -84,17 +90,23 @@
 
         - name: "Table MAC"
           debug:
-            msg: |
-              ============================================
-              2. TABLE MAC
-              ============================================
-              {{ diag_mac.stdout }}
+            msg:
+              - "============================================"
+              - "2. TABLE MAC"
+              - "============================================"
 
-              POINTS À VÉRIFIER:
-              - MACs attendues présentes?
-              - Pas de MAC sur plusieurs ports (loop?)
-              - Nombre d'entrées raisonnable?
-              ============================================
+        - name: "Sortie table MAC diagnostic"
+          debug:
+            var: diag_mac.stdout_lines
+
+        - name: "Points à vérifier MAC"
+          debug:
+            msg:
+              - "POINTS À VÉRIFIER:"
+              - "- MACs attendues présentes?"
+              - "- Pas de MAC sur plusieurs ports (loop?)"
+              - "- Nombre d'entrées raisonnable?"
+              - "============================================"
 
         # 3. État des interfaces
         - name: "3. Vérifier l'état des interfaces"
@@ -109,17 +121,23 @@
 
         - name: "Interfaces"
           debug:
-            msg: |
-              ============================================
-              3. ÉTAT DES INTERFACES
-              ============================================
-              {{ diag_interfaces.stdout }}
+            msg:
+              - "============================================"
+              - "3. ÉTAT DES INTERFACES"
+              - "============================================"
 
-              POINTS À VÉRIFIER:
-              - Interfaces attendues UP?
-              - Pas d'interface err-disabled?
-              - VLAN correct assigné?
-              ============================================
+        - name: "Sortie interfaces diagnostic"
+          debug:
+            var: diag_interfaces.stdout_lines
+
+        - name: "Points à vérifier interfaces"
+          debug:
+            msg:
+              - "POINTS À VÉRIFIER:"
+              - "- Interfaces attendues UP?"
+              - "- Pas d'interface err-disabled?"
+              - "- VLAN correct assigné?"
+              - "============================================"
 
         # 4. Spanning Tree
         - name: "4. Vérifier Spanning Tree"
@@ -134,17 +152,23 @@
 
         - name: "Spanning Tree"
           debug:
-            msg: |
-              ============================================
-              4. SPANNING TREE
-              ============================================
-              {{ diag_stp.stdout }}
+            msg:
+              - "============================================"
+              - "4. SPANNING TREE"
+              - "============================================"
 
-              POINTS À VÉRIFIER:
-              - STP actif? (protection contre les boucles)
-              - Root bridge identifié?
-              - Ports en état correct (FWD/BLK)?
-              ============================================
+        - name: "Sortie STP diagnostic"
+          debug:
+            var: diag_stp.stdout_lines
+
+        - name: "Points à vérifier STP"
+          debug:
+            msg:
+              - "POINTS À VÉRIFIER:"
+              - "- STP actif? (protection contre les boucles)"
+              - "- Root bridge identifié?"
+              - "- Ports en état correct (FWD/BLK)?"
+              - "============================================"
 
         # 5. Statistiques
         - name: "5. Vérifier les statistiques du trunk"
@@ -159,18 +183,24 @@
 
         - name: "Statistiques interface"
           debug:
-            msg: |
-              ============================================
-              5. STATISTIQUES INTERFACE TRUNK
-              ============================================
-              {{ diag_stats.stdout }}
+            msg:
+              - "============================================"
+              - "5. STATISTIQUES INTERFACE TRUNK"
+              - "============================================"
 
-              POINTS À VÉRIFIER:
-              - Erreurs CRC?
-              - Collisions excessives?
-              - Input/Output errors?
-              - Runts/Giants?
-              ============================================
+        - name: "Sortie statistiques interface"
+          debug:
+            var: diag_stats.stdout_lines
+
+        - name: "Points à vérifier statistiques"
+          debug:
+            msg:
+              - "POINTS À VÉRIFIER:"
+              - "- Erreurs CRC?"
+              - "- Collisions excessives?"
+              - "- Input/Output errors?"
+              - "- Runts/Giants?"
+              - "============================================"
 
     # =========================================================================
     # Problème: Entrées ARP obsolètes
@@ -180,23 +210,23 @@
       block:
         - name: "Info - Stale ARP"
           debug:
-            msg: |
-              ============================================
-              PROBLÈME: ENTRÉES ARP OBSOLÈTES
-              ============================================
-              Symptômes:
-              - Communication intermittente
-              - Ping échoue puis fonctionne
-              - Latence initiale élevée
-
-              Causes:
-              - Changement de carte réseau
-              - VM migrée
-              - Configuration IP changée
-
-              Solution:
-              - clear ip arp (vide le cache ARP)
-              ============================================
+            msg:
+              - "============================================"
+              - "PROBLÈME: ENTRÉES ARP OBSOLÈTES"
+              - "============================================"
+              - "Symptômes:"
+              - "- Communication intermittente"
+              - "- Ping échoue puis fonctionne"
+              - "- Latence initiale élevée"
+              - ""
+              - "Causes:"
+              - "- Changement de carte réseau"
+              - "- VM migrée"
+              - "- Configuration IP changée"
+              - ""
+              - "Solution:"
+              - "- clear ip arp (vide le cache ARP)"
+              - "============================================"
 
         - name: "Voir les entrées ARP avec leur âge"
           script: >
@@ -210,11 +240,13 @@
 
         - name: "Table ARP actuelle"
           debug:
-            msg: |
-              {{ stale_check.stdout }}
+            var: stale_check.stdout_lines
 
-              Regardez la colonne "Age (min)".
-              Les entrées très anciennes peuvent être obsolètes.
+        - name: "Note sur Age"
+          debug:
+            msg:
+              - "Regardez la colonne 'Age (min)'."
+              - "Les entrées très anciennes peuvent être obsolètes."
 
         - name: "Vider le cache ARP pour résoudre"
           script: >
@@ -246,14 +278,20 @@
 
         - name: "Table ARP rafraîchie"
           debug:
-            msg: |
-              ============================================
-              TABLE ARP APRÈS RAFRAÎCHISSEMENT
-              ============================================
-              {{ fresh_arp.stdout }}
+            msg:
+              - "============================================"
+              - "TABLE ARP APRÈS RAFRAÎCHISSEMENT"
+              - "============================================"
 
-              Les entrées ont maintenant un âge de 0 ou très faible.
-              ============================================
+        - name: "Sortie table ARP rafraîchie"
+          debug:
+            var: fresh_arp.stdout_lines
+
+        - name: "Note ARP rafraîchi"
+          debug:
+            msg:
+              - "Les entrées ont maintenant un âge de 0 ou très faible."
+              - "============================================"
 
     # =========================================================================
     # Info: MAC Table Overflow
@@ -263,26 +301,26 @@
       block:
         - name: "Info - MAC Overflow"
           debug:
-            msg: |
-              ============================================
-              ATTAQUE: MAC TABLE OVERFLOW
-              ============================================
-              Description:
-              Un attaquant envoie des milliers de trames avec
-              des MAC sources aléatoires pour remplir la table MAC.
-
-              Impact:
-              Quand la table est pleine, le switch ne peut plus
-              apprendre de nouvelles MAC → il FLOOD tout le trafic
-              → l'attaquant peut sniffer tout le réseau!
-
-              Détection:
-              - Table MAC pleine ou proche de la limite
-              - Trafic broadcast anormalement élevé
-              - Performances réseau dégradées
-
-              Commandes de vérification:
-              ============================================
+            msg:
+              - "============================================"
+              - "ATTAQUE: MAC TABLE OVERFLOW"
+              - "============================================"
+              - "Description:"
+              - "Un attaquant envoie des milliers de trames avec"
+              - "des MAC sources aléatoires pour remplir la table MAC."
+              - ""
+              - "Impact:"
+              - "Quand la table est pleine, le switch ne peut plus"
+              - "apprendre de nouvelles MAC -> il FLOOD tout le trafic"
+              - "-> l'attaquant peut sniffer tout le réseau!"
+              - ""
+              - "Détection:"
+              - "- Table MAC pleine ou proche de la limite"
+              - "- Trafic broadcast anormalement élevé"
+              - "- Performances réseau dégradées"
+              - ""
+              - "Commandes de vérification:"
+              - "============================================"
 
         - name: "Voir la capacité de la table MAC"
           script: >
@@ -296,20 +334,26 @@
 
         - name: "Capacité MAC"
           debug:
-            msg: |
-              ============================================
-              CAPACITÉ TABLE MAC
-              ============================================
-              {{ mac_capacity.stdout }}
+            msg:
+              - "============================================"
+              - "CAPACITÉ TABLE MAC"
+              - "============================================"
 
-              PROTECTION: Port Security
-              configure terminal
-              interface e0/1
-                switchport mode access
-                switchport port-security
-                switchport port-security maximum 3
-                switchport port-security violation shutdown
-              ============================================
+        - name: "Sortie capacité MAC"
+          debug:
+            var: mac_capacity.stdout_lines
+
+        - name: "Protection Port Security"
+          debug:
+            msg:
+              - "PROTECTION: Port Security"
+              - "configure terminal"
+              - "interface e0/1"
+              - "  switchport mode access"
+              - "  switchport port-security"
+              - "  switchport port-security maximum 3"
+              - "  switchport port-security violation shutdown"
+              - "============================================"
 
     # =========================================================================
     # Info: Détection de boucle
@@ -319,24 +363,24 @@
       block:
         - name: "Info - Network Loop"
           debug:
-            msg: |
-              ============================================
-              PROBLÈME: BOUCLE RÉSEAU
-              ============================================
-              Symptômes:
-              - CPU switch à 100%
-              - Réseau très lent ou inaccessible
-              - LEDs des ports clignotent frénétiquement
-              - Broadcast storm
-
-              Cause:
-              - Câble reliant deux ports du même switch
-              - Deux chemins vers le même switch sans STP
-
-              Protection:
-              - Spanning Tree Protocol (STP) - ACTIF par défaut
-              - BPDU Guard sur les ports access
-              ============================================
+            msg:
+              - "============================================"
+              - "PROBLÈME: BOUCLE RÉSEAU"
+              - "============================================"
+              - "Symptômes:"
+              - "- CPU switch à 100%"
+              - "- Réseau très lent ou inaccessible"
+              - "- LEDs des ports clignotent frénétiquement"
+              - "- Broadcast storm"
+              - ""
+              - "Cause:"
+              - "- Câble reliant deux ports du même switch"
+              - "- Deux chemins vers le même switch sans STP"
+              - ""
+              - "Protection:"
+              - "- Spanning Tree Protocol (STP) - ACTIF par défaut"
+              - "- BPDU Guard sur les ports access"
+              - "============================================"
 
         - name: "Vérifier l'état STP"
           script: >
@@ -350,40 +394,46 @@
 
         - name: "État STP"
           debug:
-            msg: |
-              ============================================
-              ÉTAT SPANNING TREE
-              ============================================
-              {{ stp_status.stdout }}
+            msg:
+              - "============================================"
+              - "ÉTAT SPANNING TREE"
+              - "============================================"
 
-              VÉRIFIEZ:
-              - "Spanning tree enabled" → STP actif
-              - Ports en état FWD (Forwarding) ou BLK (Blocking)
-              - Root Bridge identifié
+        - name: "Sortie état STP"
+          debug:
+            var: stp_status.stdout_lines
 
-              PROTECTION BPDU Guard:
-              configure terminal
-              interface e0/1
-                spanning-tree bpduguard enable
-              ============================================
+        - name: "Vérifications STP"
+          debug:
+            msg:
+              - "VÉRIFIEZ:"
+              - "- 'Spanning tree enabled' -> STP actif"
+              - "- Ports en état FWD (Forwarding) ou BLK (Blocking)"
+              - "- Root Bridge identifié"
+              - ""
+              - "PROTECTION BPDU Guard:"
+              - "configure terminal"
+              - "interface e0/1"
+              - "  spanning-tree bpduguard enable"
+              - "============================================"
 
     - name: "Résumé des exercices disponibles"
       debug:
-        msg: |
-          ============================================
-          EXERCICES TROUBLESHOOTING DISPONIBLES
-          ============================================
-
-          1. Diagnostic complet:
-             ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e "problem_type=diagnose"
-
-          2. Résoudre entrées ARP obsolètes:
-             ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e "problem_type=stale_arp"
-
-          3. Info sur MAC Table Overflow:
-             ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e "problem_type=mac_overflow_info"
-
-          4. Info sur détection de boucle:
-             ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e "problem_type=loop_detection"
-
-          ============================================
+        msg:
+          - "============================================"
+          - "EXERCICES TROUBLESHOOTING DISPONIBLES"
+          - "============================================"
+          - ""
+          - "1. Diagnostic complet:"
+          - "   ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e \"problem_type=diagnose\""
+          - ""
+          - "2. Résoudre entrées ARP obsolètes:"
+          - "   ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e \"problem_type=stale_arp\""
+          - ""
+          - "3. Info sur MAC Table Overflow:"
+          - "   ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e \"problem_type=mac_overflow_info\""
+          - ""
+          - "4. Info sur détection de boucle:"
+          - "   ansible-playbook -i inventory.yml playbooks/05_troubleshooting.yml -e \"problem_type=loop_detection\""
+          - ""
+          - "============================================"

@@ -188,30 +188,30 @@
     # =========================================================================
     - name: Resume
       debug:
-        msg: |
-          ========================================
-          VLANS ET TRUNKS CONFIGURES
-          ========================================
-
-          VLANs crees sur tous les switches:
-            VLAN 10: Administration
-            VLAN 20: HR
-            VLAN 30: Sales
-            VLAN 40: IT
-            VLAN 50: Guests
-
-          Trunks configures:
-            IOU1 (e0/0) <--> IOU2 (e0/0)
-            IOU2 (e0/1) <--> IOU3 (e0/0)
-
-          ========================================
-          PROCHAINE ETAPE
-          ========================================
-
-          1. Configurer les IPs des VPCs:
-             ansible-playbook playbooks/03_configure_vpcs.yml
-
-          2. Verifier la config:
-             ansible-playbook playbooks/04_verify.yml
-
-          ========================================
+        msg:
+          - "========================================"
+          - "VLANS ET TRUNKS CONFIGURES"
+          - "========================================"
+          - ""
+          - "VLANs crees sur tous les switches:"
+          - "  VLAN 10: Administration"
+          - "  VLAN 20: HR"
+          - "  VLAN 30: Sales"
+          - "  VLAN 40: IT"
+          - "  VLAN 50: Guests"
+          - ""
+          - "Trunks configures:"
+          - "  IOU1 (e0/0) <--> IOU2 (e0/0)"
+          - "  IOU2 (e0/1) <--> IOU3 (e0/0)"
+          - ""
+          - "========================================"
+          - "PROCHAINE ETAPE"
+          - "========================================"
+          - ""
+          - "1. Configurer les IPs des VPCs:"
+          - "   ansible-playbook playbooks/03_configure_vpcs.yml"
+          - ""
+          - "2. Verifier la config:"
+          - "   ansible-playbook playbooks/04_verify.yml"
+          - ""
+          - "========================================"

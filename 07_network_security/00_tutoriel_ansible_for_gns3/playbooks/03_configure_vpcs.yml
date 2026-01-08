@@ -1,0 +1,61 @@
+---
+# ============================================
+# PLAYBOOK : CONFIGURATION DES VPCs
+# ============================================
+# Ce playbook configure les adresses IP des VPCs
+#
+# Prerequis: Avoir execute 01_create_topology.yml
+# Usage: ansible-playbook playbooks/03_configure_vpcs.yml
+
+- name: "ETAPE 3 : Configuration des VPCs"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    - name: "Afficher les VPCs a configurer"
+      debug:
+        msg: "{{ item.name }} : {{ item.ip }}/{{ item.mask }}"
+      loop: "{{ vpcs }}"
+
+    # ==========================================
+    # Configurer PC1
+    # ==========================================
+    - name: "Configurer PC1"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ pc1_console_port }}
+        --commands "ip {{ vpcs[0].ip }} {{ vpcs[0].mask }} {{ vpcs[0].gateway }};save"
+      ignore_errors: true  # Les VPCs peuvent etre un peu capricieux
+      register: pc1_result
+
+    # ==========================================
+    # Configurer PC2
+    # ==========================================
+    - name: "Configurer PC2"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ pc2_console_port }}
+        --commands "ip {{ vpcs[1].ip }} {{ vpcs[1].mask }} {{ vpcs[1].gateway }};save"
+      ignore_errors: true
+      register: pc2_result
+
+    # ==========================================
+    # Attendre et afficher le resultat
+    # ==========================================
+    - name: "Attendre la propagation (3s)"
+      pause:
+        seconds: 3
+
+    - name: "VPCs configures !"
+      debug:
+        msg:
+          - "Configuration IP des VPCs terminee :"
+          - "  - PC1 : {{ vpcs[0].ip }}"
+          - "  - PC2 : {{ vpcs[1].ip }}"
+          - ""
+          - "Vous pouvez tester avec : ping depuis PC1 vers {{ vpcs[1].ip }}"

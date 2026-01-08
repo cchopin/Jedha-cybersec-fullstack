@@ -46,19 +46,19 @@
 
     - name: Résumé de la configuration
       debug:
-        msg: |
-          ========================================
-          CONFIGURATION TERMINÉE
-          ========================================
-          VLANs créés: {% for v in vlans %}{{ v.id }} ({{ v.name }}){% if not loop.last %}, {% endif %}{% endfor %}
-
-          Trunk configuré sur {{ trunk_interface }}:
-            - Encapsulation: 802.1Q
-            - VLANs autorisés: {{ trunk_allowed_vlans }}
-            - Native VLAN: {{ native_vlan }}
-
-          Pour vérifier:
-            telnet {{ gns3_host }} {{ sw1_console_port }}
-            > show vlan brief
-            > show interfaces trunk
-          ========================================
+        msg:
+          - "========================================"
+          - "CONFIGURATION TERMINÉE"
+          - "========================================"
+          - "VLANs créés: {{ vlans | map(attribute='id') | list | join(', ') }}"
+          - ""
+          - "Trunk configuré sur {{ trunk_interface }}:"
+          - "  - Encapsulation: 802.1Q"
+          - "  - VLANs autorisés: {{ trunk_allowed_vlans }}"
+          - "  - Native VLAN: {{ native_vlan }}"
+          - ""
+          - "Pour vérifier:"
+          - "  telnet {{ gns3_host }} {{ sw1_console_port }}"
+          - "  > show vlan brief"
+          - "  > show interfaces trunk"
+          - "========================================"

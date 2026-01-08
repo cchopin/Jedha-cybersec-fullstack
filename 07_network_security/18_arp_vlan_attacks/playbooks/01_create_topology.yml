@@ -43,9 +43,9 @@
 
     - name: Afficher les templates trouvés
       debug:
-        msg: |
-          Templates détectés:
-            - Cisco IOU L2: {{ template_iou_l2_id }}
+        msg:
+          - "Templates detectes:"
+          - "  - Cisco IOU L2: {{ template_iou_l2_id }}"
 
     # =========================================================================
     # ÉTAPE 1: Créer ou récupérer le projet GNS3 (idempotent)
@@ -82,13 +82,13 @@
 
     - name: Afficher le projet
       debug:
-        msg: |
-          ============================================
-          PROJET GNS3 ({{ project_status }})
-          ============================================
-          Nom: {{ project_name }}
-          Project ID: {{ project_id }}
-          ============================================
+        msg:
+          - "============================================"
+          - "PROJET GNS3 ({{ project_status }})"
+          - "============================================"
+          - "Nom: {{ project_name }}"
+          - "Project ID: {{ project_id }}"
+          - "============================================"
 
     # =========================================================================
     # ÉTAPE 2: Ouvrir le projet et récupérer les nodes existants
@@ -174,13 +174,13 @@
 
     - name: Afficher les nodes
       debug:
-        msg: |
-          Nodes dans le projet:
-            SW1:      {{ sw1_node_id }} (console: {{ sw1_console_port }})
-            SW2:      {{ sw2_node_id }} (console: {{ sw2_console_port }})
-            ATTACKER: {{ attacker_node_id }} (console: {{ attacker_console_port }})
-            ALICE:    {{ alice_node_id }} (console: {{ alice_console_port }})
-            BOB:      {{ bob_node_id }} (console: {{ bob_console_port }})
+        msg:
+          - "Nodes dans le projet:"
+          - "  SW1:      {{ sw1_node_id }} (console: {{ sw1_console_port }})"
+          - "  SW2:      {{ sw2_node_id }} (console: {{ sw2_console_port }})"
+          - "  ATTACKER: {{ attacker_node_id }} (console: {{ attacker_console_port }})"
+          - "  ALICE:    {{ alice_node_id }} (console: {{ alice_console_port }})"
+          - "  BOB:      {{ bob_node_id }} (console: {{ bob_console_port }})"
 
     # =========================================================================
     # ÉTAPE 6: Créer les liens (idempotent - ignore si existe déjà)
@@ -263,12 +263,12 @@
 
     - name: Afficher les liens
       debug:
-        msg: |
-          Liens configurés:
-            - SW1 (e0/0) <--trunk--> SW2 (e0/0)
-            - ATTACKER <---> SW1 (e0/1)
-            - ALICE <---> SW1 (e0/2)
-            - BOB <---> SW1 (e0/3)
+        msg:
+          - "Liens configures:"
+          - "  - SW1 (e0/0) <--trunk--> SW2 (e0/0)"
+          - "  - ATTACKER <---> SW1 (e0/1)"
+          - "  - ALICE <---> SW1 (e0/2)"
+          - "  - BOB <---> SW1 (e0/3)"
 
     # =========================================================================
     # ÉTAPE 7: Démarrer tous les nodes
@@ -309,31 +309,31 @@
           bob_console_port: {{ bob_console_port }}
         dest: "{{ playbook_dir }}/../switch_info.yml"
 
-    - name: Résumé
+    - name: Resume
       debug:
-        msg: |
-          ========================================
-          TOPOLOGIE CRÉÉE AVEC SUCCÈS
-          ========================================
-          Projet: {{ project_name }}
-          Project ID: {{ project_id }}
-
-          SWITCHES:
-            SW1 - telnet {{ gns3_host }} {{ sw1_console_port }}
-            SW2 - telnet {{ gns3_host }} {{ sw2_console_port }}
-
-          VPCS (Machines):
-            ATTACKER - telnet {{ gns3_host }} {{ attacker_console_port }}
-            ALICE    - telnet {{ gns3_host }} {{ alice_console_port }}
-            BOB      - telnet {{ gns3_host }} {{ bob_console_port }}
-
-          TOPOLOGIE:
-                        ATTACKER
-                           │
-               ALICE ── SW1 ── BOB
-                           │ trunk
-                          SW2 (Gateway)
-
-          Lancez maintenant:
-            ansible-playbook playbooks/02_configure_base.yml
-          ========================================
+        msg:
+          - "========================================"
+          - "TOPOLOGIE CREEE AVEC SUCCES"
+          - "========================================"
+          - "Projet: {{ project_name }}"
+          - "Project ID: {{ project_id }}"
+          - ""
+          - "SWITCHES:"
+          - "  SW1 - telnet {{ gns3_host }} {{ sw1_console_port }}"
+          - "  SW2 - telnet {{ gns3_host }} {{ sw2_console_port }}"
+          - ""
+          - "VPCS (Machines):"
+          - "  ATTACKER - telnet {{ gns3_host }} {{ attacker_console_port }}"
+          - "  ALICE    - telnet {{ gns3_host }} {{ alice_console_port }}"
+          - "  BOB      - telnet {{ gns3_host }} {{ bob_console_port }}"
+          - ""
+          - "TOPOLOGIE:"
+          - "              ATTACKER"
+          - "                 |"
+          - "     ALICE -- SW1 -- BOB"
+          - "                 | trunk"
+          - "                SW2 (Gateway)"
+          - ""
+          - "Lancez maintenant:"
+          - "  ansible-playbook playbooks/02_configure_base.yml"
+          - "========================================"

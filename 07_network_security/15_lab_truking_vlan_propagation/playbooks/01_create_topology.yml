@@ -183,24 +183,23 @@
     # =========================================================================
     - name: Resume
       debug:
-        msg: |
-          ========================================
-          TOPOLOGIE CREEE AVEC SUCCES
-          ========================================
-
-          Projet: {{ project_name }}
-
-          SWITCHES:
-          {% for node in final_nodes.json | selectattr('node_type', 'equalto', 'iou') | sort(attribute='name') %}
-            {{ node.name }}: telnet {{ gns3_host }} {{ node.console }}
-          {% endfor %}
-
-          Lien trunk: SW1 (e0/0) <---> SW2 (e0/0)
-
-          ========================================
-          PROCHAINE ETAPE
-          ========================================
-
-          ansible-playbook playbooks/02_configure_switches.yml
-
-          ========================================
+        msg:
+          - "========================================"
+          - "TOPOLOGIE CREEE AVEC SUCCES"
+          - "========================================"
+          - ""
+          - "Projet: {{ project_name }}"
+          - ""
+          - "SWITCHES:"
+          - "  SW1: telnet {{ gns3_host }} {{ (final_nodes.json | selectattr('name', 'equalto', 'SW1') | first).console }}"
+          - "  SW2: telnet {{ gns3_host }} {{ (final_nodes.json | selectattr('name', 'equalto', 'SW2') | first).console }}"
+          - ""
+          - "Lien trunk: SW1 (e0/0) <---> SW2 (e0/0)"
+          - ""
+          - "========================================"
+          - "PROCHAINE ETAPE"
+          - "========================================"
+          - ""
+          - "ansible-playbook playbooks/02_configure_switches.yml"
+          - ""
+          - "========================================"

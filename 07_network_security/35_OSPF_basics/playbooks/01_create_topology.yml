@@ -1,0 +1,184 @@
+---
+# Playbook: Création de la topologie OSPF dans GNS3
+# Lab 35 - OSPF Basics
+
+- name: Créer la topologie OSPF dans GNS3
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../group_vars/all.yml
+
+  tasks:
+    # ============================================
+    # ÉTAPE 1: Créer ou récupérer le projet GNS3
+    # ============================================
+    - name: Vérifier les projets existants
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+        return_content: true
+      register: projects_list
+
+    - name: Chercher le projet existant
+      ansible.builtin.set_fact:
+        existing_project: "{{ projects_list.json | selectattr('name', 'equalto', project_name) | list | first | default(None) }}"
+
+    - name: Créer le projet GNS3
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ project_name }}"
+        status_code: [200, 201]
+      register: new_project
+      when: existing_project is none
+
+    - name: Définir l'ID du projet
+      ansible.builtin.set_fact:
+        project_id: "{{ existing_project.project_id if existing_project else new_project.json.project_id }}"
+
+    - name: Afficher l'ID du projet
+      ansible.builtin.debug:
+        msg: "Projet: {{ project_name }} (ID: {{ project_id }})"
+
+    # ============================================
+    # ÉTAPE 2: Ouvrir le projet
+    # ============================================
+    - name: Ouvrir le projet
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/open"
+        method: POST
+        status_code: [200, 201, 204]
+      ignore_errors: true
+
+    # ============================================
+    # ÉTAPE 3: Récupérer le template du routeur
+    # ============================================
+    - name: Lister les templates disponibles
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/templates"
+        method: GET
+        return_content: true
+      register: templates_list
+
+    - name: Trouver le template C2691
+      ansible.builtin.set_fact:
+        router_template_id: "{{ (templates_list.json | selectattr('name', 'search', router_template, ignorecase=True) | list | first).template_id }}"
+
+    - name: Afficher le template trouvé
+      ansible.builtin.debug:
+        msg: "Template routeur: {{ router_template }} (ID: {{ router_template_id }})"
+
+    # ============================================
+    # ÉTAPE 4: Créer les routeurs
+    # ============================================
+    - name: Lister les noeuds existants
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: existing_nodes
+
+    - name: Créer les routeurs
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ router_template_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ item.name }}"
+          x: "{{ item.x }}"
+          y: "{{ item.y }}"
+        status_code: [200, 201]
+      loop: "{{ routers }}"
+      when: existing_nodes.json | selectattr('name', 'equalto', item.name) | list | length == 0
+      register: created_routers
+
+    - name: Récupérer la liste mise à jour des noeuds
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: all_nodes
+
+    - name: Créer un dictionnaire des noeuds
+      ansible.builtin.set_fact:
+        nodes_dict: "{{ nodes_dict | default({}) | combine({item.name: item}) }}"
+      loop: "{{ all_nodes.json }}"
+
+    - name: Afficher les routeurs créés
+      ansible.builtin.debug:
+        msg: "Routeurs: {{ nodes_dict.keys() | list }}"
+
+    # ============================================
+    # ÉTAPE 5: Créer les liens
+    # ============================================
+    - name: Lister les liens existants
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: GET
+        return_content: true
+      register: existing_links
+
+    - name: Créer les liens entre routeurs
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - node_id: "{{ nodes_dict[item.router1].node_id }}"
+              adapter_number: "{{ item.adapter1 }}"
+              port_number: "{{ item.port1 }}"
+            - node_id: "{{ nodes_dict[item.router2].node_id }}"
+              adapter_number: "{{ item.adapter2 }}"
+              port_number: "{{ item.port2 }}"
+        status_code: [200, 201]
+      loop: "{{ links }}"
+      ignore_errors: true
+      register: created_links
+
+    - name: Afficher les liens créés
+      ansible.builtin.debug:
+        msg: "Lien créé: {{ item.item.description }}"
+      loop: "{{ created_links.results }}"
+      when: item is not skipped and item.status in [200, 201]
+
+    # ============================================
+    # ÉTAPE 6: Démarrer les routeurs
+    # ============================================
+    - name: Démarrer tous les noeuds
+      ansible.builtin.uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+      ignore_errors: true
+
+    - name: Attendre le démarrage des routeurs
+      ansible.builtin.pause:
+        seconds: 30
+        prompt: "Attente du démarrage des routeurs (30 secondes)..."
+
+    # ============================================
+    # RÉSUMÉ
+    # ============================================
+    - name: Afficher le résumé
+      ansible.builtin.debug:
+        msg:
+          - "============================================"
+          - "TOPOLOGIE CRÉÉE AVEC SUCCÈS"
+          - "============================================"
+          - "Projet: {{ project_name }}"
+          - ""
+          - "Routeurs:"
+          - "  - R1 (Paris)"
+          - "  - R2 (Berlin)"
+          - "  - R3 (Rome)"
+          - ""
+          - "Liens:"
+          - "  - R1 f0/0 <-> R2 f0/0"
+          - "  - R2 f0/1 <-> R3 f0/0"
+          - "  - R3 f0/1 <-> R1 f0/1"
+          - ""
+          - "Prochaine étape: ansible-playbook playbooks/02_configure_ospf.yml"
+          - "============================================"

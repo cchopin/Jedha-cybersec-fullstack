@@ -21,10 +21,10 @@
   tasks:
     - name: Afficher les informations chargées
       debug:
-        msg: |
-          Configuration des VPCs:
-            VPC1: telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}
-            VPC2: telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}
+        msg:
+          - "Configuration des VPCs:"
+          - "  VPC1: telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}"
+          - "  VPC2: telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}"
 
     # =========================================================================
     # Configuration VPC1
@@ -80,36 +80,36 @@
 
     - name: Résumé
       debug:
-        msg: |
-          ========================================
-          VPCS CONFIGURÉS
-          ========================================
-
-          VPC1: 192.168.10.10/24
-            Console: telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}
-
-          VPC2: 192.168.10.20/24
-            Console: telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}
-
-          ========================================
-          VÉRIFICATION
-          ========================================
-
-          Connectez-vous aux VPCs pour vérifier:
-
-            telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}
-            > show ip
-
-            telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}
-            > show ip
-
-          Test de connectivité (depuis VPC1):
-            > ping 192.168.10.20
-
-          ========================================
-          PROCHAINE ÉTAPE
-          ========================================
-
-            ansible-playbook playbooks/03_add_kali.yml
-
-          ========================================
+        msg:
+          - "========================================"
+          - "VPCS CONFIGURÉS"
+          - "========================================"
+          - ""
+          - "VPC1: 192.168.10.10/24"
+          - "  Console: telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}"
+          - ""
+          - "VPC2: 192.168.10.20/24"
+          - "  Console: telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}"
+          - ""
+          - "========================================"
+          - "VÉRIFICATION"
+          - "========================================"
+          - ""
+          - "Connectez-vous aux VPCs pour vérifier:"
+          - ""
+          - "  telnet {{ gns3_host }} {{ switch_info.vpc1_console_port }}"
+          - "  > show ip"
+          - ""
+          - "  telnet {{ gns3_host }} {{ switch_info.vpc2_console_port }}"
+          - "  > show ip"
+          - ""
+          - "Test de connectivité (depuis VPC1):"
+          - "  > ping 192.168.10.20"
+          - ""
+          - "========================================"
+          - "PROCHAINE ÉTAPE"
+          - "========================================"
+          - ""
+          - "  ansible-playbook playbooks/03_add_kali.yml"
+          - ""
+          - "========================================"

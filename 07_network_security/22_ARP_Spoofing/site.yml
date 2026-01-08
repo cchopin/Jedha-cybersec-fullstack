@@ -24,13 +24,13 @@
 
     - name: Résumé
       debug:
-        msg: |
-          ========================================
-          LAB ARP SPOOFING PRÊT
-          ========================================
-
-          Lancez maintenant:
-            ansible-playbook playbooks/03_add_kali.yml
-
-          Pour ajouter la VM Kali Linux.
-          ========================================
+        msg:
+          - "========================================"
+          - "LAB ARP SPOOFING PRÊT"
+          - "========================================"
+          - ""
+          - "Lancez maintenant:"
+          - "  ansible-playbook playbooks/03_add_kali.yml"
+          - ""
+          - "Pour ajouter la VM Kali Linux."
+          - "========================================"

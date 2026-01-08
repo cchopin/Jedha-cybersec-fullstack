@@ -34,16 +34,16 @@
   tasks:
     - name: "Info - Sécurisation"
       debug:
-        msg: |
-          ============================================
-          SÉCURISATION DES PORTS TRUNK
-          ============================================
-          Best practices appliquées:
-          1. switchport nonegotiate (désactive DTP)
-          2. Native VLAN {{ secure_native_vlan }} (pas VLAN 1)
-          3. VLANs limités à {{ secure_allowed_vlans }}
-          4. Mode trunk explicite (pas de négociation)
-          ============================================
+        msg:
+          - "============================================"
+          - "SÉCURISATION DES PORTS TRUNK"
+          - "============================================"
+          - "Best practices appliquées:"
+          - "1. switchport nonegotiate (désactive DTP)"
+          - "2. Native VLAN {{ secure_native_vlan }} (pas VLAN 1)"
+          - "3. VLANs limités à {{ secure_allowed_vlans }}"
+          - "4. Mode trunk explicite (pas de négociation)"
+          - "============================================"
 
     # =========================================================================
     # Étape 1: Créer le VLAN natif sécurisé
@@ -115,19 +115,21 @@
 
     - name: "Afficher vérification SW1"
       debug:
-        msg: |
-          ============================================
-          VÉRIFICATION SÉCURITÉ SW1
-          ============================================
-          {{ sw1_verify.stdout }}
+        msg:
+          - "============================================"
+          - "VÉRIFICATION SÉCURITÉ SW1"
+          - "============================================"
+          - "POINTS À VÉRIFIER:"
+          - "- Administrative Mode: trunk"
+          - "- Negotiation of Trunking: Off (nonegotiate)"
+          - "- Access Mode VLAN: aucun"
+          - "- Trunking Native Mode VLAN: {{ secure_native_vlan }}"
+          - "- Trunking VLANs Enabled: {{ secure_allowed_vlans }}"
+          - "============================================"
 
-          POINTS À VÉRIFIER:
-          ✓ Administrative Mode: trunk
-          ✓ Negotiation of Trunking: Off (nonegotiate)
-          ✓ Access Mode VLAN: aucun
-          ✓ Trunking Native Mode VLAN: {{ secure_native_vlan }}
-          ✓ Trunking VLANs Enabled: {{ secure_allowed_vlans }}
-          ============================================
+    - name: "Sortie vérification SW1"
+      debug:
+        var: sw1_verify.stdout_lines
 
     - name: "Vérifier trunk actif"
       script: >
@@ -145,22 +147,22 @@
 
     - name: "Résumé sécurité"
       debug:
-        msg: |
-          ============================================
-          SÉCURISATION TERMINÉE
-          ============================================
-
-          Configuration appliquée sur SW1 et SW2:
-
-          interface {{ trunk_interface }}
-           switchport trunk encapsulation dot1q
-           switchport mode trunk
-           switchport nonegotiate              ← DTP désactivé
-           switchport trunk native vlan {{ secure_native_vlan }}  ← Pas VLAN 1
-           switchport trunk allowed vlan {{ secure_allowed_vlans }}
-
-          PROTECTION CONTRE:
-          ✓ VLAN Hopping (native VLAN isolé)
-          ✓ DTP Spoofing (nonegotiate)
-          ✓ Propagation VLANs non autorisés
-          ============================================
+        msg:
+          - "============================================"
+          - "SÉCURISATION TERMINÉE"
+          - "============================================"
+          - ""
+          - "Configuration appliquée sur SW1 et SW2:"
+          - ""
+          - "interface {{ trunk_interface }}"
+          - " switchport trunk encapsulation dot1q"
+          - " switchport mode trunk"
+          - " switchport nonegotiate              <- DTP désactivé"
+          - " switchport trunk native vlan {{ secure_native_vlan }}  <- Pas VLAN 1"
+          - " switchport trunk allowed vlan {{ secure_allowed_vlans }}"
+          - ""
+          - "PROTECTION CONTRE:"
+          - "- VLAN Hopping (native VLAN isolé)"
+          - "- DTP Spoofing (nonegotiate)"
+          - "- Propagation VLANs non autorisés"
+          - "============================================"

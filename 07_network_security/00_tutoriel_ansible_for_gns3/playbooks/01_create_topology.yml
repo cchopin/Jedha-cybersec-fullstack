@@ -1,0 +1,233 @@
+---
+# ============================================
+# PLAYBOOK : CREATION DE LA TOPOLOGIE
+# ============================================
+# Ce playbook cree :
+# - Le projet GNS3
+# - Les switches
+# - Les VPCs
+# - Les liens entre eux
+#
+# Usage: ansible-playbook playbooks/01_create_topology.yml
+
+- name: "ETAPE 1 : Creation de la topologie GNS3"
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    # ==========================================
+    # PARTIE 1 : Recuperer les templates GNS3
+    # ==========================================
+    - name: "1.1 - Recuperer la liste des templates"
+      uri:
+        url: "{{ gns3_server }}/v2/templates"
+        method: GET
+        return_content: yes
+      register: templates
+
+    - name: "1.2 - Trouver le template Switch (IOU L2)"
+      set_fact:
+        template_switch_id: "{{ templates.json | selectattr('name', 'search', 'IOU') | selectattr('name', 'search', 'L2') | map(attribute='template_id') | first | default('') }}"
+
+    - name: "1.3 - Trouver le template VPCS"
+      set_fact:
+        template_vpc_id: "{{ templates.json | selectattr('name', 'equalto', 'VPCS') | map(attribute='template_id') | first | default('') }}"
+
+    - name: "1.4 - Verifier que les templates existent"
+      fail:
+        msg: |
+          Templates non trouves !
+          - Template Switch IOU L2: {{ 'OK' if template_switch_id else 'NON TROUVE' }}
+          - Template VPCS: {{ 'OK' if template_vpc_id else 'NON TROUVE' }}
+
+          Verifiez que vous avez importe les templates dans GNS3.
+      when: not template_switch_id or not template_vpc_id
+
+    - name: "Afficher les templates trouves"
+      debug:
+        msg:
+          - "Template Switch : {{ template_switch_id }}"
+          - "Template VPC : {{ template_vpc_id }}"
+
+    # ==========================================
+    # PARTIE 2 : Creer ou recuperer le projet
+    # ==========================================
+    - name: "2.1 - Recuperer les projets existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+      register: projects
+
+    - name: "2.2 - Chercher si notre projet existe"
+      set_fact:
+        existing_project: "{{ projects.json | selectattr('name', 'equalto', project_name) | list | first | default(none) }}"
+
+    - name: "2.3 - Creer le projet (si nouveau)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ project_name }}"
+        status_code: [200, 201]
+      register: new_project
+      when: existing_project is none
+
+    - name: "2.4 - Definir l'ID du projet"
+      set_fact:
+        project_id: "{{ existing_project.project_id if existing_project else new_project.json.project_id }}"
+
+    - name: "2.5 - Ouvrir le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    - name: "Afficher l'ID du projet"
+      debug:
+        msg: "Projet '{{ project_name }}' - ID: {{ project_id }}"
+
+    # ==========================================
+    # PARTIE 3 : Creer les nodes
+    # ==========================================
+    - name: "3.1 - Recuperer les nodes existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+      register: existing_nodes
+
+    - name: "3.2 - Liste des noms existants"
+      set_fact:
+        existing_node_names: "{{ existing_nodes.json | map(attribute='name') | list }}"
+
+    - name: "3.3 - Creer les switches"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_switch_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ item.name }}"
+          x: "{{ item.x }}"
+          y: "{{ item.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      loop: "{{ switches }}"
+      when: item.name not in existing_node_names
+
+    - name: "3.4 - Creer les VPCs"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_vpc_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ item.name }}"
+          x: "{{ item.x }}"
+          y: "{{ item.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      loop: "{{ vpcs }}"
+      when: item.name not in existing_node_names
+
+    # ==========================================
+    # PARTIE 4 : Creer les liens
+    # ==========================================
+    - name: "4.1 - Recuperer tous les nodes (avec leurs IDs)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+      register: all_nodes
+
+    - name: "4.2 - Creer le dictionnaire des nodes"
+      set_fact:
+        nodes_dict: "{{ nodes_dict | default({}) | combine({item.name: item}) }}"
+      loop: "{{ all_nodes.json }}"
+
+    - name: "4.3 - Connecter chaque VPC a son switch"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            # Cote VPC (toujours adapter 0, port 0)
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[item.name].node_id }}"
+              port_number: 0
+            # Cote Switch
+            - adapter_number: "{{ (item.port | int) // 4 }}"
+              node_id: "{{ nodes_dict[item.switch].node_id }}"
+              port_number: "{{ (item.port | int) % 4 }}"
+        status_code: [200, 201, 409]  # 409 = lien existe deja
+      loop: "{{ vpcs }}"
+
+    - name: "Afficher les liens crees"
+      debug:
+        msg: "{{ item.name }} connecte a {{ item.switch }} port e0/{{ item.port }}"
+      loop: "{{ vpcs }}"
+
+    # ==========================================
+    # PARTIE 5 : Demarrer les nodes
+    # ==========================================
+    - name: "5.1 - Demarrer tous les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: "5.2 - Attendre le demarrage (45 secondes)"
+      pause:
+        seconds: 45
+        prompt: |
+          Les equipements demarrent...
+          - Les switches Cisco prennent ~30-60 secondes
+          - Les VPCs demarrent instantanement
+
+    # ==========================================
+    # PARTIE 6 : Sauvegarder les infos
+    # ==========================================
+    - name: "6.1 - Recuperer les nodes (avec ports console)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+      register: final_nodes
+
+    - name: "6.2 - Mettre a jour le dictionnaire"
+      set_fact:
+        nodes_dict: "{{ nodes_dict | default({}) | combine({item.name: item}) }}"
+      loop: "{{ final_nodes.json }}"
+
+    - name: "6.3 - Sauvegarder switch_info.yml"
+      copy:
+        content: |
+          # Fichier genere automatiquement par 01_create_topology.yml
+          # Contient les ports console pour la configuration
+
+          project_id: "{{ project_id }}"
+
+          # Ports console des switches
+          {% for switch in switches %}
+          {{ switch.name | lower | replace('-', '_') }}_console_port: {{ nodes_dict[switch.name].console }}
+          {% endfor %}
+
+          # Ports console des VPCs
+          {% for vpc in vpcs %}
+          {{ vpc.name | lower | replace('-', '_') }}_console_port: {{ nodes_dict[vpc.name].console }}
+          {% endfor %}
+        dest: "{{ playbook_dir }}/../switch_info.yml"
+
+    - name: "Afficher les ports console des switches"
+      debug:
+        msg: "{{ item.name }}: port {{ nodes_dict[item.name].console }}"
+      loop: "{{ switches }}"
+
+    - name: "Afficher les ports console des VPCs"
+      debug:
+        msg: "{{ item.name }}: port {{ nodes_dict[item.name].console }}"
+      loop: "{{ vpcs }}"
+
+    - name: "Topologie creee avec succes !"
+      debug:
+        msg:
+          - "Topologie creee !"
+          - "Projet: {{ project_name }}"
+          - "Nodes: {{ all_nodes.json | map(attribute='name') | list }}"

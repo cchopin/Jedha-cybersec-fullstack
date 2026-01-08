@@ -28,22 +28,22 @@
 
     - name: "INTRODUCTION"
       debug:
-        msg: |
-          ============================================================
-          EXERCICE : Changement du Root Bridge
-          ============================================================
-          Scénario: {{ new_root }}
-
-          Actuellement:
-          - SW1 est Root Bridge (priority 4097)
-          - SW2 et SW3 ont la priorité par défaut (32769)
-          - Le port Et0/1 de SW3 est bloqué
-
-          On va faire de SW2 le nouveau Root Bridge et observer:
-          - Le changement de rôles des ports
-          - Le nouveau port bloqué
-          - Le temps de convergence
-          ============================================================
+        msg:
+          - "============================================================"
+          - "EXERCICE : Changement du Root Bridge"
+          - "============================================================"
+          - "Scénario: {{ new_root }}"
+          - ""
+          - "Actuellement:"
+          - "- SW1 est Root Bridge (priority 4097)"
+          - "- SW2 et SW3 ont la priorité par défaut (32769)"
+          - "- Le port Et0/1 de SW3 est bloqué"
+          - ""
+          - "On va faire de SW2 le nouveau Root Bridge et observer:"
+          - "- Le changement de rôles des ports"
+          - "- Le nouveau port bloqué"
+          - "- Le temps de convergence"
+          - "============================================================"
 
     - name: "État STP avant changement"
       script: >
@@ -71,15 +71,15 @@
 
     - name: "SCÉNARIO - SW2 devient Root Bridge"
       debug:
-        msg: |
-          ============================================================
-          Configuration de SW2 comme Root Bridge
-          ============================================================
-          Commande: spanning-tree vlan 1 priority 0
-
-          Priority 0 = la plus basse possible
-          Résultat: 0 + 1 (VLAN) = 1
-          ============================================================
+        msg:
+          - "============================================================"
+          - "Configuration de SW2 comme Root Bridge"
+          - "============================================================"
+          - "Commande: spanning-tree vlan 1 priority 0"
+          - ""
+          - "Priority 0 = la plus basse possible"
+          - "Résultat: 0 + 1 (VLAN) = 1"
+          - "============================================================"
       when: new_root == "sw2_root"
 
     - name: "Configurer SW2 avec priority 0"
@@ -125,11 +125,17 @@
 
     - name: "RÉSULTAT - Nouvel état STP"
       debug:
-        msg: |
-          ============================================================
-          {{ item.item.name }}
-          ============================================================
-          {{ item.stdout }}
+        msg:
+          - "============================================================"
+          - "{{ item.item.name }}"
+          - "============================================================"
+      loop: "{{ stp_after.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    - name: "Sortie STP - Nouvel état"
+      debug:
+        var: item.stdout_lines
       loop: "{{ stp_after.results }}"
       loop_control:
         label: "{{ item.item.name }}"
@@ -140,33 +146,33 @@
 
     - name: "ANALYSE FINALE"
       debug:
-        msg: |
-          ============================================================
-          ANALYSE DU CHANGEMENT DE ROOT BRIDGE
-          ============================================================
-
-          AVANT:
-            - Root Bridge: SW1 (priority 4097)
-            - Port bloqué: SW3 Et0/1
-
-          APRÈS:
-            - Root Bridge: SW2 (priority 1)
-            - Nouveau calcul des chemins
-
-          Ce qui a changé:
-          1. SW2 est maintenant le Root (tous ses ports sont Designated)
-          2. SW1 a maintenant un Root Port (vers SW2)
-          3. SW3 a recalculé son chemin vers le nouveau Root
-          4. Un nouveau port peut être bloqué (selon les coûts)
-
-          Points clés CCNA:
-          - Le Root Bridge a TOUS ses ports en Designated/Forwarding
-          - Les autres switches ont UN Root Port vers le Root
-          - Les ports redondants sont bloqués
-
-          Pour restaurer SW1 comme Root:
-            ansible-playbook playbooks/03_root_election.yml -e "scenario=restore_sw1"
-          ============================================================
+        msg:
+          - "============================================================"
+          - "ANALYSE DU CHANGEMENT DE ROOT BRIDGE"
+          - "============================================================"
+          - ""
+          - "AVANT:"
+          - "  - Root Bridge: SW1 (priority 4097)"
+          - "  - Port bloqué: SW3 Et0/1"
+          - ""
+          - "APRÈS:"
+          - "  - Root Bridge: SW2 (priority 1)"
+          - "  - Nouveau calcul des chemins"
+          - ""
+          - "Ce qui a changé:"
+          - "1. SW2 est maintenant le Root (tous ses ports sont Designated)"
+          - "2. SW1 a maintenant un Root Port (vers SW2)"
+          - "3. SW3 a recalculé son chemin vers le nouveau Root"
+          - "4. Un nouveau port peut être bloqué (selon les coûts)"
+          - ""
+          - "Points clés CCNA:"
+          - "- Le Root Bridge a TOUS ses ports en Designated/Forwarding"
+          - "- Les autres switches ont UN Root Port vers le Root"
+          - "- Les ports redondants sont bloqués"
+          - ""
+          - "Pour restaurer SW1 comme Root:"
+          - "  ansible-playbook playbooks/03_root_election.yml -e \"scenario=restore_sw1\""
+          - "============================================================"
 
     # =========================================================================
     # SCÉNARIO 2 : Restaurer SW1 comme Root

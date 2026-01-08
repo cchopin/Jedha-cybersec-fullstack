@@ -1,0 +1,93 @@
+# Configuration GNS3
+gns3_server: "http://192.168.144.120:80"
+gns3_host: "192.168.144.120"
+project_name: "Lab_35_OSPF_Basics"
+
+# Template du routeur Cisco C2691
+router_template: "c2691"
+
+# Configuration des routeurs
+routers:
+  - name: "R1"
+    location: "Paris"
+    x: 0
+    y: -150
+    console_port: 5001
+    interfaces:
+      - name: "FastEthernet0/0"
+        ip: "192.168.12.1"
+        mask: "255.255.255.0"
+        description: "Lien vers R2 (Berlin)"
+      - name: "FastEthernet0/1"
+        ip: "192.168.31.1"
+        mask: "255.255.255.0"
+        description: "Lien vers R3 (Rome)"
+
+  - name: "R2"
+    location: "Berlin"
+    x: -150
+    y: 100
+    console_port: 5002
+    interfaces:
+      - name: "FastEthernet0/0"
+        ip: "192.168.12.2"
+        mask: "255.255.255.0"
+        description: "Lien vers R1 (Paris)"
+      - name: "FastEthernet0/1"
+        ip: "192.168.23.1"
+        mask: "255.255.255.0"
+        description: "Lien vers R3 (Rome)"
+
+  - name: "R3"
+    location: "Rome"
+    x: 150
+    y: 100
+    console_port: 5003
+    interfaces:
+      - name: "FastEthernet0/0"
+        ip: "192.168.23.2"
+        mask: "255.255.255.0"
+        description: "Lien vers R2 (Berlin)"
+      - name: "FastEthernet0/1"
+        ip: "192.168.31.2"
+        mask: "255.255.255.0"
+        description: "Lien vers R1 (Paris)"
+
+# Configuration OSPF
+ospf:
+  process_id: 1
+  area: 0
+  networks:
+    - network: "192.168.12.0"
+      wildcard: "0.0.0.255"
+    - network: "192.168.23.0"
+      wildcard: "0.0.0.255"
+    - network: "192.168.31.0"
+      wildcard: "0.0.0.255"
+
+# Liens entre les routeurs
+# Format: [router1, interface1, router2, interface2]
+links:
+  - router1: "R1"
+    port1: 0
+    adapter1: 0
+    router2: "R2"
+    port2: 0
+    adapter2: 0
+    description: "R1 f0/0 <-> R2 f0/0"
+
+  - router1: "R2"
+    port1: 1
+    adapter1: 0
+    router2: "R3"
+    port2: 0
+    adapter2: 0
+    description: "R2 f0/1 <-> R3 f0/0"
+
+  - router1: "R3"
+    port1: 1
+    adapter1: 0
+    router2: "R1"
+    port2: 1
+    adapter2: 0
+    description: "R3 f0/1 <-> R1 f0/1"

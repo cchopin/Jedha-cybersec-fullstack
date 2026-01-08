@@ -1,0 +1,114 @@
+---
+# ============================================
+# PLAYBOOK : VERIFICATION DU LAB
+# ============================================
+# Ce playbook verifie que tout est bien configure :
+# - Affiche les VLANs du switch
+# - Affiche la table MAC
+# - Verifie les IPs des VPCs
+#
+# Usage: ansible-playbook playbooks/04_verify.yml
+
+- name: "VERIFICATION DU LAB"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    - name: "=== VERIFICATION DU SWITCH ==="
+      debug:
+        msg: "Verification de la configuration du switch..."
+
+    # ==========================================
+    # Verifier les VLANs
+    # ==========================================
+    - name: "Afficher les VLANs"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch1_console_port }}
+        --show "show vlan brief"
+      register: vlan_output
+
+    - name: "Resultat - VLANs"
+      debug:
+        msg: "{{ vlan_output.stdout_lines }}"
+
+    # ==========================================
+    # Verifier la table MAC
+    # ==========================================
+    - name: "Afficher la table MAC"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch1_console_port }}
+        --show "show mac address-table"
+      register: mac_output
+
+    - name: "Resultat - Table MAC"
+      debug:
+        msg: "{{ mac_output.stdout_lines }}"
+
+    # ==========================================
+    # Verifier les interfaces
+    # ==========================================
+    - name: "Afficher le statut des interfaces"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch1_console_port }}
+        --show "show ip interface brief"
+      register: interfaces_output
+
+    - name: "Resultat - Interfaces"
+      debug:
+        msg: "{{ interfaces_output.stdout_lines }}"
+
+    # ==========================================
+    # Verifier les VPCs
+    # ==========================================
+    - name: "=== VERIFICATION DES VPCs ==="
+      debug:
+        msg: "Verification des VPCs..."
+
+    - name: "Afficher IP de PC1"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ pc1_console_port }}
+        --commands "show ip"
+      register: pc1_ip
+      ignore_errors: true
+
+    - name: "IP de PC1"
+      debug:
+        msg: "{{ pc1_ip.stdout_lines | default(['Erreur lors de la verification']) }}"
+
+    - name: "Afficher IP de PC2"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ pc2_console_port }}
+        --commands "show ip"
+      register: pc2_ip
+      ignore_errors: true
+
+    - name: "IP de PC2"
+      debug:
+        msg: "{{ pc2_ip.stdout_lines | default(['Erreur lors de la verification']) }}"
+
+    # ==========================================
+    # Resume
+    # ==========================================
+    - name: "=== RESUME ==="
+      debug:
+        msg:
+          - "Verification terminee !"
+          - ""
+          - "Pour tester la connectivite manuellement :"
+          - "  1. Ouvrir la console de PC1 dans GNS3"
+          - "  2. Taper : ping 192.168.10.20"
+          - ""
+          - "Si le ping fonctionne, le lab est operationnel !"
