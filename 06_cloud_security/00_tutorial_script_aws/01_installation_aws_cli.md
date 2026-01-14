@@ -249,7 +249,7 @@ complete -C '/usr/local/bin/aws_completer' aws
 source ~/.zshrc
 ```
 
-Maintenant, tapez `aws s3 ` puis Tab pour voir les suggestions !
+Maintenant, tapez `aws s3` puis Tab pour voir les suggestions !
 
 ---
 
