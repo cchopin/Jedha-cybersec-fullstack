@@ -1,0 +1,25 @@
+---
+# =============================================================================
+# Master Playbook - Déploiement complet du lab pfSense
+# =============================================================================
+# Usage:
+#   ansible-playbook playbooks/00_full_lab.yml
+#
+# Ce playbook déploie le lab complet en une seule commande:
+#   1. Création de la topologie GNS3 (pfSense, Webterm, NAT)
+#   2. Configuration des liens
+#   3. Démarrage des nodes
+#
+# Tags disponibles:
+#   - topology : Création du projet et des nodes
+#   - verify   : Vérification des nodes
+#   - full     : Tout (défaut)
+# =============================================================================
+
+- name: "Lab 40 - pfSense Setup - Déploiement complet"
+  import_playbook: 01_create_topology.yml
+  tags: [topology, full]
+
+- name: "Lab 40 - Vérification des nodes"
+  import_playbook: 02_verify.yml
+  tags: [verify, full]

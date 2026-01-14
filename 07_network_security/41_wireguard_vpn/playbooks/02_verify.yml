@@ -1,0 +1,109 @@
+---
+# =============================================================================
+# Playbook de vérification du lab WireGuard VPN
+# =============================================================================
+
+- name: Vérifier le lab WireGuard VPN
+  hosts: localhost
+  gather_facts: false
+  tags: [verify]
+
+  vars:
+    node_info: "{{ lookup('file', playbook_dir + '/../node_info.yml') | from_yaml }}"
+
+  tasks:
+    - name: "ÉTAPE 1: Ouvrir le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ node_info.project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    - name: "ÉTAPE 2: Récupérer les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ node_info.project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: nodes
+
+    - name: Extraire l'état des nodes
+      set_fact:
+        nat_status: "{{ (nodes.json | selectattr('name', 'equalto', 'NAT1') | first).status }}"
+        pfsense_a_status: "{{ (nodes.json | selectattr('name', 'equalto', 'pfSense-A') | first).status }}"
+        pfsense_b_status: "{{ (nodes.json | selectattr('name', 'equalto', 'pfSense-B') | first).status }}"
+        webterm_a_status: "{{ (nodes.json | selectattr('name', 'equalto', 'webterm-A') | first).status }}"
+        webterm_b_status: "{{ (nodes.json | selectattr('name', 'equalto', 'webterm-B') | first).status }}"
+
+    - name: Afficher l'état des nodes
+      debug:
+        msg:
+          - "========================================"
+          - "ÉTAT DES NODES"
+          - "========================================"
+          - "NAT1:       {{ nat_status }}"
+          - "pfSense-A:  {{ pfsense_a_status }}"
+          - "pfSense-B:  {{ pfsense_b_status }}"
+          - "webterm-A:  {{ webterm_a_status }}"
+          - "webterm-B:  {{ webterm_b_status }}"
+          - "========================================"
+
+    - name: "ÉTAPE 3: Démarrer les nodes arrêtés"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ node_info.project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+      when: >
+        pfsense_a_status != 'started' or
+        pfsense_b_status != 'started' or
+        webterm_a_status != 'started' or
+        webterm_b_status != 'started'
+
+    - name: Résumé final
+      debug:
+        msg:
+          - "========================================"
+          - "LAB WIREGUARD VPN - INFORMATIONS"
+          - "========================================"
+          - ""
+          - "SITE A (192.168.1.0/24):"
+          - "  pfSense-A Web GUI: https://192.168.1.1"
+          - "  Credentials: admin / pfsense"
+          - ""
+          - "SITE B (192.168.2.0/24):"
+          - "  pfSense-B Web GUI: https://192.168.2.1"
+          - "  Credentials: admin / pfsense"
+          - ""
+          - "========================================"
+          - "CHECKLIST CONFIGURATION WIREGUARD"
+          - "========================================"
+          - ""
+          - "[ ] 1. Décocher 'Block private networks' sur WAN"
+          - "       Interfaces > WAN > Block private networks"
+          - ""
+          - "[ ] 2. Installer WireGuard package"
+          - "       System > Package Manager > Available"
+          - ""
+          - "[ ] 3. Noter les IPs WAN"
+          - "       Status > Interfaces"
+          - ""
+          - "[ ] 4. Créer tunnel sur pfSense-A"
+          - "       VPN > WireGuard > Tunnels"
+          - "       - Address: 10.10.10.1/24"
+          - "       - Port: 51820"
+          - ""
+          - "[ ] 5. Créer tunnel sur pfSense-B"
+          - "       - Address: 10.10.10.2/24"
+          - "       - Port: 51820"
+          - ""
+          - "[ ] 6. Échanger les clés publiques"
+          - ""
+          - "[ ] 7. Ajouter les peers"
+          - "       VPN > WireGuard > Peers"
+          - ""
+          - "[ ] 8. Créer règles firewall"
+          - "       - WAN: Allow UDP 51820"
+          - "       - WG_VPN: Allow all"
+          - ""
+          - "[ ] 9. Vérifier le tunnel"
+          - "       VPN > WireGuard > Status"
+          - ""
+          - "========================================"

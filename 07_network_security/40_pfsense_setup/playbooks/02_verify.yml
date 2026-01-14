@@ -1,0 +1,142 @@
+---
+# =============================================================================
+# Playbook de vérification du lab pfSense
+# =============================================================================
+# Ce playbook vérifie que tous les nodes sont démarrés et affiche les
+# informations de connexion.
+# =============================================================================
+
+- name: Vérifier le lab pfSense
+  hosts: localhost
+  gather_facts: false
+  tags: [verify]
+
+  vars:
+    node_info: "{{ lookup('file', playbook_dir + '/../node_info.yml') | from_yaml }}"
+
+  tasks:
+    # =========================================================================
+    # ÉTAPE 1: Ouvrir le projet
+    # =========================================================================
+    - name: "ÉTAPE 1: Ouvrir le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ node_info.project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    # =========================================================================
+    # ÉTAPE 2: Récupérer les nodes
+    # =========================================================================
+    - name: "ÉTAPE 2: Récupérer les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ node_info.project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: nodes
+
+    # =========================================================================
+    # ÉTAPE 3: Vérifier l'état des nodes
+    # =========================================================================
+    - name: Extraire l'état des nodes
+      set_fact:
+        nat_status: "{{ (nodes.json | selectattr('name', 'equalto', 'NAT1') | first).status }}"
+        pfsense_status: "{{ (nodes.json | selectattr('name', 'equalto', 'pfSense-1') | first).status }}"
+        webterm_status: "{{ (nodes.json | selectattr('name', 'equalto', 'webterm-1') | first).status }}"
+        pfsense_console: "{{ (nodes.json | selectattr('name', 'equalto', 'pfSense-1') | first).console }}"
+        webterm_console: "{{ (nodes.json | selectattr('name', 'equalto', 'webterm-1') | first).console }}"
+
+    - name: Afficher l'état des nodes
+      debug:
+        msg:
+          - "========================================"
+          - "ÉTAT DES NODES"
+          - "========================================"
+          - "NAT1:      {{ nat_status }}"
+          - "pfSense-1: {{ pfsense_status }}"
+          - "webterm-1: {{ webterm_status }}"
+          - "========================================"
+
+    # =========================================================================
+    # ÉTAPE 4: Démarrer les nodes arrêtés
+    # =========================================================================
+    - name: "ÉTAPE 4: Démarrer les nodes arrêtés"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ node_info.project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+      when: pfsense_status != 'started' or webterm_status != 'started' or nat_status != 'started'
+
+    # =========================================================================
+    # ÉTAPE 5: Récupérer les liens
+    # =========================================================================
+    - name: "ÉTAPE 5: Récupérer les liens"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ node_info.project_id }}/links"
+        method: GET
+        return_content: true
+      register: links
+
+    - name: Afficher le nombre de liens
+      debug:
+        msg: "Nombre de liens: {{ links.json | length }}"
+
+    # =========================================================================
+    # RÉSUMÉ FINAL
+    # =========================================================================
+    - name: Résumé final
+      debug:
+        msg:
+          - "========================================"
+          - "LAB PFSENSE - INFORMATIONS DE CONNEXION"
+          - "========================================"
+          - ""
+          - "CONNEXION À PFSENSE (console VNC):"
+          - "  Dans GNS3 GUI: clic droit sur pfSense-1 -> Console"
+          - "  Ou via VNC: vnc://{{ gns3_host }}:{{ pfsense_console }}"
+          - ""
+          - "  Menu pfSense:"
+          - "    1) Assign Interfaces (WAN=em0, LAN=em1)"
+          - "    2) Set interface(s) IP address"
+          - "    7) Ping host"
+          - "    8) Shell"
+          - ""
+          - "CONNEXION À WEBTERM:"
+          - "  Dans GNS3 GUI: clic droit sur webterm-1 -> Console"
+          - "  Port VNC: {{ webterm_console }}"
+          - ""
+          - "ACCÈS INTERFACE WEB PFSENSE:"
+          - "  Depuis Firefox dans webterm:"
+          - "    http://192.168.1.1 ou https://192.168.1.1"
+          - ""
+          - "  Credentials:"
+          - "    Username: admin"
+          - "    Password: pfsense"
+          - ""
+          - "========================================"
+          - "CHECKLIST DE VÉRIFICATION"
+          - "========================================"
+          - ""
+          - "[ ] pfSense boot complet (2-3 min)"
+          - "[ ] Interfaces assignées (WAN=em0, LAN=em1)"
+          - "[ ] LAN IP = 192.168.1.1"
+          - "[ ] DHCP activé sur LAN"
+          - "[ ] webterm obtient une IP (192.168.1.100-199)"
+          - "[ ] Ping 192.168.1.1 depuis webterm"
+          - "[ ] Accès web GUI depuis webterm"
+          - ""
+          - "========================================"
+          - "DÉPANNAGE RAPIDE"
+          - "========================================"
+          - ""
+          - "Si pas d'IP sur webterm:"
+          - "  dhclient eth0"
+          - ""
+          - "Si pas d'accès web:"
+          - "  - Vérifier IP: ip addr show eth0"
+          - "  - Ping gateway: ping 192.168.1.1"
+          - "  - Essayer HTTP: http://192.168.1.1"
+          - ""
+          - "Si interfaces mal assignées:"
+          - "  Option 1 dans menu pfSense"
+          - ""
+          - "========================================"

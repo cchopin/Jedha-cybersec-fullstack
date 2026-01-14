@@ -1,0 +1,6 @@
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+  vars:
+    gns3_server: "http://192.168.144.120:80"
