@@ -1,0 +1,4 @@
+# Fichiers générés par les playbooks Ansible
+node_info.yml
+switch_info.yml
+*.retry

@@ -1,0 +1,416 @@
+---
+# =============================================================================
+# Playbook pour créer la topologie du lab WireGuard VPN
+# =============================================================================
+# Topologie créée:
+#
+#                          ┌─────────────────┐
+#                          │      NAT1       │
+#                          └────────┬────────┘
+#                                   │
+#                     ┌─────────────┴─────────────┐
+#                     │                           │
+#            ┌────────┴────────┐       ┌────────┴────────┐
+#            │   pfSense-A     │       │   pfSense-B     │
+#            └────────┬────────┘       └────────┬────────┘
+#                     │                           │
+#            ┌────────┴────────┐       ┌────────┴────────┐
+#            │   webterm-A     │       │   webterm-B     │
+#            └─────────────────┘       └─────────────────┘
+#
+# =============================================================================
+
+- name: Créer le projet GNS3 pour le lab WireGuard VPN
+  hosts: localhost
+  gather_facts: false
+  tags: [topology]
+
+  tasks:
+    # =========================================================================
+    # ÉTAPE 0: Récupérer les templates
+    # =========================================================================
+    - name: "ÉTAPE 0: Récupérer la liste des templates GNS3"
+      uri:
+        url: "{{ gns3_server }}/v2/templates"
+        method: GET
+        return_content: true
+      register: templates_response
+
+    - name: Chercher le template pfSense
+      set_fact:
+        pfsense_template: "{{ templates_response.json | selectattr('name', 'in', site_a.pfsense.template_names) | list | first | default(None) }}"
+
+    - name: Vérifier que le template pfSense existe
+      fail:
+        msg: "Template pfSense non trouvé! Templates disponibles: {{ templates_response.json | map(attribute='name') | list }}"
+      when: pfsense_template is none
+
+    - name: Chercher le template Webterm
+      set_fact:
+        webterm_template: "{{ templates_response.json | selectattr('name', 'in', site_a.webterm.template_names) | list | first | default(None) }}"
+
+    - name: Vérifier que le template Webterm existe
+      fail:
+        msg: "Template Webterm non trouvé! Templates disponibles: {{ templates_response.json | map(attribute='name') | list }}"
+      when: webterm_template is none
+
+    - name: Afficher les templates trouvés
+      debug:
+        msg:
+          - "Templates détectés:"
+          - "  - pfSense: {{ pfsense_template.name }} ({{ pfsense_template.template_id }})"
+          - "  - Webterm: {{ webterm_template.name }} ({{ webterm_template.template_id }})"
+
+    # =========================================================================
+    # ÉTAPE 1: Créer ou récupérer le projet GNS3
+    # =========================================================================
+    - name: "ÉTAPE 1a: Vérifier si le projet existe déjà"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+        return_content: true
+      register: existing_projects
+
+    - name: Chercher le projet existant
+      set_fact:
+        existing_project: "{{ existing_projects.json | selectattr('name', 'equalto', project_name) | list | first | default(None) }}"
+
+    - name: "ÉTAPE 1b: Créer le projet (si n'existe pas)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ project_name }}"
+          auto_close: false
+          auto_open: true
+          auto_start: false
+        status_code: [200, 201]
+      register: new_project
+      when: existing_project is none
+
+    - name: Sauvegarder le project_id
+      set_fact:
+        project_id: "{{ existing_project.project_id if existing_project else new_project.json.project_id }}"
+        project_status: "{{ 'existant' if existing_project else 'créé' }}"
+
+    - name: Afficher le projet
+      debug:
+        msg:
+          - "============================================"
+          - "PROJET GNS3 ({{ project_status }})"
+          - "============================================"
+          - "Nom: {{ project_name }}"
+          - "Project ID: {{ project_id }}"
+
+    # =========================================================================
+    # ÉTAPE 2: Ouvrir le projet et récupérer les nodes existants
+    # =========================================================================
+    - name: "ÉTAPE 2a: Ouvrir le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    - name: "ÉTAPE 2b: Récupérer les nodes existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: existing_nodes
+
+    - name: Créer une liste des noms de nodes existants
+      set_fact:
+        existing_node_names: "{{ existing_nodes.json | map(attribute='name') | list }}"
+
+    # =========================================================================
+    # ÉTAPE 3: Créer le node NAT et le switch WAN
+    # =========================================================================
+    - name: "ÉTAPE 3a: Créer le node NAT"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ nat.name }}"
+          node_type: "nat"
+          compute_id: "local"
+          x: "{{ nat.x }}"
+          y: "{{ nat.y }}"
+        status_code: [200, 201]
+      when: nat.name not in existing_node_names
+
+    - name: "ÉTAPE 3b: Créer le switch WAN"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ wan_switch.name }}"
+          node_type: "ethernet_switch"
+          compute_id: "local"
+          x: "{{ wan_switch.x }}"
+          y: "{{ wan_switch.y }}"
+        status_code: [200, 201]
+      when: wan_switch.name not in existing_node_names
+
+    # =========================================================================
+    # ÉTAPE 4: Créer les nodes Site A
+    # =========================================================================
+    - name: "ÉTAPE 4a: Créer pfSense-A"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ pfsense_template.template_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ site_a.pfsense.name }}"
+          x: "{{ site_a.pfsense.x }}"
+          y: "{{ site_a.pfsense.y }}"
+        status_code: [200, 201]
+      when: site_a.pfsense.name not in existing_node_names
+
+    - name: "ÉTAPE 4b: Créer webterm-A"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ webterm_template.template_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ site_a.webterm.name }}"
+          x: "{{ site_a.webterm.x }}"
+          y: "{{ site_a.webterm.y }}"
+        status_code: [200, 201]
+      when: site_a.webterm.name not in existing_node_names
+
+    # =========================================================================
+    # ÉTAPE 5: Créer les nodes Site B
+    # =========================================================================
+    - name: "ÉTAPE 5a: Créer pfSense-B"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ pfsense_template.template_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ site_b.pfsense.name }}"
+          x: "{{ site_b.pfsense.x }}"
+          y: "{{ site_b.pfsense.y }}"
+        status_code: [200, 201]
+      when: site_b.pfsense.name not in existing_node_names
+
+    - name: "ÉTAPE 5b: Créer webterm-B"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ webterm_template.template_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ site_b.webterm.name }}"
+          x: "{{ site_b.webterm.x }}"
+          y: "{{ site_b.webterm.y }}"
+        status_code: [200, 201]
+      when: site_b.webterm.name not in existing_node_names
+
+    # =========================================================================
+    # ÉTAPE 6: Récupérer tous les nodes
+    # =========================================================================
+    - name: "ÉTAPE 6: Récupérer la liste finale des nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: all_nodes
+
+    - name: Set node IDs
+      set_fact:
+        nat_node: "{{ all_nodes.json | selectattr('name', 'equalto', nat.name) | first }}"
+        wan_switch_node: "{{ all_nodes.json | selectattr('name', 'equalto', wan_switch.name) | first }}"
+        pfsense_a_node: "{{ all_nodes.json | selectattr('name', 'equalto', site_a.pfsense.name) | first }}"
+        pfsense_b_node: "{{ all_nodes.json | selectattr('name', 'equalto', site_b.pfsense.name) | first }}"
+        webterm_a_node: "{{ all_nodes.json | selectattr('name', 'equalto', site_a.webterm.name) | first }}"
+        webterm_b_node: "{{ all_nodes.json | selectattr('name', 'equalto', site_b.webterm.name) | first }}"
+
+    - name: Afficher les nodes
+      debug:
+        msg:
+          - "Nodes créés:"
+          - "  NAT1:       {{ nat_node.node_id }}"
+          - "  WAN-Switch: {{ wan_switch_node.node_id }}"
+          - "  pfSense-A:  {{ pfsense_a_node.node_id }} (console: {{ pfsense_a_node.console }})"
+          - "  pfSense-B:  {{ pfsense_b_node.node_id }} (console: {{ pfsense_b_node.console }})"
+          - "  webterm-A:  {{ webterm_a_node.node_id }} (console: {{ webterm_a_node.console }})"
+          - "  webterm-B:  {{ webterm_b_node.node_id }} (console: {{ webterm_b_node.console }})"
+
+    # =========================================================================
+    # ÉTAPE 7: Créer les liens
+    # =========================================================================
+    # NAT -> WAN-Switch (port 0)
+    - name: "ÉTAPE 7a: Connecter NAT au WAN-Switch"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ nat_node.node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ wan_switch_node.node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+
+    # WAN-Switch (port 1) -> pfSense-A WAN (em0)
+    - name: "ÉTAPE 7b: Connecter WAN-Switch à pfSense-A WAN"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ wan_switch_node.node_id }}"
+              port_number: 1
+            - adapter_number: "{{ site_a.pfsense.interfaces.wan.adapter }}"
+              node_id: "{{ pfsense_a_node.node_id }}"
+              port_number: "{{ site_a.pfsense.interfaces.wan.port }}"
+        status_code: [200, 201, 409]
+
+    # WAN-Switch (port 2) -> pfSense-B WAN (em0)
+    - name: "ÉTAPE 7c: Connecter WAN-Switch à pfSense-B WAN"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ wan_switch_node.node_id }}"
+              port_number: 2
+            - adapter_number: "{{ site_b.pfsense.interfaces.wan.adapter }}"
+              node_id: "{{ pfsense_b_node.node_id }}"
+              port_number: "{{ site_b.pfsense.interfaces.wan.port }}"
+        status_code: [200, 201, 409]
+
+    # pfSense-A LAN (em1) -> webterm-A
+    - name: "ÉTAPE 7d: Connecter pfSense-A LAN à webterm-A"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: "{{ site_a.pfsense.interfaces.lan.adapter }}"
+              node_id: "{{ pfsense_a_node.node_id }}"
+              port_number: "{{ site_a.pfsense.interfaces.lan.port }}"
+            - adapter_number: 0
+              node_id: "{{ webterm_a_node.node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+
+    # pfSense-B LAN (em1) -> webterm-B
+    - name: "ÉTAPE 7e: Connecter pfSense-B LAN à webterm-B"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: "{{ site_b.pfsense.interfaces.lan.adapter }}"
+              node_id: "{{ pfsense_b_node.node_id }}"
+              port_number: "{{ site_b.pfsense.interfaces.lan.port }}"
+            - adapter_number: 0
+              node_id: "{{ webterm_b_node.node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+
+    - name: Afficher les liens
+      debug:
+        msg:
+          - "Liens configurés:"
+          - "  - NAT1 <---> WAN-Switch"
+          - "  - WAN-Switch <---> pfSense-A (WAN)"
+          - "  - WAN-Switch <---> pfSense-B (WAN)"
+          - "  - pfSense-A (LAN) <---> webterm-A"
+          - "  - pfSense-B (LAN) <---> webterm-B"
+
+    # =========================================================================
+    # ÉTAPE 8: Démarrer tous les nodes
+    # =========================================================================
+    - name: "ÉTAPE 8: Démarrer tous les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: Attendre le démarrage
+      pause:
+        seconds: 30
+        prompt: |
+          Attente du boot des équipements (30s)...
+          Note: pfSense peut prendre 2-3 minutes pour être complètement opérationnel.
+
+    # =========================================================================
+    # ÉTAPE 9: Sauvegarder les infos
+    # =========================================================================
+    - name: "ÉTAPE 9: Sauvegarder les infos du projet"
+      copy:
+        content: |
+          # Généré automatiquement par 01_create_topology.yml
+          # Projet: {{ project_name }}
+
+          project_id: "{{ project_id }}"
+          gns3_host: "{{ gns3_host }}"
+
+          # NAT (Internet)
+          nat_node_id: "{{ nat_node.node_id }}"
+
+          # Site A
+          pfsense_a_node_id: "{{ pfsense_a_node.node_id }}"
+          pfsense_a_console: {{ pfsense_a_node.console }}
+          pfsense_a_lan_ip: "192.168.1.1"
+          webterm_a_node_id: "{{ webterm_a_node.node_id }}"
+          webterm_a_console: {{ webterm_a_node.console }}
+
+          # Site B
+          pfsense_b_node_id: "{{ pfsense_b_node.node_id }}"
+          pfsense_b_console: {{ pfsense_b_node.console }}
+          pfsense_b_lan_ip: "192.168.2.1"
+          webterm_b_node_id: "{{ webterm_b_node.node_id }}"
+          webterm_b_console: {{ webterm_b_node.console }}
+
+          # WireGuard
+          wireguard_tunnel_network: "10.10.10.0/24"
+          wireguard_port: 51820
+        dest: "{{ playbook_dir }}/../node_info.yml"
+
+    - name: Résumé
+      debug:
+        msg:
+          - "========================================"
+          - "TOPOLOGIE CRÉÉE AVEC SUCCÈS"
+          - "========================================"
+          - "Projet: {{ project_name }}"
+          - ""
+          - "SITE A (192.168.1.0/24):"
+          - "  pfSense-A - VNC port {{ pfsense_a_node.console }}"
+          - "  webterm-A - VNC port {{ webterm_a_node.console }}"
+          - "  Web GUI: https://192.168.1.1"
+          - ""
+          - "SITE B (192.168.2.0/24):"
+          - "  pfSense-B - VNC port {{ pfsense_b_node.console }}"
+          - "  webterm-B - VNC port {{ webterm_b_node.console }}"
+          - "  Web GUI: https://192.168.2.1"
+          - ""
+          - "========================================"
+          - "PROCHAINES ÉTAPES"
+          - "========================================"
+          - ""
+          - "1. Attendre le boot des pfSense (2-3 min)"
+          - ""
+          - "2. Sur chaque pfSense, DÉSACTIVER:"
+          - "   Interfaces > WAN > Block private networks"
+          - ""
+          - "3. Installer WireGuard:"
+          - "   System > Package Manager > WireGuard"
+          - ""
+          - "4. Configurer les tunnels (voir README.md)"
+          - ""
+          - "========================================"

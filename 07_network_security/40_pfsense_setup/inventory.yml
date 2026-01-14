@@ -1,0 +1,8 @@
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+  vars:
+    gns3_server: "http://192.168.144.120:80"
+    # Le project_id et node IDs sont gérés dynamiquement
+    # par 01_create_topology.yml

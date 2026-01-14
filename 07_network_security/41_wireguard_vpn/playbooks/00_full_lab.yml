@@ -1,0 +1,22 @@
+---
+# =============================================================================
+# Master Playbook - Déploiement complet du lab WireGuard VPN
+# =============================================================================
+# Usage:
+#   ansible-playbook playbooks/00_full_lab.yml
+#
+# Ce playbook déploie la topologie complète:
+#   - 1 NAT (Internet partagé)
+#   - 2 pfSense (Site A et Site B)
+#   - 2 Webterm (clients pour chaque site)
+#
+# La configuration WireGuard se fait manuellement via l'interface web pfSense.
+# =============================================================================
+
+- name: "Lab 41 - WireGuard VPN - Déploiement complet"
+  import_playbook: 01_create_topology.yml
+  tags: [topology, full]
+
+- name: "Lab 41 - Vérification des nodes"
+  import_playbook: 02_verify.yml
+  tags: [verify, full]

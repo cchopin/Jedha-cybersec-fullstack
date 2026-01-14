@@ -1,0 +1,160 @@
+# =============================================================================
+# Lab 41: WireGuard Site-to-Site VPN
+# =============================================================================
+# Ce lab configure un VPN Site-to-Site entre deux pfSense via WireGuard.
+# =============================================================================
+
+# Serveur GNS3
+gns3_server: "http://192.168.144.120:80"
+gns3_host: "192.168.144.120"
+
+# Nom du projet GNS3
+project_name: "Lab_41_WireGuard_VPN"
+
+# =============================================================================
+# TOPOLOGIE DU LAB
+# =============================================================================
+#
+#                          ┌─────────────────┐
+#                          │      NAT1       │
+#                          │   (Internet)    │
+#                          └────────┬────────┘
+#                                   │
+#                     ┌─────────────┴─────────────┐
+#                     │                           │
+#               em0 (WAN)                   em0 (WAN)
+#            ┌────────┴────────┐       ┌────────┴────────┐
+#            │   pfSense-A     │       │   pfSense-B     │
+#            │  LAN: .1.1      │◄─────►│  LAN: .2.1      │
+#            └────────┬────────┘  VPN  └────────┬────────┘
+#               em1 (LAN)                  em1 (LAN)
+#                     │                           │
+#            ┌────────┴────────┐       ┌────────┴────────┐
+#            │   webterm-A     │       │   webterm-B     │
+#            │  192.168.1.x    │       │  192.168.2.x    │
+#            └─────────────────┘       └─────────────────┘
+#
+#                  SITE A                    SITE B
+#             192.168.1.0/24            192.168.2.0/24
+#
+# =============================================================================
+
+# Configuration NAT (Internet partagé)
+nat:
+  name: "NAT1"
+  x: 0
+  y: -400
+
+# Switch pour connecter les deux pfSense au NAT (simule Internet)
+wan_switch:
+  name: "WAN-Switch"
+  x: 0
+  y: -250
+
+# =============================================================================
+# SITE A
+# =============================================================================
+site_a:
+  pfsense:
+    name: "pfSense-A"
+    x: -200
+    y: -100
+    template_names:
+      - "Pfsense"
+      - "pfSense"
+      - "pfsense"
+    interfaces:
+      wan:
+        adapter: 0
+        port: 0
+      lan:
+        adapter: 1
+        port: 0
+        ip: "192.168.1.1"
+        netmask: "24"
+        dhcp_start: "192.168.1.100"
+        dhcp_end: "192.168.1.199"
+
+  webterm:
+    name: "webterm-A"
+    x: -200
+    y: 150
+    template_names:
+      - "webterm"
+      - "Webterm"
+      - "Firefox"
+
+  network:
+    subnet: "192.168.1.0/24"
+    gateway: "192.168.1.1"
+
+# =============================================================================
+# SITE B
+# =============================================================================
+site_b:
+  pfsense:
+    name: "pfSense-B"
+    x: 200
+    y: -100
+    template_names:
+      - "Pfsense"
+      - "pfSense"
+      - "pfsense"
+    interfaces:
+      wan:
+        adapter: 0
+        port: 0
+      lan:
+        adapter: 1
+        port: 0
+        ip: "192.168.2.1"
+        netmask: "24"
+        dhcp_start: "192.168.2.100"
+        dhcp_end: "192.168.2.199"
+
+  webterm:
+    name: "webterm-B"
+    x: 200
+    y: 150
+    template_names:
+      - "webterm"
+      - "Webterm"
+      - "Firefox"
+
+  network:
+    subnet: "192.168.2.0/24"
+    gateway: "192.168.2.1"
+
+# =============================================================================
+# CONFIGURATION WIREGUARD
+# =============================================================================
+wireguard:
+  tunnel_network: "10.10.10.0/24"
+  listen_port: 51820
+
+  site_a:
+    tunnel_ip: "10.10.10.1/24"
+
+  site_b:
+    tunnel_ip: "10.10.10.2/24"
+
+# =============================================================================
+# CREDENTIALS PFSENSE
+# =============================================================================
+pfsense_credentials:
+  username: "admin"
+  password: "pfsense"
+
+# =============================================================================
+# NOTES IMPORTANTES
+# =============================================================================
+#
+# 1. Après déploiement, attendre 2-3 minutes pour le boot des pfSense
+# 2. Accéder aux interfaces web:
+#    - pfSense-A: https://192.168.1.1 (depuis webterm-A)
+#    - pfSense-B: https://192.168.2.1 (depuis webterm-B)
+# 3. IMPORTANT: Décocher "Block private networks" sur les interfaces WAN
+# 4. Installer le package WireGuard via System > Package Manager
+# 5. Configurer les tunnels et peers manuellement
+#
+# =============================================================================

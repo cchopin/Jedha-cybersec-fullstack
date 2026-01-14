@@ -1,0 +1,125 @@
+# =============================================================================
+# Lab 40: pfSense Setup - Firewall/Router Configuration
+# =============================================================================
+# Ce lab démontre la configuration d'un firewall/routeur pfSense.
+# Le client Webterm accède à l'interface web de pfSense via le LAN.
+# =============================================================================
+
+# Serveur GNS3
+gns3_server: "http://192.168.144.120:80"
+gns3_host: "192.168.144.120"
+
+# Nom du projet GNS3
+project_name: "Lab_40_pfSense_Setup"
+
+# =============================================================================
+# TOPOLOGIE DU LAB
+# =============================================================================
+#
+#                     ┌───────────────┐
+#                     │     NAT1      │  ← Accès Internet
+#                     │  (Internet)   │
+#                     └───────┬───────┘
+#                             │ nat0
+#                             │
+#                       em0 (WAN)
+#                     ┌───────┴───────┐
+#                     │   pfSense-1   │  ← Firewall/Routeur
+#                     │ WAN: DHCP     │
+#                     │ LAN: .1.1     │
+#                     └───────┬───────┘
+#                       em1 (LAN)
+#                             │
+#                             │ eth0
+#                     ┌───────┴───────┐
+#                     │   webterm-1   │  ← Client Docker Firefox
+#                     │ 192.168.1.x   │
+#                     └───────────────┘
+#
+# =============================================================================
+
+# Configuration pfSense
+pfsense:
+  name: "pfSense-1"
+  x: 0
+  y: 0
+  # Template name - peut varier selon l'installation GNS3
+  # Noms possibles: "pfSense", "pfSense 2.7", "pfsense"
+  template_names:
+    - "Pfsense"
+    - "pfSense"
+    - "pfSense 2.7"
+    - "pfsense"
+    - "pfSense CE"
+  interfaces:
+    wan:
+      name: "em0"
+      adapter: 0
+      port: 0
+      ip: "dhcp"
+    lan:
+      name: "em1"
+      adapter: 1
+      port: 0
+      ip: "192.168.1.1"
+      netmask: "24"
+      dhcp_start: "192.168.1.100"
+      dhcp_end: "192.168.1.199"
+
+# Configuration Webterm (client)
+webterm:
+  name: "webterm-1"
+  x: 0
+  y: 200
+  # Template name - peut varier selon l'installation GNS3
+  template_names:
+    - "webterm"
+    - "Firefox"
+    - "firefox"
+    - "Webterm"
+  ip: "dhcp"  # Obtiendra une IP via DHCP de pfSense
+
+# Configuration NAT (Internet)
+nat:
+  name: "NAT1"
+  x: 0
+  y: -200
+
+# Configuration réseau LAN
+network:
+  lan:
+    subnet: "192.168.1.0/24"
+    gateway: "192.168.1.1"
+    netmask: "255.255.255.0"
+    dhcp_range: "192.168.1.100-192.168.1.199"
+
+# =============================================================================
+# CONFIGURATION PFSENSE PAR DÉFAUT
+# =============================================================================
+#
+# Après le premier boot, pfSense a la configuration suivante:
+#   - WAN (em0): DHCP
+#   - LAN (em1): 192.168.1.1/24
+#   - DHCP Server LAN: Activé (192.168.1.100-199)
+#   - Web GUI: https://192.168.1.1 (admin/pfsense)
+#   - Firewall: Block WAN, Allow LAN
+#
+# =============================================================================
+
+# Credentials pfSense par défaut
+pfsense_credentials:
+  username: "admin"
+  password: "pfsense"
+  web_url: "https://192.168.1.1"
+
+# =============================================================================
+# NOTES IMPORTANTES
+# =============================================================================
+#
+# 1. pfSense peut prendre 2-3 minutes pour démarrer complètement
+# 2. L'interface WAN doit être em0, LAN doit être em1
+# 3. Si les interfaces ne sont pas assignées, utiliser l'option 1 du menu
+# 4. Le certificat SSL est auto-signé (accepter l'exception)
+# 5. Pour HTTP au lieu de HTTPS: option 2 du menu, répondre 'y' à la fin
+#
+# =============================================================================
