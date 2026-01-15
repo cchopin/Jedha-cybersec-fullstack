@@ -17,16 +17,16 @@ L'optimisation des performances réseau vise à maximiser l'efficacité, la fiab
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    SANS OPTIMISATION                                     │
+│                    SANS OPTIMISATION                                    │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
 │   VoIP ──────┐                                                          │
 │              │                                                          │
-│   Video ─────┼────> [  FIFO Queue  ] ────> Sortie                      │
+│   Video ─────┼────> [  FIFO Queue  ] ────> Sortie                       │
 │              │       Tout mélangé !                                     │
 │   Backup ────┘                                                          │
 │                                                                         │
-│   Résultat: Appels VoIP saccadés pendant les backups                   │
+│   Résultat: Appels VoIP saccadés pendant les backups                    │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 
@@ -34,13 +34,13 @@ L'optimisation des performances réseau vise à maximiser l'efficacité, la fiab
 │                    AVEC OPTIMISATION (QoS)                              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│   VoIP ──────> [Priority Queue] ─────────────────────> Sortie          │
+│   VoIP ──────> [Priority Queue] ─────────────────────> Sortie           │
 │                                                          │              │
 │   Video ─────> [Queue Normale ] ────────────────────────>│              │
 │                                                          │              │
 │   Backup ────> [Queue Basse   ] ────────────────────────>│              │
 │                                                                         │
-│   Résultat: VoIP toujours prioritaire, backups en arrière-plan         │
+│   Résultat: VoIP toujours prioritaire, backups en arrière-plan          │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -75,13 +75,13 @@ DSCP est un champ dans l'en-tête IP utilisé pour classifier et gérer le trafi
 │                     EN-TÊTE IP (IPv4)                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   Version │ IHL │   DSCP   │ ECN │  Total Length │ ...         │
-│     4     │  5  │ 6 bits   │ 2b  │               │             │
-│           │     │          │     │               │             │
-│           │     │    ▲     │     │               │             │
-│           │     │    │     │     │               │             │
-│           │     │ Champ de │     │               │             │
-│           │     │ priorité │     │               │             │
+│   Version │ IHL │   DSCP   │ ECN │  Total Length │ ...          │
+│     4     │  5  │ 6 bits   │ 2b  │               │              │
+│           │     │          │     │               │              │
+│           │     │    ▲     │     │               │              │
+│           │     │    │     │     │               │              │
+│           │     │ Champ de │     │               │              │
+│           │     │ priorité │     │               │              │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -108,14 +108,14 @@ CoS opère à la Couche 2 (Liaison de données), couramment utilisé dans le tag
 │                    TRAME ETHERNET 802.1Q                        │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   Dest MAC │ Src MAC │ 802.1Q Tag │ EtherType │ Payload │ FCS  │
-│            │         │            │           │         │      │
-│            │         │     ▼      │           │         │      │
-│            │         │ ┌────────┐ │           │         │      │
-│            │         │ │PRI│CFI│ │           │         │      │
-│            │         │ │3b │1b │ │           │         │      │
-│            │         │ │CoS│   │ │           │         │      │
-│            │         │ └────────┘ │           │         │      │
+│   Dest MAC │ Src MAC │ 802.1Q Tag │ EtherType │ Payload │ FCS   │
+│            │         │            │           │         │       │
+│            │         │     ▼      │           │         │       │
+│            │         │ ┌────────┐ │           │         │       │
+│            │         │ │PRI│CFI │ │           │         │       │
+│            │         │ │3b │1b  │ │           │         │       │
+│            │         │ │CoS│    │ │           │         │       │
+│            │         │ └────────┘ │           │         │       │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
@@ -225,14 +225,14 @@ WRED est une amélioration par rapport au Tail Drop. Il gère proactivement le b
 │                                                                 │
 │   Queue Length                                                  │
 │        │                                                        │
-│   Max ─┼─────────────────────────────────────── Full Drop      │
+│   Max ─┼─────────────────────────────────────── Full Drop       │
 │        │                              xxxxxxxxx                 │
 │        │                        xxxxxx                          │
 │   High─┼───────────────────xxxxx                                │
 │        │              xxxxx   Drop progressif                   │
 │   Low ─┼─────────xxxxx        (aléatoire)                       │
 │        │    xxxxx                                               │
-│   Min ─┼xxxx─────────────────────────────────── Pas de drop    │
+│   Min ─┼xxxx─────────────────────────────────── Pas de drop     │
 │        │                                                        │
 │        └────────────────────────────────────────────>           │
 │                    Probabilité de drop                          │
@@ -294,20 +294,20 @@ Les réseaux étendus (WAN) posent des défis uniques dus à la haute latence, l
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    OPTIMISATION WAN                                      │
+│                    OPTIMISATION WAN                                     │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
 │   Site A                                              Site B            │
-│   ┌─────┐    ┌───────────┐        ┌───────────┐    ┌─────┐            │
-│   │ LAN │───>│ WAN       │───────>│ WAN       │───>│ LAN │            │
-│   │     │    │ Optimizer │  WAN   │ Optimizer │    │     │            │
-│   └─────┘    └───────────┘        └───────────┘    └─────┘            │
-│                    │                    │                              │
-│              ┌─────┴─────┐        ┌─────┴─────┐                        │
-│              │Compression│        │Décompres. │                        │
-│              │ Cache     │        │ Cache     │                        │
-│              │ Déduplic. │        │ Déduplic. │                        │
-│              └───────────┘        └───────────┘                        │
+│   ┌─────┐    ┌───────────┐        ┌───────────┐    ┌─────┐              │
+│   │ LAN │───>│ WAN       │───────>│ WAN       │───>│ LAN │              │
+│   │     │    │ Optimizer │  WAN   │ Optimizer │    │     │              │
+│   └─────┘    └───────────┘        └───────────┘    └─────┘              │
+│                    │                    │                               │
+│              ┌─────┴─────┐        ┌─────┴─────┐                         │
+│              │Compression│        │Décompres. │                         │
+│              │ Cache     │        │ Cache     │                         │
+│              │ Déduplic. │        │ Déduplic. │                         │
+│              └───────────┘        └───────────┘                         │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -445,11 +445,11 @@ ARCHITECTURE QoS COMPLÈTE :
     ─────────────         ────────            ───────            ──────────
 
     Voix ─────────────> DSCP EF ──────> Priority Queue ──────┐
-                                                              │
+                                                             │
     Vidéo ────────────> DSCP AF41 ───> Queue Haute ──────────┼──> Sortie
-                                                              │
+                                                             │
     Web ──────────────> DSCP AF21 ───> Queue Moyenne ────────┤
-                                                              │
+                                                             │
     Backup ───────────> DSCP BE ─────> Queue Basse ──────────┘
 
 
@@ -468,11 +468,11 @@ OPTIMISATION WAN - FLUX :
     Données originales                    Données optimisées
     ──────────────────                    ──────────────────
 
-    ┌────────────────┐                    ┌────────────────┐
-    │ 1 GB de données│                    │ Compressé: 400MB│
+    ┌────────────────┐                    ┌──────────────────┐
+    │ 1 GB de données│                    │ Compressé: 400MB │
     │                │───> Compression ───>│ Dédupliqué: 50MB│
-    │                │                    │ Envoyé: 50 MB   │
-    └────────────────┘                    └────────────────┘
+    │                │                    │ Envoyé: 50 MB    │
+    └────────────────┘                    └──────────────────┘
 
     Réduction: 95% de bande passante économisée !
 
