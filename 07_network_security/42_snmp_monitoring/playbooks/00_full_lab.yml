@@ -1,0 +1,20 @@
+---
+# =============================================================================
+# Playbook principal - Deploiement complet du lab SNMP Monitoring
+# =============================================================================
+# Ce playbook execute toutes les etapes pour deployer le lab:
+#   1. Creation de la topologie GNS3
+#   2. Verification des nodes
+#
+# Usage:
+#   ansible-playbook playbooks/00_full_lab.yml
+#
+# =============================================================================
+
+- name: "Lab 42: SNMP Monitoring - Deploiement complet"
+  import_playbook: 01_create_topology.yml
+  tags: [topology]
+
+- name: "Lab 42: SNMP Monitoring - Verification"
+  import_playbook: 02_verify.yml
+  tags: [verify]

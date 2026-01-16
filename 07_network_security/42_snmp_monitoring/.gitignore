@@ -1,0 +1,5 @@
+# Fichiers générés automatiquement
+node_info.yml
+
+# Fichiers temporaires Ansible
+*.retry

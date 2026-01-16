@@ -1,0 +1,423 @@
+---
+# =============================================================================
+# Playbook pour creer la topologie du lab SNMP Monitoring
+# =============================================================================
+# Topologie creee:
+#
+#                     ┌───────────────┐
+#                     │     NAT1      │  <- Acces Internet
+#                     └───────┬───────┘
+#                             │
+#                     ┌───────┴───────┐
+#                     │    Switch1    │
+#                     └───┬───────┬───┘
+#                         │       │
+#              ┌──────────┴──┐ ┌──┴──────────┐
+#              │ SNMP-Agent  │ │ SNMP-Manager│
+#              │  10.0.0.10  │ │  10.0.0.20  │
+#              └─────────────┘ └─────────────┘
+#
+# =============================================================================
+
+- name: Creer le projet GNS3 pour le lab SNMP Monitoring
+  hosts: localhost
+  gather_facts: false
+  tags: [topology]
+
+  tasks:
+    # =========================================================================
+    # ETAPE 0: Recuperer les templates dynamiquement
+    # =========================================================================
+    - name: "ETAPE 0: Recuperer la liste des templates GNS3"
+      uri:
+        url: "{{ gns3_server }}/v2/templates"
+        method: GET
+        return_content: true
+      register: templates_response
+
+    - name: Afficher les templates disponibles
+      debug:
+        msg: "Templates disponibles: {{ templates_response.json | map(attribute='name') | list }}"
+
+    # Chercher le template Debian
+    - name: Chercher le template Debian
+      set_fact:
+        debian_template: "{{ templates_response.json | selectattr('name', 'in', snmp_agent.template_names) | list | first | default(None) }}"
+
+    - name: Verifier que le template Debian existe
+      fail:
+        msg: |
+          Template Debian non trouve!
+          Noms recherches: {{ snmp_agent.template_names }}
+          Templates disponibles: {{ templates_response.json | map(attribute='name') | list }}
+      when: debian_template is none
+
+    - name: Extraire l'ID du template Debian
+      set_fact:
+        debian_template_id: "{{ debian_template.template_id }}"
+
+    - name: Afficher le template trouve
+      debug:
+        msg:
+          - "Template detecte:"
+          - "  - Debian: {{ debian_template.name }} ({{ debian_template_id }})"
+
+    # =========================================================================
+    # ETAPE 1: Creer ou recuperer le projet GNS3 (idempotent)
+    # =========================================================================
+    - name: "ETAPE 1a: Verifier si le projet existe deja"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+        return_content: true
+      register: existing_projects
+
+    - name: Chercher le projet existant
+      set_fact:
+        existing_project: "{{ existing_projects.json | selectattr('name', 'equalto', project_name) | list | first | default(None) }}"
+
+    - name: "ETAPE 1b: Creer le projet (si n'existe pas)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ project_name }}"
+          auto_close: false
+          auto_open: true
+          auto_start: false
+        status_code: [200, 201]
+      register: new_project
+      when: existing_project is none
+
+    - name: Sauvegarder le project_id
+      set_fact:
+        project_id: "{{ existing_project.project_id if existing_project else new_project.json.project_id }}"
+        project_status: "{{ 'existant' if existing_project else 'cree' }}"
+
+    - name: Afficher le projet
+      debug:
+        msg:
+          - "============================================"
+          - "PROJET GNS3 ({{ project_status }})"
+          - "============================================"
+          - "Nom: {{ project_name }}"
+          - "Project ID: {{ project_id }}"
+          - "============================================"
+
+    # =========================================================================
+    # ETAPE 2: Ouvrir le projet et recuperer les nodes existants
+    # =========================================================================
+    - name: "ETAPE 2a: Ouvrir le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    - name: "ETAPE 2b: Recuperer les nodes existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: existing_nodes
+
+    - name: Creer une liste des noms de nodes existants
+      set_fact:
+        existing_node_names: "{{ existing_nodes.json | map(attribute='name') | list }}"
+
+    - name: Afficher les nodes existants
+      debug:
+        msg: "Nodes existants: {{ existing_node_names }}"
+
+    # =========================================================================
+    # ETAPE 3: Creer le node NAT
+    # =========================================================================
+    - name: "ETAPE 3: Creer le node NAT"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ nat.name }}"
+          node_type: "nat"
+          compute_id: "local"
+          x: "{{ nat.x }}"
+          y: "{{ nat.y }}"
+        status_code: [200, 201]
+      when: nat.name not in existing_node_names
+      register: nat_created
+
+    # =========================================================================
+    # ETAPE 4: Creer le Switch Ethernet
+    # =========================================================================
+    - name: "ETAPE 4: Creer le Switch interne"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ switch.name }}"
+          node_type: "ethernet_switch"
+          compute_id: "local"
+          x: "{{ switch.x }}"
+          y: "{{ switch.y }}"
+          properties:
+            ports_mapping:
+              - name: "Ethernet0"
+                port_number: 0
+                type: "access"
+                vlan: 1
+              - name: "Ethernet1"
+                port_number: 1
+                type: "access"
+                vlan: 1
+              - name: "Ethernet2"
+                port_number: 2
+                type: "access"
+                vlan: 1
+              - name: "Ethernet3"
+                port_number: 3
+                type: "access"
+                vlan: 1
+        status_code: [200, 201]
+      when: switch.name not in existing_node_names
+      register: switch_created
+
+    # =========================================================================
+    # ETAPE 5: Creer le node SNMP Agent (Debian)
+    # =========================================================================
+    - name: "ETAPE 5: Creer le node SNMP Agent"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ debian_template_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ snmp_agent.name }}"
+          x: "{{ snmp_agent.x }}"
+          y: "{{ snmp_agent.y }}"
+        status_code: [200, 201]
+      when: snmp_agent.name not in existing_node_names
+      register: agent_created
+
+    # =========================================================================
+    # ETAPE 6: Creer le node SNMP Manager (Debian)
+    # =========================================================================
+    - name: "ETAPE 6: Creer le node SNMP Manager"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ debian_template_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ snmp_manager.name }}"
+          x: "{{ snmp_manager.x }}"
+          y: "{{ snmp_manager.y }}"
+        status_code: [200, 201]
+      when: snmp_manager.name not in existing_node_names
+      register: manager_created
+
+    # =========================================================================
+    # ETAPE 7: Recuperer tous les nodes (existants + nouveaux)
+    # =========================================================================
+    - name: "ETAPE 7: Recuperer la liste finale des nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: all_nodes
+
+    - name: Set node IDs - NAT
+      set_fact:
+        nat_node_id: "{{ (all_nodes.json | selectattr('name', 'equalto', nat.name) | first).node_id }}"
+
+    - name: Set node IDs - Switch
+      set_fact:
+        switch_node_id: "{{ (all_nodes.json | selectattr('name', 'equalto', switch.name) | first).node_id }}"
+
+    - name: Set node IDs - SNMP Agent
+      set_fact:
+        agent_node_id: "{{ (all_nodes.json | selectattr('name', 'equalto', snmp_agent.name) | first).node_id }}"
+        agent_console_port: "{{ (all_nodes.json | selectattr('name', 'equalto', snmp_agent.name) | first).console }}"
+        agent_console_type: "{{ (all_nodes.json | selectattr('name', 'equalto', snmp_agent.name) | first).console_type }}"
+
+    - name: Set node IDs - SNMP Manager
+      set_fact:
+        manager_node_id: "{{ (all_nodes.json | selectattr('name', 'equalto', snmp_manager.name) | first).node_id }}"
+        manager_console_port: "{{ (all_nodes.json | selectattr('name', 'equalto', snmp_manager.name) | first).console }}"
+        manager_console_type: "{{ (all_nodes.json | selectattr('name', 'equalto', snmp_manager.name) | first).console_type }}"
+
+    - name: Afficher les nodes
+      debug:
+        msg:
+          - "Nodes dans le projet:"
+          - "  NAT1:         {{ nat_node_id }}"
+          - "  Switch1:      {{ switch_node_id }}"
+          - "  SNMP-Agent:   {{ agent_node_id }} (console: {{ agent_console_port }}, type: {{ agent_console_type }})"
+          - "  SNMP-Manager: {{ manager_node_id }} (console: {{ manager_console_port }}, type: {{ manager_console_type }})"
+
+    # =========================================================================
+    # ETAPE 8: Creer les liens
+    # =========================================================================
+    - name: "ETAPE 8: Recuperer les liens existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: GET
+        return_content: true
+      register: existing_links
+
+    - name: Compter les liens existants
+      set_fact:
+        links_count: "{{ existing_links.json | length }}"
+
+    # NAT -> Switch (port 0)
+    - name: "ETAPE 8a: Connecter NAT au Switch"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ nat_node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ switch_node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+
+    # SNMP Agent (adapter 0 = ens4) -> Switch (port 1)
+    - name: "ETAPE 8b: Connecter SNMP Agent au Switch (ens4 pour NAT/DHCP)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: "{{ snmp_agent.interfaces.nat.adapter }}"
+              node_id: "{{ agent_node_id }}"
+              port_number: "{{ snmp_agent.interfaces.nat.port }}"
+            - adapter_number: 0
+              node_id: "{{ switch_node_id }}"
+              port_number: 1
+        status_code: [200, 201, 409]
+
+    # SNMP Manager (adapter 0 = ens4) -> Switch (port 2)
+    - name: "ETAPE 8c: Connecter SNMP Manager au Switch (ens4 pour NAT/DHCP)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: "{{ snmp_manager.interfaces.nat.adapter }}"
+              node_id: "{{ manager_node_id }}"
+              port_number: "{{ snmp_manager.interfaces.nat.port }}"
+            - adapter_number: 0
+              node_id: "{{ switch_node_id }}"
+              port_number: 2
+        status_code: [200, 201, 409]
+
+    - name: Afficher les liens
+      debug:
+        msg:
+          - "Liens configures:"
+          - "  - NAT1 <---> Switch1 (port 0)"
+          - "  - SNMP-Agent (ens4) <---> Switch1 (port 1)"
+          - "  - SNMP-Manager (ens4) <---> Switch1 (port 2)"
+
+    # =========================================================================
+    # ETAPE 9: Demarrer tous les nodes
+    # =========================================================================
+    - name: "ETAPE 9: Demarrer tous les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: Attendre que les equipements demarrent
+      pause:
+        seconds: 30
+        prompt: |
+          Attente du boot des VMs Debian (30s)...
+          Note: Les VMs peuvent prendre 1-2 minutes pour etre completement operationnelles.
+
+    # =========================================================================
+    # ETAPE 10: Sauvegarder les infos
+    # =========================================================================
+    - name: "ETAPE 10: Sauvegarder les infos du projet"
+      copy:
+        content: |
+          # Genere automatiquement par 01_create_topology.yml
+          # Projet: {{ project_name }}
+          # Date: {{ ansible_date_time.iso8601 | default('N/A') }}
+
+          project_id: "{{ project_id }}"
+          gns3_host: "{{ gns3_host }}"
+
+          # NAT (Internet)
+          nat_node_id: "{{ nat_node_id }}"
+
+          # Switch interne
+          switch_node_id: "{{ switch_node_id }}"
+
+          # SNMP Agent (Debian)
+          agent_node_id: "{{ agent_node_id }}"
+          agent_console_port: {{ agent_console_port }}
+          agent_console_type: "{{ agent_console_type }}"
+          agent_ip: "{{ network.agent.ip }}"
+
+          # SNMP Manager (Debian)
+          manager_node_id: "{{ manager_node_id }}"
+          manager_console_port: {{ manager_console_port }}
+          manager_console_type: "{{ manager_console_type }}"
+          manager_ip: "{{ network.manager.ip }}"
+
+          # Configuration reseau
+          internal_network: "{{ network.internal.subnet }}"
+
+          # Credentials Debian
+          debian_username: "{{ debian_credentials.username }}"
+          debian_password: "{{ debian_credentials.password }}"
+
+          # Configuration SNMP
+          snmp_community: "{{ snmp.v2c.community }}"
+          snmp_port: 161
+        dest: "{{ playbook_dir }}/../node_info.yml"
+
+    - name: Resume
+      debug:
+        msg:
+          - "========================================"
+          - "TOPOLOGIE CREEE AVEC SUCCES"
+          - "========================================"
+          - "Projet: {{ project_name }}"
+          - "Project ID: {{ project_id }}"
+          - ""
+          - "NODES:"
+          - "  NAT1         - Acces Internet"
+          - "  Switch1      - Switch interne"
+          - "  SNMP-Agent   - Console (port {{ agent_console_port }})"
+          - "  SNMP-Manager - Console (port {{ manager_console_port }})"
+          - ""
+          - "TOPOLOGIE:"
+          - "        NAT1 (Internet)"
+          - "          |"
+          - "       Switch1"
+          - "        /    \\"
+          - "       /      \\"
+          - "  SNMP-Agent  SNMP-Manager"
+          - "  10.0.0.10    10.0.0.20"
+          - ""
+          - "========================================"
+          - "PROCHAINES ETAPES"
+          - "========================================"
+          - ""
+          - "1. Se connecter aux VMs via GNS3 GUI"
+          - "   Clic droit -> Console"
+          - ""
+          - "2. Credentials: debian / debian"
+          - ""
+          - "3. Configurer le reseau (voir README.md)"
+          - ""
+          - "4. Installer et configurer SNMP"
+          - ""
+          - "========================================"
