@@ -1,0 +1,164 @@
+# =============================================================================
+# Lab 42: SNMP Monitoring - Configuration des variables
+# =============================================================================
+# Ce lab permet de configurer et tester le monitoring SNMP entre deux
+# machines Linux Debian 12.6 dans GNS3.
+# =============================================================================
+
+# Serveur GNS3
+gns3_server: "http://192.168.139.188:80"
+gns3_host: "192.168.139.188"
+
+# Nom du projet GNS3
+project_name: "Lab_42_SNMP_Monitoring"
+
+# =============================================================================
+# TOPOLOGIE DU LAB
+# =============================================================================
+#
+#                     ┌───────────────┐
+#                     │     NAT1      │  <- Acces Internet (pour apt install)
+#                     │  (Internet)   │
+#                     └───────┬───────┘
+#                             │ nat0
+#                             │
+#                     ┌───────┴───────┐
+#                     │    Switch1    │  <- Switch interne
+#                     └───┬───────┬───┘
+#                         │       │
+#                    ens4 │       │ ens4
+#                         │       │
+#              ┌──────────┴──┐ ┌──┴──────────┐
+#              │ SNMP-Agent  │ │ SNMP-Manager│
+#              │   (snmpd)   │ │ (snmpwalk)  │
+#              │ 192.168.1.10│ │192.168.1.20 │
+#              └─────────────┘ └─────────────┘
+#                 Debian 12.6    Debian 12.6
+#
+# Note: Les VMs utilisent une seule interface (ens4) configuree en IP statique
+#       Le NAT fournit l'acces Internet via le switch
+# =============================================================================
+
+# Configuration du Switch interne
+switch:
+  name: "Switch1"
+  x: 0
+  y: -100
+
+# Configuration NAT (Internet) - pour installer les paquets
+nat:
+  name: "NAT1"
+  x: 0
+  y: -250
+
+# Configuration de l'agent SNMP (machine qui expose les metriques)
+snmp_agent:
+  name: "SNMP-Agent"
+  x: -150
+  y: 100
+  # Template name - peut varier selon l'installation GNS3
+  template_names:
+    - "Debian 12.6"
+    - "Debian"
+    - "debian"
+    - "Debian 12"
+    - "debian-12"
+  # Configuration reseau
+  interfaces:
+    # Interface pour le NAT (acces internet)
+    nat:
+      name: "ens4"
+      adapter: 0
+      port: 0
+      ip: "dhcp"
+    # Interface pour le reseau interne
+    internal:
+      name: "ens5"
+      adapter: 1
+      port: 0
+      ip: "10.0.0.10"
+      netmask: "24"
+
+# Configuration du manager SNMP (machine qui interroge)
+snmp_manager:
+  name: "SNMP-Manager"
+  x: 150
+  y: 100
+  # Template name - peut varier selon l'installation GNS3
+  template_names:
+    - "Debian 12.6"
+    - "Debian"
+    - "debian"
+    - "Debian 12"
+    - "debian-12"
+  # Configuration reseau
+  interfaces:
+    # Interface pour le NAT (acces internet)
+    nat:
+      name: "ens4"
+      adapter: 0
+      port: 0
+      ip: "dhcp"
+    # Interface pour le reseau interne
+    internal:
+      name: "ens5"
+      adapter: 1
+      port: 0
+      ip: "10.0.0.20"
+      netmask: "24"
+
+# =============================================================================
+# CONFIGURATION RESEAU
+# =============================================================================
+# Les VMs utilisent le meme reseau que le NAT (192.168.122.0/24)
+# Les IPs statiques sont dans ce range pour permettre l'acces Internet
+# =============================================================================
+
+network:
+  internal:
+    subnet: "192.168.122.0/24"
+    netmask: "255.255.255.0"
+    gateway: "192.168.122.1"
+  agent:
+    ip: "192.168.122.10"
+  manager:
+    ip: "192.168.122.20"
+
+# =============================================================================
+# CONFIGURATION SNMP
+# =============================================================================
+
+snmp:
+  # Configuration SNMPv2c
+  v2c:
+    community: "public"           # Communaute en lecture seule
+    community_rw: "private"       # Communaute en lecture/ecriture
+
+  # Configuration SNMPv3 (pour le bonus)
+  v3:
+    user: "snmpuser"
+    auth_protocol: "SHA"          # MD5 ou SHA
+    auth_password: "authpass123"  # Minimum 8 caracteres
+    priv_protocol: "AES"          # DES ou AES
+    priv_password: "privpass123"  # Minimum 8 caracteres
+    security_level: "authPriv"    # noAuthNoPriv, authNoPriv, ou authPriv
+
+# =============================================================================
+# CREDENTIALS DEBIAN PAR DEFAUT
+# =============================================================================
+
+debian_credentials:
+  username: "debian"
+  password: "debian"
+
+# =============================================================================
+# NOTES IMPORTANTES
+# =============================================================================
+#
+# 1. Les VMs Debian prennent environ 1-2 minutes pour demarrer
+# 2. Configurer le DHCP sur ens4 pour l'acces Internet (voir README)
+# 3. Configurer l'IP statique sur ens5 pour le reseau interne
+# 4. Installer snmpd sur l'agent et snmp/snmpwalk sur le manager
+# 5. Le port SNMP par defaut est 161/UDP
+#
+# =============================================================================
