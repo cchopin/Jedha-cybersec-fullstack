@@ -1,0 +1,163 @@
+# =============================================================================
+# Lab 43: SNMP Enumeration - Configuration des variables
+# =============================================================================
+# Ce lab permet de pratiquer l'enumeration SNMP dans un contexte red team.
+# Une machine Kali (attaquant) enumere une cible SNMP mal configuree.
+# =============================================================================
+
+# Serveur GNS3
+gns3_server: "http://192.168.139.188:80"
+gns3_host: "192.168.139.188"
+
+# Nom du projet GNS3
+project_name: "Lab_43_SNMP_Enumeration"
+
+# =============================================================================
+# TOPOLOGIE DU LAB
+# =============================================================================
+#
+#                     ┌───────────────┐
+#                     │     NAT1      │  <- Acces Internet (pour apt install)
+#                     │   (Internet)  │
+#                     └───────┬───────┘
+#                             │ nat0
+#                             │
+#                     ┌───────┴───────┐
+#                     │    Switch1    │  <- Switch interne
+#                     └───┬───────┬───┘
+#                         │       │
+#                    eth0 │       │ ens4
+#                         │       │
+#              ┌──────────┴──┐ ┌──┴──────────┐
+#              │    Kali     │ │   Target    │
+#              │  (Attacker) │ │ (SNMP-vuln) │
+#              │    DHCP     │ │ 10.0.0.100  │
+#              └─────────────┘ └─────────────┘
+#                Kali Linux      Debian 12.6
+#               (Enumeration)   (Misconfigured)
+#
+# =============================================================================
+
+# Configuration du Switch interne
+switch:
+  name: "Switch1"
+  x: 0
+  y: -100
+
+# Configuration NAT (Internet) - pour installer les paquets
+nat:
+  name: "NAT1"
+  x: 0
+  y: -250
+
+# Configuration de la machine Kali (attaquant)
+kali:
+  name: "Kali"
+  x: -150
+  y: 100
+  # Template names - Docker Kali dans GNS3
+  template_names:
+    - "kalilinux-kali-rolling"
+    - "Kali"
+    - "kali"
+    - "Kali Linux"
+    - "kali-linux"
+    - "kalilinux"
+  # Configuration reseau
+  interfaces:
+    # Interface pour le reseau interne (vers la cible)
+    internal:
+      name: "eth0"
+      adapter: 0
+      port: 0
+
+# Configuration de la cible SNMP (machine vulnerable)
+target:
+  name: "Target"
+  x: 150
+  y: 100
+  # Template name - Debian 12.6
+  template_names:
+    - "Debian 12.6"
+    - "Debian"
+    - "debian"
+    - "Debian 12"
+    - "debian-12"
+  # Configuration reseau
+  interfaces:
+    # Interface pour le reseau interne
+    internal:
+      name: "ens4"
+      adapter: 0
+      port: 0
+      ip: "10.0.0.100"
+      netmask: "24"
+
+# =============================================================================
+# CONFIGURATION RESEAU
+# =============================================================================
+
+network:
+  internal:
+    subnet: "10.0.0.0/24"
+    netmask: "255.255.255.0"
+    gateway: "10.0.0.1"
+  target:
+    ip: "10.0.0.100"
+  # Kali obtient son IP via DHCP du NAT
+  nat:
+    subnet: "192.168.122.0/24"
+    gateway: "192.168.122.1"
+
+# =============================================================================
+# CONFIGURATION SNMP (cible mal configuree intentionnellement)
+# =============================================================================
+
+snmp:
+  # Version SNMPv2c avec community par defaut
+  version: "2c"
+  community_ro: "public"      # Lecture seule - VULNERABLE
+  community_rw: "private"     # Lecture/ecriture - TRES VULNERABLE
+  port: 161
+
+  # Configuration de l'agent SNMP (volontairement permissive)
+  agent_config:
+    # Ecoute sur toutes les interfaces (pas seulement localhost)
+    listen_address: "0.0.0.0"
+    # Informations systeme exposees
+    sys_location: "Server Room - Rack 42"
+    sys_contact: "admin@vulnerable-corp.local"
+    # Acces complet a l'arbre MIB (pas de restriction de vue)
+    view_all: true
+
+# =============================================================================
+# CREDENTIALS
+# =============================================================================
+
+debian_credentials:
+  username: "debian"
+  password: "debian"
+
+# =============================================================================
+# NOTES POUR L'INSTRUCTEUR
+# =============================================================================
+#
+# Ce lab simule un scenario red team ou l'etudiant doit:
+# 1. Decouvrir le service SNMP sur la cible
+# 2. Identifier la community string (public)
+# 3. Enumerer les informations sensibles exposees:
+#    - Version OS et hostname
+#    - Interfaces reseau et adresses IP
+#    - Processus en cours d'execution
+#    - Ports TCP/UDP ouverts
+#    - Table de routage
+#    - Logiciels installes
+# 4. Documenter les risques de securite
+#
+# La cible est configuree de maniere intentionnellement vulnerable:
+# - SNMPv2c sans authentification
+# - Community string "public" par defaut
+# - Ecoute sur toutes les interfaces
+# - Acces complet a l'arbre MIB
+#
+# =============================================================================

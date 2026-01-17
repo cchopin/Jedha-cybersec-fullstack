@@ -1,0 +1,134 @@
+---
+# =============================================================================
+# Playbook de verification du lab SNMP Enumeration
+# =============================================================================
+# Verifie que tous les nodes sont bien crees et demarres.
+# =============================================================================
+
+- name: Verifier le lab SNMP Enumeration
+  hosts: localhost
+  gather_facts: false
+  tags: [verify]
+
+  tasks:
+    # =========================================================================
+    # Charger les infos du projet
+    # =========================================================================
+    - name: Charger les informations du projet
+      include_vars:
+        file: "../node_info.yml"
+      ignore_errors: true
+      register: node_info_loaded
+
+    - name: Verifier que node_info.yml existe
+      fail:
+        msg: |
+          Le fichier node_info.yml n'existe pas.
+          Executez d'abord: ansible-playbook playbooks/01_create_topology.yml
+      when: node_info_loaded is failed
+
+    # =========================================================================
+    # Verifier le projet
+    # =========================================================================
+    - name: Recuperer les infos du projet
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}"
+        method: GET
+        return_content: true
+      register: project_info
+
+    - name: Afficher les infos du projet
+      debug:
+        msg:
+          - "========================================"
+          - "PROJET GNS3"
+          - "========================================"
+          - "Nom: {{ project_info.json.name }}"
+          - "Status: {{ project_info.json.status }}"
+          - "Project ID: {{ project_id }}"
+          - "========================================"
+
+    # =========================================================================
+    # Verifier les nodes
+    # =========================================================================
+    - name: Recuperer tous les nodes
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: all_nodes
+
+    - name: Afficher le statut des nodes
+      debug:
+        msg: "{{ node.name }}: {{ node.status }} (console: {{ node.console }}, type: {{ node.console_type }})"
+      loop: "{{ all_nodes.json }}"
+      loop_control:
+        loop_var: node
+
+    # =========================================================================
+    # Verifier les liens
+    # =========================================================================
+    - name: Recuperer tous les liens
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: GET
+        return_content: true
+      register: all_links
+
+    - name: Afficher les liens
+      debug:
+        msg:
+          - "========================================"
+          - "LIENS RESEAU"
+          - "========================================"
+          - "Nombre de liens: {{ all_links.json | length }}"
+          - "========================================"
+
+    # =========================================================================
+    # Resume et prochaines etapes
+    # =========================================================================
+    - name: Resume final
+      debug:
+        msg:
+          - "========================================"
+          - "VERIFICATION TERMINEE"
+          - "========================================"
+          - ""
+          - "Le lab SNMP Enumeration est pret!"
+          - ""
+          - "CONNEXION AUX MACHINES:"
+          - "  - Via GNS3 GUI: clic droit sur le node -> Console"
+          - ""
+          - "CONFIGURATION DE LA CIBLE (Target):"
+          - "  Credentials: debian / debian"
+          - ""
+          - "  # Configuration reseau"
+          - "  sudo -s"
+          - "  ip addr add 10.0.0.100/24 dev ens4"
+          - "  ip link set ens4 up"
+          - ""
+          - "  # Installation et configuration SNMP vulnerable"
+          - "  echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
+          - "  ip route add default via 192.168.122.1"
+          - "  apt update && apt install -y snmpd snmp"
+          - ""
+          - "  # Configuration SNMP permissive"
+          - "  cat > /etc/snmp/snmpd.conf << 'EOF'"
+          - "  agentaddress udp:161"
+          - "  rocommunity public"
+          - "  rwcommunity private"
+          - "  sysLocation Server Room - Rack 42"
+          - "  sysContact admin@vulnerable-corp.local"
+          - "  EOF"
+          - ""
+          - "  systemctl restart snmpd"
+          - ""
+          - "CONFIGURATION DE KALI:"
+          - "  # Verifier l'IP (DHCP via NAT)"
+          - "  ip addr show"
+          - ""
+          - "  # Installer les outils si necessaire"
+          - "  apt update && apt install -y snmp snmp-mibs-downloader"
+          - ""
+          - "Voir README.md pour les instructions completes."
+          - "========================================"
