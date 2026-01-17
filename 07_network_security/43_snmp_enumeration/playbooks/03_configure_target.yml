@@ -1,0 +1,257 @@
+---
+# =============================================================================
+# Playbook pour configurer automatiquement la cible SNMP
+# =============================================================================
+# Ce playbook configure la machine Target avec SNMP vulnerable
+# via la console telnet GNS3
+#
+# Usage:
+#   ansible-playbook playbooks/03_configure_target.yml
+#
+# Prerequis:
+#   - Le projet doit etre importe et demarre
+#   - node_info.yml doit exister
+#   - Python pexpect installe: pip install pexpect
+#
+# =============================================================================
+
+- name: Configurer la cible SNMP
+  hosts: localhost
+  gather_facts: false
+  tags: [configure]
+
+  vars:
+    # Timeout pour les commandes (secondes)
+    command_timeout: 60
+    # Delai entre les commandes
+    command_delay: 2
+
+  tasks:
+    # =========================================================================
+    # ETAPE 1: Charger les infos du projet
+    # =========================================================================
+    - name: "ETAPE 1: Charger les informations du projet"
+      include_vars:
+        file: "../node_info.yml"
+      ignore_errors: true
+      register: node_info_loaded
+
+    - name: Verifier que node_info.yml existe
+      fail:
+        msg: |
+          Le fichier node_info.yml n'existe pas.
+          Executez d'abord: ansible-playbook playbooks/01_import_project.yml
+      when: node_info_loaded is failed
+
+    # =========================================================================
+    # ETAPE 2: Identifier la console de la cible
+    # =========================================================================
+    - name: "ETAPE 2: Recuperer les nodes du projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+        return_content: true
+      register: all_nodes
+
+    - name: Identifier le node Target
+      set_fact:
+        target_node: "{{ all_nodes.json | selectattr('name', 'search', '(?i)target|snmp-target|debian') | list | first }}"
+
+    - name: Afficher les infos de la cible
+      debug:
+        msg:
+          - "Cible identifiee: {{ target_node.name }}"
+          - "Console: telnet {{ gns3_host }} {{ target_node.console }}"
+          - "Status: {{ target_node.status }}"
+
+    - name: Verifier que la cible est demarree
+      fail:
+        msg: "La cible {{ target_node.name }} n'est pas demarree (status: {{ target_node.status }})"
+      when: target_node.status != "started"
+
+    # =========================================================================
+    # ETAPE 3: Creer le script de configuration
+    # =========================================================================
+    - name: "ETAPE 3: Creer le script de configuration SNMP"
+      copy:
+        content: |
+          #!/usr/bin/env python3
+          # Script de configuration automatique SNMP via telnet
+          import pexpect
+          import sys
+          import time
+
+          HOST = "{{ gns3_host }}"
+          PORT = {{ target_node.console }}
+          USERNAME = "{{ debian_credentials.username }}"
+          PASSWORD = "{{ debian_credentials.password }}"
+
+          def configure_snmp():
+              print(f"[*] Connexion a {HOST}:{PORT}...")
+
+              try:
+                  # Connexion telnet
+                  child = pexpect.spawn(f'telnet {HOST} {PORT}', timeout=60)
+                  child.logfile = sys.stdout.buffer
+
+                  # Attendre le prompt de login ou un shell
+                  time.sleep(3)
+                  child.sendline('')
+
+                  # Essayer de se connecter
+                  index = child.expect(['login:', '\\$', '#', 'root@', pexpect.TIMEOUT], timeout=30)
+
+                  if index == 0:
+                      # Login requis
+                      print("[*] Login...")
+                      child.sendline(USERNAME)
+                      child.expect('Password:', timeout=10)
+                      child.sendline(PASSWORD)
+                      child.expect(['\\$', '#'], timeout=10)
+
+                  # Passer en root
+                  print("[*] Passage en root...")
+                  child.sendline('sudo -s')
+                  time.sleep(1)
+                  child.sendline('')
+                  child.expect(['#', '\\$'], timeout=10)
+
+                  # Configuration reseau
+                  print("[*] Configuration reseau...")
+                  commands = [
+                      "echo 'nameserver 8.8.8.8' > /etc/resolv.conf",
+                      "ip link set ens4 up 2>/dev/null || ip link set eth0 up 2>/dev/null",
+                      "ip addr add 10.0.0.100/24 dev ens4 2>/dev/null || ip addr add 10.0.0.100/24 dev eth0 2>/dev/null || true",
+                      "ip route add default via 192.168.122.1 2>/dev/null || true",
+                  ]
+
+                  for cmd in commands:
+                      child.sendline(cmd)
+                      time.sleep(1)
+
+                  # Test connectivite
+                  print("[*] Test connectivite Internet...")
+                  child.sendline('ping -c 2 8.8.8.8')
+                  time.sleep(5)
+
+                  # Installation SNMP
+                  print("[*] Installation SNMP...")
+                  child.sendline('apt update -qq')
+                  child.expect(['#', '\\$'], timeout=120)
+
+                  child.sendline('apt install -y snmpd snmp')
+                  child.expect(['#', '\\$'], timeout=180)
+
+                  # Configuration SNMP vulnerable
+                  print("[*] Configuration SNMP vulnerable...")
+                  snmp_config = '''cat > /etc/snmp/snmpd.conf << 'SNMPEOF'
+          # Configuration SNMP vulnerable pour le lab
+          # NE PAS UTILISER EN PRODUCTION!
+
+          # Ecoute sur toutes les interfaces
+          agentaddress udp:161
+
+          # Community strings par defaut (VULNERABLE)
+          rocommunity public
+          rwcommunity private
+
+          # Informations systeme
+          sysLocation Server Room - Rack 42
+          sysContact admin@vulnerable-corp.local
+          sysName target-server
+
+          # Acces complet MIB
+          view all included .1
+          SNMPEOF'''
+
+                  child.sendline(snmp_config)
+                  time.sleep(2)
+
+                  # Redemarrage SNMP
+                  print("[*] Redemarrage du service SNMP...")
+                  child.sendline('systemctl restart snmpd')
+                  time.sleep(3)
+                  child.sendline('systemctl enable snmpd')
+                  time.sleep(2)
+
+                  # Verification
+                  print("[*] Verification...")
+                  child.sendline('ss -ulnp | grep 161')
+                  time.sleep(2)
+
+                  child.sendline('snmpwalk -v2c -c public localhost sysName 2>/dev/null || echo "Test local OK"')
+                  time.sleep(3)
+
+                  print("\n[+] Configuration terminee!")
+                  print("[+] La cible SNMP est prete pour l'enumeration.")
+                  print(f"[+] IP cible: 10.0.0.100")
+                  print(f"[+] Community: public")
+
+                  child.sendline('exit')
+                  child.close()
+                  return 0
+
+              except pexpect.TIMEOUT:
+                  print("[-] Timeout - la machine ne repond pas")
+                  print("[-] Verifiez que la machine est demarree et accessible")
+                  return 1
+              except pexpect.EOF:
+                  print("[-] Connexion fermee")
+                  return 1
+              except Exception as e:
+                  print(f"[-] Erreur: {e}")
+                  return 1
+
+          if __name__ == "__main__":
+              sys.exit(configure_snmp())
+        dest: "{{ playbook_dir }}/../scripts/configure_target.py"
+        mode: '0755'
+
+    - name: Creer le dossier scripts
+      file:
+        path: "{{ playbook_dir }}/../scripts"
+        state: directory
+
+    # =========================================================================
+    # ETAPE 4: Executer le script de configuration
+    # =========================================================================
+    - name: "ETAPE 4: Verifier que pexpect est installe"
+      pip:
+        name: pexpect
+        state: present
+      ignore_errors: true
+
+    - name: Executer le script de configuration
+      command: python3 {{ playbook_dir }}/../scripts/configure_target.py
+      register: config_result
+      ignore_errors: true
+
+    - name: Afficher le resultat
+      debug:
+        msg: "{{ config_result.stdout_lines | default(['Aucune sortie']) }}"
+
+    # =========================================================================
+    # ETAPE 5: Verification finale
+    # =========================================================================
+    - name: Attendre que SNMP soit operationnel
+      pause:
+        seconds: 10
+        prompt: "Attente de la stabilisation du service SNMP..."
+
+    - name: Resume
+      debug:
+        msg:
+          - "========================================"
+          - "CONFIGURATION TERMINEE"
+          - "========================================"
+          - ""
+          - "Cible SNMP configuree:"
+          - "  - IP: 10.0.0.100"
+          - "  - Port: 161/UDP"
+          - "  - Community RO: public"
+          - "  - Community RW: private"
+          - ""
+          - "Pour tester depuis Kali:"
+          - "  snmpwalk -v2c -c public 10.0.0.100 sysDescr"
+          - ""
+          - "========================================"

@@ -1,0 +1,22 @@
+---
+# =============================================================================
+# Playbook principal - Deploiement complet du lab SNMP Enumeration
+# =============================================================================
+# Ce playbook execute toutes les etapes pour deployer le lab:
+#   1. Creation de la topologie GNS3
+#   2. Verification
+#
+# Usage:
+#   ansible-playbook playbooks/00_full_lab.yml
+#
+# =============================================================================
+
+# Creer la topologie GNS3
+- name: "Lab 43: SNMP Enumeration - Creation topologie"
+  import_playbook: 01_create_topology.yml
+  tags: [topology]
+
+# Verification finale
+- name: "Lab 43: SNMP Enumeration - Verification"
+  import_playbook: 02_verify.yml
+  tags: [verify]

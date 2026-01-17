@@ -1,0 +1,20 @@
+# Fichiers generes automatiquement par Ansible
+node_info.yml
+scripts/
+
+# Fichiers temporaires Ansible
+*.retry
+
+# Projet GNS3 (trop volumineux pour git)
+*.gns3project
+
+# Fichiers de rapport generes
+*.txt
+snmp_dump.txt
+snmp_report.txt
+
+# Fichiers temporaires
+*.tmp
+
+# Notes personnelles
+notes.md
