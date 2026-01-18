@@ -1,23 +1,23 @@
-# Ressources pour aller plus loin - SNMP Enumeration
+# Ressources pour aller plus loin - SNMP Énumération
 
-Liens verifies et ressources pour approfondir l'enumeration SNMP.
+Liens vérifiés et ressources pour approfondir l'énumération SNMP.
 
 ---
 
 ## HackTheBox - Machines avec SNMP
 
-Machines retirees necessitant un abonnement VIP ou accessibles via writeups.
+Machines retirées nécessitant un abonnement VIP ou accessibles via writeups.
 
 | Machine | Difficulte | Description |
 |---------|------------|-------------|
-| **Pit** | Medium | SNMP enumeration → decouverte de paths et usernames → SeedDMS exploit |
-| **Mischief** | Insane | SNMP revele credentials dans les arguments de processus + IPv6 |
+| **Pit** | Medium | SNMP énumération → découverte de paths et usernames → SeedDMS exploit |
+| **Mischief** | Insane | SNMP révèle credentials dans les arguments de processus + IPv6 |
 | **Carrier** | Medium | SNMP community "public" → serial number utilise comme password |
 | **Pandora** | Easy | SNMP UDP scan → credentials pour SSH → Pandora FMS |
-| **Sneaky** | Medium | SNMP enumeration → IPv6 discovery → buffer overflow |
-| **Conceal** | Hard | SNMP + IKE VPN → decouverte des ports via snmp-netstat |
+| **Sneaky** | Medium | SNMP énumération → IPv6 discovery → buffer overflow |
+| **Conceal** | Hard | SNMP + IKE VPN → découverte des ports via snmp-netstat |
 
-**Writeups detailles :**
+**Writeups détaillés :**
 - [Pit - Hackingarticles](https://www.hackingarticles.in/pit-hackthebox-walkthrough/)
 - [Mischief - Snowscan](https://snowscan.io/htb-writeup-mischief/)
 - [Carrier - 0xRick](https://0xrick.github.io/hack-the-box/carrier/)
@@ -30,18 +30,18 @@ Machines retirees necessitant un abonnement VIP ou accessibles via writeups.
 
 | Room | Contenu SNMP |
 |------|--------------|
-| **Enumeration** | Post-exploitation enumeration avec snmpcheck |
-| **Network Services 2** | Section sur les services reseau dont SNMP |
+| **Énumération** | Post-exploitation énumération avec snmpcheck |
+| **Network Services 2** | Section sur les services réseau dont SNMP |
 
 Lien direct :
-- https://tryhackme.com/r/room/introtoisac (Introduction aux protocoles reseau)
-- https://tryhackme.com/r/room/enumerationpe (Enumeration post-exploitation)
+- https://tryhackme.com/r/room/introtoisac (Introduction aux protocoles réseau)
+- https://tryhackme.com/r/room/énumérationpe (Énumération post-exploitation)
 
 ---
 
 ## Documentation et Cheatsheets
 
-### HackTricks (Reference)
+### HackTricks (Référence)
 
 Guide complet sur le pentesting SNMP :
 - [Pentesting SNMP](https://book.hacktricks.wiki/en/network-services-pentesting/pentesting-snmp/index.html)
@@ -50,7 +50,7 @@ Guide complet sur le pentesting SNMP :
 
 **Contenu :**
 - Brute-force community strings
-- Enumeration avec snmpwalk, snmp-check, braa
+- Énumération avec snmpwalk, snmp-check, braa
 - OIDs Windows et Linux
 - Exploitation RCE via write access
 
@@ -65,15 +65,15 @@ Guide complet sur le pentesting SNMP :
 
 ## Outils
 
-### Enumeration
+### Énumération
 
 | Outil | Usage | Installation |
 |-------|-------|--------------|
-| **snmpwalk** | Enumeration manuelle OID par OID | `apt install snmp` |
+| **snmpwalk** | Énumération manuelle OID par OID | `apt install snmp` |
 | **snmp-check** | Rapport automatise complet | `apt install snmp-check` |
 | **onesixtyone** | Brute-force community strings | `apt install onesixtyone` |
 | **braa** | Mass SNMP scanner | `apt install braa` |
-| **snmpbulkwalk** | Enumeration rapide (bulk) | `apt install snmp` |
+| **snmpbulkwalk** | Énumération rapide (bulk) | `apt install snmp` |
 
 ### Exploitation
 
@@ -86,16 +86,16 @@ Guide complet sur le pentesting SNMP :
 
 ## OIDs utiles
 
-### Systeme
+### Système
 ```
-1.3.6.1.2.1.1.1.0    sysDescr      Description systeme
+1.3.6.1.2.1.1.1.0    sysDescr      Description système
 1.3.6.1.2.1.1.3.0    sysUpTime     Uptime
 1.3.6.1.2.1.1.4.0    sysContact    Contact admin
 1.3.6.1.2.1.1.5.0    sysName       Hostname
 1.3.6.1.2.1.1.6.0    sysLocation   Localisation
 ```
 
-### Reseau
+### Réseau
 ```
 1.3.6.1.2.1.2.2.1.2  ifDescr       Interfaces
 1.3.6.1.2.1.4.20.1.1 ipAdEntAddr   Adresses IP
@@ -108,13 +108,13 @@ Guide complet sur le pentesting SNMP :
 1.3.6.1.2.1.25.4.2.1.2  hrSWRunName       Noms des processus
 1.3.6.1.2.1.25.4.2.1.4  hrSWRunPath       Chemins executables
 1.3.6.1.2.1.25.4.2.1.5  hrSWRunParameters Arguments (credentials!)
-1.3.6.1.2.1.25.6.3.1.2  hrSWInstalledName Logiciels installes
+1.3.6.1.2.1.25.6.3.1.2  hrSWInstalledName Logiciels installés
 ```
 
 ### TCP/UDP
 ```
 1.3.6.1.2.1.6.13     tcpConnTable  Connexions TCP
-1.3.6.1.2.1.7.5.1.2  udpLocalPort  Ports UDP en ecoute
+1.3.6.1.2.1.7.5.1.2  udpLocalPort  Ports UDP en écoute
 ```
 
 ---
@@ -122,10 +122,10 @@ Guide complet sur le pentesting SNMP :
 ## Commandes rapides
 
 ```bash
-# Enumeration basique
+# Énumération basique
 snmpwalk -v2c -c public <target> .1
 
-# Informations systeme
+# Informations système
 snmpwalk -v2c -c public <target> 1.3.6.1.2.1.1
 
 # Processus (peut contenir des credentials)
@@ -148,17 +148,17 @@ snmp-check <target> -c public
 
 ---
 
-## Methodologie Red Team
+## Méthodologie Red Team
 
 1. **Scan UDP** : `nmap -sU -p 161 <target>`
 2. **Brute-force community** : `onesixtyone` ou `hydra`
-3. **Enumeration** : `snmpwalk` ou `snmp-check`
+3. **Énumération** : `snmpwalk` ou `snmp-check`
 4. **Analyse** : Chercher credentials, usernames, paths
-5. **Pivot** : Utiliser les infos pour mouvement lateral
+5. **Pivot** : Utiliser les infos pour mouvement latéral
 
 ---
 
-## References additionnelles
+## Références additionnelles
 
 - [MITRE ATT&CK - SNMP (T1602)](https://attack.mitre.org/techniques/T1602/)
 - [Net-SNMP Documentation](http://www.net-snmp.org/docs/)

@@ -2,11 +2,11 @@
 
 ## Objectifs du cours
 
-Ce cours couvre les protocoles essentiels pour surveiller et analyser le comportement d'un reseau. Vous apprendrez comment les equipements communiquent leur etat, comment le trafic revele des patterns, et comment les logs centralisent les evenements critiques.
+Ce cours couvre les protocoles essentiels pour surveiller et analyser le comportement d'un réseau. Vous apprendrez comment les équipements communiquent leur etat, comment le trafic revele des patterns, et comment les logs centralisent les événements critiques.
 
 Competences visees :
 - Comprendre SNMP et ses differents modes (polling, traps)
-- Maitriser les MIBs et les OIDs pour interroger les equipements
+- Maitriser les MIBs et les OIDs pour interroger les équipements
 - Distinguer les versions SNMPv1, v2c et v3
 - Analyser le trafic avec NetFlow pour detecter les anomalies
 - Centraliser les logs avec Syslog et les integrer aux SIEMs
@@ -20,9 +20,9 @@ Competences visees :
 
 | Terme | Description |
 |-------|-------------|
-| **SNMP** | Simple Network Management Protocol - Protocole de gestion reseau |
+| **SNMP** | Simple Network Management Protocol - Protocole de gestion réseau |
 | **Manager** | Systeme central qui interroge les agents |
-| **Agent** | Logiciel sur l'equipement qui repond aux requetes |
+| **Agent** | Logiciel sur l'équipement qui repond aux requetes |
 | **OID** | Object Identifier - Identifiant unique d'une metrique |
 | **MIB** | Management Information Base - Base de donnees des OIDs |
 | **Community String** | Mot de passe en clair (SNMPv1/v2c) |
@@ -62,13 +62,13 @@ Competences visees :
 
 ### Concepts fondamentaux
 
-SNMP est le protocole universel pour gerer et surveiller les equipements reseau. Developpe a la fin des annees 1980, il est supporte par pratiquement tous les equipements : routeurs, switches, firewalls, imprimantes, et meme certains appareils IoT.
+SNMP est le protocole universel pour gerer et surveiller les équipements réseau. Developpe a la fin des annees 1980, il est supporte par pratiquement tous les équipements : routeurs, switches, firewalls, imprimantes, et meme certains appareils IoT.
 
 ![Architecture SNMP](assets/SNMP-diagram.png)
 
-SNMP fonctionne sur un modele **Manager/Agent** :
-- Le **Manager** (ou NMS - Network Management System) interroge les equipements
-- L'**Agent** reside sur chaque equipement et maintient les metriques
+SNMP fonctionne sur un modèle **Manager/Agent** :
+- Le **Manager** (ou NMS - Network Management System) interroge les équipements
+- L'**Agent** reside sur chaque équipement et maintient les metriques
 
 ### Communication SNMP
 
@@ -117,9 +117,9 @@ Les MIBs sont les "dictionnaires" SNMP. Chaque metrique est identifiee par un **
 
 | OID | Nom | Description |
 |-----|-----|-------------|
-| 1.3.6.1.2.1.1.1 | sysDescr | Description du systeme |
+| 1.3.6.1.2.1.1.1 | sysDescr | Description du système |
 | 1.3.6.1.2.1.1.3 | sysUpTime | Temps depuis le dernier boot |
-| 1.3.6.1.2.1.1.5 | sysName | Nom de l'equipement |
+| 1.3.6.1.2.1.1.5 | sysName | Nom de l'équipement |
 | 1.3.6.1.2.1.2.2 | ifTable | Table des interfaces |
 | 1.3.6.1.2.1.25 | host | Informations host |
 | 1.3.6.1.2.1.26 | snmp | Statistiques SNMP |
@@ -155,7 +155,7 @@ Manager                          Agent
 
 #### Traps (Alertes push)
 
-L'agent envoie une notification lors d'un evenement :
+L'agent envoie une notification lors d'un événement :
 
 ```
 Manager                          Agent
@@ -170,7 +170,7 @@ Manager                          Agent
 **Avantages :**
 - Detection immediate
 - Economise la bande passante
-- Alerte uniquement quand necessaire
+- Alerte uniquement quand nécessaire
 
 **Inconvenients :**
 - Pas de garantie de livraison (UDP)
@@ -248,10 +248,10 @@ snmpget -v3 -u monuser -l authPriv \
 | Authentification | Community (clair) | Community (clair) | USM (hash) |
 | Chiffrement | Non | Non | Oui |
 | GETBULK | Non | Oui | Oui |
-| Niveau securite | Faible | Faible | Eleve |
+| Niveau sécurité | Faible | Faible | Eleve |
 | Compatibilite | Legacy | Large | Moderne |
 
-### Niveaux de securite SNMPv3
+### Niveaux de sécurité SNMPv3
 
 | Niveau | Authentification | Chiffrement | Usage |
 |--------|------------------|-------------|-------|
@@ -265,7 +265,7 @@ snmpget -v3 -u monuser -l authPriv \
 
 ### Qu'est-ce que NetFlow ?
 
-NetFlow est un protocole developpe par Cisco dans les annees 1990 pour collecter des informations sur le trafic IP. Contrairement a SNMP qui surveille les equipements, NetFlow observe le **trafic** lui-meme.
+NetFlow est un protocole développé par Cisco dans les annees 1990 pour collecter des informations sur le trafic IP. Contrairement a SNMP qui surveille les équipements, NetFlow observe le **trafic** lui-meme.
 
 ![NetFlow Architecture](assets/CYBFS-M07-D05-Netflow.png)
 
@@ -391,7 +391,7 @@ entre machines qui ne communiquent normalement pas.
 
 ### Qu'est-ce que Syslog ?
 
-Syslog est le protocole standard pour la journalisation centralisee. Developpe dans les annees 1980, il reste l'un des protocoles les plus utilises pour collecter les logs de tous types d'equipements.
+Syslog est le protocole standard pour la journalisation centralisee. Developpe dans les annees 1980, il reste l'un des protocoles les plus utilises pour collecter les logs de tous types d'équipements.
 
 ### Architecture Syslog
 
@@ -491,7 +491,7 @@ Syslog est la source principale des SIEMs (Security Information and Event Manage
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Correlation d'evenements
+### Correlation d'événements
 
 Un SIEM peut correler differentes sources :
 
@@ -534,7 +534,7 @@ Zabbix est une solution de monitoring open-source complete. Il agit comme un che
 | Agent Zabbix | Agent installe sur les machines |
 | Checks actifs/passifs | Flexibilite de collecte |
 | Scripts personnalises | Monitoring sur mesure |
-| Auto-decouverte | Scan automatique du reseau |
+| Auto-decouverte | Scan automatique du réseau |
 | Templates | Configurations reutilisables |
 | Triggers | Regles d'alerte |
 | Notifications | Email, SMS, Slack, PagerDuty |
@@ -576,7 +576,7 @@ Zabbix est une solution de monitoring open-source complete. Il agit comme un che
 |------|-------------|-------|
 | Agent passif | Le serveur interroge l'agent | Standard |
 | Agent actif | L'agent envoie les donnees | Firewalls, NAT |
-| SNMP | Polling/Traps | Equipements reseau |
+| SNMP | Polling/Traps | Equipements réseau |
 | IPMI | Hardware monitoring | Serveurs physiques |
 | JMX | Java Management | Applications Java |
 | HTTP | Checks web | Sites web, APIs |
@@ -611,7 +611,7 @@ chmod u+x zabbix/installation/zabbix-server_docker_installation.sh
 | **Trigger** | Condition declenchant une alerte |
 | **Action** | Reponse a un trigger (notification, script) |
 | **Template** | Collection d'items/triggers reutilisable |
-| **Discovery** | Detection automatique d'equipements |
+| **Discovery** | Detection automatique d'équipements |
 
 ### Exemple de Trigger
 
@@ -663,7 +663,7 @@ sudo systemctl start zabbix.service
 
 | Besoin | Protocole recommande |
 |--------|---------------------|
-| Etat des equipements | SNMP |
+| Etat des équipements | SNMP |
 | Analyse du trafic | NetFlow |
 | Journalisation | Syslog |
 | Detection d'intrusion | NetFlow + Syslog |
@@ -688,12 +688,12 @@ sudo systemctl start zabbix.service
         ▼                     ▼                     ▼
    ┌─────────┐           ┌─────────┐           ┌─────────┐
    │Routeurs │           │ Trafic  │           │  Logs   │
-   │Switches │           │ reseau  │           │ systeme │
+   │Switches │           │ réseau  │           │ système │
    │Firewalls│           │         │           │         │
    └─────────┘           └─────────┘           └─────────┘
 ```
 
-### Checklist de securite
+### Checklist de sécurité
 
 | Element | Recommandation |
 |---------|----------------|

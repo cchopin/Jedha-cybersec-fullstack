@@ -2,7 +2,7 @@
 
 ## Objectifs du cours
 
-Jusqu'ici, nous avons appris a concevoir des reseaux securises avec des firewalls, zones, VPNs et politiques de filtrage. Maintenant, nous adoptons la perspective de l'adversaire. Ce cours explore comment les attaquants exploitent les faiblesses des VPNs et regles firewall mal configurees - des vulnerabilites plus courantes que beaucoup d'administrateurs ne voudraient l'admettre.
+Jusqu'ici, nous avons appris a concevoir des réseaux securises avec des firewalls, zones, VPNs et politiques de filtrage. Maintenant, nous adoptons la perspective de l'adversaire. Ce cours explore comment les attaquants exploitent les faiblesses des VPNs et regles firewall mal configurees - des vulnerabilites plus courantes que beaucoup d'administrateurs ne voudraient l'admettre.
 
 Competences visees :
 - Identifier les misconfigurations VPN les plus courantes et comprendre leurs impacts
@@ -19,11 +19,11 @@ Competences visees :
 | Terme | Description |
 |-------|-------------|
 | **Misconfiguration** | Erreur de configuration creant une vulnerabilite |
-| **Lateral Movement** | Deplacement d'un attaquant entre systemes du reseau |
+| **Lateral Movement** | Deplacement d'un attaquant entre systèmes du réseau |
 | **Credential Stuffing** | Attaque utilisant des credentials voles/leakes |
 | **Password Spraying** | Test d'un mot de passe commun sur plusieurs comptes |
 | **Brute Force** | Essai systematique de toutes les combinaisons |
-| **Pivot** | Utiliser un systeme compromis pour attaquer d'autres cibles |
+| **Pivot** | Utiliser un système compromis pour attaquer d'autres cibles |
 
 ### Termes VPN
 
@@ -43,7 +43,7 @@ Competences visees :
 | **Overly Permissive** | Regle trop permissive (ex: any any) |
 | **Egress Filtering** | Filtrage du trafic sortant |
 | **Port Forwarding** | Redirection de port vers l'interne |
-| **ACL Bypass** | Contournement des listes de controle d'acces |
+| **ACL Bypass** | Contournement des listes de contrôle d'acces |
 
 ### Outils d'attaque
 
@@ -61,7 +61,7 @@ Competences visees :
 | Terme | Description |
 |-------|-------------|
 | **Reverse Shell** | Shell initie depuis la cible vers l'attaquant |
-| **C2/C&C** | Command and Control - Serveur de controle |
+| **C2/C&C** | Command and Control - Serveur de contrôle |
 | **Callback** | Connexion periodique vers le serveur C2 |
 | **Beacon** | Agent Cobalt Strike pour la persistance |
 | **Exfiltration** | Vol et extraction de donnees |
@@ -70,14 +70,14 @@ Competences visees :
 
 ## Pourquoi les Misconfigurations sont une Mine d'Or
 
-Les firewalls et VPNs sont censes etre les gardiens de votre reseau. Mais mal configures, ils deviennent souvent les faiblesses les plus dangereuses de votre infrastructure.
+Les firewalls et VPNs sont censes etre les gardiens de votre réseau. Mais mal configures, ils deviennent souvent les faiblesses les plus dangereuses de votre infrastructure.
 
 ### Causes courantes des misconfigurations
 
 | Cause | Description |
 |-------|-------------|
 | **Deployements precipites** | Configurations temporaires devenues permanentes |
-| **Manque d'audits** | Pas de revue reguliere des configurations |
+| **Manque d'audits** | Pas de revue réguliere des configurations |
 | **Confiance aux defauts** | Parametres par defaut non modifies |
 | **Manque de comprehension** | Meconnaissance des architectures de zones |
 | **Rotation du personnel** | Perte de connaissance des configurations |
@@ -112,7 +112,7 @@ Les firewalls et VPNs sont censes etre les gardiens de votre reseau. Mais mal co
 
 ## Misconfigurations VPN Courantes
 
-Les VPNs creent des tunnels chiffres entre utilisateurs distants et reseaux securises - mais ils ne sont securises que si leur configuration l'est.
+Les VPNs creent des tunnels chiffres entre utilisateurs distants et réseaux securises - mais ils ne sont securises que si leur configuration l'est.
 
 ### 1. Authentification faible ou absente
 
@@ -197,7 +197,7 @@ Les VPNs creent des tunnels chiffres entre utilisateurs distants et reseaux secu
 │                                     │                       │
 │                                     ▼                       │
 │                              L'attaquant pivote             │
-│                              vers le reseau corporate       │
+│                              vers le réseau corporate       │
 │                              via le laptop infecte          │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
@@ -205,7 +205,7 @@ Les VPNs creent des tunnels chiffres entre utilisateurs distants et reseaux secu
 
 | Avantage Split Tunnel | Risque Split Tunnel |
 |-----------------------|---------------------|
-| Performance accrue | Expose le reseau interne |
+| Performance accrue | Expose le réseau interne |
 | Moins de charge VPN | Contourne le filtrage corporate |
 | Acces aux ressources locales | Point d'entree pour attaquants |
 
@@ -249,10 +249,10 @@ Les VPNs creent des tunnels chiffres entre utilisateurs distants et reseaux secu
 │                           ▼                                 │
 │   2. MOUVEMENT LATERAL                                      │
 │      ┌─────────────────────────────────────────────────┐    │
-│      │ Une fois dans le reseau :                       │    │
+│      │ Une fois dans le réseau :                       │    │
 │      │ - Pas de segmentation adequate                  │    │
 │      │ - Pas de detection d'anomalies                  │    │
-│      │ - Mouvement libre entre systemes                │    │
+│      │ - Mouvement libre entre systèmes                │    │
 │      └─────────────────────────────────────────────────┘    │
 │                           │                                 │
 │                           ▼                                 │
@@ -291,7 +291,7 @@ Les VPNs creent des tunnels chiffres entre utilisateurs distants et reseaux secu
 
 ## Misconfigurations Firewall
 
-Les firewalls gardent les frontieres du reseau. Mais une regle mal configuree est comme une sentinelle distraite : la menace passe sans etre remarquee.
+Les firewalls gardent les frontieres du réseau. Mais une regle mal configuree est comme une sentinelle distraite : la menace passe sans etre remarquee.
 
 ### 1. Regles excessivement permissives
 
@@ -328,7 +328,7 @@ access-list 100 permit ip any any
 │   Resultat :                                                │
 │   - Attaques brute-force constantes                         │
 │   - Exploitation de vulnerabilites                          │
-│   - Acces direct aux systemes internes                      │
+│   - Acces direct aux systèmes internes                      │
 │                                                             │
 │   CORRECT :                                                 │
 │   ┌───────────────────────────────────────────────────┐     │
@@ -388,7 +388,7 @@ access-list 100 deny ip host 192.168.1.50 any           ! Regle 2 : JAMAIS ATTEI
 
 ! CORRECTION :
 access-list 100 deny ip host 192.168.1.50 any           ! D'abord le specifique
-access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le general
+access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le général
 ```
 
 ### 5. Port Forwarding sans restriction
@@ -429,7 +429,7 @@ access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le general
 │   ┌─────────────────────────────────────────────────────┐   │
 │   │ - Scan interne (Nmap, Netcat)                       │   │
 │   │ - Identification des cibles                         │   │
-│   │ - Mapping du reseau                                 │   │
+│   │ - Mapping du réseau                                 │   │
 │   └─────────────────────────────────────────────────────┘   │
 │                           │                                 │
 │                           ▼                                 │
@@ -513,7 +513,7 @@ access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le general
 │                                                             │
 │   4. ACCES VPN                                              │
 │      → Connexion reussie (pas de MFA)                       │
-│      → Acces au reseau interne                              │
+│      → Acces au réseau interne                              │
 │                                                             │
 │   5. RECONNAISSANCE INTERNE                                 │
 │      $ nmap -sV 192.168.1.0/24                              │
@@ -554,7 +554,7 @@ access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le general
 │      → Trafic sortant non filtre → succes                   │
 │                                                             │
 │   5. CONSEQUENCE                                            │
-│      → Acces persistant au reseau                           │
+│      → Acces persistant au réseau                           │
 │      → Detection : ZERO                                     │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
@@ -579,7 +579,7 @@ access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le general
 │                                                             │
 │   3. PIVOT                                                  │
 │      → Serveur web = tete de pont                           │
-│      → Scan du reseau interne depuis le webshell            │
+│      → Scan du réseau interne depuis le webshell            │
 │      → Systemes critiques non segmentes de la DMZ !         │
 │                                                             │
 │   4. CONSEQUENCE                                            │
@@ -604,7 +604,7 @@ access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le general
 | **Timeout sessions** | Deconnexion apres inactivite |
 | **Logging complet** | Toutes les connexions, echecs inclus |
 | **Alerting** | Notification sur comportement anormal |
-| **Audit regulier** | Revue des comptes actifs |
+| **Audit régulier** | Revue des comptes actifs |
 
 ### Durcissement Firewall
 
@@ -615,11 +615,11 @@ access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le general
 | **Segmentation** | Separer les zones de confiance |
 | **Egress filtering** | Controler le trafic sortant |
 | **Logging deny** | Logger tous les blocages |
-| **Review reguliere** | Audit mensuel des regles |
+| **Review réguliere** | Audit mensuel des regles |
 | **Supprimer les regles inutilisees** | Nettoyage periodique |
 | **Documenter** | Justification de chaque regle |
 
-### Checklist securite
+### Checklist sécurité
 
 ```
 VPN :
@@ -629,8 +629,8 @@ VPN :
   [ ] Rate limiting actif
   [ ] Logging et alerting en place
   [ ] Comptes legacy desactives
-  [ ] Audit regulier des acces
-  [ ] Split tunneling desactive ou controle
+  [ ] Audit régulier des acces
+  [ ] Split tunneling desactive ou contrôle
 
 Firewall :
   [ ] Pas de regles "any any"
@@ -656,7 +656,7 @@ Firewall :
 | Connexions depuis pays inhabituels | Credentials voles |
 | Trafic sortant anormal | Exfiltration ou C2 |
 | Scan de ports interne | Reconnaissance attaquant |
-| Acces a de nombreux systemes | Mouvement lateral |
+| Acces a de nombreux systèmes | Mouvement lateral |
 
 ### Outils de detection
 
@@ -664,7 +664,7 @@ Firewall :
 |-------|-------|
 | **SIEM** | Correlation d'evenements |
 | **IDS/IPS** | Detection de patterns d'attaque |
-| **NetFlow** | Analyse des flux reseau |
+| **NetFlow** | Analyse des flux réseau |
 | **EDR** | Detection sur les endpoints |
 | **UEBA** | Detection de comportements anormaux |
 
@@ -688,6 +688,6 @@ Firewall :
 | **VPN Security** | Securite des VPNs | https://tryhackme.com/room/dvwafirewalls |
 | **Attacking Active Directory** | Mouvement lateral | https://tryhackme.com/room/attacktivedirectory |
 | **Post Exploitation Basics** | Techniques post-exploitation | https://tryhackme.com/room/postexploit |
-| **Lateral Movement and Pivoting** | Pivoting reseau | https://tryhackme.com/room/dvwafirewalls |
+| **Lateral Movement and Pivoting** | Pivoting réseau | https://tryhackme.com/room/dvwafirewalls |
 
-> **Note** : Ce cours presente des techniques offensives a des fins educatives et de defense. Ces techniques ne doivent etre utilisees que dans un contexte autorise : tests de penetration avec mandat, CTF, ou environnements de lab isoles. Comprendre les methodes d'attaque est essentiel pour mieux defendre vos reseaux.
+> **Note** : Ce cours presente des techniques offensives a des fins educatives et de defense. Ces techniques ne doivent etre utilisees que dans un contexte autorise : tests de penetration avec mandat, CTF, ou environnements de lab isoles. Comprendre les méthodes d'attaque est essentiel pour mieux defendre vos réseaux.

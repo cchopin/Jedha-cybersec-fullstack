@@ -2,7 +2,7 @@
 
 ## L'idée en une phrase
 
-Le monitoring réseau, c'est comme avoir des caméras (NetFlow), des capteurs d'état (SNMP) et un journal de bord (Syslog) pour savoir ce qui se passe sur votre réseau.
+Le monitoring réseau, c'est comme avoir des caméras (NetFlow), des capteurs d'état (SNMP) et un journal de bord (Syslog) pour savoir ce qui se passe sur le réseau.
 
 ---
 
@@ -111,7 +111,7 @@ NetFlow enregistre QUI parle à QUI, sur quel port, et combien de données.
 
 ### C'est quoi Syslog ?
 
-Syslog centralise tous les logs (événements) de vos équipements.
+Syslog centralise tous les logs (événements) des équipements.
 
 ```
 Routeur ────┐

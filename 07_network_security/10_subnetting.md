@@ -4,29 +4,29 @@
 
 Divide this network into 4 equal subnets.
 
-Sous-reseau 1
-   Reseau:      192.168.10.0/26
+Sous-réseau 1
+   Réseau:      192.168.10.0/26
    Masque:      255.255.255.192
    Broadcast:   192.168.10.63
    Plage:       192.168.10.1 - 192.168.10.62
    Nb d'hotes:  62
 
-Sous-reseau 2
-  Reseau:      192.168.10.64/26
+Sous-réseau 2
+  Réseau:      192.168.10.64/26
   Masque:      255.255.255.192
   Broadcast:   192.168.10.127
   Plage:       192.168.10.65 - 192.168.10.126
   Nb d'hotes:  62
 
-Sous-reseau 3
-  Reseau:      192.168.10.128/26
+Sous-réseau 3
+  Réseau:      192.168.10.128/26
   Masque:      255.255.255.192
   Broadcast:   192.168.10.191
   Plage:       192.168.10.129 - 192.168.10.190
   Nb d'hotes:  62
 
-Sous-reseau 4
-  Reseau:      192.168.10.192/26
+Sous-réseau 4
+  Réseau:      192.168.10.192/26
   Masque:      255.255.255.192
   Broadcast:   192.168.10.255
   Plage:       192.168.10.193 - 192.168.10.254
@@ -66,28 +66,28 @@ You need to create subnets for different departments based on their IP address r
     Logistics Department: 5 devices
 
 IT
- Reseau:      192.168.10.0/26
+ Réseau:      192.168.10.0/26
  Masque:      255.255.255.192
  Broadcast:   192.168.10.63
  Plage:       192.168.10.1 - 192.168.10.62
  Nb d'hotes:  62
 
 HR
- Reseau:      192.168.10.64/27
+ Réseau:      192.168.10.64/27
  Masque:      255.255.255.224
  Broadcast:   192.168.10.95
  Plage:       192.168.10.65 - 192.168.10.94
  Nb d'hotes:  30
 
 Sales
- Reseau:      192.168.10.96/28
+ Réseau:      192.168.10.96/28
  Masque:      255.255.255.240
  Broadcast:   192.168.10.111
  Plage:       192.168.10.97 - 192.168.10.110
  Nb d'hotes:  14
 
 Logistics
- Reseau:      192.168.10.112/29
+ Réseau:      192.168.10.112/29
  Masque:      255.255.255.248
  Broadcast:   192.168.10.119
  Plage:       192.168.10.113 - 192.168.10.118
@@ -120,76 +120,76 @@ Sortie :
  
  ## Exercise 3: Splitting into /56 Subnets
  
-Sous-reseau 1
-Reseau:      2001:db8:abcd:0:0:0:0:0/52
+Sous-réseau 1
+Réseau:      2001:db8:abcd:0:0:0:0:0/52
  
-Sous-reseau 2
-Reseau:      2001:db8:abcd:1000:0:0:0:0/52
+Sous-réseau 2
+Réseau:      2001:db8:abcd:1000:0:0:0:0/52
 
-Sous-reseau 3
-Reseau:      2001:db8:abcd:2000:0:0:0:0/52
+Sous-réseau 3
+Réseau:      2001:db8:abcd:2000:0:0:0:0/52
 
-Sous-reseau 4
-Reseau:      2001:db8:abcd:3000:0:0:0:0/52
+Sous-réseau 4
+Réseau:      2001:db8:abcd:3000:0:0:0:0/52
 
-Sous-reseau 5
-Reseau:      2001:db8:abcd:4000:0:0:0:0/52
+Sous-réseau 5
+Réseau:      2001:db8:abcd:4000:0:0:0:0/52
 
-Sous-reseau 6
-Reseau:      2001:db8:abcd:5000:0:0:0:0/52
+Sous-réseau 6
+Réseau:      2001:db8:abcd:5000:0:0:0:0/52
 
-Sous-reseau 7
-Reseau:      2001:db8:abcd:6000:0:0:0:0/52
+Sous-réseau 7
+Réseau:      2001:db8:abcd:6000:0:0:0:0/52
 
-Sous-reseau 8
-Reseau:      2001:db8:abcd:7000:0:0:0:0/52
+Sous-réseau 8
+Réseau:      2001:db8:abcd:7000:0:0:0:0/52
 
-Sous-reseau 9
-Reseau:      2001:db8:abcd:8000:0:0:0:0/52
+Sous-réseau 9
+Réseau:      2001:db8:abcd:8000:0:0:0:0/52
 
-Sous-reseau 10
-Reseau:      2001:db8:abcd:9000:0:0:0:0/52
+Sous-réseau 10
+Réseau:      2001:db8:abcd:9000:0:0:0:0/52
 
-Sous-reseau 11
-Reseau:      2001:db8:abcd:a000:0:0:0:0/52
+Sous-réseau 11
+Réseau:      2001:db8:abcd:a000:0:0:0:0/52
 
-Sous-reseau 12
-Reseau:      2001:db8:abcd:b000:0:0:0:0/52
+Sous-réseau 12
+Réseau:      2001:db8:abcd:b000:0:0:0:0/52
 
-Sous-reseau 13
-Reseau:      2001:db8:abcd:c000:0:0:0:0/52
+Sous-réseau 13
+Réseau:      2001:db8:abcd:c000:0:0:0:0/52
 
-Sous-reseau 14
-Reseau:      2001:db8:abcd:d000:0:0:0:0/52
+Sous-réseau 14
+Réseau:      2001:db8:abcd:d000:0:0:0:0/52
 
-Sous-reseau 15
-Reseau:      2001:db8:abcd:e000:0:0:0:0/52
+Sous-réseau 15
+Réseau:      2001:db8:abcd:e000:0:0:0:0/52
  
-Sous-reseau 16
-Reseau:      2001:db8:abcd:f000:0:0:0:0/52
+Sous-réseau 16
+Réseau:      2001:db8:abcd:f000:0:0:0:0/52
 
 ## Exercise 4: Splitting into /64 Subnets
 
-Sous-reseau 1
-Reseau:      2001:db8:abcd:1000:0:0:0:0/59
+Sous-réseau 1
+Réseau:      2001:db8:abcd:1000:0:0:0:0/59
 
-Sous-reseau 2
-Reseau:      2001:db8:abcd:1020:0:0:0:0/59
+Sous-réseau 2
+Réseau:      2001:db8:abcd:1020:0:0:0:0/59
 
-Sous-reseau 3
-Reseau:      2001:db8:abcd:1040:0:0:0:0/59
+Sous-réseau 3
+Réseau:      2001:db8:abcd:1040:0:0:0:0/59
 
-Sous-reseau 4
-Reseau:      2001:db8:abcd:1060:0:0:0:0/59
+Sous-réseau 4
+Réseau:      2001:db8:abcd:1060:0:0:0:0/59
 
-Sous-reseau 5
-Reseau:      2001:db8:abcd:1080:0:0:0:0/59
+Sous-réseau 5
+Réseau:      2001:db8:abcd:1080:0:0:0:0/59
 
-Sous-reseau 6
-Reseau:      2001:db8:abcd:10a0:0:0:0:0/59
+Sous-réseau 6
+Réseau:      2001:db8:abcd:10a0:0:0:0:0/59
 
-Sous-reseau 7
-Reseau:      2001:db8:abcd:10c0:0:0:0:0/59
+Sous-réseau 7
+Réseau:      2001:db8:abcd:10c0:0:0:0:0/59
 
-Sous-reseau 8
-Reseau:      2001:db8:abcd:10e0:0:0:0:0/59
+Sous-réseau 8
+Réseau:      2001:db8:abcd:10e0:0:0:0:0/59

@@ -1,20 +1,20 @@
-# Lab 43: SNMP Enumeration - Resultats Obtenus
+# Lab 43: SNMP Enumeration - Résultats Obtenus
 
-Resultats reels de l'enumeration SNMP effectuee sur la cible.
+Résultats réels de l'enumeration SNMP effectuée sur la cible.
 
 **Cible:** 192.168.122.10
 **Community:** public (SNMPv2c)
-**Date:** Enumeration effectuee via snmpwalk
+**Date:** Enumeration effectuée via snmpwalk
 
 ---
 
-## 1. Informations Systeme
+## 1. Informations Système
 
 ```bash
 snmpwalk -v2c -c public localhost .1.3.6.1.2.1.1
 ```
 
-**Resultats obtenus :**
+**Résultats obtenus :**
 
 ```
 iso.3.6.1.2.1.1.1.0 = STRING: "Linux debian 6.1.0-22-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.94-1 (2024-06-21) x86_64"
@@ -36,34 +36,34 @@ iso.3.6.1.2.1.1.9.1.3.9 = STRING: "The MIB modules for managing SNMP Notificatio
 iso.3.6.1.2.1.1.9.1.3.10 = STRING: "The MIB module for logging SNMP Notifications."
 ```
 
-**Informations sensibles exposees :**
+**Informations sensibles exposées :**
 
 | Champ | Valeur | Risque |
 |-------|--------|--------|
-| sysDescr | Linux debian 6.1.0-22-cloud-amd64 Debian 6.1.94-1 | Version exacte du kernel expose |
-| sysContact | admin@vulnerable-corp.local | Email admin expose |
-| sysName | target-server | Hostname revele |
-| sysLocation | Server Room - Rack 42 | Localisation physique revelee |
-| sysUpTime | 0:24:43 | Uptime systeme |
+| sysDescr | Linux debian 6.1.0-22-cloud-amd64 Debian 6.1.94-1 | Version exacte du kernel exposé |
+| sysContact | admin@vulnerable-corp.local | Email admin exposé |
+| sysName | target-server | Hostname révélé |
+| sysLocation | Server Room - Rack 42 | Localisation physique révélée |
+| sysUpTime | 0:24:43 | Uptime système |
 
 ---
 
-## 2. Interfaces Reseau
+## 2. Interfaces Réseau
 
 ```bash
 snmpwalk -v2c -c public localhost .1.3.6.1.2.1.2.2.1.2
 ```
 
-**Resultats obtenus :**
+**Résultats obtenus :**
 
 ```
 iso.3.6.1.2.1.2.2.1.2.1 = STRING: "lo"
 iso.3.6.1.2.1.2.2.1.2.2 = STRING: "ens4"
 ```
 
-**Interfaces identifiees :**
+**Interfaces identifiées :**
 - `lo` : Interface loopback
-- `ens4` : Interface reseau principale
+- `ens4` : Interface réseau principale
 
 ---
 
@@ -73,14 +73,14 @@ iso.3.6.1.2.1.2.2.1.2.2 = STRING: "ens4"
 snmpwalk -v2c -c public localhost .1.3.6.1.2.1.2.2.1.6
 ```
 
-**Resultats obtenus :**
+**Résultats obtenus :**
 
 ```
 iso.3.6.1.2.1.2.2.1.6.1 = ""
 iso.3.6.1.2.1.2.2.1.6.2 = Hex-STRING: 0C 33 0A 4A 00 00
 ```
 
-**Adresses MAC identifiees :**
+**Adresses MAC identifiées :**
 - Interface `lo` : (vide - loopback)
 - Interface `ens4` : **0C:33:0A:4A:00:00**
 
@@ -92,16 +92,16 @@ iso.3.6.1.2.1.2.2.1.6.2 = Hex-STRING: 0C 33 0A 4A 00 00
 snmpwalk -v2c -c public localhost .1.3.6.1.2.1.4.20.1.1
 ```
 
-**Resultats obtenus :**
+**Résultats obtenus :**
 
 ```
 iso.3.6.1.2.1.4.20.1.1.127.0.0.1 = IpAddress: 127.0.0.1
 iso.3.6.1.2.1.4.20.1.1.192.168.122.10 = IpAddress: 192.168.122.10
 ```
 
-**Adresses IP identifiees :**
+**Adresses IP identifiées :**
 - `127.0.0.1` : Loopback
-- `192.168.122.10` : IP principale (reseau interne)
+- `192.168.122.10` : IP principale (réseau interne)
 
 ---
 
@@ -111,7 +111,7 @@ iso.3.6.1.2.1.4.20.1.1.192.168.122.10 = IpAddress: 192.168.122.10
 snmpwalk -v2c -c public localhost .1.3.6.1.2.1.25.4.2.1.2
 ```
 
-**Resultats obtenus (services critiques) :**
+**Résultats obtenus (services critiques) :**
 
 ```
 iso.3.6.1.2.1.25.4.2.1.2.1 = STRING: "systemd"
@@ -129,7 +129,7 @@ iso.3.6.1.2.1.25.4.2.1.2.478 = STRING: "bash"
 iso.3.6.1.2.1.25.4.2.1.2.1015 = STRING: "snmpd"
 ```
 
-**Services critiques identifies :**
+**Services critiques identifiés :**
 
 | PID | Processus | Risque potentiel |
 |-----|-----------|------------------|
@@ -137,7 +137,7 @@ iso.3.6.1.2.1.25.4.2.1.2.1015 = STRING: "snmpd"
 | 344 | **sshd** | Service SSH actif - surface d'attaque |
 | 1015 | **snmpd** | Service SNMP (cible de l'enum) |
 | 306 | dbus-daemon | Communication inter-processus |
-| 338 | unattended-upgr | Mises a jour auto (peut reveler des vulns) |
+| 338 | unattended-upgr | Mises a jour auto (peut révélér des vulns) |
 
 ---
 
@@ -147,7 +147,7 @@ iso.3.6.1.2.1.25.4.2.1.2.1015 = STRING: "snmpd"
 snmpwalk -v2c -c public localhost .1.3.6.1.2.1.25.4.2.1.4 | head -20
 ```
 
-**Resultats obtenus :**
+**Résultats obtenus :**
 
 ```
 iso.3.6.1.2.1.25.4.2.1.4.1 = STRING: "/sbin/init"
@@ -161,7 +161,7 @@ iso.3.6.1.2.1.25.4.2.1.4.1 = STRING: "/sbin/init"
 snmpwalk -v2c -c public localhost .1.3.6.1.2.1.6.13
 ```
 
-**Resultats obtenus :**
+**Résultats obtenus :**
 
 ```
 iso.3.6.1.2.1.6.13.1.1.0.0.0.0.22.0.0.0.0.0 = INTEGER: 2
@@ -171,7 +171,7 @@ iso.3.6.1.2.1.6.13.1.4.0.0.0.0.22.0.0.0.0.0 = IpAddress: 0.0.0.0
 iso.3.6.1.2.1.6.13.1.5.0.0.0.0.22.0.0.0.0.0 = INTEGER: 0
 ```
 
-**Ports TCP identifies :**
+**Ports TCP identifiés :**
 
 | Port | Service | Etat | Risque |
 |------|---------|------|--------|
@@ -185,14 +185,14 @@ iso.3.6.1.2.1.6.13.1.5.0.0.0.0.22.0.0.0.0.0 = INTEGER: 0
 snmpwalk -v2c -c public localhost .1.3.6.1.2.1.7.5.1.2
 ```
 
-**Resultats obtenus :**
+**Résultats obtenus :**
 
 ```
 iso.3.6.1.2.1.7.5.1.2.0.0.0.0.161 = INTEGER: 161
 iso.3.6.1.2.1.7.5.1.2.0.0.0.0.44952 = INTEGER: 44952
 ```
 
-**Ports UDP identifies :**
+**Ports UDP identifiés :**
 
 | Port | Service | Risque |
 |------|---------|--------|
@@ -201,13 +201,13 @@ iso.3.6.1.2.1.7.5.1.2.0.0.0.0.44952 = INTEGER: 44952
 
 ---
 
-## 9. Stockage et Memoire
+## 9. Stockage et Mémoire
 
 ```bash
 snmpwalk -v2c -c public localhost .1.3.6.1.2.1.25.2.3.1.3
 ```
 
-**Resultats obtenus :**
+**Résultats obtenus :**
 
 ```
 iso.3.6.1.2.1.25.2.3.1.3.1 = STRING: "Physical memory"
@@ -225,10 +225,10 @@ iso.3.6.1.2.1.25.2.3.1.3.53 = STRING: "/boot/efi"
 iso.3.6.1.2.1.25.2.3.1.3.55 = STRING: "/run/user/1000"
 ```
 
-**Points de montage identifies :**
+**Points de montage identifiés :**
 - `/` : Partition racine
-- `/boot/efi` : Partition EFI (systeme UEFI)
-- `/run`, `/dev/shm`, `/run/lock` : Tmpfs systeme
+- `/boot/efi` : Partition EFI (système UEFI)
+- `/run`, `/dev/shm`, `/run/lock` : Tmpfs système
 - `/run/user/1000` : Session utilisateur UID 1000
 
 ---
@@ -239,7 +239,7 @@ iso.3.6.1.2.1.25.2.3.1.3.55 = STRING: "/run/user/1000"
 snmpwalk -v2c -c public localhost .1.3.6.1.2.1.25.6.3.1.2 | head -15
 ```
 
-**Resultats obtenus :**
+**Résultats obtenus :**
 
 ```
 iso.3.6.1.2.1.25.6.3.1.2.1 = STRING: "adduser_3.134_all"
@@ -259,83 +259,83 @@ iso.3.6.1.2.1.25.6.3.1.2.14 = STRING: "ca-certificates_20230311_all"
 iso.3.6.1.2.1.25.6.3.1.2.15 = STRING: "cloud-guest-utils_0.33-1_all"
 ```
 
-**Paquets critiques identifies avec versions :**
+**Paquets critiques identifiés avec versions :**
 
 | Paquet | Version | Risque |
 |--------|---------|--------|
 | base-files | 12.4+deb12u6 | Confirme Debian 12 |
 | bash | 5.2.15-2+b7 | Version de bash |
-| bind9-host | 9.18.24-1 | Client DNS (version exposee) |
+| bind9-host | 9.18.24-1 | Client DNS (version exposée) |
 | ca-certificates | 20230311 | Certificats CA |
 | cloud-guest-utils | 0.33-1 | VM cloud (Azure/AWS/GCP) |
 
 ---
 
-## Synthese des risques de securite
+## Synthèse des risques de sécurité
 
-### Risque 1 : Community string par defaut
+### Risque 1 : Community string par défaut
 
 | Element | Detail |
 |---------|--------|
-| Severite | **CRITIQUE** |
+| Sévérité | **CRITIQUE** |
 | Constat | Community "public" accessible sans authentification |
-| Preuve | Toutes les commandes snmpwalk ont fonctionne |
+| Preuve | Toutes les commandes snmpwalk ont fonctionné |
 | Impact | Acces complet en lecture a toutes les informations |
-| Remediation | Migrer vers SNMPv3 ou utiliser community complexe |
+| Remédiation | Migrer vers SNMPv3 ou utiliser community complexe |
 
-### Risque 2 : Exposition complete du systeme
-
-| Element | Detail |
-|---------|--------|
-| Severite | **HAUTE** |
-| Donnees exposees | OS: Debian 6.1.94-1, Kernel: 6.1.0-22-cloud-amd64 |
-| Impact | Recherche de CVE facilitee |
-| Remediation | Restreindre les vues SNMP |
-
-### Risque 3 : Email administrateur expose
+### Risque 2 : Exposition complète du système
 
 | Element | Detail |
 |---------|--------|
-| Severite | **MOYENNE** |
+| Sévérité | **HAUTE** |
+| Données exposées | OS: Debian 6.1.94-1, Kernel: 6.1.0-22-cloud-amd64 |
+| Impact | Recherche de CVE facilitée |
+| Remédiation | Restreindre les vues SNMP |
+
+### Risque 3 : Email administrateur exposé
+
+| Element | Detail |
+|---------|--------|
+| Sévérité | **MOYENNE** |
 | Donnee | admin@vulnerable-corp.local |
 | Impact | Cible pour phishing/social engineering |
-| Remediation | Utiliser un alias generique |
+| Remédiation | Utiliser un alias générique |
 
-### Risque 4 : Localisation physique revelee
+### Risque 4 : Localisation physique révélée
 
 | Element | Detail |
 |---------|--------|
-| Severite | **MOYENNE** |
+| Sévérité | **MOYENNE** |
 | Donnee | Server Room - Rack 42 |
 | Impact | Facilite l'acces physique cible |
-| Remediation | Supprimer ou obfusquer sysLocation |
+| Remédiation | Supprimer ou obfusquer sysLocation |
 
-### Risque 5 : Liste des processus expose
+### Risque 5 : Liste des processus exposé
 
 | Element | Detail |
 |---------|--------|
-| Severite | **HAUTE** |
-| Donnees | sshd, snmpd, systemd, dbus-daemon... |
-| Impact | Cartographie complete des services |
-| Remediation | Desactiver hrSWRun* dans la config |
+| Sévérité | **HAUTE** |
+| Données | sshd, snmpd, systemd, dbus-daemon... |
+| Impact | Cartographie complète des services |
+| Remédiation | Désactiver hrSWRun* dans la config |
 
 ### Risque 6 : Port SSH accessible
 
 | Element | Detail |
 |---------|--------|
-| Severite | **HAUTE** |
+| Sévérité | **HAUTE** |
 | Donnee | Port 22 en ecoute sur 0.0.0.0 |
 | Impact | SSH accessible depuis toutes les interfaces |
-| Remediation | Restreindre SSH a l'interface de management |
+| Remédiation | Restreindre SSH a l'interface de management |
 
-### Risque 7 : Liste des paquets exposes
+### Risque 7 : Liste des paquets exposés
 
 | Element | Detail |
 |---------|--------|
-| Severite | **MOYENNE** |
-| Donnees | 400+ paquets avec versions exactes |
-| Impact | Identification de composants vulnerables |
-| Remediation | Desactiver hrSWInstalled* |
+| Sévérité | **MOYENNE** |
+| Données | 400+ paquets avec versions exactes |
+| Impact | Identification de composants vulnérables |
+| Remédiation | Désactiver hrSWInstalled* |
 
 ---
 
@@ -344,24 +344,24 @@ iso.3.6.1.2.1.25.6.3.1.2.15 = STRING: "cloud-guest-utils_0.33-1_all"
 | Critere | snmpwalk | snmp-check |
 |---------|----------|------------|
 | Type | Outil unitaire | Outil automatise |
-| Sortie | OIDs bruts | Rapport formate |
+| Sortie | OIDs bruts | Rapport formaté |
 | Flexibilite | Haute (OID precis) | Basse (scan complet) |
 | Installation | net-snmp (standard) | Ruby + gem snmp |
-| Usage | Requetes ciblees | Audit initial |
+| Usage | Requetes ciblées | Audit initial |
 
-### Commande snmp-check equivalente
+### Commande snmp-check équivalente
 
 ```bash
 snmp-check 192.168.122.10 -c public
 ```
 
-Cette commande genere automatiquement un rapport similaire aux resultats ci-dessus.
+Cette commande génère automatiquement un rapport similaire aux resultats ci-dessus.
 
 ---
 
-## Resume des informations collectees
+## Résumé des informations collectées
 
-| Categorie | Donnees obtenues |
+| Categorie | Données obtenues |
 |-----------|------------------|
 | OS | Debian 12, Kernel 6.1.0-22-cloud-amd64 |
 | Hostname | target-server |
@@ -380,7 +380,7 @@ Cette commande genere automatiquement un rapport similaire aux resultats ci-dess
 
 ## Validation des objectifs
 
-- [x] **Full snapshot du systeme SNMP** : Toutes les categories enumerees
-- [x] **Risques de securite identifies** : 7 risques documentes avec severites
-- [x] **Usage pratique de snmpwalk** : Commandes et resultats reels fournis
-- [x] **Comprehension de snmp-check** : Comparaison et usage documente
+- [x] **Full snapshot du système SNMP** : Toutes les categories énumérées
+- [x] **Risques de sécurité identifiés** : 7 risques documentés avec sévérités
+- [x] **Usage pratique de snmpwalk** : Commandes et resultats réels fournis
+- [x] **Comprehension de snmp-check** : Comparaison et usage documenté

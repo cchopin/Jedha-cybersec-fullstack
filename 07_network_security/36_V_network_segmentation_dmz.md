@@ -205,7 +205,7 @@ Segmentation classique :          Microsegmentation :
 | **Zone** | Groupe de systèmes avec même niveau de confiance |
 | **Trust Level** | Niveau de confiance d'une zone |
 | **Microsegmentation** | Chaque système est sa propre zone |
-| **Defense in Depth** | Plusieurs couches de protection |
+| **Defense in Depth** | Défense en profondeur = plusieurs couches de protection successives (comme les murailles d'un château) |
 
 ---
 

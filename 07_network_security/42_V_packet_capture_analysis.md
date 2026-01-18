@@ -2,7 +2,7 @@
 
 ## L'idée en une phrase
 
-Wireshark et tcpdump sont comme des caméras de surveillance qui enregistrent tout ce qui passe sur le réseau, vous permettant de rejouer et analyser chaque conversation.
+Wireshark et tcpdump sont comme des caméras de surveillance qui enregistrent tout ce qui passe sur le réseau, permettant de rejouer et analyser chaque conversation.
 
 ---
 
@@ -29,7 +29,7 @@ Wireshark capture et affiche tous les paquets qui transitent sur le réseau.
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Ce que vous pouvez voir
+### Ce qui est visible
 
 | Couche | Information |
 |--------|-------------|

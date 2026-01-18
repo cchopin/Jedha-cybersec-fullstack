@@ -244,8 +244,8 @@ sniff(filter="proto ospf", prn=detect_rogue)
 | **Rogue Router** | Routeur pirate infiltré dans le réseau |
 | **Blackhole** | Route vers nulle part (DoS) |
 | **Prefix Hijacking** | Annoncer des IPs non possédées |
-| **LSA** | Message OSPF décrivant la topologie |
-| **RPKI** | Validation cryptographique BGP |
+| **LSA** | Link State Advertisement - message OSPF décrivant la topologie du réseau |
+| **RPKI** | Resource Public Key Infrastructure - système de validation cryptographique des annonces BGP |
 
 ---
 

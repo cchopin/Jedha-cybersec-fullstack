@@ -187,7 +187,7 @@ ZTNA (Zero Trust) :
 |--------|-----|------|
 | **Accès** | Tout le réseau | Application par application |
 | **Confiance** | Après login, confiance totale | Vérification continue |
-| **Principe** | Castle-and-moat | Never trust, always verify |
+| **Principe** | Castle-and-moat (château-douves : une fois dedans, accès libre) | Never trust, always verify (ne jamais faire confiance, toujours vérifier) |
 | **Surface d'attaque** | Large | Réduite |
 
 ---
@@ -213,7 +213,7 @@ ZTNA (Zero Trust) :
 | **Site-to-Site** | VPN entre deux réseaux |
 | **Remote Access** | VPN pour utilisateurs distants |
 | **ZTNA** | Accès Zero Trust par application |
-| **PSK** | Clé partagée pour l'authentification |
+| **PSK** | Pre-Shared Key = Clé partagée pour l'authentification (comme un mot de passe commun) |
 | **Tunnel Mode** | Chiffre le paquet entier |
 
 ---

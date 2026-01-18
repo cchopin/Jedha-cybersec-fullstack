@@ -2,14 +2,14 @@
 
 ## Objectifs du cours
 
-Ce cours explore en profondeur le Border Gateway Protocol (BGP), la pierre angulaire du routage Internet moderne. Nous decouvrirons ce qui rend BGP essentiel pour la connectivite globale, explorerons sa logique et ses politiques, et analyserons son utilisation dans les backbones ISP et les environnements d'entreprise.
+Ce cours explore en profondeur le Border Gateway Protocol (BGP), la pierre angulaire du routage Internet moderne. Nous découvrirons ce qui rend BGP essentiel pour la connectivité globale, explorerons sa logique et ses politiques, et analyserons son utilisation dans les backbones ISP et les environnements d'entreprise.
 
-Competences visees :
+Compétences visees :
 - Comprendre les principes du routage path-vector et le role des numeros AS
-- Differencier le comportement de iBGP (internal BGP) et eBGP (external BGP)
+- Différencier le comportement de iBGP (internal BGP) et eBGP (external BGP)
 - Configurer le peering, les annonces de routes et le filtrage avec precision
 - Apprecier comment BGP est applique dans le contexte des fournisseurs de services et des WAN d'entreprise
-- Identifier les vulnerabilites BGP et les mesures de securisation
+- Identifier les vulnérabilités BGP et les mesures de sécurisation
 
 ---
 
@@ -20,18 +20,18 @@ Competences visees :
 | Sigle | Nom complet | Description |
 |-------|-------------|-------------|
 | **BGP** | Border Gateway Protocol | Protocole de routage inter-AS (EGP) de l'Internet |
-| **AS** | Autonomous System | Ensemble de reseaux sous une meme administration |
+| **AS** | Autonomous System | Ensemble de réseaux sous une même administration |
 | **ASN** | Autonomous System Number | Identifiant unique d'un AS (16 ou 32 bits) |
 | **EGP** | Exterior Gateway Protocol | Categorie de protocoles de routage inter-AS |
 | **IGP** | Interior Gateway Protocol | Protocole de routage intra-AS (OSPF, EIGRP) |
-| **Path-Vector** | Vecteur de chemin | Type de protocole utilisant le chemin d'AS comme metrique |
+| **Path-Vector** | Vecteur de chemin | Type de protocole utilisant le chemin d'AS comme métrique |
 
 ### Types de BGP
 
 | Terme | Description |
 |-------|-------------|
-| **eBGP** | External BGP - Peering entre AS differents |
-| **iBGP** | Internal BGP - Peering au sein du meme AS |
+| **eBGP** | External BGP - Peering entre AS différents |
+| **iBGP** | Internal BGP - Peering au sein du même AS |
 | **MP-BGP** | Multiprotocol BGP - Extension pour IPv6, VPN, etc. |
 
 ### Attributs BGP
@@ -52,15 +52,15 @@ Competences visees :
 
 | Terme | Description |
 |-------|-------------|
-| **Peer / Neighbor** | Routeur BGP avec lequel une session est etablie |
-| **Peering** | Relation d'echange de routes entre deux AS |
+| **Peer / Neighbor** | Routeur BGP avec lequel une session est établie |
+| **Peering** | Relation d'échange de routes entre deux AS |
 | **Transit** | AS qui transporte le trafic entre deux autres AS |
-| **Upstream** | Fournisseur de connectivite Internet |
-| **Downstream** | Client recevant la connectivite |
+| **Upstream** | Fournisseur de connectivité Internet |
+| **Downstream** | Client recevant la connectivité |
 | **Full Table** | Table de routage Internet complete (~900k+ routes) |
-| **Default Route** | Route par defaut (0.0.0.0/0) |
+| **Default Route** | Route par défaut (0.0.0.0/0) |
 
-### Mecanismes avances
+### Mécanismes avances
 
 | Terme | Description |
 |-------|-------------|
@@ -71,21 +71,21 @@ Competences visees :
 | **Prefix-list** | Liste pour filtrer les prefixes IP |
 | **AS-path ACL** | Liste pour filtrer selon l'AS_PATH |
 
-### Termes de securite
+### Termes de sécurité
 
 | Terme | Description |
 |-------|-------------|
 | **BGP Hijacking** | Annonce illegitime de prefixes d'un autre AS |
-| **Route Leak** | Propagation non autorisee de routes |
+| **Route Leak** | Propagation non autorisée de routes |
 | **RPKI** | Resource Public Key Infrastructure - Validation des origines |
 | **ROA** | Route Origin Authorization - Certificat d'origine |
-| **BGPsec** | Extension de securite pour BGP |
+| **BGPsec** | Extension de sécurité pour BGP |
 
 ---
 
 ## Logique Path-Vector, Numeros AS et AS_PATH
 
-BGP est different des protocoles link-state ou distance-vector. C'est un protocole **path-vector**, utilisant une liste de systemes autonomes (AS) que la route doit traverser pour atteindre sa destination.
+BGP est different des protocoles link-state ou distance-vector. C'est un protocole **path-vector**, utilisant une liste de systèmes autonomes (AS) que la route doit traverser pour atteindre sa destination.
 
 ### Numeros de Systeme Autonome (ASN)
 
@@ -108,11 +108,11 @@ Les ASN publics sont attribues par les registres regionaux :
 
 ### L'attribut AS_PATH
 
-L'AS_PATH est l'outil de decision le plus critique en BGP :
+L'AS_PATH est l'outil de décision le plus critique en BGP :
 
 1. Chaque fois qu'une route passe par un AS, cet ASN est **prepend** a l'AS_PATH
 2. Si un routeur recoit une route contenant son propre ASN, il la **rejette** (prevention des boucles)
-3. Plus l'AS_PATH est **court**, plus la route est **preferee**
+3. Plus l'AS_PATH est **court**, plus la route est **préférée**
 
 **Exemple :**
 ```
@@ -128,30 +128,30 @@ Technique pour rendre une route moins attractive en ajoutant son propre ASN plus
 
 ```
 Route originale :     AS_PATH: 65001
-Apres prepending x3 : AS_PATH: 65001 65001 65001 65001
+Après prepending x3 : AS_PATH: 65001 65001 65001 65001
 ```
 
-Cela influence le choix des autres AS qui preferent les chemins plus courts.
+Cela influence le choix des autres AS qui préférént les chemins plus courts.
 
 ### Processus de selection BGP
 
-BGP utilise une collection d'attributs pour prendre ses decisions, dans cet ordre de priorite :
+BGP utilisé une collection d'attributs pour prendre ses décisions, dans cet ordre de priorité :
 
-| Priorite | Attribut | Critere |
+| Priorité | Attribut | Critère |
 |----------|----------|---------|
 | 1 | **Weight** | Plus haut = meilleur (Cisco, local) |
 | 2 | **Local Preference** | Plus haut = meilleur |
-| 3 | **Locally Originated** | Routes locales preferees |
+| 3 | **Locally Originated** | Routes locales préférées |
 | 4 | **AS_PATH** | Plus court = meilleur |
 | 5 | **Origin** | IGP < EGP < Incomplete |
 | 6 | **MED** | Plus bas = meilleur |
-| 7 | **eBGP > iBGP** | eBGP prefere |
+| 7 | **eBGP > iBGP** | eBGP préféré |
 | 8 | **IGP Metric** | Plus bas = meilleur |
 | 9 | **Oldest Route** | Route la plus ancienne |
 | 10 | **Router ID** | Plus bas = meilleur |
 | 11 | **Neighbor IP** | Plus bas = meilleur |
 
-Cette complexite donne aux ingenieurs un controle fin sur les politiques de routage a l'echelle d'Internet.
+Cette complexité donne aux ingénieurs un contrôle fin sur les politiques de routage a l'échelle d'Internet.
 
 ---
 
@@ -161,13 +161,13 @@ Cette complexite donne aux ingenieurs un controle fin sur les politiques de rout
 
 ### eBGP (External BGP)
 
-eBGP forme des relations entre routeurs de **differents systemes autonomes**. C'est la fondation du routage Internet.
+eBGP forme des relations entre routeurs de **différents systèmes autonomes**. C'est la fondation du routage Internet.
 
-**Caracteristiques cles :**
+**Caractéristiques cles :**
 
 | Aspect | Comportement |
 |--------|--------------|
-| TTL par defaut | 1 (peers directement connectes) |
+| TTL par défaut | 1 (peers directement connectes) |
 | Next-hop | Change vers l'IP du peer eBGP |
 | AD (Administrative Distance) | 20 |
 | Propagation | Routes annoncees aux peers iBGP et eBGP |
@@ -189,13 +189,13 @@ router bgp 65001
 
 ### iBGP (Internal BGP)
 
-iBGP est utilise **au sein du meme AS** pour partager les routes externes apprises via eBGP.
+iBGP est utilisé **au sein du même AS** pour partager les routes externes apprises via eBGP.
 
-**Caracteristiques cles :**
+**Caractéristiques cles :**
 
 | Aspect | Comportement |
 |--------|--------------|
-| TTL par defaut | 255 (pas de restriction) |
+| TTL par défaut | 255 (pas de restriction) |
 | Next-hop | **Non modifie** (preserve le next-hop eBGP) |
 | AD (Administrative Distance) | 200 |
 | Propagation | Routes **non** annoncees aux autres peers iBGP |
@@ -214,7 +214,7 @@ router bgp 65001
 
 **Consequence :** Necessite d'un **full-mesh** de sessions iBGP.
 
-| Nombre de routeurs | Sessions iBGP necessaires |
+| Nombre de routeurs | Sessions iBGP nécessaires |
 |-------------------|---------------------------|
 | 4 | 6 |
 | 10 | 45 |
@@ -240,7 +240,7 @@ router bgp 65001
 
 **Avantages :**
 - Reduit drastiquement le nombre de sessions
-- Simple a implementer
+- Simple a implémenter
 - Hierarchie possible (RR de RR)
 
 #### 2. Confederations
@@ -253,11 +253,11 @@ router bgp 65001
  bgp confederation peers 65002 65003
 ```
 
-Les sous-AS utilisent eBGP entre eux mais apparaissent comme un seul AS vers l'exterieur.
+Les sous-AS utilisént eBGP entre eux mais apparaissent comme un seul AS vers l'exterieur.
 
-### Probleme du Next-Hop iBGP
+### Problème du Next-Hop iBGP
 
-iBGP preserve le next-hop eBGP original, ce qui peut causer des problemes :
+iBGP preserve le next-hop eBGP original, ce qui peut causer des problèmes :
 
 ```
 Internet --- R1 (eBGP) --- R2 (iBGP) --- R3 (iBGP)
@@ -281,30 +281,30 @@ router bgp 65001
 
 ### Etablissement du Peering BGP
 
-Contrairement a OSPF ou EIGRP, BGP ne decouvre pas automatiquement ses voisins. Le peering est configure manuellement.
+Contrairement a OSPF ou EIGRP, BGP ne decouvre pas automatiquement ses voisins. Le peering est configuré manuellement.
 
 **Processus d'etablissement :**
 1. Configuration manuelle des neighbors
 2. Etablissement d'une session TCP (port 179)
-3. Echange de messages OPEN
+3. Échange de messages OPEN
 4. Negociation des capacites
-5. Echange initial de la table de routage complete
+5. Échange initial de la table de routage complete
 6. Envoi d'updates incrementaux
 
-**Etats de la session BGP :**
+**États de la session BGP :**
 
-| Etat | Description |
+| État | Description |
 |------|-------------|
 | **Idle** | Pas de tentative de connexion |
 | **Connect** | Tentative de connexion TCP |
 | **Active** | Attente de connexion entrante |
-| **OpenSent** | Message OPEN envoye |
+| **OpenSent** | Message OPEN envoyé |
 | **OpenConfirm** | Message OPEN recu, attente de KEEPALIVE |
-| **Established** | Session etablie, echange de routes |
+| **Established** | Session établie, échange de routes |
 
 ### Annonce de routes
 
-BGP n'annonce **aucune route par defaut**. Vous devez specifier explicitement les reseaux a annoncer.
+BGP n'annonce **aucune route par défaut**. Vous devez spécifier explicitement les réseaux a annoncer.
 
 #### Methode 1 : Commande network
 
@@ -328,12 +328,12 @@ router bgp 65001
 
 ### Filtrage de routes
 
-Le filtrage est essentiel pour controler ce qui est annonce et accepte.
+Le filtrage est essentiel pour contrôler ce qui est annonce et accepte.
 
 #### Prefix-list
 
 ```cisco
-! Bloquer un prefixe specifique
+! Bloquer un prefixe spécifique
 ip prefix-list BLOCK-PREFIX deny 192.168.5.0/24
 ip prefix-list BLOCK-PREFIX permit 0.0.0.0/0 le 32
 
@@ -369,10 +369,10 @@ router bgp 65001
 ! Route-map complexe
 route-map POLICY permit 10
  match as-path 10
- set local-preference 200
+ set local-préférénce 200
 
 route-map POLICY permit 20
- set local-preference 100
+ set local-préférénce 100
 
 router bgp 65001
  neighbor 10.1.1.1 route-map POLICY in
@@ -383,7 +383,7 @@ router bgp 65001
 Les communities permettent de taguer les routes pour un traitement ulterieur :
 
 ```cisco
-! Definir une community
+! Définir une community
 route-map SET-COMMUNITY permit 10
  set community 65001:100
 
@@ -409,7 +409,7 @@ route-map FILTER-COMMUNITY permit 20
 
 ### Utilisation ISP
 
-Les ISP utilisent BGP pour :
+Les ISP utilisént BGP pour :
 
 | Fonction | Description |
 |----------|-------------|
@@ -427,7 +427,7 @@ Les ISP utilisent BGP pour :
 
 ### Utilisation Enterprise
 
-Les entreprises utilisent BGP pour :
+Les entreprises utilisént BGP pour :
 
 | Use Case | Description |
 |----------|-------------|
@@ -461,17 +461,17 @@ router bgp 65010
  neighbor 10.2.2.2 route-map ISP-B-IN in
  neighbor 10.2.2.2 route-map ISP-B-OUT out
 
-! Preferer ISP A (local-pref plus eleve)
+! Preferer ISP A (local-pref plus élevé)
 route-map ISP-A-IN permit 10
- set local-preference 200
+ set local-préférénce 200
 
 route-map ISP-B-IN permit 10
- set local-preference 100
+ set local-préférénce 100
 ```
 
 ### MPLS VPN avec BGP
 
-MPLS utilise BGP (MP-BGP) pour echanger les routes VPN entre les PE (Provider Edge) routers :
+MPLS utilisé BGP (MP-BGP) pour échanger les routes VPN entre les PE (Provider Edge) routers :
 
 ```
 Site A --- CE --- PE --- P --- PE --- CE --- Site B
@@ -489,7 +489,7 @@ router bgp 65001
 
 ### Cloud Connectivity
 
-AWS Direct Connect et Azure ExpressRoute utilisent BGP pour le routage dynamique :
+AWS Direct Connect et Azure ExpressRoute utilisént BGP pour le routage dynamique :
 
 ```cisco
 ! AWS Direct Connect
@@ -503,18 +503,18 @@ router bgp 65010
 
 ---
 
-## Securite BGP et implications cyber
+## Sécurité BGP et implications cyber
 
-### Vulnerabilites BGP
+### Vulnérabilités BGP
 
 | Attaque | Description | Impact |
 |---------|-------------|--------|
 | **BGP Hijacking** | Annonce de prefixes appartenant a un autre AS | Interception MitM, blackhole |
-| **Prefix Hijacking** | Annonce du meme prefixe qu'un AS legitime | Detournement partiel |
-| **Subprefix Hijacking** | Annonce d'un prefixe plus specifique | Detournement complet |
+| **Prefix Hijacking** | Annonce du même prefixe qu'un AS legitime | Detournement partiel |
+| **Subprefix Hijacking** | Annonce d'un prefixe plus spécifique | Detournement complet |
 | **AS_PATH Manipulation** | Falsification du chemin d'AS | Apparence de legitimite |
-| **Route Leak** | Propagation non autorisee de routes | Perturbation du routage |
-| **BGP Session Hijacking** | Prise de controle d'une session TCP | Injection de routes |
+| **Route Leak** | Propagation non autorisée de routes | Perturbation du routage |
+| **BGP Session Hijacking** | Prise de contrôle d'une session TCP | Injection de routes |
 
 ### Cas celebres de BGP Hijacking
 
@@ -533,7 +533,7 @@ Tout Internet route vers AS 65001
 
 Attaque :
 AS 65999 (attaquant) annonce 203.0.113.0/25 et 203.0.113.128/25
-Routes plus specifiques = preferees par tous
+Routes plus spécifiques = préférées par tous
 Tout le trafic vers 203.0.113.0/24 va vers l'attaquant
 ```
 
@@ -582,7 +582,7 @@ Limite le nombre de prefixes acceptes d'un peer :
 ```cisco
 router bgp 65001
  neighbor 10.0.0.2 maximum-prefix 1000 80 restart 5
- ! Alerte a 80%, restart apres 5 min si limite atteinte
+ ! Alerte a 80%, restart après 5 min si limite atteinte
 ```
 
 #### 4. AS_PATH Filtering
@@ -617,22 +617,22 @@ router bgp 65001
 
 | Outil | Description |
 |-------|-------------|
-| **BGPStream** | Detection temps reel d'anomalies |
+| **BGPStream** | Detection temps réel d'anomalies |
 | **RIPE RIS** | Looking glass et historique |
 | **RouteViews** | Archives des tables BGP |
 | **BGPalerter** | Alertes sur changements |
 | **Cloudflare Radar** | Visualisation des anomalies |
 
-### Checklist securite BGP
+### Checklist sécurité BGP
 
 ```
 [ ] RPKI deploye avec ROAs valides
 [ ] Authentification MD5/TCP-AO sur tous les peerings
 [ ] Filtrage de prefixes (bogons, max prefix length)
-[ ] Maximum prefix configure
+[ ] Maximum prefix configuré
 [ ] AS-path filtering (AS prives)
 [ ] Monitoring des annonces (BGPStream, alertes)
-[ ] Documentation des peerings autorises
+[ ] Documentation des peerings autorisés
 [ ] IRR (Internet Routing Registry) a jour
 [ ] Tests de failover planifies
 [ ] Plan de reponse aux incidents BGP
@@ -687,7 +687,7 @@ show ip bgp neighbors 10.0.0.2
 ! Table BGP
 show ip bgp
 
-! Routes pour un prefixe specifique
+! Routes pour un prefixe spécifique
 show ip bgp 203.0.113.0/24
 
 ! Routes annoncees a un voisin
@@ -721,9 +721,9 @@ Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
 | [RFC 4271](https://tools.ietf.org/html/rfc4271) | Specification BGP-4 |
 | [Cisco - BGP Configuration Guide](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_bgp/configuration/xe-16/irg-xe-16-book.html) | Guide officiel Cisco |
 | [Juniper - BGP Fundamentals](https://www.juniper.net/documentation/us/en/software/junos/bgp/topics/concept/routing-protocol-bgp-overview.html) | Documentation Juniper |
-| [BGP Stream](https://bgpstream.caida.org/) | Monitoring BGP temps reel |
+| [BGP Stream](https://bgpstream.caida.org/) | Monitoring BGP temps réel |
 | [RPKI Documentation](https://rpki.readthedocs.io/) | Guide de deploiement RPKI |
-| [MANRS](https://www.manrs.org/) | Bonnes pratiques securite routage |
+| [MANRS](https://www.manrs.org/) | Bonnes pratiques sécurité routage |
 
 ---
 
@@ -731,8 +731,8 @@ Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services et protocoles reseau | https://tryhackme.com/room/networkservices |
+| **Intro to Networking** | Fondamentaux réseau | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services et protocoles réseau | https://tryhackme.com/room/networkservices |
 | **Wireshark: The Basics** | Analyse de paquets BGP | https://tryhackme.com/room/wiresharkthebasics |
 
-> **Note** : BGP est principalement pratique sur des environnements de lab comme GNS3, EVE-NG ou des labs cloud specialises. Pour les tests de securite BGP, des outils comme ExaBGP permettent de simuler des annonces dans un contexte de recherche autorise. Les incidents BGP reels sont documentes sur bgpstream.caida.org.
+> **Note** : BGP est principalement pratique sur des environnements de lab comme GNS3, EVE-NG ou des labs cloud specialises. Pour les tests de sécurité BGP, des outils comme ExaBGP permettent de simuler des annonces dans un contexte de recherche autorisé. Les incidents BGP réels sont documentes sur bgpstream.caida.org.

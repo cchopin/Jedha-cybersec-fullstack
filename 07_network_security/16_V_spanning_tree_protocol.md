@@ -223,7 +223,7 @@ Switch(config-if)# spanning-tree bpduguard enable
 | **STP** | Protocole anti-boucle |
 | **RSTP** | STP rapide (1-5 secondes) |
 | **Root Bridge** | Switch de référence (chef) |
-| **BPDU** | Messages échangés par STP |
+| **BPDU** | Messages échangés par STP (Bridge Protocol Data Unit) |
 | **Root Port** | Port vers le Root Bridge |
 | **Designated Port** | Port qui transmet sur un segment |
 | **Blocked Port** | Port désactivé pour éviter les boucles |

@@ -213,13 +213,13 @@ Neighbor        V    AS MsgRcvd MsgSent  Up/Down  State/PfxRcd
 |-------|-------------------|
 | **BGP** | Protocole de routage d'Internet |
 | **AS** | Réseau autonome avec un numéro unique |
-| **ASN** | Numéro d'AS |
+| **ASN** | Autonomous System Number - numéro unique identifiant un AS |
 | **AS_PATH** | Liste des AS traversés |
 | **eBGP** | BGP entre AS différents |
 | **iBGP** | BGP dans le même AS |
 | **BGP Hijacking** | Annonce de préfixes non possédés |
 | **RPKI** | Validation cryptographique des annonces |
-| **ROA** | Autorisation d'annoncer un préfixe |
+| **ROA** | Route Origin Authorization - certificat autorisant un AS à annoncer un préfixe |
 
 ---
 

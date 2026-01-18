@@ -248,7 +248,7 @@ FHRP aide à atteindre 99.9% et plus.
 | **FHRP** | Famille de protocoles de redondance de passerelle |
 | **HSRP** | Protocole Cisco de redondance |
 | **VRRP** | Protocole standard de redondance |
-| **VIP** | IP virtuelle partagée par les routeurs |
+| **VIP** | Virtual IP - adresse IP virtuelle partagée par les routeurs |
 | **Active/Master** | Routeur qui répond actuellement |
 | **Standby/Backup** | Routeur prêt à prendre le relais |
 | **Priorité** | Détermine qui devient actif (plus élevé = prioritaire) |

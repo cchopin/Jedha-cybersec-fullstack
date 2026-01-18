@@ -244,7 +244,7 @@ sniff(filter="proto ospf", prn=detect_rogue)
 |-------|-------------------|
 | **Route Injection** | Injecter de fausses routes |
 | **Rogue Router** | Routeur pirate infiltré dans le réseau |
-| **Blackhole** | Route vers nulle part (DoS) |
+| **Blackhole** | Route vers nulle part (le trafic disparaît = déni de service) |
 | **Prefix Hijacking** | Annoncer des IPs non possédées |
 | **LSA** | Message OSPF décrivant la topologie |
 | **RPKI** | Validation cryptographique BGP |

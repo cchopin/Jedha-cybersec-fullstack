@@ -2,60 +2,60 @@
 
 ## Objectifs du cours
 
-Ce cours vous plonge au coeur des communications reseau. Avec des outils comme Wireshark et tcpdump, vous pourrez observer chaque bit et octet qui traverse le reseau, dissequer le trafic, identifier les problemes et meme reconstruire des conversations.
+Ce cours plonge au coeur des communications réseau. Avec des outils comme Wireshark et tcpdump, il est possible d'observer chaque bit et octet qui traverse le réseau, disséquer le trafic, identifier les problèmes et même reconstruire des conversations.
 
-Competences visees :
-- Maitriser Wireshark pour capturer, filtrer et analyser les paquets
-- Utiliser les filtres BPF (Berkeley Packet Filters) pour une capture precise
+Compétences visées :
+- Maîtriser Wireshark pour capturer, filtrer et analyser les paquets
+- Utiliser les filtres BPF (Berkeley Packet Filters) pour une capture précise
 - Analyser les flux TCP et reconstruire des sessions
-- Utiliser tcpdump en ligne de commande, y compris a distance
+- Utiliser tcpdump en ligne de commande, y compris à distance
 - Identifier la latence, le jitter et la perte de paquets dans les captures VoIP et HTTP
 
 ---
 
 ## Glossaire
 
-### Termes generaux
+### Termes généraux
 
 | Terme | Description |
 |-------|-------------|
-| **Packet** | Unite de donnees transmise sur le reseau |
+| **Packet** | Unité de données transmise sur le réseau |
 | **Frame** | Trame au niveau Ethernet (couche 2) |
 | **PCAP** | Packet Capture - Format de fichier standard |
-| **Promiscuous Mode** | Mode ou l'interface capture tout le trafic |
+| **Promiscuous Mode** | Mode où l'interface capture tout le trafic |
 | **BPF** | Berkeley Packet Filter - Syntaxe de filtrage |
 
 ### Termes Wireshark
 
 | Terme | Description |
 |-------|-------------|
-| **Display Filter** | Filtre applique apres la capture |
-| **Capture Filter** | Filtre applique pendant la capture (BPF) |
-| **Dissector** | Module qui decode un protocole |
+| **Display Filter** | Filtre appliqué après la capture |
+| **Capture Filter** | Filtre appliqué pendant la capture (BPF) |
+| **Dissector** | Module qui décode un protocole |
 | **Follow Stream** | Reconstruction d'une conversation |
-| **Coloring Rules** | Regles de coloration des paquets |
+| **Coloring Rules** | Règles de coloration des paquets |
 
-### Metriques de performance
+### Métriques de performance
 
 | Terme | Description |
 |-------|-------------|
 | **Latency** | Temps de transit d'un paquet |
 | **RTT** | Round Trip Time - Aller-retour |
-| **Jitter** | Variation du delai entre paquets |
+| **Jitter** | Variation du délai entre paquets |
 | **Packet Loss** | Paquets perdus en transit |
-| **Retransmission** | Paquet renvoye (TCP) |
+| **Retransmission** | Paquet renvoyé (TCP) |
 
 ---
 
-## Wireshark : Le microscope du reseau
+## Wireshark : Le microscope du réseau
 
-Wireshark est l'outil de reference pour l'inspection de paquets. Utilise par les ingenieurs reseau, les analystes securite et les administrateurs systeme, il permet d'examiner exactement ce qui transite sur le reseau.
+Wireshark est l'outil de référence pour l'inspection de paquets. Utilisé par les ingénieurs réseau, les analystes sécurité et les administrateurs système, il permet d'examiner exactement ce qui transite sur le réseau.
 
 ![Wireshark Overview](assets/Wireshark_Overview.png)
 
 ### Installation
 
-| Systeme | Commande |
+| Système | Commande |
 |---------|----------|
 | Debian/Ubuntu | `sudo apt install wireshark` |
 | Kali Linux | Pre-installe |
@@ -174,7 +174,7 @@ Les Capture Filters utilisent la syntaxe Berkeley Packet Filter, appliquee au ni
 host 192.168.1.1                 # Tout trafic vers/depuis cette IP
 src host 10.0.0.1                # Source uniquement
 dst host 8.8.8.8                 # Destination uniquement
-net 192.168.1.0/24               # Tout un reseau
+net 192.168.1.0/24               # Tout un réseau
 tcp port 80                      # Port TCP 80
 udp port 53                      # Port UDP 53
 port 443                         # Port 443 (TCP ou UDP)
@@ -211,7 +211,7 @@ Une des fonctionnalites les plus puissantes de Wireshark est la reconstruction d
 
 ### Analyse du handshake TCP
 
-Le handshake TCP en 3 etapes revele la latence :
+Le handshake TCP en 3 étapes revele la latence :
 
 ```
 Client                              Server
@@ -259,7 +259,7 @@ Reconstruction d'un transfert FTP :
 
 ```
 1. Filtre: ftp ou ftp-data
-2. Follow TCP Stream sur la connexion de controle
+2. Follow TCP Stream sur la connexion de contrôle
 3. Voir les commandes: USER, PASS, RETR, STOR
 4. Follow TCP Stream sur la connexion de donnees
 5. Extraire le fichier transfere
@@ -340,7 +340,7 @@ tcpdump -i eth0 port 53
 # Exclure SSH
 tcpdump -i eth0 not port 22
 
-# Trafic d'un reseau
+# Trafic d'un réseau
 tcpdump -i eth0 net 192.168.1.0/24
 
 # ICMP (ping)
@@ -396,7 +396,7 @@ tshark -r capture.pcap -q -z io,stat,1
 
 ### Latence
 
-La latence est le temps necessaire pour qu'un paquet atteigne sa destination.
+La latence est le temps nécessaire pour qu'un paquet atteigne sa destination.
 
 ![Latency Analysis](assets/Latency.png)
 
@@ -434,7 +434,7 @@ Le jitter est la variation du delai entre paquets consecutifs. Critique pour la 
 
 ### Perte de paquets
 
-La perte de paquets indique des problemes de congestion ou d'erreurs reseau.
+La perte de paquets indique des problèmes de congestion ou d'erreurs réseau.
 
 ![Packet Loss](assets/PacketLoss.png)
 
@@ -471,7 +471,7 @@ tcp.analysis.out_of_order         # Paquets desordonnes
 tcp.analysis.zero_window          # Fenetre a zero
 tcp.analysis.window_full          # Fenetre pleine
 
-# Combiner pour voir tous les problemes
+# Combiner pour voir tous les problèmes
 tcp.analysis.flags
 ```
 
@@ -483,7 +483,7 @@ tcp.analysis.flags
 
 | Etape | Action |
 |-------|--------|
-| 1 | Identifier clairement le probleme |
+| 1 | Identifier clairement le problème |
 | 2 | Choisir la bonne interface |
 | 3 | Definir un filtre de capture (BPF) |
 | 4 | Preparer l'espace disque |
@@ -492,7 +492,7 @@ tcp.analysis.flags
 
 | Etape | Action |
 |-------|--------|
-| 1 | Reproduire le probleme |
+| 1 | Reproduire le problème |
 | 2 | Noter le timestamp |
 | 3 | Limiter la duree |
 | 4 | Verifier la taille du fichier |
@@ -503,7 +503,7 @@ tcp.analysis.flags
 |-------|--------|
 | 1 | Sauvegarder le PCAP |
 | 2 | Nommer clairement (date, context) |
-| 3 | Compresser si necessaire |
+| 3 | Compresser si nécessaire |
 | 4 | Analyser avec les bons filtres |
 
 ### Nommage des fichiers

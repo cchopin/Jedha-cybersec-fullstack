@@ -2,7 +2,7 @@
 
 ## Objectifs du cours
 
-Ce cours presente BGP (Border Gateway Protocol), le protocole de routage qui fait fonctionner Internet. Contrairement aux protocoles IGP comme OSPF ou EIGRP, BGP est un protocole EGP (Exterior Gateway Protocol) concu pour echanger des informations de routage entre systemes autonomes (AS).
+Ce cours presente BGP (Border Gateway Protocol), le protocole de routage qui fait fonctionner Internet. Contrairement aux protocoles IGP comme OSPF ou EIGRP, BGP est un protocole EGP (Exterior Gateway Protocol) concu pour echanger des informations de routage entre systèmes autonomes (AS).
 
 Competences visees :
 - Comprendre la logique path-vector et le role des numeros AS
@@ -20,7 +20,7 @@ Competences visees :
 | Sigle | Nom complet | Description |
 |-------|-------------|-------------|
 | **BGP** | Border Gateway Protocol | Protocole de routage inter-AS (EGP), base sur TCP port 179 |
-| **AS** | Autonomous System | Ensemble de reseaux sous une administration unique avec une politique de routage coherente |
+| **AS** | Autonomous System | Ensemble de réseaux sous une administration unique avec une politique de routage coherente |
 | **ASN** | Autonomous System Number | Identifiant unique d'un AS (16 bits: 1-65535, 32 bits: 1-4294967295) |
 | **EGP** | Exterior Gateway Protocol | Protocole de routage entre AS (BGP est le seul EGP utilise aujourd'hui) |
 | **IGP** | Interior Gateway Protocol | Protocole de routage interne (OSPF, EIGRP, IS-IS) |
@@ -40,12 +40,12 @@ Competences visees :
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| **AS_PATH** | Well-known mandatory | Liste des AS traverses (plus court = prefere) |
+| **AS_PATH** | Well-known mandatory | Liste des AS traverses (plus court = préféré) |
 | **NEXT_HOP** | Well-known mandatory | Adresse IP du prochain saut |
 | **ORIGIN** | Well-known mandatory | Origine de la route (IGP, EGP, Incomplete) |
-| **LOCAL_PREF** | Well-known discretionary | Preference locale dans l'AS (plus eleve = prefere) |
-| **MED** | Optional non-transitive | Multi-Exit Discriminator - suggere un point d'entree prefere |
-| **WEIGHT** | Cisco proprietary | Preference locale au routeur (plus eleve = prefere) |
+| **LOCAL_PREF** | Well-known discretionary | Preference locale dans l'AS (plus élevé = préféré) |
+| **MED** | Optional non-transitive | Multi-Exit Discriminator - suggere un point d'entree préféré |
+| **WEIGHT** | Cisco proprietary | Preference locale au routeur (plus élevé = préféré) |
 | **COMMUNITY** | Optional transitive | Tag pour le filtrage et les politiques |
 | **ATOMIC_AGGREGATE** | Well-known discretionary | Indique une agregation de routes |
 | **AGGREGATOR** | Optional transitive | Identifie le routeur ayant fait l'agregation |
@@ -54,7 +54,7 @@ Competences visees :
 
 | Etat | Description |
 |------|-------------|
-| **Idle** | Etat initial, attend un evenement de demarrage |
+| **Idle** | Etat initial, attend un événement de demarrage |
 | **Connect** | Attend la connexion TCP |
 | **Active** | Tente d'etablir la connexion TCP |
 | **OpenSent** | Message OPEN envoye, attend OPEN du peer |
@@ -70,16 +70,16 @@ Competences visees :
 | **KEEPALIVE** | Maintient la session active (defaut: 60s) |
 | **NOTIFICATION** | Signale une erreur, ferme la session |
 
-### Termes de securite BGP
+### Termes de sécurité BGP
 
 | Terme | Description |
 |-------|-------------|
 | **BGP Hijacking** | Annonce non autorisee de prefixes appartenant a un autre AS |
-| **Prefix Hijacking** | Annonce d'un prefixe plus specifique pour detourner le trafic |
+| **Prefix Hijacking** | Annonce d'un prefixe plus spécifique pour detourner le trafic |
 | **Route Leak** | Propagation non intentionnelle de routes vers des AS non autorises |
 | **RPKI** | Resource Public Key Infrastructure - validation cryptographique des annonces |
 | **ROA** | Route Origin Authorization - autorise un AS a annoncer un prefixe |
-| **BGPsec** | Extension de securite pour valider l'AS_PATH |
+| **BGPsec** | Extension de sécurité pour valider l'AS_PATH |
 | **IRR** | Internet Routing Registry - base de donnees des politiques de routage |
 
 ### Organisations et registres
@@ -104,10 +104,10 @@ BGP est un protocole **path-vector**, fondamentalement different des protocoles 
 | Aspect | Distance-Vector | Link-State | Path-Vector (BGP) |
 |--------|-----------------|------------|-------------------|
 | **Information partagee** | Distance vers destination | Topologie complete | Chemin complet (liste d'AS) |
-| **Vue du reseau** | Locale (voisins) | Regionale (aire) | Globale (Internet) |
+| **Vue du réseau** | Locale (voisins) | Regionale (aire) | Globale (Internet) |
 | **Prevention des boucles** | Split horizon, TTL | Vue coherente | AS_PATH |
 | **Metrique** | Hop count, cout | Cout SPF | Politique (attributs) |
-| **Scalabilite** | Faible | Moyenne | Tres elevee |
+| **Scalabilite** | Faible | Moyenne | Tres élevée |
 
 ### Fonctionnement de l'AS_PATH
 
@@ -173,7 +173,7 @@ router bgp 65001
 | **AD (Administrative Distance)** | 20 | 200 |
 | **Connexion typique** | Interface physique | Loopback |
 
-### Le probleme du split horizon iBGP
+### Le problème du split horizon iBGP
 
 **Regle fondamentale :** Un routeur iBGP ne readvertise PAS les routes apprises d'un autre peer iBGP vers d'autres peers iBGP.
 
@@ -260,7 +260,7 @@ router bgp 65001
  neighbor 10.0.0.2 ebgp-multihop 2
 ```
 
-### Annonce de reseaux
+### Annonce de réseaux
 
 **Methode 1 : Commande network**
 ```cisco
@@ -281,21 +281,21 @@ router bgp 65001
 
 ### Processus de selection BGP
 
-BGP utilise un algorithme complexe pour choisir la meilleure route. L'ordre de preference est :
+BGP utilise un algorithme complexe pour choisir la meilleure route. L'ordre de préférénce est :
 
 | Priorite | Attribut | Regle |
 |----------|----------|-------|
-| 1 | **Weight** | Plus eleve = prefere (Cisco only, local) |
-| 2 | **Local Preference** | Plus eleve = prefere (dans l'AS) |
-| 3 | **Locally Originated** | Routes locales preferees |
-| 4 | **AS_PATH** | Plus court = prefere |
+| 1 | **Weight** | Plus élevé = préféré (Cisco only, local) |
+| 2 | **Local Preference** | Plus élevé = préféré (dans l'AS) |
+| 3 | **Locally Originated** | Routes locales préférées |
+| 4 | **AS_PATH** | Plus court = préféré |
 | 5 | **Origin** | IGP < EGP < Incomplete |
-| 6 | **MED** | Plus bas = prefere (entre AS) |
-| 7 | **eBGP vs iBGP** | eBGP prefere |
-| 8 | **IGP Metric** | Plus proche NEXT_HOP prefere |
-| 9 | **Oldest Route** | Plus ancienne = prefere |
-| 10 | **Router ID** | Plus bas = prefere |
-| 11 | **Neighbor IP** | Plus basse = prefere |
+| 6 | **MED** | Plus bas = préféré (entre AS) |
+| 7 | **eBGP vs iBGP** | eBGP préféré |
+| 8 | **IGP Metric** | Plus proche NEXT_HOP préféré |
+| 9 | **Oldest Route** | Plus ancienne = préféré |
+| 10 | **Router ID** | Plus bas = préféré |
+| 11 | **Neighbor IP** | Plus basse = préféré |
 
 **Mnemotechnique :** "**W**e **L**ove **O**ranges **AS** **O**ranges **M**ean **P**ure **R**efreshment"
 (Weight, Local_Pref, Originated, AS_Path, Origin, MED, Prefer_eBGP, Router_ID)
@@ -342,7 +342,7 @@ router bgp 65001
 ```cisco
 ! Modifier Local Preference pour les routes d'un peer
 route-map SET-LOCAL-PREF permit 10
- set local-preference 200
+ set local-préférénce 200
 
 router bgp 65001
  neighbor 10.0.0.2 route-map SET-LOCAL-PREF in
@@ -410,7 +410,7 @@ Objectifs :
 **Configuration dual-homing :**
 ```cisco
 router bgp 65010
- ! Peering avec ISP A (prefere)
+ ! Peering avec ISP A (préféré)
  neighbor 10.0.0.1 remote-as 65501
  neighbor 10.0.0.1 route-map ISP-A-IN in
  neighbor 10.0.0.1 route-map ISP-A-OUT out
@@ -422,10 +422,10 @@ router bgp 65010
 
 ! Preferer ISP A en entree
 route-map ISP-A-IN permit 10
- set local-preference 200
+ set local-préférénce 200
 
 route-map ISP-B-IN permit 10
- set local-preference 100
+ set local-préférénce 100
 
 ! Rendre ISP B moins attractif en sortie (pour le trafic entrant)
 route-map ISP-B-OUT permit 10
@@ -434,7 +434,7 @@ route-map ISP-B-OUT permit 10
 
 ### MPLS VPN et BGP
 
-Dans les reseaux MPLS, BGP (MP-BGP) est utilise pour :
+Dans les réseaux MPLS, BGP (MP-BGP) est utilise pour :
 - Echanger les routes VPN entre PE (Provider Edge) routers
 - Separer les tables de routage par VRF (Virtual Routing and Forwarding)
 
@@ -443,7 +443,7 @@ Dans les reseaux MPLS, BGP (MP-BGP) est utilise pour :
 Les connexions cloud (AWS Direct Connect, Azure ExpressRoute, GCP Interconnect) utilisent BGP :
 - Annonce dynamique des prefixes
 - Failover automatique
-- Integration avec le reseau on-premise
+- Integration avec le réseau on-premise
 
 ---
 
@@ -451,15 +451,15 @@ Les connexions cloud (AWS Direct Connect, Azure ExpressRoute, GCP Interconnect) 
 
 ### Vulnerabilites BGP majeures
 
-BGP a ete concu sans mecanismes de securite. Les principales vulnerabilites sont :
+BGP a ete concu sans mécanismes de sécurité. Les principales vulnerabilites sont :
 
 | Attaque | Description | Impact |
 |---------|-------------|--------|
 | **BGP Hijacking** | Annonce de prefixes appartenant a un autre AS | Interception de trafic, MitM |
-| **Prefix Hijacking** | Annonce d'un prefixe plus specifique | Detournement cible |
+| **Prefix Hijacking** | Annonce d'un prefixe plus spécifique | Detournement cible |
 | **Route Leak** | Propagation non autorisee de routes | Blackhole, latence |
 | **AS_PATH Manipulation** | Modification de l'AS_PATH | Contournement des politiques |
-| **Session Hijacking** | Prise de controle d'une session BGP | Injection de routes |
+| **Session Hijacking** | Prise de contrôle d'une session BGP | Injection de routes |
 | **DoS BGP** | Saturation avec des updates | Instabilite du routage |
 
 ### Cas celebres de BGP Hijacking
@@ -482,7 +482,7 @@ Tout le monde route vers AS 65001
 
 Attaque :
 AS 65999 (malveillant) annonce 203.0.113.0/24
-OU annonce 203.0.113.0/25 et 203.0.113.128/25 (plus specifique)
+OU annonce 203.0.113.0/25 et 203.0.113.128/25 (plus spécifique)
 
 Resultat :
 Le trafic vers 203.0.113.0/24 est redirige vers AS 65999
@@ -531,7 +531,7 @@ ip prefix-list BOGONS permit 0.0.0.0/0 le 24
 
 **Limiter la taille des prefixes acceptes :**
 ```cisco
-! Rejeter les prefixes trop specifiques (> /24)
+! Rejeter les prefixes trop spécifiques (> /24)
 ip prefix-list MAX-PREFIX permit 0.0.0.0/0 le 24
 ```
 
@@ -559,7 +559,7 @@ router bgp 65001
  ! 80% = warning, restart apres 5 minutes si depasse
 ```
 
-### Checklist securite BGP
+### Checklist sécurité BGP
 
 ```
 [ ] RPKI deploye et routes Invalid rejetees
@@ -583,7 +583,7 @@ router bgp 65001
 | **BGPlay** | Visualisation des changements BGP | stat.ripe.net/bgplay |
 | **Hurricane Electric BGP Toolkit** | Informations AS et prefixes | bgp.he.net |
 | **Routeviews** | Archive des tables BGP | routeviews.org |
-| **MANRS** | Bonnes pratiques de securite BGP | manrs.org |
+| **MANRS** | Bonnes pratiques de sécurité BGP | manrs.org |
 
 ---
 
@@ -599,7 +599,7 @@ show ip bgp neighbors 10.0.0.2
 ! Table BGP complete
 show ip bgp
 
-! Routes vers un prefixe specifique
+! Routes vers un prefixe spécifique
 show ip bgp 203.0.113.0/24
 
 ! Routes annoncees a un voisin
@@ -648,11 +648,11 @@ Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau et routage | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services reseau et protocoles | https://tryhackme.com/room/networkservices |
+| **Intro to Networking** | Fondamentaux réseau et routage | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services réseau et protocoles | https://tryhackme.com/room/networkservices |
 | **Wireshark: The Basics** | Analyse de paquets BGP | https://tryhackme.com/room/wiresharkthebasics |
 
-> **Note** : TryHackMe ne propose pas de room specifiquement dediee a BGP. Les concepts avances de routage inter-AS et les attaques BGP (hijacking) sont generalement etudies via :
+> **Note** : TryHackMe ne propose pas de room spécifiquement dediee a BGP. Les concepts avances de routage inter-AS et les attaques BGP (hijacking) sont généralement etudies via :
 > - Labs GNS3/EVE-NG avec routeurs virtuels
 > - Plateformes de simulation comme BGP.Tools
 > - Environnements de test RPKI

@@ -54,11 +54,11 @@ PC comptabilité                 PC comptabilité
 
 ### Le risque SNMP
 
-SNMP permet de récupérer des infos sur vos équipements. Si mal configuré, les attaquants en profitent.
+SNMP permet de récupérer des infos sur les équipements. Si mal configuré, les attaquants en profitent.
 
 ```
-Attaquant                        Votre réseau
-─────────                        ────────────
+Attaquant                        Le réseau
+─────────                        ──────────
 
 "SNMP ouvert ?" ──────────────> Port 161 ouvert
                                      │
@@ -88,7 +88,7 @@ Récupère :                           │
 
 ### C'est quoi un SIEM ?
 
-Le SIEM collecte tous les logs de votre réseau et les analyse ensemble.
+Le SIEM collecte tous les logs du réseau et les analyse ensemble.
 
 ```
 Firewall ────┐

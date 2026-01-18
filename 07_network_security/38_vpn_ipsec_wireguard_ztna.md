@@ -2,13 +2,13 @@
 
 ## Objectifs du cours
 
-Ce cours explore l'un des outils les plus puissants et essentiels de la securite reseau : les Virtual Private Networks (VPNs). Des tunnels IPSec classiques a la simplicite ultra-rapide de WireGuard, jusqu'au concept revolutionnaire du Zero Trust Network Access (ZTNA), ce module vous preparera a comprendre, configurer et architecturer des communications securisees a travers les reseaux.
+Ce cours explore l'un des outils les plus puissants et essentiels de la sécurité réseau : les Virtual Private Networks (VPNs). Des tunnels IPSec classiques a la simplicite ultra-rapide de WireGuard, jusqu'au concept revolutionnaire du Zero Trust Network Access (ZTNA), ce module vous preparera a comprendre, configurer et architecturer des communications securisees a travers les réseaux.
 
 Competences visees :
 - Comprendre les principes fondamentaux d'IPSec, incluant le chiffrement et l'authentification
 - Deployer WireGuard, le protocole VPN moderne et leger
 - Differencier les VPNs Site-to-Site et les VPNs d'acces distant
-- Comprendre et evaluer le modele de securite Zero Trust, incluant le fonctionnement pratique de ZTNA
+- Comprendre et evaluer le modèle de sécurité Zero Trust, incluant le fonctionnement pratique de ZTNA
 
 ---
 
@@ -59,8 +59,8 @@ Competences visees :
 
 | Type | Description |
 |------|-------------|
-| **Site-to-Site** | Connexion entre deux reseaux (ex: siege et filiale) |
-| **Remote Access** | Connexion d'un utilisateur vers un reseau |
+| **Site-to-Site** | Connexion entre deux réseaux (ex: siege et filiale) |
+| **Remote Access** | Connexion d'un utilisateur vers un réseau |
 | **Hub-and-Spoke** | Architecture avec un point central et des branches |
 | **Full Mesh** | Tous les sites connectes entre eux |
 
@@ -68,18 +68,18 @@ Competences visees :
 
 | Terme | Description |
 |-------|-------------|
-| **ZTNA** | Zero Trust Network Access - Acces reseau sans confiance implicite |
+| **ZTNA** | Zero Trust Network Access - Acces réseau sans confiance implicite |
 | **Zero Trust** | Modele "Never trust, always verify" |
-| **Microsegmentation** | Division du reseau en zones isolees |
+| **Microsegmentation** | Division du réseau en zones isolées |
 | **Identity-based** | Acces base sur l'identite, pas l'emplacement |
-| **Device Posture** | Etat de securite de l'appareil |
-| **Least Privilege** | Acces minimal necessaire |
+| **Device Posture** | Etat de sécurité de l'appareil |
+| **Least Privilege** | Acces minimal nécessaire |
 
 ---
 
 ## Comprendre les VPNs : Les bases
 
-Un VPN (Virtual Private Network) est un tunnel securise entre deux ou plusieurs appareils a travers des reseaux non fiables comme Internet. Les VPNs utilisent le chiffrement et l'authentification pour garantir que seules les parties autorisees peuvent communiquer, et que personne ne peut espionner leurs conversations.
+Un VPN (Virtual Private Network) est un tunnel securise entre deux ou plusieurs appareils a travers des réseaux non fiables comme Internet. Les VPNs utilisent le chiffrement et l'authentification pour garantir que seules les parties autorisees peuvent communiquer, et que personne ne peut espionner leurs conversations.
 
 ### Objectifs d'un VPN
 
@@ -128,7 +128,7 @@ Un VPN (Virtual Private Network) est un tunnel securise entre deux ou plusieurs 
 
 ![IPSec](assets/CYBFS-M07-D04-IPSEC.png)
 
-IPSec (Internet Protocol Security) est une suite de protocoles pour securiser les communications IP en authentifiant et chiffrant chaque paquet IP. Il opere a la couche 3 du modele OSI et est utilise pour construire des tunnels VPN.
+IPSec (Internet Protocol Security) est une suite de protocoles pour securiser les communications IP en authentifiant et chiffrant chaque paquet IP. Il opere a la couche 3 du modèle OSI et est utilise pour construire des tunnels VPN.
 
 ### Modes IPSec
 
@@ -191,7 +191,7 @@ IPSec (Internet Protocol Security) est une suite de protocoles pour securiser le
 | **Integrite** | Oui |
 | **Authentification** | Oui |
 | **Chiffrement** | Oui |
-| **Usage** | Le plus utilise - securite complete |
+| **Usage** | Le plus utilise - sécurité complete |
 
 #### 3. Internet Key Exchange (IKE)
 
@@ -200,11 +200,11 @@ IPSec (Internet Protocol Security) est une suite de protocoles pour securiser le
 | **IKEv1** | Version originale, plus complexe |
 | **IKEv2** | Amelioree : plus securisee, performante, mobile |
 
-IKE negocie les parametres de securite et echange les cles.
+IKE negocie les paramètres de sécurité et echange les cles.
 
 #### 4. Security Associations (SAs)
 
-Une SA definit les parametres de la session IPSec :
+Une SA definit les paramètres de la session IPSec :
 - Algorithmes de chiffrement
 - Cles
 - Durees de vie
@@ -232,16 +232,16 @@ Chaque direction de communication utilise une SA separee.
 │                                                              │
 │   Phase 1 (IKE SA)                                          │
 │   ┌──────────────────────────────────────────────────────┐  │
-│   │  1. Negociation des parametres de securite            │  │
+│   │  1. Negociation des paramètres de sécurité            │  │
 │   │  2. Echange Diffie-Hellman (cle partagee)            │  │
 │   │  3. Authentification mutuelle (PSK ou certificats)   │  │
-│   │  4. Creation de l'IKE SA (tunnel de controle)        │  │
+│   │  4. Creation de l'IKE SA (tunnel de contrôle)        │  │
 │   └──────────────────────────────────────────────────────┘  │
 │                           │                                  │
 │                           ▼                                  │
 │   Phase 2 (IPSec SA)                                        │
 │   ┌──────────────────────────────────────────────────────┐  │
-│   │  1. Negociation des parametres ESP                    │  │
+│   │  1. Negociation des paramètres ESP                    │  │
 │   │  2. Echange de cles de session                       │  │
 │   │  3. Creation des IPSec SAs (tunnel de donnees)       │  │
 │   │  4. Trafic utilisateur chiffre                       │  │
@@ -312,7 +312,7 @@ Phase 2 Settings:
 
 ![WireGuard](assets/wireguard.png)
 
-WireGuard est un protocole VPN de pointe concu pour etre rapide, simple et securise. Il est integre au kernel Linux et disponible pour Windows, macOS, iOS, Android et les systemes BSD (comme pfSense).
+WireGuard est un protocole VPN de pointe concu pour etre rapide, simple et securise. Il est integre au kernel Linux et disponible pour Windows, macOS, iOS, Android et les systèmes BSD (comme pfSense).
 
 ### Caracteristiques cles
 
@@ -370,7 +370,7 @@ ListenPort = 51820
 [Peer]
 PublicKey = <B_public_key>
 AllowedIPs = 10.0.0.2/32
-# Endpoint non necessaire si B se connecte a A
+# Endpoint non nécessaire si B se connecte a A
 ```
 
 **Peer B (Client) - /etc/wireguard/wg0.conf :**
@@ -439,11 +439,11 @@ Les VPNs se declinent en deux styles architecturaux, chacun adapte a des cas d'u
 
 ![Site-to-Site VPN](assets/SiteToSiteVpn.png)
 
-Connecte deux ou plusieurs reseaux entre eux de maniere permanente.
+Connecte deux ou plusieurs réseaux entre eux de maniere permanente.
 
 | Caracteristique | Description |
 |-----------------|-------------|
-| **Endpoints** | Reseau vers reseau |
+| **Endpoints** | Reseau vers réseau |
 | **Usage** | Bureaux distants, datacenters |
 | **Transparence** | Invisible pour les utilisateurs |
 | **Protocoles** | IPSec, WireGuard |
@@ -477,11 +477,11 @@ Connecte deux ou plusieurs reseaux entre eux de maniere permanente.
 
 ![Remote Access VPN](assets/CYBFS-M07-D04-RemoteAccessVPN.png)
 
-Connecte des utilisateurs individuels a un reseau central.
+Connecte des utilisateurs individuels a un réseau central.
 
 | Caracteristique | Description |
 |-----------------|-------------|
-| **Endpoints** | Appareil vers reseau |
+| **Endpoints** | Appareil vers réseau |
 | **Usage** | Teletravail, deplacement |
 | **Client** | Logiciel VPN requis |
 | **Protocoles** | OpenVPN, WireGuard, L2TP/IPSec |
@@ -522,7 +522,7 @@ Connecte des utilisateurs individuels a un reseau central.
 
 | Critere | Site-to-Site | Remote Access |
 |---------|--------------|---------------|
-| **Endpoint** | Reseau vers reseau | Appareil vers reseau |
+| **Endpoint** | Reseau vers réseau | Appareil vers réseau |
 | **Cas d'usage** | Bureaux distants | Teletravailleurs |
 | **Authentification** | PSK ou certificats | Username/password ou cles |
 | **Client logiciel** | Non | Oui |
@@ -535,7 +535,7 @@ Connecte des utilisateurs individuels a un reseau central.
 
 ![ZTNA](assets/ZTNA.jpg)
 
-ZTNA n'est pas un protocole VPN - c'est une architecture de securite. Alors que les VPNs supposent un "interieur de confiance" vs "exterieur non fiable", ZTNA n'assume aucune confiance - jamais.
+ZTNA n'est pas un protocole VPN - c'est une architecture de sécurité. Alors que les VPNs supposent un "interieur de confiance" vs "exterieur non fiable", ZTNA n'assume aucune confiance - jamais.
 
 ### Principe fondamental
 
@@ -545,10 +545,10 @@ ZTNA n'est pas un protocole VPN - c'est une architecture de securite. Alors que 
 
 | Concept | Description |
 |---------|-------------|
-| **Microsegmentation** | Diviser le reseau en zones isolees |
+| **Microsegmentation** | Diviser le réseau en zones isolées |
 | **Identity-based access** | Acces base sur l'identite, pas l'emplacement |
 | **Decisions contextuelles** | Considerer temps, sante de l'appareil, localisation |
-| **Least privilege** | Utilisateurs n'obtiennent que l'acces necessaire |
+| **Least privilege** | Utilisateurs n'obtiennent que l'acces nécessaire |
 | **Pas de confiance implicite** | Chaque connexion est verifiee en continu |
 
 ### Workflow ZTNA
@@ -585,11 +585,11 @@ ZTNA n'est pas un protocole VPN - c'est une architecture de securite. Alors que 
 │         APPROUVE                      REFUSE               │
 │              │                           │                 │
 │              ▼                           ▼                 │
-│   4. Tunnel vers l'app specifique    Acces refuse          │
+│   4. Tunnel vers l'app spécifique    Acces refuse          │
 │      ┌───────────┐                                         │
 │      │    App    │                                         │
 │      │ (pas tout │                                         │
-│      │ le reseau)│                                         │
+│      │ le réseau)│                                         │
 │      └───────────┘                                         │
 │                                                              │
 └─────────────────────────────────────────────────────────────┘
@@ -599,12 +599,12 @@ ZTNA n'est pas un protocole VPN - c'est une architecture de securite. Alors que 
 
 | Critere | VPN Traditionnel | ZTNA |
 |---------|------------------|------|
-| **Modele d'acces** | Niveau reseau | Niveau application |
+| **Modele d'acces** | Niveau réseau | Niveau application |
 | **Modele de confiance** | Implicite apres login | Verification continue |
 | **Visibilite** | Faible (acces complet) | Haute (audit par requete) |
 | **Experience utilisateur** | Login manuel | Transparent, base sur politiques |
 | **Scalabilite** | Moderee | Haute (cloud-native) |
-| **Surface d'attaque** | Large (tout le reseau) | Reduite (app par app) |
+| **Surface d'attaque** | Large (tout le réseau) | Reduite (app par app) |
 
 ### Comparaison visuelle
 
@@ -707,7 +707,7 @@ ZTNA n'est pas un protocole VPN - c'est une architecture de securite. Alors que 
 │  Environnement cloud/hybride moderne ?                      │
 │     └── Oui ──> ZTNA                                        │
 │                                                              │
-│  Besoin de controle granulaire par application ?            │
+│  Besoin de contrôle granulaire par application ?            │
 │     └── Oui ──> ZTNA                                        │
 │                                                              │
 └─────────────────────────────────────────────────────────────┘
@@ -719,15 +719,15 @@ ZTNA n'est pas un protocole VPN - c'est une architecture de securite. Alors que 
 |----------|------------------|
 | **IPSec** | Compatibilite legacy, connexion de routeurs, interoperabilite |
 | **WireGuard** | Performance, simplicite, OS modernes, configs legeres |
-| **Site-to-Site** | Relier des reseaux entiers, connexions permanentes |
+| **Site-to-Site** | Relier des réseaux entiers, connexions permanentes |
 | **Remote Access** | Utilisateurs mobiles/distants, acces flexible |
-| **ZTNA** | Zero Trust, cloud/on-prem hybride, controle granulaire |
+| **ZTNA** | Zero Trust, cloud/on-prem hybride, contrôle granulaire |
 
 ---
 
 ## Securite et bonnes pratiques
 
-### Checklist securite VPN
+### Checklist sécurité VPN
 
 ```
 IPSec :
@@ -737,7 +737,7 @@ IPSec :
   [ ] DH Group 19+ (ECDH)
   [ ] PFS active
   [ ] Certificats plutot que PSK si possible
-  [ ] Rotation reguliere des cles
+  [ ] Rotation réguliere des cles
 
 WireGuard :
   [ ] Proteger les cles privees
@@ -748,7 +748,7 @@ WireGuard :
 General :
   [ ] Logging et monitoring
   [ ] Segmentation du trafic VPN
-  [ ] Tests de connectivite reguliers
+  [ ] Tests de connectivite réguliers
   [ ] Plan de continuite (failover)
   [ ] Documentation des configurations
 ```
@@ -781,8 +781,8 @@ General :
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services reseau | https://tryhackme.com/room/networkservices |
+| **Intro to Networking** | Fondamentaux réseau | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services réseau | https://tryhackme.com/room/networkservices |
 | **VPN Fundamentals** | Bases des VPN | https://tryhackme.com/room/dvwafirewalls |
 | **Zero Trust** | Introduction Zero Trust | https://tryhackme.com/room/introtocloudsecurity |
 

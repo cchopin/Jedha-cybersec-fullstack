@@ -2,7 +2,7 @@
 
 ## Objectifs du cours
 
-Ce cours explore les techniques offensives et defensives liees a la manipulation des protocoles de routage. Comme tout systeme base sur la confiance, les protocoles de routage peuvent etre exploites par des attaquants pour intercepter, rediriger ou perturber le trafic reseau.
+Ce cours explore les techniques offensives et defensives liees a la manipulation des protocoles de routage. Comme tout système base sur la confiance, les protocoles de routage peuvent etre exploites par des attaquants pour intercepter, rediriger ou perturber le trafic réseau.
 
 Competences visees :
 - Comprendre les attaques par injection de routes OSPF (rogue router)
@@ -43,12 +43,12 @@ Competences visees :
 | Terme | Description |
 |-------|-------------|
 | **Prefix Hijacking** | Annonce d'un prefixe appartenant a un autre AS |
-| **Subprefix Hijacking** | Annonce d'un prefixe plus specifique pour detourner le trafic |
+| **Subprefix Hijacking** | Annonce d'un prefixe plus spécifique pour detourner le trafic |
 | **AS_PATH Manipulation** | Falsification du chemin d'AS pour paraitre legitime |
 | **AS_PATH Prepending** | Ajout d'AS pour influencer la selection de route |
 | **Origin AS Spoofing** | Usurpation de l'AS d'origine d'un prefixe |
 | **Route Leak** | Fuite non autorisee de routes vers des AS tiers |
-| **BGP Session Hijacking** | Prise de controle d'une session BGP etablie |
+| **BGP Session Hijacking** | Prise de contrôle d'une session BGP etablie |
 
 ### Outils offensifs
 
@@ -94,7 +94,7 @@ Les protocoles de routage sont le coeur de la connectivite Internet et entrepris
 | **Interception** | Redirection du trafic via l'attaquant | Espionnage, vol de donnees |
 | **Modification** | MitM avec alteration des paquets | Injection de malware, falsification |
 | **Disruption** | Blackhole, route flapping | Deni de service |
-| **Reconnaissance** | Analyse du trafic redirige | Cartographie du reseau |
+| **Reconnaissance** | Analyse du trafic redirige | Cartographie du réseau |
 
 ### Pourquoi les protocoles de routage sont vulnerables
 
@@ -115,7 +115,7 @@ OSPF est un protocole IGP largement utilise qui calcule le chemin le plus court 
 
 ### Comment fonctionne l'injection de routes
 
-Dans un scenario Red Team, un attaquant connecte un appareil rogue au reseau. Si cet appareil peut parler OSPF, il peut :
+Dans un scenario Red Team, un attaquant connecte un appareil rogue au réseau. Si cet appareil peut parler OSPF, il peut :
 
 1. **Rejoindre le domaine OSPF** comme un faux routeur
 2. **Annoncer de fausses routes** (pretendre etre le meilleur chemin vers un subnet critique)
@@ -126,13 +126,13 @@ Dans un scenario Red Team, un attaquant connecte un appareil rogue au reseau. Si
 
 ```
 1. RECONNAISSANCE
-   - Identifier le domaine OSPF (aire, type de reseau)
+   - Identifier le domaine OSPF (aire, type de réseau)
    - Capturer des paquets OSPF Hello (Wireshark, tcpdump)
-   - Identifier les Router IDs et reseaux annonces
+   - Identifier les Router IDs et réseaux annonces
 
 2. CONNEXION
-   - Connecter l'equipement attaquant au reseau
-   - Configurer OSPF avec les memes parametres (aire, authentification si connue)
+   - Connecter l'équipement attaquant au réseau
+   - Configurer OSPF avec les memes paramètres (aire, authentification si connue)
 
 3. ETABLISSEMENT DE VOISINAGE
    - Envoyer des paquets Hello OSPF
@@ -199,7 +199,7 @@ lsa_router = OSPF_Router_LSA(
             id="10.0.0.0",
             data="255.0.0.0",
             type=3,  # Stub network
-            metric=1  # Cout tres faible pour etre prefere
+            metric=1  # Cout tres faible pour etre préféré
         )
     ]
 )
@@ -241,7 +241,7 @@ lsa_poison = OSPF_Router_LSA(
 | Scenario | Objectif | Technique |
 |----------|----------|-----------|
 | **Exfiltration** | Detourner le trafic vers un subnet sensible | Route injection avec metrique faible |
-| **VLAN escape** | Acceder a des VLANs isoles | Injection de routes inter-VLANs |
+| **VLAN escape** | Acceder a des VLANs isolés | Injection de routes inter-VLANs |
 | **Denial of Routing** | Perturber les communications | MaxAge attack, route flapping |
 | **Persistence** | Maintenir l'acces | Rogue router persistant |
 
@@ -249,7 +249,7 @@ lsa_poison = OSPF_Router_LSA(
 
 ## BGP Hijacking et manipulation d'AS_PATH
 
-BGP est le protocole qui route les donnees entre systemes autonomes (AS) a travers Internet. Il est critique et effrayamment vulnerable.
+BGP est le protocole qui route les donnees entre systèmes autonomes (AS) a travers Internet. Il est critique et effrayamment vulnerable.
 
 ### Pourquoi BGP est vulnerable
 
@@ -260,7 +260,7 @@ BGP a ete concu avec l'hypothese que tous les AS cooperent. Il n'y a pas de vali
 | Type | Description | Efficacite |
 |------|-------------|------------|
 | **Prefix Hijack** | Annoncer un prefixe appartenant a un autre AS | Partielle (depend du routage) |
-| **Subprefix Hijack** | Annoncer un prefixe plus specifique | Totale (longest prefix match) |
+| **Subprefix Hijack** | Annoncer un prefixe plus spécifique | Totale (longest prefix match) |
 | **AS_PATH Manipulation** | Forger des chemins d'AS pour paraitre legitime | Haute (evite la detection) |
 | **Origin Spoofing** | Usurper l'AS d'origine | Haute (contourne RPKI basique) |
 
@@ -273,7 +273,7 @@ Tout Internet route vers AS 65001
 
 Attaque - Subprefix Hijack :
 AS 65999 (attaquant) annonce 203.0.113.0/25 et 203.0.113.128/25
-Routes plus specifiques = preferees par tous
+Routes plus spécifiques = préférées par tous
 Tout le trafic vers 203.0.113.0/24 va vers l'attaquant
 ```
 
@@ -563,11 +563,11 @@ for elem in stream:
 1. RECONNAISSANCE
    [ ] Identifier les protocoles de routage utilises
    [ ] Capturer le trafic de routage (Hello, Updates)
-   [ ] Identifier les aires/AS et les parametres
+   [ ] Identifier les aires/AS et les paramètres
    [ ] Verifier l'authentification
 
 2. PREPARATION
-   [ ] Configurer l'equipement d'attaque
+   [ ] Configurer l'équipement d'attaque
    [ ] Preparer les routes a injecter
    [ ] Configurer le forwarding si MitM
 
@@ -591,7 +591,7 @@ for elem in stream:
 
 | Technique | Description |
 |-----------|-------------|
-| **Injection ciblee** | Annoncer uniquement les prefixes necessaires |
+| **Injection ciblee** | Annoncer uniquement les prefixes nécessaires |
 | **TTL manipulation** | Eviter la detection par TTL analysis |
 | **Timing** | Attaquer pendant les heures creuses |
 | **AS_PATH credible** | Utiliser des chemins realistes |
@@ -614,12 +614,12 @@ for elem in stream:
    [ ] Alertes sur nouveaux voisins OSPF
    [ ] Alertes sur annonces BGP inattendues
    [ ] Analyse des changements de routes
-   [ ] Correlation avec autres evenements
+   [ ] Correlation avec autres événements
 
 3. ANALYSE
    [ ] Identifier la source de l'attaque
    [ ] Evaluer l'impact (trafic affecte)
-   [ ] Determiner la methode d'attaque
+   [ ] Determiner la méthode d'attaque
    [ ] Collecter les preuves
 
 4. CONFINEMENT
@@ -634,7 +634,7 @@ for elem in stream:
    [ ] Documenter l'incident
 ```
 
-### Checklist securite routage
+### Checklist sécurité routage
 
 ```
 [ ] Authentification sur tous les peerings (OSPF MD5/SHA, BGP MD5/TCP-AO)
@@ -661,7 +661,7 @@ for elem in stream:
 | [ExaBGP](https://github.com/Exa-Networks/exabgp) | Implementation BGP Python |
 | [BGPStream](https://bgpstream.caida.org/) | Monitoring BGP temps reel |
 | [RPKI Documentation](https://rpki.readthedocs.io/) | Guide de deploiement RPKI |
-| [MANRS](https://www.manrs.org/) | Bonnes pratiques securite routage |
+| [MANRS](https://www.manrs.org/) | Bonnes pratiques sécurité routage |
 
 ---
 
@@ -669,12 +669,12 @@ for elem in stream:
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau | https://tryhackme.com/room/introtonetworking |
+| **Intro to Networking** | Fondamentaux réseau | https://tryhackme.com/room/introtonetworking |
 | **Wireshark: The Basics** | Capture et analyse de paquets | https://tryhackme.com/room/wiresharkthebasics |
-| **Network Services** | Services et protocoles reseau | https://tryhackme.com/room/networkservices |
+| **Network Services** | Services et protocoles réseau | https://tryhackme.com/room/networkservices |
 | **Attacking and Defending AWS** | Concepts de routage cloud | https://tryhackme.com/room/introtocloudpentest |
 
 > **Note** : Les attaques sur les protocoles de routage sont des techniques avancees. Pour la pratique :
-> - Utilisez un lab isole (GNS3, EVE-NG)
+> - Utilisez un lab isolé (GNS3, EVE-NG)
 > - Les CTF specialises en infrastructure (DEFCON Router Hacking Village) proposent des challenges pertinents
 > - Consultez le framework MITRE ATT&CK pour le contexte offensif

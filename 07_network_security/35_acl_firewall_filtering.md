@@ -2,14 +2,14 @@
 
 ## Objectifs du cours
 
-Ce cours explore les Access Control Lists (ACLs), un outil fondamental de la securite reseau. Des ACLs standard aux ACLs etendues, vous decouvrirez comment controler le trafic avec precision. Nous demystifierons egalement les differences entre le filtrage stateless et stateful, vous permettant de comprendre comment les firewalls traitent les paquets et maintiennent la connaissance des sessions.
+Ce cours explore les Access Control Lists (ACLs), un outil fondamental de la sécurité réseau. Des ACLs standard aux ACLs etendues, vous decouvrirez comment contrôler le trafic avec precision. Nous demystifierons egalement les differences entre le filtrage stateless et stateful, vous permettant de comprendre comment les firewalls traitent les paquets et maintiennent la connaissance des sessions.
 
 Competences visees :
 - Comprendre et configurer les ACLs standard et etendues
 - Reconnaitre les cas d'usage appropries pour chaque type d'ACL
 - Expliquer la difference entre les firewalls stateless et stateful
-- Choisir la bonne approche selon le scenario reseau
-- Appliquer des strategies de filtrage alignees avec les bonnes pratiques de securite
+- Choisir la bonne approche selon le scenario réseau
+- Appliquer des strategies de filtrage alignees avec les bonnes pratiques de sécurité
 
 ---
 
@@ -19,7 +19,7 @@ Competences visees :
 
 | Terme | Description |
 |-------|-------------|
-| **ACL** | Access Control List - Liste de regles pour filtrer le trafic reseau |
+| **ACL** | Access Control List - Liste de regles pour filtrer le trafic réseau |
 | **ACE** | Access Control Entry - Une regle individuelle dans une ACL |
 | **Wildcard Mask** | Masque inverse du subnet mask pour matcher des plages d'adresses |
 | **Implicit Deny** | Regle implicite en fin d'ACL qui bloque tout le reste |
@@ -52,7 +52,7 @@ Competences visees :
 
 | Type | Description |
 |------|-------------|
-| **Stateless** | Chaque paquet evalue independamment, sans memoire |
+| **Stateless** | Chaque paquet evalue independamment, sans mémoire |
 | **Stateful** | Maintient une table des connexions actives |
 | **Session Table** | Table stockant l'etat des connexions (stateful) |
 | **State Tracking** | Suivi de l'etat des connexions TCP/UDP |
@@ -63,7 +63,7 @@ Competences visees :
 |-------|-------------|
 | **TCP** | Transmission Control Protocol - Protocole oriente connexion |
 | **UDP** | User Datagram Protocol - Protocole sans connexion |
-| **ICMP** | Internet Control Message Protocol - Protocole de controle |
+| **ICMP** | Internet Control Message Protocol - Protocole de contrôle |
 | **IP** | Internet Protocol - Tout protocole IP |
 
 ### Operateurs de ports
@@ -80,24 +80,24 @@ Competences visees :
 
 | Terme | Description |
 |-------|-------------|
-| **Firewall** | Dispositif de filtrage du trafic reseau |
-| **DMZ** | Demilitarized Zone - Zone reseau semi-exposee |
-| **Perimeter** | Frontiere entre le reseau interne et externe |
+| **Firewall** | Dispositif de filtrage du trafic réseau |
+| **DMZ** | Demilitarized Zone - Zone réseau semi-exposee |
+| **Perimeter** | Frontiere entre le réseau interne et externe |
 | **Deep Packet Inspection** | Analyse du contenu des paquets au-dela des en-tetes |
 
 ---
 
 ## Introduction aux Access Control Lists (ACLs)
 
-Les Access Control Lists sont l'un des outils les plus fondamentaux et essentiels de la securite reseau. Elles agissent comme des gardes de securite, positionnees aux interfaces des routeurs, switches et firewalls, verifiant les credentials et decidant d'autoriser ou de bloquer chaque paquet.
+Les Access Control Lists sont l'un des outils les plus fondamentaux et essentiels de la sécurité réseau. Elles agissent comme des gardes de sécurité, positionnees aux interfaces des routeurs, switches et firewalls, verifiant les credentials et decidant d'autoriser ou de bloquer chaque paquet.
 
 ### Role des ACLs
 
-Les ACLs sont des regles ou filtres appliques aux interfaces des equipements reseau. Ces filtres examinent les en-tetes des paquets et determinent si le trafic specifique est autorise a traverser le reseau.
+Les ACLs sont des regles ou filtres appliques aux interfaces des équipements réseau. Ces filtres examinent les en-tetes des paquets et determinent si le trafic spécifique est autorise a traverser le réseau.
 
 | Fonction | Description |
 |----------|-------------|
-| **Controle du trafic** | Autoriser ou bloquer des flux specifiques |
+| **Controle du trafic** | Autoriser ou bloquer des flux spécifiques |
 | **Securite** | Proteger les ressources sensibles |
 | **Restriction d'acces** | Limiter l'acces a certains services |
 | **Gestion de bande passante** | Controler l'utilisation des ressources |
@@ -149,7 +149,7 @@ Les ACLs standard sont le type le plus simple. Elles filtrent le trafic uniqueme
 
 Les ACLs standard sont numerotees de 1 a 99 et de 1300 a 1999 (plage etendue).
 
-**Syntaxe generale :**
+**Syntaxe générale :**
 ```
 access-list [numero] [permit|deny] [source] [wildcard]
 ```
@@ -203,7 +203,7 @@ access-list 10 deny host 192.168.1.50
 
 ### Exemple complet d'ACL Standard
 
-**Scenario :** Bloquer l'acces depuis un hote specifique (192.168.1.50) et autoriser tout le reste.
+**Scenario :** Bloquer l'acces depuis un hote spécifique (192.168.1.50) et autoriser tout le reste.
 
 ```cisco
 ! Configuration de l'ACL
@@ -236,7 +236,7 @@ Source ────────────────────────�
 
 | Scenario | Exemple |
 |----------|---------|
-| Bloquer un subnet source | Bloquer 10.0.0.0/8 vers le reseau interne |
+| Bloquer un subnet source | Bloquer 10.0.0.0/8 vers le réseau interne |
 | Autoriser des hotes de confiance | Autoriser uniquement les admins |
 | Restreindre l'acces infrastructure | Limiter l'acces aux VTY (SSH/Telnet) |
 
@@ -270,7 +270,7 @@ Les ACLs etendues offrent un filtrage granulaire base sur plusieurs criteres :
 
 Les ACLs etendues sont numerotees de 100 a 199 et de 2000 a 2699.
 
-**Syntaxe generale :**
+**Syntaxe générale :**
 ```
 access-list [numero] [permit|deny] [protocole] [source] [wildcard] [destination] [wildcard] [operateur] [port]
 ```
@@ -413,7 +413,7 @@ ip access-list extended WEB-TRAFFIC
 
 ### Fonctionnement
 
-Le filtrage stateless signifie que chaque paquet est evalue independamment. Le routeur ou firewall ne garde aucune memoire des paquets precedents.
+Le filtrage stateless signifie que chaque paquet est evalue independamment. Le routeur ou firewall ne garde aucune mémoire des paquets precedents.
 
 ```
 Paquet 1 ───> Evaluation ───> Decision
@@ -426,12 +426,12 @@ Paquet 3 ───> Evaluation ───> Decision
 
 | Aspect | Description |
 |--------|-------------|
-| **Memoire** | Aucune - chaque paquet est isole |
+| **Memoire** | Aucune - chaque paquet est isolé |
 | **Performance** | Rapide - pas de tracking de session |
 | **Complexite** | Simple et deterministe |
 | **Detection** | Limitee - pas de vision du flux |
 
-### Exemple de probleme stateless
+### Exemple de problème stateless
 
 **Scenario :** Un client interne initie une connexion TCP vers un serveur externe.
 
@@ -439,7 +439,7 @@ Paquet 3 ───> Evaluation ───> Decision
 Trafic sortant (autorise) :
 Client 192.168.1.10:54321 ───> Serveur 8.8.8.8:80 (SYN)
 
-Trafic retour (probleme) :
+Trafic retour (problème) :
 Serveur 8.8.8.8:80 ───> Client 192.168.1.10:54321 (SYN-ACK)
 ```
 
@@ -604,7 +604,7 @@ interface GigabitEthernet0/0
 | **Performance** | Plus rapide | Plus lente |
 | **Securite** | Basique | Avancee |
 | **Configuration** | Complexe (retour) | Simple |
-| **Cout** | Faible | Plus eleve |
+| **Cout** | Faible | Plus élevé |
 | **Detection** | Limitee | Avancee |
 
 ### Guide de choix
@@ -639,7 +639,7 @@ interface GigabitEthernet0/0
 | Scenario | Recommandation |
 |----------|----------------|
 | Filtrage inter-VLAN simple | ACL Standard ou Etendue |
-| Protection serveur specifique | ACL Etendue |
+| Protection serveur spécifique | ACL Etendue |
 | Perimetre Internet | Firewall Stateful |
 | DMZ | Firewall Stateful |
 | Entre sites WAN | ACL Etendue ou Firewall |
@@ -751,7 +751,7 @@ Extended IP access list 110
 
 ### Objectif
 
-Configurer des ACLs standard et etendues pour controler l'acces a un serveur web interne.
+Configurer des ACLs standard et etendues pour contrôler l'acces a un serveur web interne.
 
 ### Topologie
 
@@ -829,7 +829,7 @@ interface GigabitEthernet0/2
 | **Source Routing** | Specifier le chemin dans le paquet | `no ip source-route` |
 | **Spoofed Responses** | Forger des reponses | uRPF, filtrage stateful |
 
-### Bonnes pratiques de securite
+### Bonnes pratiques de sécurité
 
 ```cisco
 ! Anti-spoofing sur l'interface externe
@@ -851,10 +851,10 @@ interface GigabitEthernet0/0
 no ip source-route
 ```
 
-### Checklist securite ACL
+### Checklist sécurité ACL
 
 ```
-[ ] Regles ordonnees du plus specifique au plus general
+[ ] Regles ordonnees du plus spécifique au plus général
 [ ] Implicit deny explicite avec logging
 [ ] Commentaires sur chaque section
 [ ] Anti-spoofing sur les interfaces externes
@@ -863,7 +863,7 @@ no ip source-route
 [ ] Documentation maintenue a jour
 [ ] Revue periodique des regles
 [ ] Monitoring des logs ACL
-[ ] Plan de rollback en cas de probleme
+[ ] Plan de rollback en cas de problème
 ```
 
 ### Mapping MITRE ATT&CK
@@ -891,9 +891,9 @@ no ip source-route
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services et protocoles reseau | https://tryhackme.com/room/networkservices |
+| **Intro to Networking** | Fondamentaux réseau | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services et protocoles réseau | https://tryhackme.com/room/networkservices |
 | **Firewalls** | Introduction aux firewalls | https://tryhackme.com/room/dvwafirewalls |
 | **Wireshark: The Basics** | Analyse de paquets | https://tryhackme.com/room/wiresharkthebasics |
 
-> **Note** : Les ACLs sont pratiquees sur des environnements de lab comme GNS3, EVE-NG ou Packet Tracer. Pour tester le filtrage stateful, utilisez des firewalls virtuels comme pfSense, OPNsense ou Cisco ASA virtuel. Toujours tester dans un environnement isole avant de deployer en production.
+> **Note** : Les ACLs sont pratiquees sur des environnements de lab comme GNS3, EVE-NG ou Packet Tracer. Pour tester le filtrage stateful, utilisez des firewalls virtuels comme pfSense, OPNsense ou Cisco ASA virtuel. Toujours tester dans un environnement isolé avant de deployer en production.

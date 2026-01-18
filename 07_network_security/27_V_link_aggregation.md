@@ -215,8 +215,8 @@ interface range GigabitEthernet0/1-4
 
 | Terme | Définition simple |
 |-------|-------------------|
-| **LAG** | Link Aggregation Group - groupe de liens agrégés |
-| **LACP** | Protocole standard d'agrégation |
+| **LAG** | Link Aggregation Group - ensemble de liens physiques combinés en un seul lien logique |
+| **LACP** | Link Aggregation Control Protocol - protocole standard IEEE 802.3ad pour négocier l'agrégation |
 | **Port-Channel** | Interface logique représentant le LAG |
 | **EtherChannel** | Nom Cisco pour l'agrégation |
 | **Load Balancing** | Répartition du trafic sur les liens |

@@ -2,13 +2,13 @@
 
 ## Introduction
 
-Le routage est le mecanisme qui permet aux paquets de trouver leur chemin d'un reseau a un autre. C'est le **systeme nerveux** de toute infrastructure reseau.
+Le routage est le mécanisme qui permet aux paquets de trouver leur chemin d'un réseau a un autre. C'est le **système nerveux** de toute infrastructure réseau.
 
 Comprendre le routage est essentiel pour :
 
 - **Troubleshooting** : identifier ou le trafic est bloque ou mal achemine
 - **Securite offensive** : rediriger le trafic, intercepter des donnees, usurper des routes
-- **Securite defensive** : detecter les anomalies, segmenter le reseau, proteger les flux critiques
+- **Securite defensive** : detecter les anomalies, segmenter le réseau, proteger les flux critiques
 - **Investigation** : tracer l'origine d'une attaque, comprendre les chemins de compromission
 
 > **Cas reel** : En 2018, des attaquants ont detourne le trafic BGP d'Amazon Route 53 pour voler $150,000 en cryptomonnaie. Comprendre le routage aurait permis de detecter l'anomalie.
@@ -26,7 +26,7 @@ Avant de plonger dans le cours, voici les definitions des termes techniques util
 | **RIP** | Routing Information Protocol | Protocole de routage a vecteur de distance. Utilise le nombre de sauts (hop count) comme metrique. Maximum 15 sauts. Simple mais obsolete |
 | **OSPF** | Open Shortest Path First | Protocole de routage a etat de liens (link-state). Utilise l'algorithme de Dijkstra. Standard ouvert, tres repandu en entreprise |
 | **EIGRP** | Enhanced Interior Gateway Routing Protocol | Protocole hybride proprietaire Cisco. Combine vecteur de distance et etat de liens. Convergence rapide |
-| **BGP** | Border Gateway Protocol | Protocole de routage inter-domaines utilise sur Internet. Echange des informations entre systemes autonomes (AS) |
+| **BGP** | Border Gateway Protocol | Protocole de routage inter-domaines utilise sur Internet. Echange des informations entre systèmes autonomes (AS) |
 | **IS-IS** | Intermediate System to Intermediate System | Protocole a etat de liens concurrent d'OSPF. Utilise par les grands operateurs |
 | **IGP** | Interior Gateway Protocol | Categorie de protocoles pour le routage interne (RIP, OSPF, EIGRP, IS-IS) |
 | **EGP** | Exterior Gateway Protocol | Categorie de protocoles pour le routage entre AS (BGP) |
@@ -35,7 +35,7 @@ Avant de plonger dans le cours, voici les definitions des termes techniques util
 
 | Sigle | Nom complet | Description |
 |-------|-------------|-------------|
-| **AS** | Autonomous System | Ensemble de reseaux sous une meme administration, identifie par un numero unique (ASN) |
+| **AS** | Autonomous System | Ensemble de réseaux sous une meme administration, identifie par un numero unique (ASN) |
 | **ASN** | Autonomous System Number | Numero unique identifiant un AS (ex: AS15169 = Google) |
 | **AD** | Administrative Distance | Valeur de confiance attribuee a une source de route. Plus c'est bas, plus c'est fiable (0-255) |
 | **NH** | Next-Hop | Adresse IP du prochain routeur vers lequel envoyer le paquet |
@@ -55,16 +55,16 @@ Avant de plonger dans le cours, voici les definitions des termes techniques util
 | **NAT-T** | NAT Traversal | Technique pour faire passer des protocoles incompatibles avec NAT (IPsec, etc.) |
 | **STUN** | Session Traversal Utilities for NAT | Protocole permettant de decouvrir son IP publique et le type de NAT |
 | **TURN** | Traversal Using Relays around NAT | Protocole de relais pour traverser les NAT les plus restrictifs |
-| **UPnP** | Universal Plug and Play | Protocole permettant l'ouverture automatique de ports NAT (risque securite) |
+| **UPnP** | Universal Plug and Play | Protocole permettant l'ouverture automatique de ports NAT (risque sécurité) |
 
 ### VLANs et segmentation
 
 | Sigle | Nom complet | Description |
 |-------|-------------|-------------|
-| **VLAN** | Virtual Local Area Network | Segmentation logique d'un reseau physique en plusieurs domaines de broadcast isoles |
+| **VLAN** | Virtual Local Area Network | Segmentation logique d'un réseau physique en plusieurs domaines de broadcast isolés |
 | **SVI** | Switched Virtual Interface | Interface virtuelle sur un switch L3 associee a un VLAN, permettant le routage inter-VLAN |
 | **802.1Q** | IEEE 802.1Q | Standard de trunking VLAN. Ajoute un tag de 4 octets dans la trame Ethernet |
-| **DTP** | Dynamic Trunking Protocol | Protocole Cisco de negociation automatique des trunks. A desactiver pour la securite |
+| **DTP** | Dynamic Trunking Protocol | Protocole Cisco de negociation automatique des trunks. A desactiver pour la sécurité |
 | **VTP** | VLAN Trunking Protocol | Protocole Cisco de propagation des VLANs. Peut etre dangereux si mal configure |
 | **ISL** | Inter-Switch Link | Ancien protocole de trunking proprietaire Cisco. Obsolete, remplace par 802.1Q |
 
@@ -93,12 +93,12 @@ Avant de plonger dans le cours, voici les definitions des termes techniques util
 
 | Terme | Description |
 |-------|-------------|
-| **Convergence** | Temps necessaire pour que tous les routeurs aient une vue coherente du reseau apres un changement |
+| **Convergence** | Temps nécessaire pour que tous les routeurs aient une vue coherente du réseau apres un changement |
 | **Metrique** | Valeur utilisee pour determiner le meilleur chemin (hop count, cout, bande passante, delai) |
-| **Prefix** | Notation CIDR d'un reseau (ex: 192.168.1.0/24) |
-| **Longest Prefix Match** | Regle de selection : la route avec le masque le plus long (plus specifique) gagne |
+| **Prefix** | Notation CIDR d'un réseau (ex: 192.168.1.0/24) |
+| **Longest Prefix Match** | Regle de selection : la route avec le masque le plus long (plus spécifique) gagne |
 | **Default Route** | Route par defaut (0.0.0.0/0) utilisee quand aucune autre route ne correspond |
-| **Floating Static Route** | Route statique avec une AD elevee, utilisee en backup si la route principale tombe |
+| **Floating Static Route** | Route statique avec une AD élevée, utilisee en backup si la route principale tombe |
 | **Load Balancing** | Repartition du trafic sur plusieurs chemins de cout egal |
 
 ---
@@ -118,14 +118,14 @@ ip route 192.168.2.0 255.255.255.0 10.0.0.2
 **Avantages :**
 - Controle total sur le chemin des donnees
 - Previsible, pas de protocole a attaquer
-- Consomme moins de ressources CPU/memoire
+- Consomme moins de ressources CPU/mémoire
 
 **Inconvenients :**
 - Ne s'adapte pas aux pannes automatiquement
 - Maintenance manuelle fastidieuse
 - Ne passe pas a l'echelle
 
-**Cas d'usage :** Petits reseaux, liens de backup (floating static routes), routes vers des partenaires specifiques.
+**Cas d'usage :** Petits réseaux, liens de backup (floating static routes), routes vers des partenaires spécifiques.
 
 ### Routage Dynamique
 
@@ -133,7 +133,7 @@ Les routeurs **echangent des informations** et construisent leurs tables automat
 
 | Protocole | Type | Metrique | Usage | Securite par defaut |
 |-----------|------|----------|-------|---------------------|
-| **RIP** | Distance-vector | Hop count | Legacy, petits reseaux | Aucune |
+| **RIP** | Distance-vector | Hop count | Legacy, petits réseaux | Aucune |
 | **OSPF** | Link-state | Cout (bandwidth) | Entreprise | Optionnelle (MD5) |
 | **EIGRP** | Hybride | Composite | Entreprise Cisco | Optionnelle (MD5) |
 | **BGP** | Path-vector | AS-Path, attributs | Internet, ISP | Optionnelle (MD5, RPKI) |
@@ -146,7 +146,7 @@ Les routeurs **echangent des informations** et construisent leurs tables automat
 | Adaptation aux pannes | Non | Oui |
 | Scalabilite | Faible | Excellente |
 | Surface d'attaque | Reduite | Protocole attaquable |
-| Ressources | Minimales | CPU/memoire/bande passante |
+| Ressources | Minimales | CPU/mémoire/bande passante |
 
 ### Point Securite : Attaques sur le routage dynamique
 
@@ -175,7 +175,7 @@ Les routeurs **echangent des informations** et construisent leurs tables automat
 
 ## 2. Network Address Translation (NAT)
 
-Le NAT permet a plusieurs machines d'un reseau prive de partager une adresse IP publique.
+Le NAT permet a plusieurs machines d'un réseau prive de partager une adresse IP publique.
 
 ![Schema NAT](assets/routing_schema_2.png)
 
@@ -231,7 +231,7 @@ Le NAT permet a plusieurs machines d'un reseau prive de partager une adresse IP 
 
 **Contre-mesures :**
 - Firewall stateful en complement du NAT
-- Desactiver UPnP sur les equipements
+- Desactiver UPnP sur les équipements
 - Filtrage du trafic sortant (egress filtering)
 - Inspection DNS et detection d'anomalies
 - Monitoring des connexions etablies
@@ -259,7 +259,7 @@ S*   0.0.0.0          0.0.0.0           10.0.0.254     Gi0/2       -       1
 
 ### Processus de decision (ordre de priorite)
 
-1. **Longest Prefix Match** : La route la plus specifique gagne
+1. **Longest Prefix Match** : La route la plus spécifique gagne
    - 192.168.1.128/25 bat 192.168.1.0/24 pour 192.168.1.130
 
 2. **Administrative Distance** : En cas d'egalite de prefixe, la source la plus fiable
@@ -279,7 +279,7 @@ S*   0.0.0.0          0.0.0.0           10.0.0.254     Gi0/2       -       1
 
 ### Distance Administrative (AD)
 
-| Source de route | AD | Implication securite |
+| Source de route | AD | Implication sécurité |
 |-----------------|-----|---------------------|
 | Directly Connected | 0 | Impossible a usurper a distance |
 | Static | 1 | Necessite acces admin au routeur |
@@ -287,7 +287,7 @@ S*   0.0.0.0          0.0.0.0           10.0.0.254     Gi0/2       -       1
 | EIGRP (internal) | 90 | Attaque de voisinage possible |
 | OSPF | 110 | Injection de LSA possible |
 | RIP | 120 | Trivial a spoofer (broadcast) |
-| iBGP | 200 | Necessite acces au reseau interne |
+| iBGP | 200 | Necessite acces au réseau interne |
 | Unknown | 255 | Route non installee |
 
 ### Point Securite : Route Hijacking
@@ -323,7 +323,7 @@ ip monitor route
 
 ## 4. Routage Inter-VLAN
 
-Par defaut, les VLANs sont **isoles** - c'est une mesure de segmentation fondamentale. Pour permettre une communication controlee entre VLANs, on utilise le routage Inter-VLAN.
+Par defaut, les VLANs sont **isolés** - c'est une mesure de segmentation fondamentale. Pour permettre une communication contrôlee entre VLANs, on utilise le routage Inter-VLAN.
 
 ### 4.1 Router-on-a-Stick
 
@@ -401,7 +401,7 @@ interface vlan 10
 | Materiel | Routeur + Switch L2 | Switch L3 |
 | Performance | Limitee (1 lien) | Wire speed |
 | Scalabilite | Faible | Excellente |
-| Cout | Moins cher (petit reseau) | Plus cher |
+| Cout | Moins cher (petit réseau) | Plus cher |
 | Filtrage | ACL sur routeur | ACL + VACL |
 
 ### Point Securite : Attaques Inter-VLAN
@@ -519,7 +519,7 @@ Apres hijack: [Client] --> [ISP A] --> [Attacker AS] --> [bank.com]
 
 **Indicateurs de compromission :**
 - Connexions sortantes vers IPs/domaines suspects
-- Beaconing (connexions a intervalles reguliers)
+- Beaconing (connexions a intervalles réguliers)
 - Volume de donnees sortant anormal
 - Requetes DNS vers des domaines DGA
 
@@ -575,7 +575,7 @@ show ip dhcp snooping binding
 
 ---
 
-## 7. Checklist securite routage
+## 7. Checklist sécurité routage
 
 ### Protocoles de routage
 - [ ] Authentification MD5/SHA activee sur tous les peers
@@ -611,7 +611,7 @@ show ip dhcp snooping binding
 
 | Room | Lien | Contenu |
 |------|------|---------|
-| **Intro to Networking** | [tryhackme.com/room/introtonetworking](https://tryhackme.com/room/introtonetworking) | Bases du reseau, modele OSI, TCP/IP |
+| **Intro to Networking** | [tryhackme.com/room/introtonetworking](https://tryhackme.com/room/introtonetworking) | Bases du réseau, modèle OSI, TCP/IP |
 | **Networking Concepts** | [tryhackme.com/room/networkingconcepts](https://tryhackme.com/room/networkingconcepts) | IP, subnets, VLANs, NAT, routage |
 | **Networking Essentials** | [tryhackme.com/room/introtolan](https://tryhackme.com/room/introtolan) | DHCP, ARP, NAT, protocoles de routage (RIP, OSPF, BGP, EIGRP) |
 | **L2 MAC Flooding & ARP Spoofing** | [tryhackme.com/room/layer2](https://tryhackme.com/room/layer2) | MAC flooding, ARP poisoning, MitM avec Ettercap |
@@ -659,5 +659,5 @@ show ip dhcp snooping binding
 | **Tables de routage** | Longest prefix match, surveiller les changements |
 | **BGP** | RPKI, ROA, monitoring des annonces |
 
-> **Mindset securite** : Le routage controle ou va le trafic. Controler le routage = controler le reseau. En tant que pentester, cherchez a manipuler les routes. En tant que defenseur, authentifiez et surveillez tout.
+> **Mindset sécurité** : Le routage contrôle ou va le trafic. Controler le routage = contrôler le réseau. En tant que pentester, cherchez a manipuler les routes. En tant que defenseur, authentifiez et surveillez tout.
 

@@ -268,6 +268,6 @@ SÉLECTION DE ROUTE (simplifié) :
 
 1. AS_PATH le plus court
 2. Origin (IGP > EGP > Incomplete)
-3. Si égal : MED le plus bas
+3. Si égal : MED le plus bas (MED = Multi-Exit Discriminator, indique le chemin préféré vers un AS)
 4. eBGP > iBGP
 ```

@@ -102,7 +102,7 @@ ET ferme la porte avant son entrée
 
 ---
 
-## Comment la détection des attaques fonctionne-t-elle ?
+## Fonctionnement de la détection des attaques
 
 ### Détection par signatures
 

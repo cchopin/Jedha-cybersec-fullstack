@@ -222,7 +222,7 @@ Frame 2: ARP Reply
 | **Broadcast** | Message envoyé à tout le monde |
 | **Unicast** | Message envoyé à un seul destinataire |
 | **Flood** | Le switch envoie partout (MAC inconnue) |
-| **TTL** | Durée de vie d'une entrée en cache |
+| **TTL** | Durée de vie d'une entrée en cache (Time To Live) |
 
 ---
 

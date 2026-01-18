@@ -262,7 +262,7 @@ interface GigabitEthernet0/0
 | **ACL Standard** | Filtre sur l'IP source uniquement |
 | **ACL Étendue** | Filtre sur source, destination, proto, ports |
 | **Wildcard Mask** | Inverse du masque réseau |
-| **Implicit Deny** | Tout ce qui n'est pas autorisé est bloqué |
+| **Implicit Deny** | Refus implicite = tout ce qui n'est pas explicitement autorisé est bloqué automatiquement |
 | **Stateless** | Chaque paquet évalué indépendamment |
 | **Stateful** | Firewall qui mémorise les connexions |
 | **permit/deny** | Autoriser/Bloquer |

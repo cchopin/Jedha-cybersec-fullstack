@@ -241,7 +241,7 @@ Switch(config-if)# switchport trunk native vlan 999
 | Terme | Définition simple |
 |-------|-------------------|
 | **ARP Spoofing** | Mentir sur son adresse MAC |
-| **MitM** | Man-in-the-Middle - intercepter le trafic |
+| **MitM** | Man-in-the-Middle (homme du milieu) - intercepter le trafic entre deux parties |
 | **VLAN Hopping** | Sauter d'un VLAN à un autre |
 | **Switch Spoofing** | Faire croire qu'on est un switch |
 | **Double Tagging** | Mettre 2 étiquettes VLAN pour contourner l'isolation |

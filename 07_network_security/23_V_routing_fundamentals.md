@@ -229,7 +229,7 @@ tracert google.com
 | **Statique** | Routes configurées à la main |
 | **Dynamique** | Routes apprises automatiquement |
 | **NAT** | Traduction d'adresses privées en publiques |
-| **AD** | Niveau de confiance d'une source de route |
+| **AD** | Administrative Distance - niveau de confiance d'une source de route (plus bas = plus fiable) |
 | **Métrique** | Coût d'un chemin |
 | **Longest Prefix Match** | La route la plus spécifique gagne |
 | **Inter-VLAN** | Routage entre VLANs |

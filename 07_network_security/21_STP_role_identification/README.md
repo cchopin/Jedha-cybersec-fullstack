@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Comprendre et identifier les roles Spanning Tree Protocol (STP) dans une topologie en triangle.
+Comprendre et identifier les rôles Spanning Tree Protocol (STP) dans une topologie en triangle.
 
 ## Topologie
 
@@ -15,29 +15,29 @@ Comprendre et identifier les roles Spanning Tree Protocol (STP) dans une topolog
           Et0/1-Et0/0
 ```
 
-- **3 switches IOU L2** connectes en triangle
+- **3 switches IOU L2** connectés en triangle
 - **3 VPCs** (un par switch, tous dans VLAN 10)
 - **Liens trunk 802.1Q** entre les switches
 
-## Prerequis
+## Prérequis
 
 - GNS3 server accessible sur `192.168.156.183:80`
 - Templates `Cisco IOU L2` et `VPCS` disponibles
-- Ansible installe
+- Ansible installé
 
 ## Utilisation
 
-### Setup complet (recommande)
+### Setup complet (recommandé)
 
 ```bash
 cd /Users/cchopin/projets-git/jedha/07_network_security/21_STP_role_identification
 ansible-playbook playbooks/00_full_lab.yml
 ```
 
-### Execution etape par etape
+### Execution étape par étape
 
 ```bash
-# 1. Creer la topologie
+# 1. Créer la topologie
 ansible-playbook playbooks/01_create_topology.yml
 
 # 2. Configurer VLANs et Trunks
@@ -46,7 +46,7 @@ ansible-playbook playbooks/02_configure_vlans.yml
 # 3. Configurer les IPs des VPCs
 ansible-playbook playbooks/03_configure_vpcs.yml
 
-# 4. Verifier STP
+# 4. Vérifier STP
 ansible-playbook playbooks/04_verify_stp.yml
 ```
 
@@ -54,20 +54,20 @@ ansible-playbook playbooks/04_verify_stp.yml
 
 ### 1. Identifier le Root Bridge
 
-Sur chaque switch, executer:
+Sur chaque switch, exécuter:
 ```
 show spanning-tree vlan 10
 ```
 
-Le Root Bridge est le switch dont le Bridge ID apparait comme "Root ID".
+Le Root Bridge est le switch dont le Bridge ID apparaît comme "Root ID".
 
-### 2. Identifier les roles des ports
+### 2. Identifier les rôles des ports
 
 | Role | Description |
 |------|-------------|
 | Root Port | Meilleur chemin vers le Root Bridge |
 | Designated Port | Forward le trafic sur un segment |
-| Alternate/Blocked | Bloque pour eviter les boucles |
+| Alternate/Blocked | Bloque pour éviter les boucles |
 
 ### 3. Forcer un Root Bridge
 
@@ -78,14 +78,14 @@ Switch1(config)# spanning-tree vlan 10 priority 4096
 Switch1(config)# end
 ```
 
-### 4. Observer les changements
+### 4. Observer les changéments
 
-Apres avoir change la priorite:
+Apres avoir changé la priorité:
 ```
 show spanning-tree vlan 10
 ```
 
-### 5. Test de connectivite
+### 5. Test de connectivité
 
 Sur PC1:
 ```
@@ -120,7 +120,7 @@ show spanning-tree detail
 │   └── 04_verify_stp.yml
 ├── scripts/
 │   └── cisco_cli.py
-├── switch_info.yml (genere automatiquement)
+├── switch_info.yml (généré automatiquement)
 └── README.md
 ```
 
