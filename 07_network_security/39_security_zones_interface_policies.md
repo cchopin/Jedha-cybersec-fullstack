@@ -2,12 +2,12 @@
 
 ## Objectifs du cours
 
-Ce cours explore comment les firewalls et routeurs renforcent la securite en regroupant les interfaces dans des zones et en controlant le trafic entre elles via des politiques d'interface. Les zones de securite et les politiques d'interface definissent les regles d'engagement a travers votre reseau.
+Ce cours explore comment les firewalls et routeurs renforcent la sécurité en regroupant les interfaces dans des zones et en controlant le trafic entre elles via des politiques d'interface. Les zones de sécurité et les politiques d'interface definissent les regles d'engagement a travers votre réseau.
 
 Competences visees :
-- Comprendre le concept et l'objectif des zones de securite dans la configuration firewall
+- Comprendre le concept et l'objectif des zones de sécurité dans la configuration firewall
 - Classifier les interfaces dans differentes zones comme inside, outside et DMZ
-- Configurer des politiques au niveau interface pour le controle d'acces, le NAT et le logging
+- Configurer des politiques au niveau interface pour le contrôle d'acces, le NAT et le logging
 - Concevoir des regles de trafic inter-zones securisees avec pfSense et Cisco
 - Comprendre les bonnes pratiques pour segmenter le trafic avec les Zone-Based Policy Firewalls
 
@@ -31,11 +31,11 @@ Competences visees :
 | Zone | Description |
 |------|-------------|
 | **Inside/LAN** | Reseau interne, appareils d'entreprise |
-| **Outside/WAN** | Internet, reseaux non fiables |
+| **Outside/WAN** | Internet, réseaux non fiables |
 | **DMZ** | Serveurs publics exposes |
 | **VPN** | Acces utilisateurs distants |
 | **Guest** | BYOD, IoT, visiteurs |
-| **Management** | Interfaces d'administration reseau |
+| **Management** | Interfaces d'administration réseau |
 
 ### Termes Cisco ZBFW
 
@@ -51,8 +51,8 @@ Competences visees :
 
 | Terme | Description |
 |-------|-------------|
-| **Interface** | Port reseau virtuel (LAN, WAN, OPT) |
-| **Alias** | Groupe d'IPs, ports ou reseaux |
+| **Interface** | Port réseau virtuel (LAN, WAN, OPT) |
+| **Alias** | Groupe d'IPs, ports ou réseaux |
 | **Floating Rules** | Regles s'appliquant a plusieurs interfaces |
 | **Pass** | Action autorisant le trafic |
 | **Block** | Action bloquant silencieusement |
@@ -73,7 +73,7 @@ Competences visees :
 
 ## Qu'est-ce qu'une Zone de Securite ?
 
-Les zones de securite sont des groupements logiques d'interfaces sur un firewall ou routeur. Au lieu d'appliquer des regles a chaque interface individuellement, vous assignez les interfaces a des zones comme "inside", "outside" ou "DMZ", puis definissez des politiques entre les zones.
+Les zones de sécurité sont des groupements logiques d'interfaces sur un firewall ou routeur. Au lieu d'appliquer des regles a chaque interface individuellement, vous assignez les interfaces a des zones comme "inside", "outside" ou "DMZ", puis definissez des politiques entre les zones.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -111,32 +111,32 @@ Les zones de securite sont des groupements logiques d'interfaces sur un firewall
 | **Simplification** | Une regle entre zones au lieu de 50 regles par interface |
 | **Securite** | Facilite l'application du moindre privilege |
 | **Coherence** | Application uniforme des politiques |
-| **Scalabilite** | Plus facile a gerer quand le reseau grandit |
+| **Scalabilite** | Plus facile a gerer quand le réseau grandit |
 | **Lisibilite** | Configurations plus claires et comprehensibles |
 
 ### Zones vs Segmentation Reseau
 
-Il est courant de confondre zones de securite et segmentation reseau, mais ils servent des objectifs differents (bien que complementaires) :
+Il est courant de confondre zones de sécurité et segmentation réseau, mais ils servent des objectifs differents (bien que complementaires) :
 
 | Aspect | Segmentation Reseau | Zones de Securite |
 |--------|---------------------|-------------------|
 | **Niveau** | Infrastructure | Politique |
 | **Objectif** | Separer le trafic | Appliquer des regles |
 | **Implementation** | VLANs, subnets, switches | Configuration firewall |
-| **Focus** | Comment le reseau est divise | Comment les politiques s'appliquent |
+| **Focus** | Comment le réseau est divise | Comment les politiques s'appliquent |
 
 **En resume :**
-- **Segmentation** = "Comment votre reseau est physiquement/logiquement divise"
-- **Zones** = "Comment vous appliquez les politiques de securite a ces divisions"
+- **Segmentation** = "Comment votre réseau est physiquement/logiquement divise"
+- **Zones** = "Comment vous appliquez les politiques de sécurité a ces divisions"
 
-**Bonne pratique :** Combinez les deux - segmentez votre reseau pour le controle et la performance, puis superposez les zones de securite pour appliquer des politiques coherentes.
+**Bonne pratique :** Combinez les deux - segmentez votre réseau pour le contrôle et la performance, puis superposez les zones de sécurité pour appliquer des politiques coherentes.
 
 ### Zones courantes et niveaux de confiance
 
 | Zone | Description | Niveau de Confiance |
 |------|-------------|---------------------|
 | **Inside** | LAN interne, appareils corporate | Haut |
-| **Outside** | Internet, reseaux non fiables | Bas |
+| **Outside** | Internet, réseaux non fiables | Bas |
 | **DMZ** | Serveurs publics | Moyen |
 | **VPN** | Acces utilisateurs distants | Variable |
 | **Guest** | BYOD, IoT, visiteurs | Bas |
@@ -148,7 +148,7 @@ Il est courant de confondre zones de securite et segmentation reseau, mais ils s
 
 ### Approche ACL traditionnelle
 
-Dans les anciens systemes, vous definiriez des ACLs pour chaque interface :
+Dans les anciens systèmes, vous definiriez des ACLs pour chaque interface :
 
 ```cisco
 ! Interface A
@@ -206,7 +206,7 @@ Refuser SSH de Zone C vers Zone A
 ### Etape 1 : Definition des zones
 
 ```cisco
-! Creer les zones de securite
+! Creer les zones de sécurité
 zone security INSIDE
 zone security OUTSIDE
 zone security DMZ
@@ -365,7 +365,7 @@ zone-pair security OUT-TO-DMZ
 
 ## Politiques d'Interface Expliquees
 
-Une fois vos zones creees, l'etape suivante est de configurer les politiques d'interface (regles firewall). Ces politiques definissent qui peut communiquer avec qui, sous quelles conditions, et ce qui doit arriver au trafic.
+Une fois vos zones creees, l'étape suivante est de configurer les politiques d'interface (regles firewall). Ces politiques definissent qui peut communiquer avec qui, sous quelles conditions, et ce qui doit arriver au trafic.
 
 ### Composants des politiques d'interface
 
@@ -427,7 +427,7 @@ Une fois vos zones creees, l'etape suivante est de configurer les politiques d'i
 
 ## Politiques d'Interface dans pfSense
 
-pfSense gere les politiques d'interface avec un modele simple et elegant.
+pfSense gère les politiques d'interface avec un modèle simple et élégant.
 
 ### Assignation des interfaces
 
@@ -587,7 +587,7 @@ Alias: Blocked_Countries
 
 | Feature | Implementation |
 |---------|----------------|
-| **Least Privilege** | Chaque zone a acces uniquement a ce qui est necessaire |
+| **Least Privilege** | Chaque zone a acces uniquement a ce qui est nécessaire |
 | **Defense in Depth** | Plusieurs couches de protection |
 | **Controlled Exposure** | Seule la DMZ est exposee a Internet |
 | **Admin Isolation** | Zone management separee |
@@ -627,7 +627,7 @@ Activer le logging pour :
 | Type de trafic | Raison |
 |----------------|--------|
 | Connexions refusees | Detection d'intrusion |
-| Trafic entrant | Audit de securite |
+| Trafic entrant | Audit de sécurité |
 | Ports critiques (SSH, RDP) | Surveillance des acces |
 | Regles NAT | Traçabilite |
 
@@ -652,7 +652,7 @@ Activer le logging pour :
 | **Mauvais ordre des regles** | Allow au-dessus de deny | Verifier l'ordre |
 | **NAT oublie pour DMZ** | IPs internes exposees | Configurer le NAT |
 | **Pas de documentation** | Maintenance difficile | Documenter tout |
-| **Regles expirées non supprimees** | Configuration polluee | Revue reguliere |
+| **Regles expirées non supprimees** | Configuration polluee | Revue réguliere |
 | **Logging desactive** | Pas de visibilite | Activer sur deny |
 
 ---
@@ -679,7 +679,7 @@ Exemples:
 │                                                              │
 │   1. Regles de blocage specifiques (IPs bannies, etc.)     │
 │   2. Regles d'autorisation specifiques (serveurs)          │
-│   3. Regles d'autorisation generales (LAN to Internet)     │
+│   3. Regles d'autorisation générales (LAN to Internet)     │
 │   4. Regle de deny par defaut avec logging                 │
 │                                                              │
 └─────────────────────────────────────────────────────────────┘
@@ -695,7 +695,7 @@ Exemples:
 [ ] Utiliser des aliases pour simplifier la gestion
 [ ] Garder le deny par defaut en bas de chaque interface
 [ ] Documenter chaque regle avec une description
-[ ] Reviser les regles regulierement (mensuel)
+[ ] Reviser les regles régulierement (mensuel)
 [ ] Tester les regles dans un environnement lab
 [ ] Activer le logging sur les regles critiques
 ```
@@ -706,7 +706,7 @@ Exemples:
 
 ### Detection d'intrusion inter-zones
 
-Utilisez des systemes IDS/IPS comme Suricata ou Snort entre les zones :
+Utilisez des systèmes IDS/IPS comme Suricata ou Snort entre les zones :
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -808,9 +808,9 @@ debug zone security
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau | https://tryhackme.com/room/introtonetworking |
+| **Intro to Networking** | Fondamentaux réseau | https://tryhackme.com/room/introtonetworking |
 | **Firewalls** | Introduction aux firewalls | https://tryhackme.com/room/dvwafirewalls |
-| **Network Services** | Services reseau | https://tryhackme.com/room/networkservices |
-| **Network Security** | Securite reseau | https://tryhackme.com/room/introtonetwwork |
+| **Network Services** | Services réseau | https://tryhackme.com/room/networkservices |
+| **Network Security** | Securite réseau | https://tryhackme.com/room/introtonetwwork |
 
-> **Note** : Les zones de securite peuvent etre pratiquees sur GNS3 avec des routeurs Cisco (IOSv avec licence Security) ou sur pfSense virtuel. Pour les labs, creez une topologie avec au moins 3 zones (Inside, Outside, DMZ) et experimentez avec differentes politiques. Testez toujours vos regles en generant du trafic de test (ping, curl, nmap) pour verifier que les politiques fonctionnent comme prevu.
+> **Note** : Les zones de sécurité peuvent etre pratiquees sur GNS3 avec des routeurs Cisco (IOSv avec licence Security) ou sur pfSense virtuel. Pour les labs, creez une topologie avec au moins 3 zones (Inside, Outside, DMZ) et experimentez avec differentes politiques. Testez toujours vos regles en generant du trafic de test (ping, curl, nmap) pour verifier que les politiques fonctionnent comme prevu.

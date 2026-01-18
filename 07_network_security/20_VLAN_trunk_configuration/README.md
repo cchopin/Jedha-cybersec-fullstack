@@ -2,11 +2,11 @@
 
 ## Objectifs
 
-- Creer et nommer des VLANs sur des switches Cisco
+- Créer et nommer des VLANs sur des switches Cisco
 - Configurer des ports access pour les end-devices
 - Configurer des trunks 802.1Q entre switches
-- Verifier l'isolation Layer 2 entre VLANs
-- Tester la connectivite intra-VLAN a travers plusieurs switches
+- Vérifier l'isolation Layer 2 entre VLANs
+- Tester la connectivité intra-VLAN a travers plusieurs switches
 
 ---
 
@@ -17,7 +17,7 @@
 ├── ansible.cfg
 ├── inventory.yml
 ├── group_vars/all.yml
-├── switch_info.yml          # Genere automatiquement
+├── switch_info.yml          # Généré automatiquement
 ├── README.md
 ├── playbooks/
 │   ├── 00_full_lab.yml      # Setup complet
@@ -55,7 +55,7 @@
 
 ## Configuration des VLANs
 
-| VLAN ID | Nom           | Reseau          |
+| VLAN ID | Nom           | Réseau          |
 |---------|---------------|-----------------|
 | 10      | Administration | 192.168.10.0/24 |
 | 20      | HR            | 192.168.20.0/24 |
@@ -82,7 +82,7 @@
 
 ---
 
-## Demarrage rapide
+## Démarrage rapide
 
 ```bash
 cd 20_VLAN_Trunk_Configuration
@@ -90,7 +90,7 @@ cd 20_VLAN_Trunk_Configuration
 # Setup complet (topologie + VLANs + VPCs)
 ansible-playbook playbooks/00_full_lab.yml
 
-# Ou etape par etape:
+# Ou étape par étape:
 ansible-playbook playbooks/01_create_topology.yml
 ansible-playbook playbooks/02_configure_vlans.yml
 ansible-playbook playbooks/03_configure_vpcs.yml
@@ -98,18 +98,18 @@ ansible-playbook playbooks/03_configure_vpcs.yml
 
 ---
 
-## Verification
+## Vérification
 
 ### Via Ansible
 
 ```bash
-# Verifier IOU1
+# Vérifier IOU1
 ansible-playbook playbooks/04_verify.yml -e "verify_switch=IOU1"
 
-# Verifier IOU2
+# Vérifier IOU2
 ansible-playbook playbooks/04_verify.yml -e "verify_switch=IOU2"
 
-# Verifier IOU3
+# Vérifier IOU3
 ansible-playbook playbooks/04_verify.yml -e "verify_switch=IOU3"
 ```
 
@@ -119,7 +119,7 @@ ansible-playbook playbooks/04_verify.yml -e "verify_switch=IOU3"
 # Connexion a un switch (voir switch_info.yml pour les ports)
 telnet 192.168.156.183 <PORT>
 
-# Commandes de verification
+# Commandes de vérification
 show vlan brief
 show interfaces trunk
 show mac address-table
@@ -128,9 +128,9 @@ show spanning-tree
 
 ---
 
-## Tests de connectivite
+## Tests de connectivité
 
-### Pings qui doivent FONCTIONNER (meme VLAN)
+### Pings qui doivent FONCTIONNER (même VLAN)
 
 ```bash
 # Depuis PC_Admin_1 vers PC_Admin_2 (VLAN 10)
@@ -146,7 +146,7 @@ ping 192.168.40.20
 ping 192.168.50.20
 ```
 
-### Pings qui NE doivent PAS fonctionner (VLANs differents)
+### Pings qui NE doivent PAS fonctionner (VLANs différents)
 
 ```bash
 # Depuis PC_Admin_1 vers PC_HR_1
@@ -155,9 +155,9 @@ ping 192.168.20.10    # FAIL - pas de routage inter-VLAN
 
 ---
 
-## Commandes Cisco de reference
+## Commandes Cisco de référence
 
-### Creation des VLANs
+### Création des VLANs
 
 ```
 enable
@@ -218,41 +218,41 @@ show interfaces trunk
 show interfaces e0/0 switchport
 ```
 
-Verifier:
-- Encapsulation dot1q configuree des deux cotes
-- Mode trunk des deux cotes
-- VLANs autorises sur le trunk
+Vérifier:
+- Encapsulation dot1q configuree des deux côtés
+- Mode trunk des deux côtés
+- VLANs autorisés sur le trunk
 
 ### Les VPCs ne communiquent pas
 
-1. Verifier que les VPCs sont dans le bon VLAN:
+1. Vérifier que les VPCs sont dans le bon VLAN:
    ```
    show vlan brief
    ```
 
-2. Verifier la table MAC:
+2. Vérifier la table MAC:
    ```
    show mac address-table
    ```
 
-3. Verifier que le trunk transporte le VLAN:
+3. Vérifier que le trunk transporte le VLAN:
    ```
    show interfaces trunk
    ```
 
-### Pas de connectivite inter-VLAN
+### Pas de connectivité inter-VLAN
 
 C'est normal. Ce lab est Layer 2 uniquement.
 Pour le routage inter-VLAN, voir le Lab 21.
 
 ---
 
-## Resume des commandes
+## Résumé des commandes
 
 | Commande | Description |
 |----------|-------------|
-| `show vlan brief` | Liste des VLANs et ports assignes |
-| `show interfaces trunk` | Etat des trunks |
+| `show vlan brief` | Liste des VLANs et ports assignés |
+| `show interfaces trunk` | État des trunks |
 | `show mac address-table` | Table d'adresses MAC |
 | `show interfaces switchport` | Config switchport d'un port |
-| `show spanning-tree` | Etat du STP |
+| `show spanning-tree` | État du STP |

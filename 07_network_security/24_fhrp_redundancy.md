@@ -4,14 +4,14 @@
 
 Que se passe-t-il quand la passerelle par defaut de vos utilisateurs tombe en panne ? **Perte de connectivite totale**. C'est la que les protocoles FHRP (First Hop Redundancy Protocol) entrent en jeu.
 
-Comprendre la redondance reseau est essentiel pour :
+Comprendre la redondance réseau est essentiel pour :
 
 - **Disponibilite** : Assurer un uptime de 99.99% et respecter les SLAs
 - **Securite defensive** : Detecter les tentatives de detournement de passerelle
 - **Securite offensive** : Exploiter les failles de configuration FHRP pour des attaques MitM
-- **Architecture** : Concevoir des reseaux sans point de defaillance unique (SPOF)
+- **Architecture** : Concevoir des réseaux sans point de defaillance unique (SPOF)
 
-> **Point securite** : Un attaquant qui prend le controle de la passerelle virtuelle FHRP peut intercepter **tout le trafic** du reseau. Les protocoles FHRP sont une cible de choix pour les attaques Man-in-the-Middle.
+> **Point sécurité** : Un attaquant qui prend le contrôle de la passerelle virtuelle FHRP peut intercepter **tout le trafic** du réseau. Les protocoles FHRP sont une cible de choix pour les attaques Man-in-the-Middle.
 
 ---
 
@@ -37,7 +37,7 @@ Comprendre la redondance reseau est essentiel pour :
 | **Standby Router** | Routeur HSRP pret a prendre le relais si l'actif tombe |
 | **Master** | Equivalent de "Active" en terminologie VRRP |
 | **Backup** | Equivalent de "Standby" en terminologie VRRP |
-| **Priority** | Valeur (0-255) determinant quel routeur devient actif. Plus eleve = prioritaire |
+| **Priority** | Valeur (0-255) determinant quel routeur devient actif. Plus élevé = prioritaire |
 | **Preemption** | Capacite d'un routeur a reprendre le role actif apres recuperation |
 | **Tracking** | Mecanisme ajustant la priorite selon l'etat d'interfaces ou de routes |
 | **Hello Timer** | Intervalle entre les messages de vie (3s par defaut HSRP) |
@@ -50,7 +50,7 @@ Comprendre la redondance reseau est essentiel pour :
 | **HA** | High Availability | Conception visant a minimiser les interruptions de service |
 | **FT** | Fault Tolerance | Capacite a continuer de fonctionner malgre une panne |
 | **SLA** | Service Level Agreement | Engagement contractuel sur le niveau de service (uptime) |
-| **SPOF** | Single Point of Failure | Composant unique dont la panne arrete tout le systeme |
+| **SPOF** | Single Point of Failure | Composant unique dont la panne arrete tout le système |
 | **MTBF** | Mean Time Between Failures | Temps moyen entre deux pannes |
 | **MTTR** | Mean Time To Repair | Temps moyen de reparation apres une panne |
 | **RPO** | Recovery Point Objective | Perte de donnees acceptable en cas de sinistre |
@@ -60,7 +60,7 @@ Comprendre la redondance reseau est essentiel pour :
 
 | Terme | Description |
 |-------|-------------|
-| **FHRP Hijacking** | Prise de controle de la passerelle virtuelle en annoncant une priorite superieure |
+| **FHRP Hijacking** | Prise de contrôle de la passerelle virtuelle en annoncant une priorite superieure |
 | **Gateway Spoofing** | Usurpation de l'adresse de la passerelle pour intercepter le trafic |
 | **Priority Manipulation** | Modification malveillante de la priorite pour devenir routeur actif |
 | **Hello Flood** | Inondation de messages Hello pour perturber l'election |
@@ -349,7 +349,7 @@ Chaque routeur connecte a un ISP different pour une redondance maximale.
 | Aspect | Fault Tolerance (FT) | High Availability (HA) |
 |--------|----------------------|------------------------|
 | Objectif | Zero downtime | Downtime minimal |
-| Cout | Tres eleve | Modere |
+| Cout | Tres élevé | Modere |
 | Complexite | Haute | Moyenne |
 | Exemple | Dual power, RAID 1 | HSRP, clustering |
 | Perte de paquets | Aucune | Quelques-uns possible |
@@ -416,7 +416,7 @@ logging event link-status
 snmp-server enable traps hsrp
 ```
 
-### Checklist securite FHRP
+### Checklist sécurité FHRP
 
 - [ ] Authentification MD5 activee sur tous les groupes
 - [ ] Paquets FHRP bloques sur les ports utilisateurs
@@ -434,7 +434,7 @@ snmp-server enable traps hsrp
 ```
 show standby                    ! Etat de tous les groupes
 show standby brief              ! Resume
-show standby GigabitEthernet0/0 ! Details interface specifique
+show standby GigabitEthernet0/0 ! Details interface spécifique
 debug standby                   ! Debug (attention en prod!)
 debug standby events            ! Evenements seulement
 ```
@@ -521,12 +521,12 @@ ping <VIP>       # Linux (Ctrl+C pour arreter)
 
 | Room | Lien | Contenu |
 |------|------|---------|
-| **Intro to Networking** | [tryhackme.com/room/introtonetworking](https://tryhackme.com/room/introtonetworking) | Bases reseau, passerelles |
-| **Networking Essentials** | [tryhackme.com/room/introtolan](https://tryhackme.com/room/introtolan) | Protocoles reseau, routage |
+| **Intro to Networking** | [tryhackme.com/room/introtonetworking](https://tryhackme.com/room/introtonetworking) | Bases réseau, passerelles |
+| **Networking Essentials** | [tryhackme.com/room/introtolan](https://tryhackme.com/room/introtolan) | Protocoles réseau, routage |
 | **L2 MAC Flooding & ARP Spoofing** | [tryhackme.com/room/layer2](https://tryhackme.com/room/layer2) | Attaques Layer 2, MitM |
 | **Wireshark** | [tryhackme.com/room/wireshark](https://tryhackme.com/room/wireshark) | Capture et analyse de trafic FHRP |
 
-> **Note :** Il n'existe pas de room TryHackMe specifique a FHRP, mais les rooms Layer 2 et Wireshark couvrent les concepts sous-jacents.
+> **Note :** Il n'existe pas de room TryHackMe spécifique a FHRP, mais les rooms Layer 2 et Wireshark couvrent les concepts sous-jacents.
 
 ### Labs GNS3/EVE-NG
 
@@ -567,4 +567,4 @@ ping <VIP>       # Linux (Ctrl+C pour arreter)
 | **Timers** | Trop agressifs = flapping, trop lents = downtime |
 | **VIP/VMAC** | Surveiller les changements inattendus |
 
-> **Mindset securite** : FHRP controle la passerelle par defaut. Controler la passerelle = controler tout le trafic sortant. En tant que pentester, cherchez a devenir la passerelle active. En tant que defenseur, authentifiez et surveillez.
+> **Mindset sécurité** : FHRP contrôle la passerelle par defaut. Controler la passerelle = contrôler tout le trafic sortant. En tant que pentester, cherchez a devenir la passerelle active. En tant que defenseur, authentifiez et surveillez.

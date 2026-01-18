@@ -211,9 +211,9 @@ Dans pfSense, les interfaces sont les "zones" :
 | **Zone** | Groupe d'interfaces avec même niveau de confiance |
 | **Zone Pair** | Direction du flux (source → destination) |
 | **Trust Level** | Niveau de confiance (0-100) |
-| **Class Map** | Définit quel trafic matcher |
+| **Class Map** | Définit quel trafic identifier (les critères de correspondance) |
 | **Policy Map** | Définit les actions à appliquer |
-| **Inspect** | Inspection stateful du trafic |
+| **Inspect** | Inspection stateful du trafic (avec suivi des connexions) |
 | **Pass/Block** | Autoriser/Bloquer |
 
 ---

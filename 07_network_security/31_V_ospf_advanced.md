@@ -197,7 +197,7 @@ show ip ospf interface     ! Détail par interface
 | **ABR** | Routeur entre plusieurs aires |
 | **ASBR** | Routeur qui injecte des routes externes |
 | **Coût** | Métrique basée sur la bande passante |
-| **SPF/Dijkstra** | Algorithme pour calculer le meilleur chemin |
+| **SPF/Dijkstra** | Algorithme pour calculer le meilleur chemin (explore tous les chemins possibles et garde le plus court) |
 
 ---
 

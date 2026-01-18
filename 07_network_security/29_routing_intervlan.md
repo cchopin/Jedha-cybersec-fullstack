@@ -2,14 +2,14 @@
 
 ## Objectifs du cours
 
-Ce cours presente les fondamentaux du routage et les techniques de communication inter-VLAN. Le routage est le mecanisme qui permet aux paquets de trouver leur chemin a travers les reseaux, tandis que le routage inter-VLAN permet la communication entre des VLANs normalement isoles.
+Ce cours presente les fondamentaux du routage et les techniques de communication inter-VLAN. Le routage est le mécanisme qui permet aux paquets de trouver leur chemin a travers les réseaux, tandis que le routage inter-VLAN permet la communication entre des VLANs normalement isolés.
 
 Competences visees :
 - Comprendre la difference entre routage statique et dynamique
 - Maitriser le fonctionnement des tables de routage, decisions next-hop et metriques
 - Connaitre les deux approches du routage inter-VLAN : Router-on-a-Stick et SVI
 - Comprendre le NAT et ses differentes formes
-- Identifier les implications de securite et les contre-mesures
+- Identifier les implications de sécurité et les contre-mesures
 
 ---
 
@@ -24,9 +24,9 @@ Competences visees :
 | **Dynamic Routing** | Routes apprises automatiquement via des protocoles de routage |
 | **Routing Table** | Table contenant les routes connues par le routeur |
 | **Next-Hop** | Adresse IP du prochain routeur sur le chemin vers la destination |
-| **Metric** | Valeur numerique indiquant la preference d'une route (plus bas = meilleur) |
+| **Metric** | Valeur numerique indiquant la préférénce d'une route (plus bas = meilleur) |
 | **Administrative Distance** | Valeur indiquant la fiabilite de la source d'une route |
-| **Longest Prefix Match** | Algorithme de selection utilisant le masque le plus specifique |
+| **Longest Prefix Match** | Algorithme de selection utilisant le masque le plus spécifique |
 
 ### Protocoles de routage dynamique
 
@@ -49,7 +49,7 @@ Competences visees :
 | **Dynamic NAT** | Mapping dynamique depuis un pool d'adresses publiques |
 | **Inside Local** | Adresse IP privee d'un hote interne |
 | **Inside Global** | Adresse IP publique representant un hote interne |
-| **Outside Local** | Adresse IP d'un hote externe vue depuis le reseau interne |
+| **Outside Local** | Adresse IP d'un hote externe vue depuis le réseau interne |
 | **Outside Global** | Adresse IP publique reelle d'un hote externe |
 
 ### Inter-VLAN Routing
@@ -64,7 +64,7 @@ Competences visees :
 | **Default Gateway** | Passerelle par defaut pour les hotes d'un VLAN |
 | **Layer 3 Switch** | Switch capable de faire du routage IP |
 
-### Termes de securite
+### Termes de sécurité
 
 | Terme | Description |
 |-------|-------------|
@@ -72,13 +72,13 @@ Competences visees :
 | **Route Poisoning** | Technique de prevention des boucles ou attaque de manipulation |
 | **NAT Traversal** | Techniques pour etablir des connexions a travers NAT |
 | **Port Forwarding** | Redirection de port pour permettre l'acces a un service interne |
-| **DMZ** | Zone demilitarisee, segment reseau expose |
+| **DMZ** | Zone demilitarisee, segment réseau expose |
 
 ---
 
 ## Routage statique vs dynamique
 
-Le routage est le processus par lequel les paquets trouvent leur chemin d'un appareil a un autre a travers les reseaux. Deux approches principales existent pour peupler les tables de routage.
+Le routage est le processus par lequel les paquets trouvent leur chemin d'un appareil a un autre a travers les réseaux. Deux approches principales existent pour peupler les tables de routage.
 
 ![Routage statique vs dynamique](assets/DynamicvsStaticRouting.png)
 
@@ -89,17 +89,17 @@ Le routage statique implique la configuration manuelle des routes dans la table 
 **Avantages :**
 - Controle total sur le chemin des donnees
 - Previsible et facile a comprendre
-- Consommation minimale de ressources (CPU, memoire, bande passante)
+- Consommation minimale de ressources (CPU, mémoire, bande passante)
 - Securite accrue (pas de protocole de routage a exploiter)
 
 **Inconvenients :**
 - Ne s'adapte pas aux changements de topologie
-- Fastidieux a maintenir dans les grands reseaux
+- Fastidieux a maintenir dans les grands réseaux
 - Risque d'erreurs de configuration
 - Pas de redondance automatique
 
 **Cas d'utilisation :**
-- Petits reseaux avec peu de routes
+- Petits réseaux avec peu de routes
 - Reseaux dont la topologie change rarement
 - Routes par defaut vers Internet
 - Connexions point-a-point simples
@@ -110,12 +110,12 @@ Le routage dynamique permet aux routeurs d'apprendre et d'adapter automatiquemen
 
 **Avantages :**
 - Adaptation automatique aux changements de topologie
-- Scalabilite pour les grands reseaux
+- Scalabilite pour les grands réseaux
 - Redondance et haute disponibilite
 - Repartition de charge (load balancing)
 
 **Inconvenients :**
-- Consommation de ressources (CPU, memoire, bande passante)
+- Consommation de ressources (CPU, mémoire, bande passante)
 - Complexite de configuration et depannage
 - Temps de convergence lors des changements
 - Surface d'attaque pour les protocoles de routage
@@ -132,11 +132,11 @@ Le routage dynamique permet aux routeurs d'apprendre et d'adapter automatiquemen
 |-----------------|------------------|-------------------|
 | Configuration | Manuelle | Automatique |
 | Scalabilite | Limitee | Excellente |
-| Ressources | Faibles | Moderees a elevees |
+| Ressources | Faibles | Moderees a élevées |
 | Reaction aux changements | Aucune (manuelle) | Automatique |
 | Convergence | Instantanee | Variable |
 | Securite | Plus simple a securiser | Necessite authentification |
-| Complexite | Faible | Moderee a elevee |
+| Complexite | Faible | Moderee a élevée |
 
 ### Utilisation hybride
 
@@ -159,14 +159,14 @@ En pratique, le routage statique et dynamique sont souvent combines :
 ```
 
 - Route statique par defaut vers Internet
-- Protocole dynamique pour le reseau interne
-- Routes statiques pour les connexions specifiques (VPN, partenaires)
+- Protocole dynamique pour le réseau interne
+- Routes statiques pour les connexions spécifiques (VPN, partenaires)
 
 ---
 
 ## Network Address Translation (NAT)
 
-Le NAT est une technique fondamentale qui permet a plusieurs appareils sur un reseau prive de partager une seule adresse IP publique pour communiquer avec Internet.
+Le NAT est une technique fondamentale qui permet a plusieurs appareils sur un réseau prive de partager une seule adresse IP publique pour communiquer avec Internet.
 
 ![Fonctionnement du NAT](assets/NAT.webp)
 
@@ -174,8 +174,8 @@ Le NAT est une technique fondamentale qui permet a plusieurs appareils sur un re
 
 **Raisons principales :**
 1. **Epuisement des adresses IPv4** : Seulement ~4.3 milliards d'adresses possibles
-2. **Securite** : Cache la topologie interne du reseau
-3. **Flexibilite** : Permet de changer de fournisseur sans readdresser le reseau interne
+2. **Securite** : Cache la topologie interne du réseau
+3. **Flexibilite** : Permet de changer de fournisseur sans readdresser le réseau interne
 
 ### Fonctionnement du NAT
 
@@ -255,8 +255,8 @@ ip nat inside source list 1 interface GigabitEthernet0/1 overload
 ### NAT et IPv6
 
 IPv6 fournit suffisamment d'adresses pour eliminer le besoin de NAT pour la conservation d'adresses. Cependant, NAT66/NPTv6 existe toujours pour :
-- Raisons de securite/politique
-- Faciliter les fusions de reseaux
+- Raisons de sécurité/politique
+- Faciliter les fusions de réseaux
 - Simplifier les migrations
 
 ---
@@ -272,10 +272,10 @@ Chaque routeur maintient une table de routage qui determine le meilleur chemin p
 | Element | Description |
 |---------|-------------|
 | **Destination network** | Reseau de destination (ex: 192.168.1.0) |
-| **Subnet mask** | Masque definissant la taille du reseau (ex: 255.255.255.0) |
+| **Subnet mask** | Masque definissant la taille du réseau (ex: 255.255.255.0) |
 | **Next-hop IP** | Adresse du prochain routeur |
 | **Outgoing interface** | Interface de sortie physique ou logique |
-| **Metric** | Valeur de preference (plus bas = meilleur) |
+| **Metric** | Valeur de préférénce (plus bas = meilleur) |
 | **Administrative distance** | Fiabilite de la source de la route |
 
 ### Exemple de table de routage
@@ -291,7 +291,7 @@ Destination        Mask              Next-Hop       Metric   Protocol   AD
 
 ### Processus de decision de routage
 
-1. **Longest Prefix Match** : Le routeur selectionne la route avec le masque le plus specifique
+1. **Longest Prefix Match** : Le routeur selectionne la route avec le masque le plus spécifique
 2. **Administrative Distance** : En cas d'egalite de prefixe, la source la plus fiable gagne
 3. **Metric** : En cas d'egalite d'AD, la metrique la plus basse gagne
 
@@ -318,7 +318,7 @@ Destination        Mask              Next-Hop       Metric   Protocol   AD
 | **RIP** | Hop count | Nombre de routeurs traverses (max 15) |
 | **OSPF** | Cost | Reference bandwidth / Interface bandwidth |
 | **EIGRP** | Composite | Bandwidth, delay, reliability, load (par defaut : BW + delay) |
-| **BGP** | Path attributes | AS_PATH length, origin, MED, local preference |
+| **BGP** | Path attributes | AS_PATH length, origin, MED, local préférénce |
 
 ### Analogie postale
 
@@ -331,11 +331,11 @@ Destination        Mask              Next-Hop       Metric   Protocol   AD
 
 ## Routage Inter-VLAN
 
-Par defaut, les VLANs sont isoles les uns des autres. Un appareil dans le VLAN 10 ne peut pas communiquer avec un appareil dans le VLAN 20. Le routage inter-VLAN permet cette communication.
+Par defaut, les VLANs sont isolés les uns des autres. Un appareil dans le VLAN 10 ne peut pas communiquer avec un appareil dans le VLAN 20. Le routage inter-VLAN permet cette communication.
 
 ### Methode 1 : Router-on-a-Stick
 
-Cette methode traditionnelle utilise un seul lien physique entre un routeur et un switch, configure en trunk.
+Cette méthode traditionnelle utilise un seul lien physique entre un routeur et un switch, configure en trunk.
 
 ![Router-on-a-Stick](assets/RouterOnStick.jpg)
 
@@ -388,7 +388,7 @@ interface FastEthernet0/0.20
 **Avantages :**
 - Cout faible (un seul routeur)
 - Simple a comprendre et configurer
-- Adapte aux petits reseaux
+- Adapte aux petits réseaux
 
 **Inconvenients :**
 - Lien unique = goulot d'etranglement potentiel
@@ -397,7 +397,7 @@ interface FastEthernet0/0.20
 
 ### Methode 2 : SVI (Switched Virtual Interface)
 
-Cette methode moderne utilise un switch Layer 3 qui effectue le routage internement.
+Cette méthode moderne utilise un switch Layer 3 qui effectue le routage internement.
 
 ![SVI Inter-VLAN Routing](assets/SVI.png)
 
@@ -439,17 +439,17 @@ interface GigabitEthernet0/2
 ```
 
 **Avantages :**
-- Performance elevee (routage en hardware)
+- Performance élevée (routage en hardware)
 - Pas de goulot d'etranglement
 - Scalabilite excellente
 - Moins de points de defaillance
 
 **Inconvenients :**
-- Cout plus eleve (switch Layer 3)
+- Cout plus élevé (switch Layer 3)
 - Configuration plus complexe
-- Necessite des equipements specifiques
+- Necessite des équipements spécifiques
 
-### Comparaison des methodes
+### Comparaison des méthodes
 
 | Caracteristique | Router-on-a-Stick | SVI |
 |-----------------|-------------------|-----|
@@ -457,15 +457,15 @@ interface GigabitEthernet0/2
 | Performance | Limitee | Elevee (wire speed) |
 | Scalabilite | Faible | Excellente |
 | Complexite | Faible | Moderee |
-| Cout initial | Plus bas | Plus eleve |
+| Cout initial | Plus bas | Plus élevé |
 | Goulot d'etranglement | Oui (lien trunk) | Non |
 | Point de defaillance | Routeur + lien | Switch |
 
-### Choix de la methode
+### Choix de la méthode
 
 **Router-on-a-Stick convient pour :**
 - Laboratoires et environnements de test
-- Petits reseaux (< 50 utilisateurs)
+- Petits réseaux (< 50 utilisateurs)
 - Budgets limites
 - Trafic inter-VLAN faible
 
@@ -473,7 +473,7 @@ interface GigabitEthernet0/2
 - Environnements de production
 - Reseaux moyens a grands
 - Besoins de haute performance
-- Trafic inter-VLAN eleve
+- Trafic inter-VLAN élevé
 
 ---
 
@@ -493,7 +493,7 @@ interface GigabitEthernet0/2
 ### Configuration R1
 
 ```cisco
-! Interface vers le reseau local
+! Interface vers le réseau local
 interface GigabitEthernet0/0
  ip address 192.168.1.1 255.255.255.0
  no shutdown
@@ -503,14 +503,14 @@ interface GigabitEthernet0/1
  ip address 10.0.0.1 255.255.255.252
  no shutdown
 
-! Route statique vers le reseau de R2
+! Route statique vers le réseau de R2
 ip route 192.168.2.0 255.255.255.0 10.0.0.2
 ```
 
 ### Configuration R2
 
 ```cisco
-! Interface vers le reseau local
+! Interface vers le réseau local
 interface GigabitEthernet0/0
  ip address 192.168.2.1 255.255.255.0
  no shutdown
@@ -520,7 +520,7 @@ interface GigabitEthernet0/1
  ip address 10.0.0.2 255.255.255.252
  no shutdown
 
-! Route statique vers le reseau de R1
+! Route statique vers le réseau de R1
 ip route 192.168.1.0 255.255.255.0 10.0.0.1
 ```
 
@@ -561,7 +561,7 @@ show ip interface brief
 | Attaque | Description | Impact |
 |---------|-------------|--------|
 | **Route Injection** | Injection de fausses routes | Redirection du trafic |
-| **Route Hijacking** | Prise de controle de prefixes | Interception MitM |
+| **Route Hijacking** | Prise de contrôle de prefixes | Interception MitM |
 | **Blackhole Routing** | Routes vers destinations inexistantes | Deni de service |
 | **Suboptimal Routing** | Forcer des chemins sous-optimaux | Degradation de performance |
 
@@ -571,7 +571,7 @@ show ip interface brief
 |---------|-------------|--------|
 | **NAT Pinning** | Maintien de mappings NAT malveillants | Acces persistant |
 | **Port Scanning via NAT** | Enumeration des mappings | Reconnaissance |
-| **NAT Slipstreaming** | Bypass du NAT via techniques web | Acces au reseau interne |
+| **NAT Slipstreaming** | Bypass du NAT via techniques web | Acces au réseau interne |
 
 #### Attaques inter-VLAN
 
@@ -629,14 +629,14 @@ ip dhcp snooping vlan 10,20
 ip arp inspection vlan 10,20
 ```
 
-### Checklist securite routage
+### Checklist sécurité routage
 
 ```
 [ ] Routes statiques avec next-hop ET interface specifies
 [ ] Routes flottantes pour la redondance
 [ ] ACLs inter-VLANs selon le principe du moindre privilege
 [ ] NAT timeout configures correctement
-[ ] Logging des evenements de routage
+[ ] Logging des événements de routage
 [ ] Monitoring des changements de table de routage
 [ ] Authentification des protocoles de routage dynamique
 [ ] Segmentation appropriee avec VLANs
@@ -671,10 +671,10 @@ ip arp inspection vlan 10,20
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau incluant routage | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services reseau et protocoles | https://tryhackme.com/room/networkservices |
-| **Network Services 2** | Services reseau avances | https://tryhackme.com/room/networkservices2 |
+| **Intro to Networking** | Fondamentaux réseau incluant routage | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services réseau et protocoles | https://tryhackme.com/room/networkservices |
+| **Network Services 2** | Services réseau avances | https://tryhackme.com/room/networkservices2 |
 | **Wireshark: The Basics** | Analyse de paquets pour debug routage | https://tryhackme.com/room/wiresharkthebasics |
-| **What is Networking?** | Introduction aux concepts reseau | https://tryhackme.com/room/whatisnetworking |
+| **What is Networking?** | Introduction aux concepts réseau | https://tryhackme.com/room/whatisnetworking |
 
 > **Note** : Pour la pratique avancee du routage et de l'inter-VLAN routing, utilisez GNS3 ou EVE-NG avec des images de routeurs Cisco. Les concepts de ce cours peuvent etre simules avec Packet Tracer pour les debutants.

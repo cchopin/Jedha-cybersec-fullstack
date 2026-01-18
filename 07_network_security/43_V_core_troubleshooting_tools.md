@@ -13,9 +13,9 @@ Les outils de diagnostic réseau sont comme une boîte à outils : ping pour vé
 Ping envoie un message à une machine et attend la réponse. Simple et efficace.
 
 ```
-Vous ────── "Coucou ?" ──────> Google
-     <───── "Oui !" ──────────
-              3ms
+Machine ────── "Coucou ?" ──────> Google
+       <───── "Oui !" ──────────
+                3ms
 ```
 
 ### Exemple
@@ -26,7 +26,7 @@ ping google.com
 64 bytes from google.com: icmp_seq=2 ttl=119 time=5.82 ms
 ```
 
-### Ce que ça vous dit
+### Interprétation des résultats
 
 | Résultat | Signification |
 |----------|---------------|
@@ -53,7 +53,7 @@ ping -n 4 google.com
 Traceroute montre tous les routeurs traversés pour atteindre la destination.
 
 ```
-Vous → Routeur 1 → Routeur 2 → Routeur 3 → Destination
+Machine → Routeur 1 → Routeur 2 → Routeur 3 → Destination
          4ms         15ms        25ms         30ms
 ```
 

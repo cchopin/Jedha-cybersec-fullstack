@@ -233,7 +233,7 @@ interface range GigabitEthernet0/1-4
 | **EtherChannel** | Nom Cisco pour l'agrégation |
 | **Load Balancing** | Répartition du trafic sur les liens |
 | **MLAG** | Agrégation vers deux switches différents |
-| **Bonding** | Terme Linux pour l'agrégation |
+| **Bonding** | Terme Linux pour l'agrégation (même concept, nom différent) |
 
 ---
 

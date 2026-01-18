@@ -2,7 +2,7 @@
 
 ## Objectifs du cours
 
-Ce cours presente OSPF (Open Shortest Path First), l'un des protocoles de routage interne (IGP) les plus utilises dans les reseaux d'entreprise. OSPF est un protocole a etat de liens qui offre une convergence rapide et une grande scalabilite.
+Ce cours presente OSPF (Open Shortest Path First), l'un des protocoles de routage interne (IGP) les plus utilises dans les réseaux d'entreprise. OSPF est un protocole a etat de liens qui offre une convergence rapide et une grande scalabilite.
 
 Competences visees :
 - Comprendre les principes du routage a etat de liens vs vecteur de distance
@@ -20,8 +20,8 @@ Competences visees :
 | Sigle | Nom complet | Description |
 |-------|-------------|-------------|
 | **OSPF** | Open Shortest Path First | Protocole de routage IGP a etat de liens (RFC 2328) |
-| **IGP** | Interior Gateway Protocol | Protocole de routage interne a un systeme autonome |
-| **EGP** | Exterior Gateway Protocol | Protocole de routage entre systemes autonomes (ex: BGP) |
+| **IGP** | Interior Gateway Protocol | Protocole de routage interne a un système autonome |
+| **EGP** | Exterior Gateway Protocol | Protocole de routage entre systèmes autonomes (ex: BGP) |
 | **SPF** | Shortest Path First | Algorithme de Dijkstra pour calculer les chemins les plus courts |
 | **LSA** | Link-State Advertisement | Paquet contenant les informations de topologie |
 | **LSDB** | Link-State Database | Base de donnees contenant tous les LSAs |
@@ -54,7 +54,7 @@ Competences visees :
 |------|-----|-------------|
 | **Type 1** | Router LSA | Decrit les interfaces du routeur dans une aire |
 | **Type 2** | Network LSA | Genere par le DR, decrit les routeurs sur un segment multi-acces |
-| **Type 3** | Summary LSA | Annonce les reseaux entre aires (genere par ABR) |
+| **Type 3** | Summary LSA | Annonce les réseaux entre aires (genere par ABR) |
 | **Type 4** | ASBR Summary LSA | Annonce la route vers l'ASBR |
 | **Type 5** | External LSA | Routes externes injectees dans OSPF (genere par ASBR) |
 | **Type 7** | NSSA External LSA | Routes externes dans une NSSA (converties en Type 5 a l'ABR) |
@@ -80,15 +80,15 @@ Competences visees :
 | **Loading** | Demande des LSAs manquants (LSR/LSU) |
 | **Full** | Adjacence complete, LSDB synchronisee |
 
-### Termes de securite
+### Termes de sécurité
 
 | Terme | Description |
 |-------|-------------|
 | **OSPF Authentication** | Authentification des paquets OSPF (null, simple password, MD5, SHA) |
 | **Route Injection** | Injection de fausses routes dans OSPF |
-| **OSPF Hijacking** | Prise de controle du routage via manipulation OSPF |
+| **OSPF Hijacking** | Prise de contrôle du routage via manipulation OSPF |
 | **Rogue Router** | Routeur non autorise participant au domaine OSPF |
-| **LSA Flooding Attack** | Saturation du reseau avec de faux LSAs |
+| **LSA Flooding Attack** | Saturation du réseau avec de faux LSAs |
 
 ---
 
@@ -98,7 +98,7 @@ Competences visees :
 
 | Aspect | Distance-Vector (RIP) | Link-State (OSPF) |
 |--------|----------------------|-------------------|
-| **Vision du reseau** | Locale (voisins directs) | Globale (topologie complete) |
+| **Vision du réseau** | Locale (voisins directs) | Globale (topologie complete) |
 | **Echange d'informations** | Table de routage entiere | LSAs (changements uniquement) |
 | **Algorithme** | Bellman-Ford | Dijkstra (SPF) |
 | **Convergence** | Lente (count to infinity) | Rapide |
@@ -145,7 +145,7 @@ router ospf 1
 
 ### Types de LSAs detailles
 
-Les LSAs sont le coeur du fonctionnement OSPF. Chaque type a un role specifique :
+Les LSAs sont le coeur du fonctionnement OSPF. Chaque type a un role spécifique :
 
 | Type | Genere par | Portee | Contenu |
 |------|------------|--------|---------|
@@ -215,7 +215,7 @@ router ospf 1
 
 ### Pourquoi DR/BDR ?
 
-Sur un reseau multi-acces (Ethernet), sans DR/BDR, chaque routeur devrait former une adjacence complete avec tous les autres. Avec N routeurs, cela represente N*(N-1)/2 adjacences !
+Sur un réseau multi-acces (Ethernet), sans DR/BDR, chaque routeur devrait former une adjacence complete avec tous les autres. Avec N routeurs, cela represente N*(N-1)/2 adjacences !
 
 **Avec DR/BDR :**
 - Tous les routeurs forment une adjacence FULL avec le DR et le BDR
@@ -228,9 +228,9 @@ Sur un reseau multi-acces (Ethernet), sans DR/BDR, chaque routeur devrait former
 
 **Criteres (dans l'ordre) :**
 
-1. **Priorite la plus elevee** (1-255, defaut = 1)
+1. **Priorite la plus élevée** (1-255, defaut = 1)
    - Priorite 0 = ne participe pas a l'election
-2. **Router ID le plus eleve** (en cas d'egalite de priorite)
+2. **Router ID le plus élevé** (en cas d'egalite de priorite)
 
 **Points importants :**
 
@@ -244,7 +244,7 @@ interface GigabitEthernet0/0
  ip ospf priority 100
 ```
 
-### Types de reseaux OSPF
+### Types de réseaux OSPF
 
 | Type | Election DR/BDR | Exemple |
 |------|-----------------|---------|
@@ -276,10 +276,10 @@ router ospf 1
 
 ### Filtrage de routes
 
-**Bloquer la redistribution d'un reseau specifique :**
+**Bloquer la redistribution d'un réseau spécifique :**
 
 ```cisco
-! ACL pour identifier le reseau a bloquer
+! ACL pour identifier le réseau a bloquer
 access-list 10 deny 192.168.100.0 0.0.0.255
 access-list 10 permit any
 
@@ -326,7 +326,7 @@ router eigrp 100
  redistribute ospf 1 metric 10000 100 255 1 1500
 ```
 
-Les 5 parametres de metrique EIGRP :
+Les 5 paramètres de metrique EIGRP :
 1. Bandwidth (Kbps)
 2. Delay (dizaines de microsecondes)
 3. Reliability (0-255)
@@ -352,7 +352,7 @@ Les 5 parametres de metrique EIGRP :
 |---------|-------------|--------|
 | **Rogue Router** | Routeur non autorise injecte dans le domaine OSPF | Interception du trafic, blackhole |
 | **LSA Injection** | Injection de faux LSAs pour modifier la topologie | Redirection du trafic |
-| **DR Election Manipulation** | Devenir DR pour controler les LSAs | Controle du routage sur le segment |
+| **DR Election Manipulation** | Devenir DR pour contrôler les LSAs | Controle du routage sur le segment |
 | **Route Injection** | Redistribution de fausses routes | MitM, deni de service |
 | **Hello Packet Spoofing** | Usurpation des paquets Hello | Disruption des adjacences |
 | **MaxAge Attack** | Envoi de LSAs avec MaxAge pour supprimer des routes | Deni de service |
@@ -360,15 +360,15 @@ Les 5 parametres de metrique EIGRP :
 ### Scenario d'attaque : Rogue OSPF Router
 
 ```
-1. Attaquant connecte un routeur au reseau
+1. Attaquant connecte un routeur au réseau
 2. Le routeur etablit des adjacences OSPF
 3. Injection de routes avec metriques faibles
 4. Le trafic est redirige vers l'attaquant
 5. Interception, modification ou drop du trafic
 ```
 
-**Conditions necessaires :**
-- Acces physique au reseau
+**Conditions nécessaires :**
+- Acces physique au réseau
 - Connaissance du processus OSPF (aire, authentification)
 - Absence d'authentification OSPF
 
@@ -396,7 +396,7 @@ interface GigabitEthernet0/0
 
 #### 2. Passive Interface
 
-Empeche OSPF d'envoyer des Hello sur les interfaces non necessaires :
+Empeche OSPF d'envoyer des Hello sur les interfaces non nécessaires :
 
 ```cisco
 router ospf 1
@@ -407,7 +407,7 @@ router ospf 1
 
 #### 3. Filtrage des routes
 
-Utiliser des prefix-lists et route-maps pour controler les routes acceptees :
+Utiliser des prefix-lists et route-maps pour contrôler les routes acceptees :
 
 ```cisco
 ip prefix-list VALID-ROUTES seq 10 permit 10.0.0.0/8 le 24
@@ -425,12 +425,12 @@ router ospf 1
 | Mesure | Implementation |
 |--------|----------------|
 | Port Security | Limiter les MAC sur les ports access |
-| 802.1X | Authentification des equipements reseau |
+| 802.1X | Authentification des équipements réseau |
 | ACLs | Filtrer le trafic OSPF (protocole 89) |
 | Monitoring | Surveiller les changements de topologie |
-| Logging | Journaliser les evenements OSPF |
+| Logging | Journaliser les événements OSPF |
 
-### Checklist securite OSPF
+### Checklist sécurité OSPF
 
 ```
 [ ] Authentification MD5 ou SHA sur toutes les interfaces OSPF
@@ -454,11 +454,11 @@ router ospf 1
 router ospf 1
  router-id 1.1.1.1
 
-! Annoncer les reseaux
+! Annoncer les réseaux
  network 10.0.0.0 0.255.255.255 area 0
  network 192.168.1.0 0.0.0.255 area 1
 
-! Ou par interface (methode moderne)
+! Ou par interface (méthode moderne)
 interface GigabitEthernet0/0
  ip ospf 1 area 0
 ```
@@ -517,7 +517,7 @@ debug ip ospf adj
 ! Debug paquets OSPF
 debug ip ospf packet
 
-! Debug evenements
+! Debug événements
 debug ip ospf events
 
 ! Desactiver tous les debugs
@@ -541,9 +541,9 @@ undebug all
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau incluant routage | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services reseau et protocoles | https://tryhackme.com/room/networkservices |
+| **Intro to Networking** | Fondamentaux réseau incluant routage | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services réseau et protocoles | https://tryhackme.com/room/networkservices |
 | **Wireshark: The Basics** | Analyse de paquets (utile pour debug OSPF) | https://tryhackme.com/room/wiresharkthebasics |
 | **Attacking and Defending AWS** | Inclut des concepts de routage cloud | https://tryhackme.com/room/introtocloudpentest |
 
-> **Note** : TryHackMe ne propose pas de room specifiquement dediee a OSPF. Les concepts avances de routage sont generalement pratiques sur GNS3, EVE-NG ou Packet Tracer. Pour la pratique des attaques OSPF, un lab isole avec des routeurs virtuels est recommande.
+> **Note** : TryHackMe ne propose pas de room spécifiquement dediee a OSPF. Les concepts avances de routage sont généralement pratiques sur GNS3, EVE-NG ou Packet Tracer. Pour la pratique des attaques OSPF, un lab isolé avec des routeurs virtuels est recommande.

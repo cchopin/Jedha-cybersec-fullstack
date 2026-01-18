@@ -2,12 +2,12 @@
 
 ## Objectifs du cours
 
-Ce cours presente les techniques d'agregation de liens et de repartition de charge, fondamentales pour construire des reseaux haute disponibilite. Ces technologies permettent d'augmenter la bande passante et d'assurer la redondance des connexions reseau.
+Ce cours presente les techniques d'agregation de liens et de repartition de charge, fondamentales pour construire des réseaux haute disponibilite. Ces technologies permettent d'augmenter la bande passante et d'assurer la redondance des connexions réseau.
 
 Competences visees :
 - Comprendre les principes de LACP et EtherChannel
 - Maitriser les strategies de load balancing
-- Configurer l'agregation de liens sur des equipements Cisco
+- Configurer l'agregation de liens sur des équipements Cisco
 - Appliquer ces concepts dans des topologies redondantes et data centers
 - Identifier les vulnerabilites et les contre-mesures
 
@@ -71,12 +71,12 @@ Competences visees :
 | **VSS** | Virtual Switching System | Virtualisation de 2 switches Catalyst en 1 |
 | **StackWise** | - | Technologie de stacking Cisco |
 
-### Termes de securite
+### Termes de sécurité
 
 | Terme | Description |
 |-------|-------------|
 | **LACP Flooding** | Attaque par saturation de paquets LACPDU |
-| **LAG Manipulation** | Manipulation des parametres d'agregation |
+| **LAG Manipulation** | Manipulation des paramètres d'agregation |
 | **Link Flapping** | Oscillation repetee d'un lien (up/down) |
 | **LACP Rate** | Frequence d'envoi des LACPDU (slow: 30s, fast: 1s) |
 
@@ -84,16 +84,16 @@ Competences visees :
 
 ## Pourquoi l'agregation de liens ?
 
-### Le probleme
+### Le problème
 
-Sans agregation de liens, plusieurs problemes se posent :
+Sans agregation de liens, plusieurs problèmes se posent :
 
 | Probleme | Consequence |
 |----------|-------------|
 | **Single Point of Failure** | Panne d'un lien = perte de connectivite |
 | **Bande passante limitee** | Goulot d'etranglement sur les uplinks |
 | **STP blocking** | Liens redondants bloques par Spanning Tree |
-| **Inefficacite** | Ressources reseau sous-utilisees |
+| **Inefficacite** | Ressources réseau sous-utilisees |
 
 ### La solution : Link Aggregation
 
@@ -121,8 +121,8 @@ L'agregation de liens combine plusieurs liens physiques en un seul lien logique 
 LACP est le protocole standard pour l'agregation dynamique de liens :
 
 ```
-1. Les deux equipements envoient des LACPDU
-2. Negociation des parametres (vitesse, duplex, VLAN)
+1. Les deux équipements envoient des LACPDU
+2. Negociation des paramètres (vitesse, duplex, VLAN)
 3. Formation du LAG si compatibilite
 4. Surveillance continue de l'etat des liens
 5. Retrait automatique des liens defaillants
@@ -236,19 +236,19 @@ Le trafic est distribue sur les liens du LAG selon un algorithme de hachage :
 |---------|---------------|-------------|
 | **src-mac** | MAC source | Trafic depuis peu de sources |
 | **dst-mac** | MAC destination | Trafic vers peu de destinations |
-| **src-dst-mac** | MAC src + dst | Usage general Layer 2 |
+| **src-dst-mac** | MAC src + dst | Usage général Layer 2 |
 | **src-ip** | IP source | Trafic depuis peu de sources |
 | **dst-ip** | IP destination | Trafic vers peu de destinations |
-| **src-dst-ip** | IP src + dst | Usage general Layer 3 |
+| **src-dst-ip** | IP src + dst | Usage général Layer 3 |
 | **src-dst-port** | IP + ports L4 | Maximum de granularite |
 
 ### Configuration du load balancing
 
 ```cisco
-! Voir la methode actuelle
+! Voir la méthode actuelle
 show etherchannel load-balance
 
-! Configurer la methode
+! Configurer la méthode
 port-channel load-balance src-dst-ip
 ```
 
@@ -485,16 +485,16 @@ Group  Port-channel  Protocol    Ports
 | Attaque | Description | Impact |
 |---------|-------------|--------|
 | **LACP Spoofing** | Envoi de faux LACPDU pour manipuler le LAG | Disruption du LAG |
-| **LAG Manipulation** | Modification des parametres LACP | Reconfiguration non autorisee |
+| **LAG Manipulation** | Modification des paramètres LACP | Reconfiguration non autorisee |
 | **Link Flapping Attack** | Oscillation forcee d'un lien | Instabilite, CPU load |
-| **Traffic Interception** | Ajout d'un equipement dans le LAG | MitM potentiel |
+| **Traffic Interception** | Ajout d'un équipement dans le LAG | MitM potentiel |
 | **DoS via LACPDU Flooding** | Saturation de paquets LACP | Epuisement des ressources |
 
 ### Scenario d'attaque
 
 ```
-1. Attaquant connecte un equipement au switch
-2. L'equipement envoie des LACPDU avec des parametres forges
+1. Attaquant connecte un équipement au switch
+2. L'équipement envoie des LACPDU avec des paramètres forges
 3. Si le port est mal configure, il peut rejoindre un LAG existant
 4. L'attaquant recoit une partie du trafic du LAG
 5. Interception ou disruption du trafic
@@ -538,7 +538,7 @@ interface range GigabitEthernet0/1-4
 lacp system-priority 4096
 ```
 
-#### 5. Mode statique si environnement controle
+#### 5. Mode statique si environnement contrôle
 
 ```cisco
 ! Mode "on" elimine la negociation LACP
@@ -550,13 +550,13 @@ interface range GigabitEthernet0/1-4
 #### 6. Filtrage 802.1X
 
 ```cisco
-! Authentifier les equipements avant de permettre le LAG
+! Authentifier les équipements avant de permettre le LAG
 interface GigabitEthernet0/1
  dot1x port-control auto
  authentication host-mode multi-auth
 ```
 
-### Checklist securite Link Aggregation
+### Checklist sécurité Link Aggregation
 
 ```
 [ ] Utiliser LACP plutot que le mode statique (detection des pannes)
@@ -593,7 +593,7 @@ interface Port-channel1
 | LAG ne se forme pas | Mismatch de configuration | Verifier vitesse, duplex, VLANs |
 | Ports en (s) suspended | Incompatibilite detectee | `show etherchannel detail` |
 | Ports en (I) individual | Pas de negociation reussie | Verifier le mode (active/passive) |
-| Faible debit | Mauvais load balancing | Changer la methode de hash |
+| Faible debit | Mauvais load balancing | Changer la méthode de hash |
 | Trafic sur un seul lien | Peu de flux distincts | Utiliser src-dst-port |
 
 ### Commandes de debug
@@ -640,8 +640,8 @@ undebug all
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services reseau et protocoles | https://tryhackme.com/room/networkservices |
+| **Intro to Networking** | Fondamentaux réseau | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services réseau et protocoles | https://tryhackme.com/room/networkservices |
 | **Wireshark: The Basics** | Analyse de paquets (debug LAG) | https://tryhackme.com/room/wiresharkthebasics |
 
-> **Note** : TryHackMe ne propose pas de room specifiquement dediee a LACP/EtherChannel. Ces concepts sont pratiques sur des environnements de lab comme GNS3 ou EVE-NG avec des switches virtuels Cisco IOU/IOL.
+> **Note** : TryHackMe ne propose pas de room spécifiquement dediee a LACP/EtherChannel. Ces concepts sont pratiques sur des environnements de lab comme GNS3 ou EVE-NG avec des switches virtuels Cisco IOU/IOL.

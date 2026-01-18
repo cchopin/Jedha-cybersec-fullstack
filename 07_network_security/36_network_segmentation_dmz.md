@@ -2,12 +2,12 @@
 
 ## Objectifs du cours
 
-Ce cours explore l'une des strategies de conception de securite les plus puissantes : la segmentation reseau et l'utilisation des DMZ (Zones Demilitarisees). Ces concepts sont essentiels pour reduire les risques, limiter les mouvements lateraux et proteger votre infrastructure critique.
+Ce cours explore l'une des strategies de conception de sécurité les plus puissantes : la segmentation réseau et l'utilisation des DMZ (Zones Demilitarisees). Ces concepts sont essentiels pour reduire les risques, limiter les mouvements lateraux et proteger votre infrastructure critique.
 
 Competences visees :
-- Comprendre le concept et les avantages de la segmentation reseau
+- Comprendre le concept et les avantages de la segmentation réseau
 - Concevoir et implementer des DMZ efficacement
-- Maitriser le role des ACLs et firewalls dans la gestion des reseaux segmentes
+- Maitriser le role des ACLs et firewalls dans la gestion des réseaux segmentes
 - Identifier les erreurs courantes et savoir les eviter
 - Appliquer ces concepts dans des environnements entreprise et cloud
 
@@ -19,46 +19,46 @@ Competences visees :
 
 | Terme | Description |
 |-------|-------------|
-| **Segmentation** | Division d'un reseau en segments isoles pour la securite et la performance |
-| **DMZ** | Demilitarized Zone - Zone entre le reseau interne et Internet |
-| **Zone** | Partie logique du reseau avec des politiques de securite specifiques |
-| **Perimetre** | Frontiere entre les reseaux de confiance differente |
+| **Segmentation** | Division d'un réseau en segments isolés pour la sécurité et la performance |
+| **DMZ** | Demilitarized Zone - Zone entre le réseau interne et Internet |
+| **Zone** | Partie logique du réseau avec des politiques de sécurité spécifiques |
+| **Perimetre** | Frontiere entre les réseaux de confiance differente |
 | **Blast Radius** | Etendue de l'impact d'une compromission |
 
 ### Types de segmentation
 
 | Type | Description |
 |------|-------------|
-| **Physique** | Segmentation via equipements dedies separes |
+| **Physique** | Segmentation via équipements dedies separes |
 | **VLAN** | Segmentation logique sur un meme switch physique |
-| **Subnet** | Segmentation par sous-reseaux IP distincts |
+| **Subnet** | Segmentation par sous-réseaux IP distincts |
 | **Microsegmentation** | Segmentation granulaire au niveau workload/VM/container |
 
-### Zones reseau courantes
+### Zones réseau courantes
 
 | Zone | Description |
 |------|-------------|
 | **LAN** | Local Area Network - Reseau interne de confiance |
 | **WAN** | Wide Area Network - Reseau etendu |
 | **DMZ** | Zone pour les services publics exposes |
-| **Management** | Zone d'administration isolee |
+| **Management** | Zone d'administration isolée |
 | **Guest** | Zone pour les visiteurs/BYOD |
 
-### Termes de securite
+### Termes de sécurité
 
 | Terme | Description |
 |-------|-------------|
-| **Lateral Movement** | Deplacement d'un attaquant entre systemes du meme reseau |
-| **Defense in Depth** | Strategie de securite multicouche |
+| **Lateral Movement** | Deplacement d'un attaquant entre systèmes du meme réseau |
+| **Defense in Depth** | Strategie de sécurité multicouche |
 | **Zero Trust** | Modele ou aucune entite n'est de confiance par defaut |
-| **East-West Traffic** | Trafic entre systemes du meme reseau |
-| **North-South Traffic** | Trafic entrant/sortant du reseau |
+| **East-West Traffic** | Trafic entre systèmes du meme réseau |
+| **North-South Traffic** | Trafic entrant/sortant du réseau |
 
 ### Termes cloud
 
 | Terme | Description |
 |-------|-------------|
-| **VPC** | Virtual Private Cloud - Reseau virtuel isole dans le cloud |
+| **VPC** | Virtual Private Cloud - Reseau virtuel isolé dans le cloud |
 | **Security Group** | Firewall stateful au niveau instance (AWS/Azure) |
 | **NACL** | Network ACL - Filtrage stateless au niveau subnet (AWS) |
 | **Public Subnet** | Subnet avec acces Internet direct |
@@ -75,9 +75,9 @@ Competences visees :
 
 ---
 
-## Qu'est-ce que la segmentation reseau ?
+## Qu'est-ce que la segmentation réseau ?
 
-La segmentation reseau est la pratique de diviser un reseau informatique en segments ou sous-reseaux plus petits et isoles. L'objectif est d'ameliorer la performance, renforcer la securite et contenir la propagation des menaces.
+La segmentation réseau est la pratique de diviser un réseau informatique en segments ou sous-réseaux plus petits et isolés. L'objectif est d'ameliorer la performance, renforcer la sécurité et contenir la propagation des menaces.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -99,7 +99,7 @@ La segmentation reseau est la pratique de diviser un reseau informatique en segm
 │  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘        │
 │         │                  │                  │                 │
 │         └────────── FIREWALL/ACL ────────────┘                 │
-│                   Acces controle                                │
+│                   Acces contrôle                                │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -107,11 +107,11 @@ C'est comme mettre des portes et des murs a l'interieur d'un batiment. Au lieu d
 
 ---
 
-## Pourquoi segmenter le reseau ?
+## Pourquoi segmenter le réseau ?
 
 ### 1. Limiter le "Blast Radius"
 
-Imaginez qu'un malware entre dans le reseau via un poste de travail vulnerable. Si tout est plat et connecte, ce malware peut se deplacer lateralement, se propageant aux serveurs, bases de donnees et autres infrastructures critiques.
+Imaginez qu'un malware entre dans le réseau via un poste de travail vulnerable. Si tout est plat et connecte, ce malware peut se deplacer lateralement, se propageant aux serveurs, bases de donnees et autres infrastructures critiques.
 
 ```
 RESEAU PLAT (sans segmentation) :
@@ -144,14 +144,14 @@ RESEAU SEGMENTE :
 └─────────────────────────────────────────────────────────┘
 ```
 
-### 2. Ameliorer le controle d'acces
+### 2. Ameliorer le contrôle d'acces
 
 | Zone | Acces autorise | Acces refuse |
 |------|----------------|--------------|
 | RH | Email, Intranet RH | Serveurs Finance, IT |
 | Finance | ERP, Base Finance | Serveurs RH, Dev |
 | IT | Tous (admin) | - |
-| Guest | Internet uniquement | Tout le reseau interne |
+| Guest | Internet uniquement | Tout le réseau interne |
 
 ### 3. Reduire le perimetre de conformite
 
@@ -161,7 +161,7 @@ RESEAU SEGMENTE :
 | **HIPAA** | Proteger les PHI | Zone dediee sante |
 | **GDPR** | Proteger les donnees personnelles | Segmentation par sensibilite |
 
-**Avantage :** Moins de systemes dans le perimetre = moins d'audits et de contraintes.
+**Avantage :** Moins de systèmes dans le perimetre = moins d'audits et de contraintes.
 
 ### 4. Optimiser la performance
 
@@ -173,17 +173,17 @@ RESEAU SEGMENTE :
 
 ---
 
-## Types de segmentation reseau
+## Types de segmentation réseau
 
 ### 1. Segmentation physique
 
 ![Segmentation Physique](assets/Physical_Segmentation.png)
 
-Chaque segment possede son propre equipement dedie : switches, routeurs et cables separes.
+Chaque segment possede son propre équipement dedie : switches, routeurs et cables separes.
 
 | Avantage | Inconvenient |
 |----------|--------------|
-| Isolation totale | Cout eleve |
+| Isolation totale | Cout élevé |
 | Pas de risque de misconfiguration | Difficulte de scalabilite |
 | Performance garantie | Complexite de gestion |
 
@@ -193,7 +193,7 @@ Chaque segment possede son propre equipement dedie : switches, routeurs et cable
 
 ![Segmentation VLAN](assets/Vlan_Segmentation.png)
 
-Les VLANs permettent de diviser un switch physique en plusieurs reseaux logiques.
+Les VLANs permettent de diviser un switch physique en plusieurs réseaux logiques.
 
 ```cisco
 ! Creation des VLANs
@@ -226,7 +226,7 @@ interface range FastEthernet0/11-20
 
 ![Segmentation Subnet](assets/CYBFS-M07-D04-Subnet_Segmentation.png)
 
-Chaque segment possede un sous-reseau IP unique. Les routeurs ou firewalls controlent le trafic.
+Chaque segment possede un sous-réseau IP unique. Les routeurs ou firewalls contrôlent le trafic.
 
 | Zone | VLAN | Subnet | Gateway |
 |------|------|--------|---------|
@@ -259,7 +259,7 @@ Forme granulaire de segmentation utilisee dans les datacenters et environnements
 │              │ Controller  │                           │
 │              └─────────────┘                           │
 │                                                         │
-│  Chaque VM a ses propres regles de securite            │
+│  Chaque VM a ses propres regles de sécurité            │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -278,7 +278,7 @@ Forme granulaire de segmentation utilisee dans les datacenters et environnements
 
 ### Etape 1 : Definir les zones
 
-| Zone | Description | Exemples de systemes |
+| Zone | Description | Exemples de systèmes |
 |------|-------------|----------------------|
 | **User Zone** | Postes de travail | Laptops, desktops |
 | **Server Zone** | Serveurs internes | Apps, databases |
@@ -307,7 +307,7 @@ Forme granulaire de segmentation utilisee dans les datacenters et environnements
 ### Etape 3 : Configurer le routage et les ACLs
 
 ```cisco
-! ACL pour controler le trafic inter-zones
+! ACL pour contrôler le trafic inter-zones
 ip access-list extended HR-TO-SERVERS
  remark Autoriser HR vers serveur email
  permit tcp 192.168.10.0 0.0.0.255 host 192.168.40.10 eq 25
@@ -340,7 +340,7 @@ ip access-list extended GUEST-POLICY
 
 ## La DMZ (Zone Demilitarisee)
 
-La DMZ est une partie speciale du reseau situee entre le reseau interne de confiance et l'Internet non fiable. C'est la zone ou vous placez les services publics accessibles depuis l'exterieur.
+La DMZ est une partie speciale du réseau situee entre le réseau interne de confiance et l'Internet non fiable. C'est la zone ou vous placez les services publics accessibles depuis l'exterieur.
 
 ### Services typiques en DMZ
 
@@ -519,7 +519,7 @@ interface GigabitEthernet0/2
 
 | Composant AWS | Role | Equivalent on-prem |
 |---------------|------|-------------------|
-| **VPC** | Reseau isole | Reseau prive |
+| **VPC** | Reseau isolé | Reseau prive |
 | **Public Subnet** | Acces Internet | DMZ |
 | **Private Subnet** | Pas d'acces direct | LAN |
 | **Security Groups** | Firewall stateful | ACLs |
@@ -533,7 +533,7 @@ interface GigabitEthernet0/2
 
 ### Principe du moindre privilege
 
-Autoriser uniquement le trafic absolument necessaire.
+Autoriser uniquement le trafic absolument nécessaire.
 
 ```cisco
 ! Regles DMZ - Serveur Web
@@ -552,7 +552,7 @@ access-list DMZ-TO-LAN extended deny ip any any log
 |-----------|-----------|
 | Internet -> DMZ | Autoriser HTTP/HTTPS vers web server |
 | DMZ -> Internet | Autoriser mises a jour, DNS |
-| DMZ -> LAN | Uniquement ce qui est necessaire |
+| DMZ -> LAN | Uniquement ce qui est nécessaire |
 | LAN -> DMZ | Administration, monitoring |
 | LAN -> Internet | Selon politique entreprise |
 
@@ -651,7 +651,7 @@ VPN User ──> VPN Concentrator (DMZ) ──> Zone restreinte
 | **Regles Any-Any** | Aucune protection | Moindre privilege |
 | **Pas d'egress filtering** | Exfiltration possible | Filtrer sortant |
 | **DMZ non surveillee** | Attaquant invisible | SIEM, IDS |
-| **NAT = securite** | Faux sentiment de securite | NAT + firewall |
+| **NAT = sécurité** | Faux sentiment de sécurité | NAT + firewall |
 | **Documentation absente** | Erreurs de config | Tout documenter |
 
 ### Checklist segmentation
@@ -664,7 +664,7 @@ VPN User ──> VPN Concentrator (DMZ) ──> Zone restreinte
 [ ] Pas de regles Any-Any
 [ ] Filtrage egress configure
 [ ] Logging et monitoring actifs
-[ ] Tests de penetration reguliers
+[ ] Tests de penetration réguliers
 [ ] Revue periodique des regles
 [ ] Plan de reponse aux incidents
 ```
@@ -720,11 +720,11 @@ resource "aws_security_group" "web" {
 }
 ```
 
-### Composants de securite cloud
+### Composants de sécurité cloud
 
 | Composant | AWS | Azure | GCP |
 |-----------|-----|-------|-----|
-| Reseau isole | VPC | VNet | VPC |
+| Reseau isolé | VPC | VNet | VPC |
 | Firewall stateful | Security Groups | NSG | Firewall Rules |
 | Firewall stateless | NACL | NSG | - |
 | WAF | AWS WAF | Azure WAF | Cloud Armor |
@@ -742,7 +742,7 @@ resource "aws_security_group" "web" {
 | **Wireshark** | Analyser le trafic |
 | **Snort/Suricata** | Detection d'intrusion |
 | **NetFlow/sFlow** | Analyse des flux |
-| **SIEM** | Correlation d'evenements |
+| **SIEM** | Correlation d'événements |
 
 ### Tests de validation
 
@@ -793,9 +793,9 @@ echo "=== Fin des tests ==="
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services et protocoles reseau | https://tryhackme.com/room/networkservices |
+| **Intro to Networking** | Fondamentaux réseau | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services et protocoles réseau | https://tryhackme.com/room/networkservices |
 | **Firewalls** | Introduction aux firewalls | https://tryhackme.com/room/dvwafirewalls |
 | **AWS Cloud Practitioner** | Bases AWS et VPC | https://tryhackme.com/room/awscloudpractitioner |
 
-> **Note** : La segmentation reseau et les DMZ sont des concepts fondamentaux de l'architecture de securite. Pratiquez sur des environnements de lab (GNS3, EVE-NG, AWS Free Tier) avant de deployer en production. Testez toujours vos regles de segmentation avec des outils comme Nmap pour verifier que les controles sont effectifs.
+> **Note** : La segmentation réseau et les DMZ sont des concepts fondamentaux de l'architecture de sécurité. Pratiquez sur des environnements de lab (GNS3, EVE-NG, AWS Free Tier) avant de deployer en production. Testez toujours vos regles de segmentation avec des outils comme Nmap pour verifier que les contrôles sont effectifs.

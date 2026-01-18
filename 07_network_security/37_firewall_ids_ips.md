@@ -2,14 +2,14 @@
 
 ## Objectifs du cours
 
-Ce cours reunit deux elements essentiels de la defense reseau moderne : les firewalls et les systemes de detection/prevention d'intrusion (IDS/IPS). Vous apprendrez a utiliser pfSense, un firewall open-source extremement puissant, et a comprendre les fondations des solutions IDS/IPS comme Suricata et Snort.
+Ce cours reunit deux éléments essentiels de la defense réseau moderne : les firewalls et les systèmes de detection/prevention d'intrusion (IDS/IPS). Vous apprendrez a utiliser pfSense, un firewall open-source extremement puissant, et a comprendre les fondations des solutions IDS/IPS comme Suricata et Snort.
 
 Competences visees :
 - Comprendre ce qu'est pfSense et comment le configurer pour le firewalling et le NAT
 - Savoir configurer et lire les logs pfSense
 - Distinguer les differences cles entre IDS et IPS
 - Comprendre le fonctionnement de Suricata et Snort
-- Deployer Suricata sur pfSense pour une protection reseau pratique
+- Deployer Suricata sur pfSense pour une protection réseau pratique
 
 ---
 
@@ -19,10 +19,10 @@ Competences visees :
 
 | Terme | Description |
 |-------|-------------|
-| **Firewall** | Dispositif filtrant le trafic reseau selon des regles definies |
+| **Firewall** | Dispositif filtrant le trafic réseau selon des regles definies |
 | **IDS** | Intrusion Detection System - Detecte les intrusions et alerte |
 | **IPS** | Intrusion Prevention System - Detecte et bloque les intrusions |
-| **NAT** | Network Address Translation - Traduction d'adresses reseau |
+| **NAT** | Network Address Translation - Traduction d'adresses réseau |
 | **Stateful** | Firewall maintenant l'etat des connexions |
 
 ### Termes pfSense
@@ -31,7 +31,7 @@ Competences visees :
 |-------|-------------|
 | **pfSense** | Distribution firewall/routeur open-source basee sur FreeBSD |
 | **WAN** | Wide Area Network - Interface vers Internet |
-| **LAN** | Local Area Network - Interface vers le reseau interne |
+| **LAN** | Local Area Network - Interface vers le réseau interne |
 | **Floating Rules** | Regles s'appliquant a plusieurs interfaces |
 | **Aliases** | Groupes d'IPs ou ports pour simplifier les regles |
 
@@ -77,7 +77,7 @@ Competences visees :
 
 ## Qu'est-ce que pfSense ?
 
-pfSense est une distribution firewall et routeur open-source basee sur FreeBSD. Developpee et maintenue par Netgate, pfSense est une solution de securite reseau complete qui rivalise avec les firewalls commerciaux couteux tout en restant gratuite.
+pfSense est une distribution firewall et routeur open-source basee sur FreeBSD. Developpee et maintenue par Netgate, pfSense est une solution de sécurité réseau complete qui rivalise avec les firewalls commerciaux couteux tout en restant gratuite.
 
 ![Dashboard pfSense](assets/pfsense-dashboard.jpg)
 
@@ -88,7 +88,7 @@ pfSense est une distribution firewall et routeur open-source basee sur FreeBSD. 
 | **Firewall Filtering** | Filtrage stateful du trafic |
 | **NAT** | Toutes les formes de NAT |
 | **VPN** | IPsec, OpenVPN, WireGuard |
-| **DHCP/DNS** | Services reseau integres |
+| **DHCP/DNS** | Services réseau integres |
 | **Logging** | Journalisation complete |
 | **IDS/IPS** | Packages Suricata et Snort |
 | **Traffic Shaping** | QoS et gestion de bande passante |
@@ -98,7 +98,7 @@ pfSense est une distribution firewall et routeur open-source basee sur FreeBSD. 
 
 | Environnement | Usage |
 |---------------|-------|
-| **Home Lab** | Apprentissage, lab de securite |
+| **Home Lab** | Apprentissage, lab de sécurité |
 | **PME** | Firewall principal |
 | **Enterprise** | Firewall de branche, VPN |
 | **MSP** | Solution multi-clients |
@@ -206,9 +206,9 @@ Paquet arrive sur l'interface
 | **Interface** | WAN, LAN, OPT1, etc. |
 | **Action** | Pass, Block, Reject |
 | **Protocol** | TCP, UDP, ICMP, any |
-| **Source** | IP, reseau, alias, any |
+| **Source** | IP, réseau, alias, any |
 | **Source Port** | Port source (optionnel) |
-| **Destination** | IP, reseau, alias, any |
+| **Destination** | IP, réseau, alias, any |
 | **Destination Port** | Port destination |
 | **Schedule** | Plage horaire (optionnel) |
 | **Description** | Documentation obligatoire ! |
@@ -237,9 +237,9 @@ Paquet arrive sur l'interface
 ```
 [ ] Creer des Aliases pour grouper IPs et ports
 [ ] Documenter chaque regle avec une description
-[ ] Placer les regles specifiques avant les generales
+[ ] Placer les regles spécifiques avant les générales
 [ ] Activer le logging sur les regles critiques
-[ ] Reviser regulierement les regles
+[ ] Reviser régulierement les regles
 [ ] Utiliser les Floating Rules pour le QoS
 ```
 
@@ -433,7 +433,7 @@ Le dashboard pfSense offre des widgets configurables :
 
 ### Qu'est-ce qu'un IDS ?
 
-Un Intrusion Detection System (IDS) surveille l'activite reseau et genere des alertes lorsqu'il detecte un comportement suspect.
+Un Intrusion Detection System (IDS) surveille l'activite réseau et genere des alertes lorsqu'il detecte un comportement suspect.
 
 ```
                     IDS (Mode Passif)
@@ -452,7 +452,7 @@ Un Intrusion Detection System (IDS) surveille l'activite reseau et genere des al
                     (Pas de blocage)
 ```
 
-C'est comme un garde de securite qui surveille les cameras - il vous previent si quelque chose d'etrange se passe, mais vous devez reagir manuellement.
+C'est comme un garde de sécurité qui surveille les cameras - il vous previent si quelque chose d'etrange se passe, mais vous devez reagir manuellement.
 
 ### Qu'est-ce qu'un IPS ?
 
@@ -490,8 +490,8 @@ C'est comme un garde qui non seulement voit l'intrus, mais verrouille la porte a
 |-----------------|-----|-----|
 | **Action** | Alerte seulement | Alerte + blocage |
 | **Placement** | Passif (mirror port) | Inline (dans le flux) |
-| **Risque** | Faible (pas d'interference) | Plus eleve (peut bloquer du legitime) |
-| **Impact performance** | Minimal | Potentiellement eleve |
+| **Risque** | Faible (pas d'interference) | Plus élevé (peut bloquer du legitime) |
+| **Impact performance** | Minimal | Potentiellement élevé |
 | **Cas d'usage** | Monitoring, forensics | Protection automatisee |
 
 ### Types de detection
@@ -529,7 +529,7 @@ Developpe par Cisco (anciennement Sourcefire), Snort est l'un des IDS/IPS open-s
 
 ### Suricata
 
-Suricata est une alternative moderne a Snort, developpee par l'Open Information Security Foundation (OISF).
+Suricata est une alternative moderne a Snort, développée par l'Open Information Security Foundation (OISF).
 
 | Aspect | Detail |
 |--------|--------|
@@ -690,10 +690,10 @@ Ajouter les IPs de confiance :
 
 | Optimisation | Description |
 |--------------|-------------|
-| **Limiter les categories** | N'activer que le necessaire |
+| **Limiter les categories** | N'activer que le nécessaire |
 | **Utiliser le hardware adapte** | CPU multi-core, AES-NI |
 | **Ajuster le runmode** | workers vs autofp |
-| **Monitorer la charge** | CPU, memoire, drops |
+| **Monitorer la charge** | CPU, mémoire, drops |
 
 ---
 
@@ -763,13 +763,13 @@ Protection des serveurs web internes contre les attaques :
 ```
 [ ] Utiliser l'acceleration materielle (AES-NI) si disponible
 [ ] Placer Suricata sur l'interface LAN pour proteger les utilisateurs
-[ ] Sur les reseaux haut debit, utiliser du hardware dedie
+[ ] Sur les réseaux haut debit, utiliser du hardware dedie
 [ ] Mettre a jour les regles hebdomadairement (ou quotidiennement)
 [ ] Integrer pfSense avec syslog, Grafana ou ELK stack
 [ ] Limiter le scope du blocage IPS pour eviter les disruptions
 [ ] Tester les changements en mode IDS avant IPS
 [ ] Documenter les suppressions et whitelists
-[ ] Effectuer des revues regulieres des alertes
+[ ] Effectuer des revues régulieres des alertes
 [ ] Planifier la capacite selon le debit
 ```
 
@@ -829,9 +829,9 @@ suricatasc -c "ruleset-stats"
 
 | Fichier | Contenu |
 |---------|---------|
-| `/var/log/suricata/suricata.log` | Logs systeme Suricata |
+| `/var/log/suricata/suricata.log` | Logs système Suricata |
 | `/var/log/suricata/fast.log` | Alertes format court |
-| `/var/log/suricata/eve.json` | Logs JSON (tous les evenements) |
+| `/var/log/suricata/eve.json` | Logs JSON (tous les événements) |
 | `/var/log/suricata/stats.log` | Statistiques performance |
 
 ---
@@ -856,6 +856,6 @@ suricatasc -c "ruleset-stats"
 | **Snort** | Hands-on Snort | https://tryhackme.com/room/snort |
 | **Snort Challenge** | Pratique avancee Snort | https://tryhackme.com/room/snortchallenges1 |
 | **Suricata** | Hands-on Suricata | https://tryhackme.com/room/introtoids |
-| **Network Security** | Vue d'ensemble securite reseau | https://tryhackme.com/room/networksecuritypart1 |
+| **Network Security** | Vue d'ensemble sécurité réseau | https://tryhackme.com/room/networksecuritypart1 |
 
-> **Note** : pfSense peut etre deploye facilement dans GNS3, VirtualBox ou VMware pour les labs. L'image ISO est disponible gratuitement sur netgate.com. Pour les tests IDS/IPS, generez du trafic malveillant avec des outils comme Nmap, Metasploit (dans un environnement controle) pour voir Suricata en action.
+> **Note** : pfSense peut etre deploye facilement dans GNS3, VirtualBox ou VMware pour les labs. L'image ISO est disponible gratuitement sur netgate.com. Pour les tests IDS/IPS, generez du trafic malveillant avec des outils comme Nmap, Metasploit (dans un environnement contrôle) pour voir Suricata en action.

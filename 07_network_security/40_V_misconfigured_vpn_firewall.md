@@ -231,9 +231,9 @@ Hypothèse dangereuse :              Réalité :
 | **MFA** | Multi-Factor Authentication |
 | **Split Tunneling** | VPN + Internet direct en même temps |
 | **Shadow Rule** | Règle rendue inefficace par une autre |
-| **Lateral Movement** | Déplacement d'un attaquant dans le réseau |
+| **Lateral Movement** | Mouvement latéral = Déplacement d'un attaquant de machine en machine dans le réseau |
 | **Brute Force** | Essayer tous les mots de passe |
-| **Egress Filtering** | Filtrer le trafic sortant |
+| **Egress Filtering** | Filtrage de sortie = Contrôler le trafic qui sort du réseau vers Internet |
 
 ---
 

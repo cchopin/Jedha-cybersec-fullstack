@@ -64,7 +64,7 @@ snmp-check -t 192.168.1.1 -c secret
 
 ### Usage défensif
 
-Lancez `snmp-check` contre vos propres équipements. Si vous voyez des infos, les attaquants aussi !
+Lancer `snmp-check` contre les équipements. Si des infos apparaissent, les attaquants peuvent aussi les voir !
 
 ---
 

@@ -288,15 +288,15 @@ Neighbor ID     Pri   State           Address         Interface
 | Terme | Définition simple |
 |-------|-------------------|
 | **OSPF** | Protocole de routage à état de liens |
-| **LSA** | Message décrivant les liens d'un routeur |
-| **LSDB** | Base de données de tous les LSAs |
-| **SPF/Dijkstra** | Algorithme pour calculer le meilleur chemin |
+| **LSA** | Link State Advertisement - message décrivant les liens d'un routeur |
+| **LSDB** | Link State Database - base de données contenant tous les LSAs |
+| **SPF/Dijkstra** | Shortest Path First - algorithme pour calculer le chemin le moins coûteux |
 | **Coût** | Métrique basée sur la bande passante |
 | **Area 0** | Aire centrale obligatoire (backbone) |
-| **DR** | Routeur responsable sur un segment |
-| **BDR** | Routeur adjoint (backup du DR) |
-| **ABR** | Routeur entre plusieurs aires |
-| **ASBR** | Routeur qui injecte des routes externes |
+| **DR** | Designated Router - routeur élu responsable sur un segment multi-accès |
+| **BDR** | Backup Designated Router - routeur adjoint prêt à remplacer le DR |
+| **ABR** | Area Border Router - routeur situé à la frontière entre plusieurs aires OSPF |
+| **ASBR** | Autonomous System Boundary Router - routeur qui redistribue des routes provenant d'autres protocoles |
 
 ---
 

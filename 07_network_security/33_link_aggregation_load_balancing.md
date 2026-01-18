@@ -2,14 +2,14 @@
 
 ## Objectifs du cours
 
-Ce cours presente les techniques de haute disponibilite essentielles pour les reseaux modernes : l'agregation de liens (Link Aggregation) et la repartition de charge (Load Balancing). Ces competences sont critiques pour les ingenieurs reseau, administrateurs systeme et architectes de data centers qui doivent garantir des reseaux resilients, redondants et performants.
+Ce cours présente les techniques de haute disponibilité essentielles pour les réseaux modernes : l'agrégation de liens (Link Aggregation) et la répartition de charge (Load Balancing). Ces compétences sont critiques pour les ingénieurs réseau, administrateurs système et architectes de data centers qui doivent garantir des réseaux résilients, redondants et performants.
 
-Competences visees :
+Compétences visees :
 - Comprendre les principes et le fonctionnement de LACP et EtherChannel
-- Maitriser les differentes strategies de load balancing et leurs cas d'usage
-- Appliquer l'agregation de liens dans les topologies redondantes et les data centers
+- Maîtriser les différentes stratégies de load balancing et leurs cas d'usage
+- Appliquer l'agrégation de liens dans les topologies redondantes et les data centers
 - Identifier les bonnes pratiques et considerations de conception
-- Reconnaitre les vulnerabilites et les mesures de securisation
+- Reconnaître les vulnérabilités et les mesures de sécurisation
 
 ---
 
@@ -20,12 +20,12 @@ Competences visees :
 | Sigle | Nom complet | Description |
 |-------|-------------|-------------|
 | **LAG** | Link Aggregation Group | Groupe de liens physiques agreges en un lien logique |
-| **LACP** | Link Aggregation Control Protocol | Protocole standard IEEE 802.3ad pour l'agregation dynamique |
-| **PAgP** | Port Aggregation Protocol | Protocole Cisco proprietaire pour l'agregation |
-| **EtherChannel** | - | Implementation Cisco de l'agregation de liens |
+| **LACP** | Link Aggregation Control Protocol | Protocole standard IEEE 802.3ad pour l'agrégation dynamique |
+| **PAgP** | Port Aggregation Protocol | Protocole Cisco propriétaire pour l'agrégation |
+| **EtherChannel** | - | Implementation Cisco de l'agrégation de liens |
 | **Port-Channel** | - | Interface logique representant un groupe de liens agreges |
-| **Bonding** | - | Terme Linux pour l'agregation de liens |
-| **Teaming** | - | Terme Windows/VMware pour l'agregation de liens |
+| **Bonding** | - | Terme Linux pour l'agrégation de liens |
+| **Teaming** | - | Terme Windows/VMware pour l'agrégation de liens |
 
 ### Modes LACP
 
@@ -52,58 +52,58 @@ Competences visees :
 | **Per-Packet** | Distribution paquet par paquet |
 | **Per-Flow** | Distribution par flux (session) |
 | **Per-Destination** | Distribution par destination |
-| **Hash** | Algorithme de repartition base sur un calcul |
+| **Hash** | Algorithme de répartition base sur un calcul |
 | **Round-Robin** | Distribution alternee sur chaque lien |
 
-### Haute disponibilite
+### Haute disponibilité
 
 | Terme | Description |
 |-------|-------------|
 | **Failover** | Basculement automatique vers un lien de secours |
-| **Redundancy** | Duplication des ressources pour la tolerance aux pannes |
-| **MLAG/MC-LAG** | Multi-Chassis LAG - Agregation sur plusieurs switches |
+| **Redundancy** | Duplication des ressources pour la tolérance aux pannes |
+| **MLAG/MC-LAG** | Multi-Chassis LAG - Agrégation sur plusieurs switches |
 | **vPC** | Virtual Port-Channel - Implementation Cisco Nexus de MC-LAG |
 | **VSS** | Virtual Switching System - Virtualisation de deux switches Cisco |
 
-### Termes de securite
+### Termes de sécurité
 
 | Terme | Description |
 |-------|-------------|
-| **LAG Manipulation** | Attaque visant a perturber l'agregation |
+| **LAG Manipulation** | Attaque visant a perturber l'agrégation |
 | **LACP Flooding** | Saturation de messages LACP |
-| **Link Flapping** | Oscillation rapide de l'etat d'un lien |
+| **Link Flapping** | Oscillation rapide de l'état d'un lien |
 
 ---
 
-## Comprendre le besoin de haute disponibilite
+## Comprendre le besoin de haute disponibilité
 
-La haute disponibilite n'est pas qu'un buzzword, c'est le fondement des infrastructures modernes. Les reseaux sont la colonne vertebrale de toute communication numerique, mais comme tout systeme, ils peuvent tomber en panne.
+La haute disponibilité n'est pas qu'un buzzword, c'est le fondement des infrastructures modernes. Les réseaux sont la colonne vertebrale de toute communication numerique, mais comme tout système, ils peuvent tomber en panne.
 
-### Problemes resolus par l'agregation de liens
+### Problèmes resolus par l'agrégation de liens
 
-| Probleme | Solution |
+| Problème | Solution |
 |----------|----------|
-| Point de defaillance unique | Redondance des liens physiques |
-| Goulots d'etranglement de bande passante | Agregation de la capacite |
+| Point de défaillance unique | Redondance des liens physiques |
+| Goulots d'étranglement de bande passante | Agrégation de la capacité |
 | Manque de redondance | Failover automatique |
 | Distribution inefficace du trafic | Load balancing |
 
 ---
 
-## Fondamentaux de l'agregation de liens
+## Fondamentaux de l'agrégation de liens
 
 ![Link Aggregation](assets/Link_Aggregation.jpg)
 
-L'agregation de liens est la methode de combinaison de plusieurs interfaces reseau physiques en une seule interface logique. Ce groupe logique agit comme un lien unique offrant un debit plus eleve et une tolerance aux pannes.
+L'agrégation de liens est la méthode de combinaison de plusieurs interfaces réseau physiques en une seule interface logique. Ce groupe logique agit comme un lien unique offrant un débit plus élevé et une tolérance aux pannes.
 
 ### Exemple concret
 
 ```
-Sans agregation :
+Sans agrégation :
 Switch A ──── 1 Gbps ──── Switch B
              (lien unique)
 
-Avec agregation :
+Avec agrégation :
 Switch A ═══╤═══ 1 Gbps ═══╤═══ Switch B
             │   1 Gbps     │
             │   1 Gbps     │
@@ -111,13 +111,13 @@ Switch A ═══╤═══ 1 Gbps ═══╤═══ Switch B
             (4 Gbps logiques, redondance)
 ```
 
-### Types d'agregation
+### Types d'agrégation
 
 | Type | Description | Risque |
 |------|-------------|--------|
-| **Statique (On)** | Configuration manuelle identique des deux cotes | Boucles si mal configure |
+| **Statique (On)** | Configuration manuelle identique des deux côtés | Boucles si mal configuré |
 | **Dynamique (LACP)** | Negociation automatique avec LACPDUs | Faible |
-| **Dynamique (PAgP)** | Negociation Cisco proprietaire | Faible, mais limite a Cisco |
+| **Dynamique (PAgP)** | Negociation Cisco propriétaire | Faible, mais limite a Cisco |
 
 ---
 
@@ -130,7 +130,7 @@ LACP (Link Aggregation Control Protocol) est le protocole standard defini dans I
 1. Deux appareils supportant LACP se detectent mutuellement
 2. Ils echangent des LACP Data Units (LACPDUs)
 3. Ils negocient quelles interfaces inclure dans le groupe
-4. L'agregation est formee selon la compatibilite (vitesse, duplex, config)
+4. L'agrégation est formee selon la compatibilite (vitesse, duplex, config)
 5. LACP surveille continuellement la sante de chaque lien
 
 ### Avantages de LACP
@@ -142,24 +142,24 @@ LACP (Link Aggregation Control Protocol) est le protocole standard defini dans I
 | **Surveillance continue** | Detection et exclusion des liens defaillants |
 | **Hot standby** | Support de liens de secours (jusqu'a 8 actifs + 8 standby) |
 
-### Parametres LACP
+### Paramêtres LACP
 
-| Parametre | Description |
+| Paramêtre | Description |
 |-----------|-------------|
-| **System Priority** | Priorite du systeme (plus bas = prefere) |
-| **Port Priority** | Priorite du port (plus bas = prefere) |
+| **System Priority** | Priorité du système (plus bas = préféré) |
+| **Port Priority** | Priorité du port (plus bas = préféré) |
 | **LACP Rate** | Fast (1s) ou Slow (30s) pour les LACPDUs |
-| **LACP Key** | Identifiant du groupe d'agregation |
+| **LACP Key** | Identifiant du groupe d'agrégation |
 
 ---
 
 ## EtherChannel Cisco
 
-EtherChannel est l'implementation Cisco de l'agregation de liens. Il peut fonctionner en trois modes principaux.
+EtherChannel est l'implementation Cisco de l'agrégation de liens. Il peut fonctionner en trois modes principaux.
 
 ### Modes de negociation
 
-| Cote A | Cote B | Resultat |
+| Côté A | Côté B | Résultat |
 |--------|--------|----------|
 | Active | Active | EtherChannel LACP |
 | Active | Passive | EtherChannel LACP |
@@ -171,7 +171,7 @@ EtherChannel est l'implementation Cisco de l'agregation de liens. Il peut foncti
 
 ### Regles essentielles
 
-- Tous les liens doivent avoir la **meme vitesse et duplex**
+- Tous les liens doivent avoir la **même vitesse et duplex**
 - Jusqu'a **8 liens actifs** par EtherChannel
 - Les configurations d'interface (trunking, STP) doivent **correspondre**
 - Meme **type de media** (tous cuivre ou tous fibre)
@@ -192,7 +192,7 @@ interface Port-channel1
 
 **Explication :**
 - `channel-group 1 mode active` : Active LACP et assigne les interfaces au Port-Channel 1
-- Au moins un cote doit etre en **active**, l'autre peut etre **active** ou **passive**
+- Au moins un côté doit être en **active**, l'autre peut être **active** ou **passive**
 
 ### Configuration EtherChannel avec Trunk
 
@@ -222,7 +222,7 @@ copy running-config startup-config
 ### Commandes de verification
 
 ```cisco
-! Voir l'etat de l'EtherChannel
+! Voir l'état de l'EtherChannel
 show etherchannel summary
 
 ! Detail du Port-Channel
@@ -231,7 +231,7 @@ show etherchannel port-channel
 ! Voir les interfaces membres
 show etherchannel detail
 
-! Verifier LACP
+! Vérifier LACP
 show lacp neighbor
 show lacp internal
 
@@ -258,13 +258,13 @@ Group  Port-channel  Protocol    Ports
 
 ---
 
-## Strategies de Load Balancing
+## Stratégies de Load Balancing
 
 Une fois les liens agreges, il faut distribuer efficacement le trafic. C'est le role du load balancing.
 
 ### Per-Packet Load Balancing
 
-Chaque paquet est envoye sur un lien different en alternance.
+Chaque paquet est envoyé sur un lien different en alternance.
 
 | Avantages | Inconvenients |
 |-----------|---------------|
@@ -275,14 +275,14 @@ Chaque paquet est envoye sur un lien different en alternance.
 
 ### Per-Flow / Per-Destination Load Balancing
 
-Le trafic est hashe selon source/destination IP, MAC ou ports, et envoye de maniere coherente sur le meme lien.
+Le trafic est hashe selon source/destination IP, MAC ou ports, et envoyé de manière cohérente sur le même lien.
 
 | Avantages | Inconvenients |
 |-----------|---------------|
 | Preserve l'ordre des paquets | Peut ne pas utiliser tous les liens |
 | Bon pour TCP | Depend de la diversite du trafic |
 
-**Usage :** Cas general, recommande pour la plupart des environnements.
+**Usage :** Cas général, recommandé pour la plupart des environnements.
 
 ### Algorithmes de hachage
 
@@ -290,25 +290,25 @@ Le trafic est hashe selon source/destination IP, MAC ou ports, et envoye de mani
 |---------|-----------|-------------|
 | **src-mac** | MAC source | Trafic depuis plusieurs sources |
 | **dst-mac** | MAC destination | Trafic vers plusieurs destinations |
-| **src-dst-mac** | MAC source + destination | Cas general L2 |
+| **src-dst-mac** | MAC source + destination | Cas général L2 |
 | **src-ip** | IP source | Trafic depuis plusieurs sources |
 | **dst-ip** | IP destination | Trafic vers plusieurs destinations |
-| **src-dst-ip** | IP source + destination | Cas general L3 |
+| **src-dst-ip** | IP source + destination | Cas général L3 |
 | **src-dst-ip-port** | IP + ports L4 | Meilleure distribution |
 
 ### Configuration du load balancing Cisco
 
 ```cisco
-! Voir la methode actuelle
+! Voir la méthode actuelle
 show etherchannel load-balance
 
-! Configurer la methode
+! Configurer la méthode
 port-channel load-balance src-dst-ip
 ```
 
 ### Adaptive Load Balancing
 
-Certains systemes avances utilisent des retours pour adapter dynamiquement la repartition. Si un lien est congestionne, ils deplacent les flux vers des liens moins utilises.
+Certains systèmes avances utilisent des retours pour adapter dynamiquement la répartition. Si un lien est congestionne, ils deplacent les flux vers des liens moins utilisés.
 
 ---
 
@@ -330,7 +330,7 @@ Certains systemes avances utilisent des retours pour adapter dynamiquement la re
 
 Les serveurs sont connectes aux switches ToR (Top of Rack) avec plusieurs liens agreges via LACP. Cela fournit :
 - **Redondance** : Si un lien tombe, les autres continuent
-- **Bande passante** : Plus de capacite pour le trafic
+- **Bande passante** : Plus de capacité pour le trafic
 
 ### Multi-Chassis LAG (MC-LAG / MLAG)
 
@@ -347,7 +347,7 @@ Les serveurs sont connectes aux switches ToR (Top of Rack) avec plusieurs liens 
    (MLAG peer-link)
 ```
 
-Le serveur se connecte a **deux switches differents** avec des liens agreges. Si un switch tombe, l'autre maintient la connectivite.
+Le serveur se connecte a **deux switches différents** avec des liens agreges. Si un switch tombe, l'autre maintient la connectivité.
 
 **Implementations :**
 - **Cisco vPC** (Nexus)
@@ -372,7 +372,7 @@ Le serveur se connecte a **deux switches differents** avec des liens agreges. Si
 Les liens multiples entre switches core sont agreges pour :
 - Eviter que STP bloque certains liens
 - Utiliser toute la bande passante disponible
-- Proteger contre les defaillances de liens individuels
+- Proteger contre les défaillances de liens individuels
 
 ### Environnements virtualises
 
@@ -401,7 +401,7 @@ Dans VMware ESXi, Microsoft Hyper-V ou KVM, les NICs des hotes sont bondes :
 
 ### Objectif
 
-Configurer un EtherChannel LACP entre deux switches Cisco, connecter deux VPCs, tester la connectivite et observer la redondance des liens.
+Configurer un EtherChannel LACP entre deux switches Cisco, connecter deux VPCs, tester la connectivité et observer la redondance des liens.
 
 ### Topologie
 
@@ -493,7 +493,7 @@ save
 
 ### Tests
 
-1. **Test de connectivite initial :**
+1. **Test de connectivité initial :**
 ```
 VPC1> ping 192.168.1.2
 ```
@@ -505,18 +505,18 @@ interface Ethernet0/0
  shutdown
 ```
 
-3. **Verifier que la connectivite persiste :**
+3. **Vérifier que la connectivité persiste :**
 ```
 VPC1> ping 192.168.1.2
 ```
 
-### Resultat attendu
+### Résultat attendu
 
-![Resultat du lab LACP](assets/LACP_DEMO_Result.png)
+![Résultat du lab LACP](assets/LACP_DEMO_Result.png)
 
 - L'EtherChannel est forme avec LACP
 - Les VPCs peuvent communiquer via le Port-Channel logique
-- La deconnexion d'un lien physique n'affecte pas la connectivite globale
+- La deconnexion d'un lien physique n'affecte pas la connectivité globale
 
 ---
 
@@ -526,27 +526,27 @@ VPC1> ping 192.168.1.2
 
 | Pratique | Raison |
 |----------|--------|
-| Ne pas melanger les vitesses | 1 Gbps + 10 Gbps = problemes |
-| Coherence des configurations | Les deux cotes doivent correspondre |
-| Monitorer le trafic | Verifier que le load balancing fonctionne |
-| Diversite physique | Cables dans des chemins differents |
+| Ne pas melanger les vitesses | 1 Gbps + 10 Gbps = problèmes |
+| Coherence des configurations | Les deux côtés doivent correspondre |
+| Monitorer le trafic | Vérifier que le load balancing fonctionne |
+| Diversite physique | Cables dans des chemins différents |
 | Comprendre le trafic | Adapter l'algorithme de hachage |
-| Tester le failover | Simuler des pannes regulierement |
+| Tester le failover | Simuler des pannes régulierement |
 
 ### Points d'attention
 
-| Probleme | Solution |
+| Problème | Solution |
 |----------|----------|
 | STP bloque un lien du LAG | Configurer PortFast ou Rapid PVST+ |
 | Trafic inegalement reparti | Changer l'algorithme de hachage |
 | Failover lent | Utiliser LACP fast rate |
-| Boucles reseau | Verifier la coherence des configurations |
+| Boucles réseau | Vérifier la cohérence des configurations |
 
-### Differences entre vendeurs
+### Différences entre vendeurs
 
 | Vendeur | Particularites |
 |---------|----------------|
-| **Cisco** | EtherChannel, load balance src-dst-ip par defaut |
+| **Cisco** | EtherChannel, load balance src-dst-ip par défaut |
 | **Juniper** | Interface `ae0` pour aggregated Ethernet |
 | **Arista** | Support natif MLAG, ideal pour leaf-spine |
 | **HP/Aruba** | Utilise la terminologie "Trunk" en CLI |
@@ -566,15 +566,15 @@ VPC1> ping 192.168.1.2
 
 ---
 
-## Securite et implications cyber
+## Sécurité et implications cyber
 
-### Vulnerabilites liees a l'agregation de liens
+### Vulnérabilités liees a l'agrégation de liens
 
 | Attaque | Description | Impact |
 |---------|-------------|--------|
-| **LACP Manipulation** | Envoi de LACPDUs malveillants | Disruption de l'agregation |
+| **LACP Manipulation** | Envoi de LACPDUs malveillants | Disruption de l'agrégation |
 | **LAG Hijacking** | Tentative de rejoindre un LAG existant | Interception de trafic |
-| **Link Flapping** | Oscillation rapide d'un lien | Instabilite, CPU spike |
+| **Link Flapping** | Oscillation rapide d'un lien | Instabilité, CPU spike |
 | **LACP Flooding** | Saturation de messages LACP | DoS |
 
 ### Scenario d'attaque : LACP Manipulation
@@ -582,11 +582,11 @@ VPC1> ping 192.168.1.2
 ```
 1. RECONNAISSANCE
    - Attaquant capture le trafic LACP (multicast 01:80:C2:00:00:02)
-   - Identification des parametres (System ID, Key, Priority)
+   - Identification des paramètres (System ID, Key, Priority)
 
 2. INJECTION
-   - Envoi de LACPDUs avec des parametres manipules
-   - Tentative de perturber l'agregation existante
+   - Envoi de LACPDUs avec des paramètres manipules
+   - Tentative de perturber l'agrégation existante
 
 3. IMPACT
    - Perte de liens du LAG
@@ -625,30 +625,30 @@ interface ethernet 1/0
 #### 4. LACP System Priority
 
 ```cisco
-lacp system-priority 4096  ! Plus bas = prefere
+lacp system-priority 4096  ! Plus bas = préféré
 ```
 
 #### 5. Monitoring
 
 ```cisco
-! Alertes sur les changements d'etat
+! Alertes sur les changements d'état
 logging trap notifications
 snmp-server enable traps etherchannel
 ```
 
-### Checklist securite LAG
+### Checklist sécurité LAG
 
 ```
 [ ] Port security sur les interfaces LAG
 [ ] LACP rate fast pour detection rapide
-[ ] System priority configure explicitement
-[ ] Monitoring des evenements EtherChannel
+[ ] System priority configuré explicitement
+[ ] Monitoring des événements EtherChannel
 [ ] BPDUGuard sur les ports non-LAG
-[ ] Documentation des LAGs autorises
-[ ] Tests de failover reguliers
+[ ] Documentation des LAGs autorisés
+[ ] Tests de failover réguliers
 [ ] Revue des logs pour link flapping
 [ ] Separation physique des cables (diversite)
-[ ] Configuration coherente et verifiee
+[ ] Configuration cohérente et vérifiée
 ```
 
 ### Mapping MITRE ATT&CK
@@ -661,26 +661,26 @@ snmp-server enable traps etherchannel
 
 ---
 
-## Depannage
+## Dépannage
 
-### Problemes courants
+### Problèmes courants
 
-| Probleme | Cause probable | Solution |
+| Problème | Cause probable | Solution |
 |----------|----------------|----------|
-| LAG ne se forme pas | Modes incompatibles | Verifier active/passive |
-| Liens en "s" (suspended) | Vitesse/duplex differents | Harmoniser les configs |
-| Un seul lien actif | Configuration incorrecte | Verifier channel-group |
+| LAG ne se forme pas | Modes incompatibles | Vérifier active/passive |
+| Liens en "s" (suspended) | Vitesse/duplex différents | Harmoniser les configs |
+| Un seul lien actif | Configuration incorrecte | Vérifier channel-group |
 | Trafic inegal | Hash inadapte | Changer load-balance method |
-| Flapping | Probleme physique | Verifier cables/SFPs |
+| Flapping | Problème physique | Vérifier cables/SFPs |
 
 ### Commandes de diagnostic
 
 ```cisco
-! Etat general
+! État général
 show etherchannel summary
 show etherchannel detail
 
-! Verifier LACP
+! Vérifier LACP
 show lacp neighbor
 show lacp sys-id
 show lacp counters
@@ -713,9 +713,9 @@ debug lacp events
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services et protocoles reseau | https://tryhackme.com/room/networkservices |
-| **Network Services 2** | Services reseau avances | https://tryhackme.com/room/networkservices2 |
+| **Intro to Networking** | Fondamentaux réseau | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services et protocoles réseau | https://tryhackme.com/room/networkservices |
+| **Network Services 2** | Services réseau avances | https://tryhackme.com/room/networkservices2 |
 | **Wireshark: The Basics** | Analyse de paquets | https://tryhackme.com/room/wiresharkthebasics |
 
-> **Note** : L'agregation de liens est principalement pratiquee sur des environnements de lab comme GNS3, EVE-NG ou Packet Tracer. Le lab decrit dans ce cours peut etre realise avec des images Cisco IOU L2 dans GNS3. Pour les tests de securite LAG, un environnement isole est recommande.
+> **Note** : L'agrégation de liens est principalement pratiquée sur des environnements de lab comme GNS3, EVE-NG ou Packet Tracer. Le lab décrit dans ce cours peut être réalisé avec des images Cisco IOU L2 dans GNS3. Pour les tests de sécurité LAG, un environnement isolé est recommandé.

@@ -2,15 +2,15 @@
 
 ## Objectifs du cours
 
-Ce cours explore les protocoles de redondance du premier saut (FHRP) et les strategies de conception pour garantir la haute disponibilite dans les reseaux d'entreprise. Que se passe-t-il lorsque le routeur servant de passerelle par defaut tombe en panne ? Les utilisateurs perdent-ils leur connectivite ? Pas si vous avez mis en place FHRP !
+Ce cours explore les protocoles de redondance du premier saut (FHRP) et les stratégies de conception pour garantir la haute disponibilité dans les réseaux d'entreprise. Que se passe-t-il lorsque le routeur servant de passerelle par défaut tombe en panne ? Les utilisateurs perdent-ils leur connectivité ? Pas si vous avez mis en place FHRP !
 
-Competences visees :
+Compétences visees :
 - Comprendre les fondamentaux de FHRP avec focus sur HSRP et VRRP
-- Maitriser les mecanismes de failover avec passerelles virtuelles
-- Configurer la priorite, la preemption et le tracking d'interface
-- Concevoir des topologies d'entreprise pour une vraie redondance reseau
-- Comprendre l'importance de l'uptime, des SLAs et de la tolerance aux pannes
-- Identifier les vulnerabilites et les mesures de securisation
+- Maîtriser les mécanismes de failover avec passerelles virtuelles
+- Configurer la priorité, la preemption et le tracking d'interface
+- Concevoir des topologies d'entreprise pour une vraie redondance réseau
+- Comprendre l'importance de l'uptime, des SLAs et de la tolérance aux pannes
+- Identifier les vulnérabilités et les mesures de sécurisation
 
 ---
 
@@ -20,70 +20,70 @@ Competences visees :
 
 | Sigle | Nom complet | Description |
 |-------|-------------|-------------|
-| **FHRP** | First Hop Redundancy Protocol | Famille de protocoles assurant la redondance de la passerelle par defaut |
-| **HSRP** | Hot Standby Router Protocol | Protocole FHRP proprietaire Cisco |
+| **FHRP** | First Hop Redundancy Protocol | Famille de protocoles assurant la redondance de la passerelle par défaut |
+| **HSRP** | Hot Standby Router Protocol | Protocole FHRP propriétaire Cisco |
 | **VRRP** | Virtual Router Redundancy Protocol | Protocole FHRP standard ouvert (RFC 5798) |
-| **GLBP** | Gateway Load Balancing Protocol | Protocole Cisco combinant redondance et repartition de charge |
+| **GLBP** | Gateway Load Balancing Protocol | Protocole Cisco combinant redondance et répartition de charge |
 | **VIP** | Virtual IP Address | Adresse IP virtuelle partagee par les routeurs du groupe |
 | **VMAC** | Virtual MAC Address | Adresse MAC virtuelle associee au VIP |
 
-### Roles et etats HSRP
+### Roles et états HSRP
 
 | Terme | Description |
 |-------|-------------|
 | **Active** | Routeur traitant activement le trafic pour le groupe HSRP |
 | **Standby** | Routeur pret a prendre le relais si l'Active tombe |
-| **Listen** | Routeurs supplementaires surveillant l'etat du groupe |
-| **Speak** | Etat transitoire pendant l'election |
-| **Init** | Etat initial au demarrage |
+| **Listen** | Routeurs supplementaires surveillant l'état du groupe |
+| **Speak** | État transitoire pendant l'élection |
+| **Init** | État initial au demarrage |
 | **Learn** | Attente de reception du VIP depuis le routeur Active |
 
-### Roles et etats VRRP
+### Roles et états VRRP
 
 | Terme | Description |
 |-------|-------------|
 | **Master** | Routeur traitant activement le trafic (equivalent Active) |
 | **Backup** | Routeur(s) pret(s) a prendre le relais (equivalent Standby) |
-| **Initialize** | Etat initial au demarrage |
+| **Initialize** | État initial au demarrage |
 
-### Mecanismes de failover
+### Mécanismes de failover
 
 | Terme | Description |
 |-------|-------------|
 | **Priority** | Valeur (0-255) determinant quel routeur devient Active/Master |
-| **Preemption** | Capacite d'un routeur a reprendre son role apres recuperation |
-| **Tracking** | Ajustement dynamique de la priorite selon l'etat d'interfaces |
-| **Decrement** | Valeur soustraite a la priorite lors du tracking |
-| **Hello Timer** | Intervalle d'envoi des messages Hello (defaut : 3s HSRP) |
-| **Hold Timer** | Temps avant de declarer un routeur defaillant (defaut : 10s HSRP) |
+| **Preemption** | Capacité d'un routeur a reprendre son role après récupération |
+| **Tracking** | Ajustement dynamique de la priorité selon l'état d'interfaces |
+| **Decrement** | Valeur soustraite a la priorité lors du tracking |
+| **Hello Timer** | Intervalle d'envoi des messages Hello (défaut : 3s HSRP) |
+| **Hold Timer** | Temps avant de déclarer un routeur défaillant (défaut : 10s HSRP) |
 
-### Haute disponibilite
+### Haute disponibilité
 
 | Terme | Description |
 |-------|-------------|
 | **HA** | High Availability - Conception minimisant les temps d'arret |
-| **Fault Tolerance** | Capacite a continuer sans interruption malgre une panne |
-| **Failover** | Basculement automatique vers un equipement de secours |
-| **Failback** | Retour au fonctionnement normal apres reparation |
+| **Fault Tolérance** | Capacité a continuer sans interruption malgré une panne |
+| **Failover** | Basculement automatique vers un équipement de secours |
+| **Failback** | Retour au fonctionnement normal après réparation |
 | **SLA** | Service Level Agreement - Engagement de niveau de service |
 | **Uptime** | Pourcentage de temps ou le service est disponible |
 | **MTBF** | Mean Time Between Failures - Temps moyen entre pannes |
-| **MTTR** | Mean Time To Repair - Temps moyen de reparation |
+| **MTTR** | Mean Time To Repair - Temps moyen de réparation |
 
-### Termes de securite
+### Termes de sécurité
 
 | Terme | Description |
 |-------|-------------|
-| **FHRP Hijacking** | Prise de controle du role Active/Master par un attaquant |
-| **Priority Manipulation** | Modification de priorite pour devenir Active |
-| **Authentication** | Mecanisme de validation des messages FHRP |
-| **Rogue Gateway** | Passerelle non autorisee injectee dans le reseau |
+| **FHRP Hijacking** | Prise de contrôle du role Active/Master par un attaquant |
+| **Priority Manipulation** | Modification de priorité pour devenir Active |
+| **Authentication** | Mécanisme de validation des messages FHRP |
+| **Rogue Gateway** | Passerelle non autorisée injectee dans le réseau |
 
 ---
 
 ## HSRP : Hot Standby Router Protocol
 
-HSRP est un protocole proprietaire Cisco permettant a un groupe de routeurs de presenter une adresse IP et MAC virtuelle unique aux hotes du LAN.
+HSRP est un protocole propriétaire Cisco permettant a un groupe de routeurs de presenter une adresse IP et MAC virtuelle unique aux hotes du LAN.
 
 ![Architecture HSRP](assets/HSRP.png)
 
@@ -115,7 +115,7 @@ HSRP est un protocole proprietaire Cisco permettant a un groupe de routeurs de p
 ### Configuration HSRP de base
 
 ```cisco
-! Routeur R1 (sera Active avec priorite elevee)
+! Routeur R1 (sera Active avec priorité élevée)
 interface GigabitEthernet0/1
  ip address 192.168.10.2 255.255.255.0
  standby version 2
@@ -136,7 +136,7 @@ interface GigabitEthernet0/1
 
 ### Versions HSRP
 
-| Caracteristique | HSRPv1 | HSRPv2 |
+| Caractéristique | HSRPv1 | HSRPv2 |
 |-----------------|--------|--------|
 | Groupes | 0-255 | 0-4095 |
 | Adresse multicast | 224.0.0.2 | 224.0.0.102 |
@@ -146,7 +146,7 @@ interface GigabitEthernet0/1
 ### Commandes de verification
 
 ```cisco
-! Etat HSRP
+! État HSRP
 show standby
 show standby brief
 
@@ -172,14 +172,14 @@ VRRP est un protocole standard ouvert (RFC 5798) offrant des fonctionnalites sim
 
 ![Architecture VRRP](assets/VRRP.png)
 
-### Differences cles avec HSRP
+### Différences cles avec HSRP
 
 | Aspect | HSRP | VRRP |
 |--------|------|------|
 | Proprietaire | Cisco | Standard ouvert |
 | Terminologie | Active/Standby | Master/Backup |
 | VIP = IP physique | Non | Oui (possible) |
-| Preemption par defaut | Non | Oui |
+| Preemption par défaut | Non | Oui |
 | Adresse multicast | 224.0.0.2/102 | 224.0.0.18 |
 | Protocole | UDP 1985 | IP Protocol 112 |
 | MAC virtuelle | 0000.0C07.ACxx | 0000.5E00.01xx |
@@ -204,22 +204,22 @@ interface GigabitEthernet0/1
 
 ### VIP egal a l'IP physique
 
-Une particularite de VRRP : le VIP peut etre l'adresse IP reelle d'un des routeurs.
+Une particularité de VRRP : le VIP peut être l'adresse IP réelle d'un des routeurs.
 
 ```cisco
 ! R1 utilise son IP comme VIP (IP owner)
 interface GigabitEthernet0/1
  ip address 192.168.10.1 255.255.255.0
  vrrp 1 ip 192.168.10.1
- vrrp 1 priority 255  ! Priorite max pour IP owner
+ vrrp 1 priority 255  ! Priorité max pour IP owner
 ```
 
-L'IP owner a automatiquement la priorite maximale (255) et sera toujours Master.
+L'IP owner a automatiquement la priorité maximale (255) et sera toujours Master.
 
 ### Commandes de verification
 
 ```cisco
-! Etat VRRP
+! État VRRP
 show vrrp
 show vrrp brief
 
@@ -232,37 +232,37 @@ show vrrp statistics
 
 ---
 
-## Priorite, Preemption et Tracking
+## Priorité, Preemption et Tracking
 
-Ces trois mecanismes rendent FHRP intelligent et adaptatif aux conditions du reseau.
+Ces trois mécanismes rendent FHRP intelligent et adaptatif aux conditions du réseau.
 
-### Priorite
+### Priorité
 
-La priorite determine quel routeur devient Active/Master :
+La priorité determine quel routeur devient Active/Master :
 - Plage : 0-255
 - Defaut : 100
-- Plus eleve = plus prioritaire
-- En cas d'egalite : IP la plus haute gagne
+- Plus élevé = plus prioritaire
+- En cas d'égalité : IP la plus haute gagne
 
 ```cisco
-! Definir une priorite elevee
+! Définir une priorité élevée
 standby 1 priority 150
 
-! Priorite par defaut
+! Priorité par défaut
 standby 1 priority 100
 ```
 
 ### Preemption
 
-La preemption permet a un routeur de reprendre son role Active/Master apres recuperation d'une panne.
+La preemption permet a un routeur de reprendre son role Active/Master après récupération d'une panne.
 
 **Sans preemption :**
-1. R1 (priorite 110) est Active
-2. R1 tombe, R2 (priorite 100) devient Active
+1. R1 (priorité 110) est Active
+2. R1 tombe, R2 (priorité 100) devient Active
 3. R1 revient, mais R2 reste Active
 
 **Avec preemption :**
-1. R1 (priorite 110) est Active
+1. R1 (priorité 110) est Active
 2. R1 tombe, R2 devient Active
 3. R1 revient et reprend le role Active
 
@@ -273,18 +273,18 @@ standby 1 preempt
 ! Preemption avec delai (attendre 60s avant de reprendre)
 standby 1 preempt delay minimum 60
 
-! VRRP : preemption active par defaut
+! VRRP : preemption active par défaut
 vrrp 1 preempt
 ```
 
 ### Interface Tracking
 
-Le tracking ajuste dynamiquement la priorite selon l'etat d'interfaces ou d'objets.
+Le tracking ajuste dynamiquement la priorité selon l'état d'interfaces ou d'objets.
 
 **Scenario typique :**
-- R1 est Active avec acces WAN via Gi0/2
-- Si Gi0/2 tombe, R1 n'a plus d'acces WAN
-- Le tracking reduit la priorite de R1
+- R1 est Active avec accès WAN via Gi0/2
+- Si Gi0/2 tombe, R1 n'a plus d'accès WAN
+- Le tracking réduit la priorité de R1
 - R2 (avec WAN fonctionnel) devient Active
 
 ```cisco
@@ -311,8 +311,8 @@ interface GigabitEthernet0/1
  standby 1 preempt
  standby 1 track GigabitEthernet0/2 20
 
-! Si Gi0/2 tombe : priorite = 110 - 20 = 90
-! R2 avec priorite 100 devient Active
+! Si Gi0/2 tombe : priorité = 110 - 20 = 90
+! R2 avec priorité 100 devient Active
 ```
 
 ---
@@ -323,13 +323,13 @@ La redondance ne se limite pas aux protocoles - c'est une question d'architectur
 
 ### Dual Routers (Routeurs doubles)
 
-Configuration classique : deux routeurs en HSRP/VRRP sur le meme LAN.
+Configuration classique : deux routeurs en HSRP/VRRP sur le même LAN.
 
 ![Topologie Dual Routers](assets/DualRouter.png)
 
 **Avantages :**
 - Failover transparent pour les utilisateurs
-- Simple a implementer
+- Simple a implémenter
 - Repartition de charge possible avec plusieurs groupes
 
 **Configuration :**
@@ -364,10 +364,10 @@ Chaque routeur dispose de liens WAN separes pour une redondance complete.
 - Diversite de chemins
 - Meilleure isolation des pannes
 
-**Complexites :**
+**Complexités :**
 - Routage asymetrique possible
 - NAT sur les deux routeurs
-- Politique de routage necessaire
+- Politique de routage nécessaire
 
 ```
       ISP-A            ISP-B
@@ -388,7 +388,7 @@ Chaque routeur dispose de liens WAN separes pour une redondance complete.
 
 ![Configuration Active/Active](assets/Active.jpg)
 
-Les deux routeurs sont actifs simultanement pour differents VLANs :
+Les deux routeurs sont actifs simultanement pour différents VLANs :
 
 ```cisco
 ! R1 : Active pour VLAN 10, Standby pour VLAN 20
@@ -425,9 +425,9 @@ interface Vlan20
 
 ---
 
-## Uptime, SLAs et Tolerance aux pannes
+## Uptime, SLAs et Tolérance aux pannes
 
-### Niveaux de disponibilite
+### Niveaux de disponibilité
 
 | Niveau | Uptime | Downtime/an | Downtime/mois |
 |--------|--------|-------------|---------------|
@@ -437,9 +437,9 @@ interface Vlan20
 | 99.999% | "Five nines" | 5.26 minutes | 26.3 secondes |
 | 99.9999% | "Six nines" | 31.5 secondes | 2.63 secondes |
 
-### Composants de la haute disponibilite
+### Composants de la haute disponibilité
 
-Pour atteindre les niveaux eleves de disponibilite :
+Pour atteindre les niveaux élevés de disponibilité :
 
 | Composant | Solution de redondance |
 |-----------|------------------------|
@@ -451,27 +451,27 @@ Pour atteindre les niveaux eleves de disponibilite :
 | Serveurs | Clustering, Load Balancing |
 | Stockage | RAID, Replication |
 
-### Fault Tolerance vs High Availability
+### Fault Tolérance vs High Availability
 
-| Aspect | Fault Tolerance | High Availability |
+| Aspect | Fault Tolérance | High Availability |
 |--------|-----------------|-------------------|
 | Objectif | Zero interruption | Minimiser les interruptions |
 | Temps de basculement | Instantane | Quelques secondes |
-| Cout | Eleve | Modere |
-| Complexite | Elevee | Moderee |
+| Coût | Élevé | Modéré |
+| Complexité | Élevée | Modérée |
 | Exemple | Systemes critiques (finance, sante) | Applications business standard |
 
 ### FHRP dans le contexte HA
 
-FHRP est techniquement une solution de **haute disponibilite** :
-- Temps de failover : 3-10 secondes (timers par defaut)
+FHRP est techniquement une solution de **haute disponibilité** :
+- Temps de failover : 3-10 secondes (timers par défaut)
 - Avec timers agressifs : < 1 seconde
-- Quelques paquets peuvent etre perdus pendant le failover
+- Quelques paquets peuvent être perdus pendant le failover
 
-Pour se rapprocher de la **tolerance aux pannes** :
+Pour se rapprocher de la **tolérance aux pannes** :
 - Utiliser des timers sub-seconde
 - Combiner avec BFD (Bidirectional Forwarding Detection)
-- Implementer le tracking multi-criteres
+- Implémenter le tracking multi-critères
 
 ```cisco
 ! Timers agressifs HSRP (hello 200ms, hold 700ms)
@@ -485,30 +485,30 @@ interface GigabitEthernet0/1
 
 ---
 
-## Securite et implications cyber
+## Sécurité et implications cyber
 
-### Vulnerabilites FHRP
+### Vulnérabilités FHRP
 
 | Attaque | Description | Impact |
 |---------|-------------|--------|
 | **FHRP Hijacking** | Attaquant devient Active/Master | Interception MitM |
-| **Priority Spoofing** | Annonce de priorite elevee | Prise de controle gateway |
-| **Hello Flooding** | Saturation de messages Hello | Instabilite du protocole |
-| **Denial of Service** | Perturbation des elections | Perte de redondance |
+| **Priority Spoofing** | Annonce de priorité élevée | Prise de contrôle gateway |
+| **Hello Flooding** | Saturation de messages Hello | Instabilité du protocole |
+| **Denial of Service** | Perturbation des élections | Perte de redondance |
 
 ### Scenario d'attaque : HSRP Hijacking
 
 ```
 1. RECONNAISSANCE
    - Attaquant capture le trafic HSRP (multicast 224.0.0.2/102)
-   - Identification du groupe, VIP, priorite Active
+   - Identification du groupe, VIP, priorité Active
 
 2. PREPARATION
    - Configuration d'une interface avec IP dans le subnet
-   - Configuration HSRP avec priorite > Active actuel
+   - Configuration HSRP avec priorité > Active actuel
 
 3. EXECUTION
-   - Envoi de messages HSRP Hello avec haute priorite
+   - Envoi de messages HSRP Hello avec haute priorité
    - L'attaquant devient Active (si preemption activee)
 
 4. INTERCEPTION
@@ -518,7 +518,7 @@ interface GigabitEthernet0/1
 
 ### Outils d'attaque connus
 
-| Outil | Capacite |
+| Outil | Capacité |
 |-------|----------|
 | **Yersinia** | Attaques HSRP/VRRP automatisees |
 | **Scapy** | Crafting de paquets FHRP personnalises |
@@ -529,11 +529,11 @@ interface GigabitEthernet0/1
 #### 1. Authentification HSRP
 
 ```cisco
-! Authentification MD5 (recommandee)
+! Authentification MD5 (recommandée)
 interface GigabitEthernet0/1
  standby 1 authentication md5 key-string SecretKey123
 
-! Authentification en texte clair (legacy, non recommande)
+! Authentification en texte clair (legacy, non recommandé)
 standby 1 authentication text cisco
 ```
 
@@ -548,16 +548,16 @@ interface GigabitEthernet0/1
 #### 3. Filtrage au niveau switch
 
 ```cisco
-! ACL pour bloquer HSRP non autorise
-ip access-list extended BLOCK-HSRP
+! ACL pour bloquer HSRP non autorisé
+ip accèss-list extended BLOCK-HSRP
  permit udp host 192.168.10.2 any eq 1985
  permit udp host 192.168.10.3 any eq 1985
  deny udp any any eq 1985 log
  permit ip any any
 
-! Appliquer sur les ports access
+! Appliquer sur les ports accèss
 interface range GigabitEthernet0/1 - 24
- ip access-group BLOCK-HSRP in
+ ip accèss-group BLOCK-HSRP in
 ```
 
 #### 4. Port Security et DHCP Snooping
@@ -577,7 +577,7 @@ ip dhcp snooping vlan 10,20
 #### 5. Monitoring et alertes
 
 ```cisco
-! Logging des changements d'etat HSRP
+! Logging des changements d'état HSRP
 standby 1 track 1 decrement 20
 logging trap notifications
 
@@ -594,7 +594,7 @@ snmp-server enable traps hsrp
 | Changement d'Active inattendu | Logs, SNMP traps |
 | Nouvelle adresse MAC pour VIP | Monitoring ARP |
 | Messages HSRP depuis IP inconnue | Capture Wireshark |
-| Priorite anormalement elevee | show standby |
+| Priorité anormalement élevée | show standby |
 
 **Script de detection basique :**
 
@@ -604,26 +604,26 @@ from scapy.all import *
 def detect_fhrp_attack(pkt):
     # Detection HSRP
     if pkt.haslayer(UDP) and pkt[UDP].dport == 1985:
-        # Verifier si source IP est autorisee
+        # Vérifier si source IP est autorisée
         authorized_ips = ["192.168.10.2", "192.168.10.3"]
         src_ip = pkt[IP].src
         if src_ip not in authorized_ips:
-            print(f"[ALERT] HSRP non autorise depuis {src_ip}")
+            print(f"[ALERT] HSRP non autorisé depuis {src_ip}")
 
 sniff(filter="udp port 1985", prn=detect_fhrp_attack)
 ```
 
-### Checklist securite FHRP
+### Checklist sécurité FHRP
 
 ```
 [ ] Authentification MD5 sur tous les groupes HSRP/VRRP
 [ ] Cles d'authentification complexes et uniques
 [ ] Filtrage des ports UDP 1985 (HSRP) et IP protocol 112 (VRRP)
-[ ] Port security sur les ports access
-[ ] Monitoring des changements d'etat FHRP
-[ ] Alertes SNMP configurees
-[ ] Documentation des priorites et VIPs autorises
-[ ] Revue reguliere des configurations
+[ ] Port security sur les ports accèss
+[ ] Monitoring des changements d'état FHRP
+[ ] Alertes SNMP configurées
+[ ] Documentation des priorités et VIPs autorisés
+[ ] Revue réguliere des configurations
 [ ] Tests de failover planifies
 [ ] Logs centralises pour analyse
 ```
@@ -634,31 +634,31 @@ sniff(filter="udp port 1985", prn=detect_fhrp_attack)
 |-----------|----|-------------|
 | Adversary-in-the-Middle | T1557 | FHRP hijacking pour interception |
 | Network Sniffing | T1040 | Capture du trafic via position MitM |
-| Network Denial of Service | T1498 | Perturbation des elections FHRP |
+| Network Denial of Service | T1498 | Perturbation des élections FHRP |
 
 ---
 
-## Depannage FHRP
+## Dépannage FHRP
 
-### Problemes courants
+### Problèmes courants
 
-| Probleme | Cause probable | Solution |
+| Problème | Cause probable | Solution |
 |----------|----------------|----------|
-| Les deux routeurs Active | Probleme de communication | Verifier connectivite L2 |
-| Pas de failover | Preemption desactivee | Activer preemption |
-| Failover lent | Timers par defaut | Reduire les timers |
-| VIP non joignable | Groupe mal configure | Verifier configuration |
-| Flapping Active/Standby | Instabilite reseau | Verifier liens physiques |
+| Les deux routeurs Active | Problème de communication | Vérifier connectivité L2 |
+| Pas de failover | Preemption désactivée | Activer preemption |
+| Failover lent | Timers par défaut | Réduire les timers |
+| VIP non joignable | Groupe mal configuré | Vérifier configuration |
+| Flapping Active/Standby | Instabilité réseau | Vérifier liens physiques |
 
 ### Commandes de diagnostic
 
 ```cisco
-! Etat detaille HSRP
+! État détaillé HSRP
 show standby all
 debug standby events
 debug standby packets
 
-! Etat detaille VRRP
+! État détaillé VRRP
 show vrrp all
 debug vrrp events
 debug vrrp packets
@@ -678,8 +678,8 @@ show track
 |-----------|-------------|
 | [Cisco - HSRP Configuration Guide](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/configuration/xe-16/fhp-xe-16-book/fhp-hsrp.html) | Guide officiel HSRP |
 | [RFC 5798 - VRRP](https://tools.ietf.org/html/rfc5798) | Specification VRRPv3 |
-| [NetworkLessons - HSRP vs VRRP](https://networklessons.com/cisco/ccnp-encor-350-401/hsrp-hot-standby-routing-protocol) | Comparaison detaillee |
-| [Cisco - FHRP Security](https://www.cisco.com/c/en/us/support/docs/ip/hot-standby-router-protocol-hsrp/13780-6.html) | Guide de securisation |
+| [NetworkLessons - HSRP vs VRRP](https://networklessons.com/cisco/ccnp-encor-350-401/hsrp-hot-standby-routing-protocol) | Comparaison détaillée |
+| [Cisco - FHRP Security](https://www.cisco.com/c/en/us/support/docs/ip/hot-standby-router-protocol-hsrp/13780-6.html) | Guide de sécurisation |
 
 ---
 
@@ -687,10 +687,10 @@ show track
 
 | Room | Description | Lien |
 |------|-------------|------|
-| **Intro to Networking** | Fondamentaux reseau | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services et protocoles reseau | https://tryhackme.com/room/networkservices |
-| **Network Services 2** | Services reseau avances | https://tryhackme.com/room/networkservices2 |
+| **Intro to Networking** | Fondamentaux réseau | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services et protocoles réseau | https://tryhackme.com/room/networkservices |
+| **Network Services 2** | Services réseau avances | https://tryhackme.com/room/networkservices2 |
 | **Wireshark: The Basics** | Analyse de paquets FHRP | https://tryhackme.com/room/wiresharkthebasics |
 | **Layer 2 MAC Flooding & ARP Spoofing** | Attaques Layer 2 | https://tryhackme.com/r/room/dvwa |
 
-> **Note** : Les protocoles FHRP sont principalement pratiques sur des environnements de lab comme GNS3, EVE-NG ou Packet Tracer. Pour les tests de securite FHRP, un lab isole est indispensable. Des outils comme Yersinia permettent de simuler des attaques FHRP dans un contexte de pentest autorise.
+> **Note** : Les protocoles FHRP sont principalement pratiques sur des environnements de lab comme GNS3, EVE-NG ou Packet Tracer. Pour les tests de sécurité FHRP, un lab isolé est indispensable. Des outils comme Yersinia permettent de simuler des attaques FHRP dans un contexte de pentest autorisé.

@@ -18,7 +18,7 @@ Ce projet automatise le lab GNS3 du cours "Trunking and VLAN Propagation" avec A
 - **Ansible** installé (`brew install ansible`)
 - **Python 3**
 - **Client GNS3** connecté au serveur distant
-- Acces reseau au serveur GNS3 (192.168.156.183:80)
+- Acces réseau au serveur GNS3 (192.168.156.183:80)
 
 ## Architecture
 

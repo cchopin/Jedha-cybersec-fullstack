@@ -363,7 +363,7 @@ Switch# show logging | include trunk
 | Room | Description | Lien |
 |------|-------------|------|
 | **Layer 2 MAC Flooding & ARP Spoofing** | Attaques Layer 2 et manipulation de VLANs | https://tryhackme.com/r/room/dvwa |
-| **Intro to Networking** | Fondamentaux reseau incluant switching | https://tryhackme.com/room/introtonetworking |
-| **Network Services** | Services reseau et configuration | https://tryhackme.com/room/networkservices |
+| **Intro to Networking** | Fondamentaux réseau incluant switching | https://tryhackme.com/room/introtonetworking |
+| **Network Services** | Services réseau et configuration | https://tryhackme.com/room/networkservices |
 
-> **Note** : Les concepts de trunking sont principalement pratiques sur GNS3 ou Packet Tracer car TryHackMe ne propose pas de labs specifiques a la configuration de switches Cisco.
+> **Note** : Les concepts de trunking sont principalement pratiques sur GNS3 ou Packet Tracer car TryHackMe ne propose pas de labs spécifiques à la configuration de switches Cisco.
