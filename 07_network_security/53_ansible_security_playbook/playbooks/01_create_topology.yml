@@ -1,0 +1,258 @@
+---
+# ============================================
+# PLAYBOOK : CREATION DE LA TOPOLOGIE
+# ============================================
+# Ce playbook cree :
+# - Le projet GNS3
+# - Le switch Cisco IOU L2
+# - Le NAT (acces Internet)
+# - La machine Kali (optionnel)
+# - Les liens entre eux
+#
+# Usage: ansible-playbook playbooks/01_create_topology.yml
+
+- name: "ETAPE 1 : Creation de la topologie GNS3"
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    # ==========================================
+    # PARTIE 1 : Recuperer les templates GNS3
+    # ==========================================
+    - name: "1.1 - Recuperer la liste des templates"
+      uri:
+        url: "{{ gns3_server }}/v2/templates"
+        method: GET
+        return_content: yes
+      register: templates
+
+    - name: "1.2 - Trouver le template Switch (IOU L2)"
+      set_fact:
+        template_switch_id: "{{ templates.json | selectattr('name', 'search', template_names.switch_l2) | map(attribute='template_id') | first | default('') }}"
+
+    - name: "1.3 - Trouver le template NAT"
+      set_fact:
+        template_nat_id: "{{ templates.json | selectattr('name', 'equalto', template_names.nat) | map(attribute='template_id') | first | default('') }}"
+
+    - name: "1.4 - Trouver le template Kali"
+      set_fact:
+        template_kali_id: "{{ templates.json | selectattr('name', 'search', template_names.kali) | map(attribute='template_id') | first | default('') }}"
+
+    - name: "1.5 - Verifier que les templates existent"
+      fail:
+        msg: |
+          Templates non trouves !
+          - Template Switch IOU L2: {{ 'OK' if template_switch_id else 'NON TROUVE' }}
+          - Template NAT: {{ 'OK' if template_nat_id else 'NON TROUVE' }}
+          - Template Kali: {{ 'OK (optionnel)' if template_kali_id else 'NON TROUVE (optionnel)' }}
+
+          Verifiez que vous avez importe les templates dans GNS3.
+          Commande: curl {{ gns3_server }}/v2/templates
+      when: not template_switch_id or not template_nat_id
+
+    - name: "Afficher les templates trouves"
+      debug:
+        msg:
+          - "Template Switch : {{ template_switch_id }}"
+          - "Template NAT : {{ template_nat_id }}"
+          - "Template Kali : {{ template_kali_id | default('Non trouve - optionnel') }}"
+
+    # ==========================================
+    # PARTIE 2 : Creer ou recuperer le projet
+    # ==========================================
+    - name: "2.1 - Recuperer les projets existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+      register: projects
+
+    - name: "2.2 - Chercher si notre projet existe"
+      set_fact:
+        existing_project: "{{ projects.json | selectattr('name', 'equalto', project_name) | list | first | default(none) }}"
+
+    - name: "2.3 - Creer le projet (si nouveau)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ project_name }}"
+        status_code: [200, 201]
+      register: new_project
+      when: existing_project is none
+
+    - name: "2.4 - Definir l'ID du projet"
+      set_fact:
+        project_id: "{{ existing_project.project_id if existing_project else new_project.json.project_id }}"
+
+    - name: "2.5 - Ouvrir le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    - name: "Afficher l'ID du projet"
+      debug:
+        msg: "Projet '{{ project_name }}' - ID: {{ project_id }}"
+
+    # ==========================================
+    # PARTIE 3 : Creer les nodes
+    # ==========================================
+    - name: "3.1 - Recuperer les nodes existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+      register: existing_nodes
+
+    - name: "3.2 - Liste des noms existants"
+      set_fact:
+        existing_node_names: "{{ existing_nodes.json | map(attribute='name') | list }}"
+
+    - name: "3.3 - Creer le switch"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_switch_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ switch.name }}"
+          x: "{{ switch.x }}"
+          y: "{{ switch.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      when: switch.name not in existing_node_names
+
+    - name: "3.4 - Creer le NAT"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_nat_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ nat.name }}"
+          x: "{{ nat.x }}"
+          y: "{{ nat.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      when: nat.name not in existing_node_names
+
+    - name: "3.5 - Creer la machine Kali (optionnel)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_kali_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ kali.name }}"
+          x: "{{ kali.x }}"
+          y: "{{ kali.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      when:
+        - template_kali_id
+        - kali.name not in existing_node_names
+
+    # ==========================================
+    # PARTIE 4 : Creer les liens
+    # ==========================================
+    - name: "4.1 - Recuperer tous les nodes (avec leurs IDs)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+      register: all_nodes
+
+    - name: "4.2 - Creer le dictionnaire des nodes"
+      set_fact:
+        nodes_dict: "{{ nodes_dict | default({}) | combine({item.name: item}) }}"
+      loop: "{{ all_nodes.json }}"
+
+    - name: "4.3 - Connecter NAT au switch (E1/0)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[nat.name].node_id }}"
+              port_number: 0
+            - adapter_number: 1
+              node_id: "{{ nodes_dict[switch.name].node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+      when: nat.name in nodes_dict and switch.name in nodes_dict
+
+    - name: "4.4 - Connecter Kali au switch (E1/1)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[kali.name].node_id }}"
+              port_number: 0
+            - adapter_number: 1
+              node_id: "{{ nodes_dict[switch.name].node_id }}"
+              port_number: 1
+        status_code: [200, 201, 409]
+      when:
+        - kali.name in nodes_dict
+        - switch.name in nodes_dict
+
+    # ==========================================
+    # PARTIE 5 : Demarrer les nodes
+    # ==========================================
+    - name: "5.1 - Demarrer tous les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: "5.2 - Attendre le demarrage (60 secondes)"
+      pause:
+        seconds: 60
+        prompt: |
+          Les equipements demarrent...
+          - Le switch Cisco IOU prend ~60 secondes
+          - Le NAT demarre instantanement
+          - Kali peut prendre 30-60 secondes
+
+    # ==========================================
+    # PARTIE 6 : Sauvegarder les infos
+    # ==========================================
+    - name: "6.1 - Recuperer les nodes (avec ports console)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+      register: final_nodes
+
+    - name: "6.2 - Mettre a jour le dictionnaire"
+      set_fact:
+        nodes_dict: "{{ nodes_dict | default({}) | combine({item.name: item}) }}"
+      loop: "{{ final_nodes.json }}"
+
+    - name: "6.3 - Sauvegarder switch_info.yml"
+      copy:
+        content: |
+          # Fichier genere automatiquement par 01_create_topology.yml
+          # Contient les ports console pour la configuration
+
+          project_id: "{{ project_id }}"
+
+          # Port console du switch
+          switch_console_port: {{ nodes_dict[switch.name].console }}
+
+          # Informations supplementaires
+          gns3_host: "{{ gns3_host }}"
+        dest: "{{ playbook_dir }}/../switch_info.yml"
+
+    - name: "Afficher les informations"
+      debug:
+        msg:
+          - "==========================================="
+          - "Topologie creee avec succes !"
+          - "==========================================="
+          - "Projet: {{ project_name }}"
+          - "Switch {{ switch.name }}: console port {{ nodes_dict[switch.name].console }}"
+          - ""
+          - "Prochaine etape :"
+          - "  1. Completez playbooks/02_configure_switch.yml"
+          - "  2. Executez: ansible-playbook playbooks/02_configure_switch.yml"

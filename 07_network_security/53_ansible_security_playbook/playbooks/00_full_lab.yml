@@ -1,0 +1,63 @@
+---
+# ============================================
+# PLAYBOOK : DEPLOIEMENT COMPLET DU LAB
+# ============================================
+# Ce playbook execute toutes les etapes du lab :
+# 1. Creation de la topologie GNS3
+# 2. Configuration de securite du switch
+# 3. Verification de la configuration
+#
+# Usage: ansible-playbook playbooks/00_full_lab.yml
+#
+# Note: Ce playbook est utile pour tester la solution
+# complete ou pour un deploiement rapide.
+
+- name: "LAB 53 : Deploiement complet"
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: "Afficher le debut du lab"
+      debug:
+        msg:
+          - "==========================================="
+          - "Lab 53 : Ansible Security Playbook"
+          - "==========================================="
+          - ""
+          - "Ce lab va :"
+          - "  1. Creer la topologie GNS3"
+          - "  2. Configurer la securite du switch"
+          - "  3. Verifier la configuration"
+          - ""
+          - "Serveur GNS3 : {{ gns3_server }}"
+
+# Etape 1 : Creation de la topologie
+- import_playbook: 01_create_topology.yml
+
+# Etape 2 : Configuration de securite
+# Note: Decommenter cette ligne une fois que vous avez
+# complete le playbook 02_configure_switch.yml
+# - import_playbook: 02_configure_switch.yml
+
+# Etape 3 : Verification
+# Note: Decommenter cette ligne pour la verification
+# - import_playbook: 03_verify.yml
+
+- name: "LAB 53 : Fin du deploiement"
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: "Afficher les instructions"
+      debug:
+        msg:
+          - "==========================================="
+          - "Topologie creee !"
+          - "==========================================="
+          - ""
+          - "Prochaines etapes :"
+          - "  1. Completez playbooks/02_configure_switch.yml"
+          - "  2. Executez : ansible-playbook playbooks/02_configure_switch.yml"
+          - "  3. Verifiez : ansible-playbook playbooks/03_verify.yml"
+          - ""
+          - "Consultez SOLUTION.md si vous etes bloque."

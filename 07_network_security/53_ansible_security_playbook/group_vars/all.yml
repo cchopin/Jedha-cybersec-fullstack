@@ -1,0 +1,98 @@
+# ============================================
+# Configuration pour Lab 53 - Ansible Security Playbook
+# ============================================
+
+# ============================================
+# CONNEXION GNS3 - A MODIFIER SELON VOTRE SETUP
+# ============================================
+
+# IP de votre serveur GNS3
+gns3_server: "http://192.168.139.188:80"
+gns3_host: "192.168.139.188"
+
+# Nom du projet qui sera créé dans GNS3
+project_name: "Lab_53_Ansible_Security"
+
+# ============================================
+# TEMPLATES GNS3
+# ============================================
+# Noms des templates dans GNS3 (vérifier avec: curl http://IP:80/v2/templates)
+
+template_names:
+  switch_l2: "Cisco IOU L2 17.12.1"
+  nat: "NAT"
+  kali: "Kali"
+
+# ============================================
+# TOPOLOGIE
+# ============================================
+
+# Switch principal
+switch:
+  name: "SW1"
+  x: 0
+  y: 0
+
+# NAT pour accès Internet (optionnel)
+nat:
+  name: "NAT1"
+  x: 0
+  y: -150
+
+# Kali pour tests (optionnel)
+kali:
+  name: "Kali"
+  x: 0
+  y: 150
+
+# ============================================
+# CONFIGURATION VLANs
+# ============================================
+
+vlans:
+  - id: 10
+    name: "Engineering"
+    description: "Département technique"
+  - id: 20
+    name: "HR"
+    description: "Ressources humaines"
+  - id: 30
+    name: "Finance"
+    description: "Département financier"
+  - id: 40
+    name: "Guest"
+    description: "Invités"
+  - id: 50
+    name: "Management"
+    description: "Administration réseau"
+
+# ============================================
+# CONFIGURATION SVI MANAGEMENT
+# ============================================
+
+management_vlan:
+  id: 50
+  ip: "192.168.50.2"
+  mask: "255.255.255.0"
+  description: "Ansible Management Interface"
+
+# ============================================
+# CONFIGURATION PORT-SECURITY
+# ============================================
+
+# Ports à configurer avec port-security
+access_ports:
+  - interface: "Ethernet0/0"
+    vlan: 10
+  - interface: "Ethernet0/1"
+    vlan: 20
+  - interface: "Ethernet0/2"
+    vlan: 30
+  - interface: "Ethernet0/3"
+    vlan: 40
+
+# Paramètres port-security
+port_security:
+  max_mac: 1
+  violation: "restrict"
+  sticky: true
