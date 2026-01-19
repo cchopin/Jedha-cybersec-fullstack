@@ -1,4 +1,4 @@
-# Fondamentaux du Routage - Version Simplifiée
+# Fondamentaux du routage - version simplifiée
 
 ## L'idée en une phrase
 
@@ -14,9 +14,9 @@ Sans routage, les paquets ne sauraient pas comment aller d'un réseau à l'autre
 
 ---
 
-## Routage Statique vs Dynamique
+## Routage statique vs dynamique
 
-### Routage Statique
+### Routage statique
 
 Routes configurées **à la main** par l'administrateur.
 
@@ -33,7 +33,7 @@ ip route 192.168.2.0 255.255.255.0 10.0.0.2
 
 **Quand l'utiliser** : petits réseaux, routes de backup
 
-### Routage Dynamique
+### Routage dynamique
 
 Les routeurs **échangent des informations** et construisent leurs tables automatiquement.
 

@@ -252,9 +252,9 @@ Un attaquant peut **forcer un failover** en :
 
 ---
 
-## 3. Topologies de Redondance
+## 3. Topologies de redondance
 
-### Dual Routers - Configuration de base
+### Dual routers - configuration de base
 
 ![Topologie Enterprise Dual Routers](assets/fhrp_schema_3.png)
 
@@ -283,7 +283,7 @@ Deux routeurs, une VIP, basculement automatique.
 - Un seul routeur actif (sous-utilisation)
 - Pas de repartition de charge native
 
-### Active/Active avec Groupes Multiples
+### Active/active avec groupes multiples
 
 Pour utiliser les deux routeurs simultanement, on cree **plusieurs groupes HSRP** :
 
@@ -344,7 +344,7 @@ Chaque routeur connecte a un ISP different pour une redondance maximale.
 | 99.99% | 52.56 minutes | 4.38 minutes | Critique |
 | 99.999% | 5.26 minutes | 26.3 secondes | Mission-critique |
 
-### Fault Tolerance vs High Availability
+### Fault tolerance vs high availability
 
 | Aspect | Fault Tolerance (FT) | High Availability (HA) |
 |--------|----------------------|------------------------|

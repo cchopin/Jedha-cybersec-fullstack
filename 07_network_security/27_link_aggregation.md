@@ -226,7 +226,7 @@ interface range GigabitEthernet0/1-2
 
 ---
 
-## Strategies de Load Balancing
+## Strategies de load balancing
 
 ### Methodes de distribution
 
@@ -271,7 +271,7 @@ Cela preserve l'ordre des paquets mais peut creer un desequilibre si :
 
 ## Cas d'usage
 
-### Data Center - Acces serveurs
+### Data center - acces serveurs
 
 ```
          ┌─────────────┐

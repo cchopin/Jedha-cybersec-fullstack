@@ -22,7 +22,7 @@ Analogie :
 
 ---
 
-## Les Systèmes Autonomes (AS)
+## Les systèmes autonomes (AS)
 
 Internet est composé de milliers de réseaux indépendants. Chaque réseau a un numéro unique : l'**ASN**.
 

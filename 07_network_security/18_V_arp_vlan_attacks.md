@@ -49,7 +49,7 @@ Alice (192.168.1.10)  ←───────────→  Bob (192.168.1.20
 
 ## Outils d'ARP Spoofing
 
-### Les outils courants (Red Team)
+### Les outils courants (red team)
 
 | Outil | Description |
 |-------|-------------|
@@ -133,7 +133,7 @@ Switch(config-if)# switchport port-security violation shutdown
 
 Les VLANs sont censés isoler les réseaux. VLAN hopping permet de contourner cette isolation.
 
-### Technique 1 : Switch Spoofing
+### Technique 1 : switch spoofing
 
 L'attaquant fait croire au switch qu'il est un autre switch pour obtenir un trunk :
 
@@ -153,7 +153,7 @@ Switch(config-if)# switchport mode access
 Switch(config-if)# switchport nonegotiate
 ```
 
-### Technique 2 : Double Tagging
+### Technique 2 : double tagging
 
 L'attaquant ajoute DEUX étiquettes VLAN à sa trame :
 

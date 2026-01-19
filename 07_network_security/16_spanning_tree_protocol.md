@@ -80,9 +80,9 @@ Avec STP - STABLE :
 
 ---
 
-## Élection du Root Bridge
+## Élection du root bridge
 
-### Qu'est-ce que le Root Bridge ?
+### Qu'est-ce que le root bridge ?
 
 Le **Root Bridge** est le switch de référence dans la topologie STP. Tous les autres switches calculent leur meilleur chemin vers lui.
 
@@ -251,9 +251,9 @@ Switch is in rapid-pvst mode
 
 ## Optimisation de STP
 
-### Forcer le Root Bridge
+### Forcer le root bridge
 
-Ne jamais laisser l'élection au hasard. Définir explicitement le Root Bridge :
+Ne jamais laisser l'élection au hasard. Définir explicitement le root bridge :
 
 ```cisco
 ! Méthode 1 : Définir une priorité basse

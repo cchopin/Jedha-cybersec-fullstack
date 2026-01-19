@@ -605,7 +605,7 @@ router bgp 65001
 
 ---
 
-## Playbook Red Team
+## Playbook red team
 
 ### Methodologie d'attaque
 
@@ -649,7 +649,7 @@ router bgp 65001
 
 ---
 
-## Playbook Blue Team
+## Playbook blue team
 
 ### Detection et reponse
 
