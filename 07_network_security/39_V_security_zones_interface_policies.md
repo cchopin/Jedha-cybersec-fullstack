@@ -72,7 +72,7 @@ Règles entre zones :
 
 ---
 
-## Zone Pairs : définir le sens du trafic
+## Zone pairs : définir le sens du trafic
 
 Une **Zone Pair** définit la direction du flux :
 

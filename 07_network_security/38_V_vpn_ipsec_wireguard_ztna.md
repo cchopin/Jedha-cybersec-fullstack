@@ -110,9 +110,9 @@ C'est tout ! Comparer avec les dizaines de lignes pour IPSec...
 
 ---
 
-## Site-to-Site vs Remote Access
+## Site-to-site vs remote access
 
-### VPN Site-to-Site
+### VPN site-to-site
 
 Connecte deux réseaux entiers :
 
@@ -130,7 +130,7 @@ Connecte deux réseaux entiers :
 Les deux LANs communiquent comme s'ils étaient connectés
 ```
 
-### VPN Remote Access
+### VPN remote access
 
 Connecte un utilisateur au réseau :
 

@@ -164,7 +164,7 @@ Le Native VLAN est le VLAN dont les trames ne sont pas taguées sur un trunk.
 - Compatibilité avec des équipements ne supportant pas 802.1Q
 - Risque de sécurité si mal configuré
 
-### VLAN Hopping Attacks
+### VLAN hopping attacks
 
 #### 1. Switch spoofing
 

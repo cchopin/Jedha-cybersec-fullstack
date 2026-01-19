@@ -6,7 +6,7 @@ Concevoir un réseau, c'est comme planifier une ville : le **Core-Distribution-A
 
 ---
 
-## Le Modèle Core-Distribution-Access : La Ville
+## Le modèle core-distribution-access : la ville
 
 ### C'est quoi ?
 
@@ -74,7 +74,7 @@ C'est un modèle en 3 couches pour organiser un réseau d'entreprise :
 
 ---
 
-## Le Modèle Leaf-Spine : Le Data Center
+## Le modèle leaf-spine : le data center
 
 ### Pourquoi un autre modèle ?
 
@@ -145,7 +145,7 @@ A → Leaf → Spine → Leaf → B
 
 ---
 
-## Comparaison Rapide
+## Comparaison rapide
 
 ```
 ┌────────────────────┬─────────────────────┬─────────────────────┐

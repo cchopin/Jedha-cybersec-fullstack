@@ -6,7 +6,7 @@ L'énumération, c'est l'art de collecter des informations sur un réseau : SNMP
 
 ---
 
-## SNMP : La Mine d'Or des Attaquants
+## SNMP : la mine d'or des attaquants
 
 ### Ce que SNMP révèle
 
@@ -101,7 +101,7 @@ Lancer `snmp-check` contre les équipements. Si des infos apparaissent, les atta
 
 ---
 
-## Mapping Réseau via SNMP
+## Mapping réseau via SNMP
 
 ### Ce qu'on peut construire
 
@@ -131,7 +131,7 @@ CARTE RÉSEAU COMPLÈTE !
 
 ---
 
-## Mouvement Latéral avec SNMP
+## Mouvement latéral avec SNMP
 
 ### Comment SNMP aide
 
@@ -156,7 +156,7 @@ Switch compromis    →    ARP révèle:           →    Pivot vers
 
 ---
 
-## Requêtes Ciblées
+## Requêtes ciblées
 
 ### Pourquoi cibler ?
 
@@ -166,7 +166,7 @@ Switch compromis    →    ARP révèle:           →    Pivot vers
 | Détectable | Furtif |
 | Long | Rapide |
 
-### OIDs Utiles
+### OIDs utiles
 
 ```bash
 # Nom du système

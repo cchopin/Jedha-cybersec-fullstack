@@ -103,7 +103,7 @@ Avant de plonger dans le cours, voici les definitions des termes techniques util
 
 ---
 
-## 1. Routage Statique vs Dynamique
+## 1. Routage statique vs dynamique
 
 ![Comparaison Routage Statique vs Dynamique](assets/routing_schema_1.png)
 
@@ -238,7 +238,7 @@ Le NAT permet a plusieurs machines d'un réseau prive de partager une adresse IP
 
 ---
 
-## 3. Tables de Routage et Metriques
+## 3. Tables de routage et métriques
 
 Chaque routeur maintient une **table de routage** qui determine le chemin optimal pour chaque destination.
 
@@ -321,7 +321,7 @@ ip monitor route
 
 ---
 
-## 4. Routage Inter-VLAN
+## 4. Routage inter-VLAN
 
 Par defaut, les VLANs sont **isolés** - c'est une mesure de segmentation fondamentale. Pour permettre une communication contrôlee entre VLANs, on utilise le routage Inter-VLAN.
 

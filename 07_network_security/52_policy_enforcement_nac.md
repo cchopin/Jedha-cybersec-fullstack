@@ -49,7 +49,7 @@ Dans cette session, vous apprendrez :
 
 ## Le rôle du NAC dans la sécurité d'entreprise
 
-### Pourquoi le NAC Est Plus Important Que Jamais
+### Pourquoi le NAC est plus important que jamais
 
 Les réseaux d'entreprise ne sont plus des périmètres verrouillés. Ce sont des écosystèmes poreux, orientés utilisateur et mobile-first. Les employés se connectent depuis des téléphones, laptops, tablettes, voire des équipements personnels. Les prestataires, vendeurs et invités ont besoin d'un accès temporaire. Les équipements IoT apparaissent dans les usines, hôpitaux et bâtiments intelligents. Sans contrôle, cela mène au chaos.
 
@@ -300,7 +300,7 @@ Le client NAC (ex. Cisco AnyConnect ou Aruba Agent) effectue ces vérifications 
 
 Les équipements non conformes sont souvent redirigés vers un **VLAN de remediation**, où ils peuvent télécharger des patches, mises à jour ou agents. Après remediation réussie, ils sont réévalués et autorisés à revenir sur le réseau corporate.
 
-### Application de Politique Dynamique
+### Application de politique dynamique
 
 Les politiques NAC peuvent être dynamiques et contextuelles :
 

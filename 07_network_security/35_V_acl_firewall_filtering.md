@@ -66,7 +66,7 @@ access-list 100 deny ip any any
 
 ---
 
-## Le Wildcard Mask
+## Le wildcard mask
 
 Le wildcard est l'**inverse** du masque réseau :
 
@@ -112,9 +112,9 @@ Source ────────────────────────�
 
 ---
 
-## Stateless vs Stateful
+## Stateless vs stateful
 
-### Filtrage Stateless (ACL classique)
+### Filtrage stateless (ACL classique)
 
 Chaque paquet est évalué **indépendamment**, sans mémoire :
 

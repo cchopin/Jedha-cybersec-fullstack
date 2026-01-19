@@ -52,7 +52,7 @@ Dans cette session, nous explorerons :
 
 ## Le passage du manuel à l'automatisé
 
-### Pourquoi la Gestion Manuelle Échoue
+### Pourquoi la gestion manuelle échoue
 
 Dans les environnements réseau traditionnels, les ingénieurs s'appuient généralement sur l'interface en ligne de commande (CLI) accessible via SSH ou ports console pour gérer les switches, routeurs et firewalls. Bien que cette approche puisse bien fonctionner pour des déploiements à petite échelle, elle devient rapidement insoutenable quand le réseau dépasse 10 ou 20 équipements.
 
@@ -132,7 +132,7 @@ L'automatisation réseau adresse ces limitations en permettant des opérations *
 
 ---
 
-## Ansible pour l'Automatisation Réseau
+## Ansible pour l'automatisation réseau
 
 ### Qu'est-ce qu'Ansible ?
 
@@ -219,7 +219,7 @@ Les modules gèrent toute la syntaxe spécifique à l'équipement et fournissent
 
 ## Ce que vous pouvez faire avec Ansible
 
-### 1. Pousser des Configurations
+### 1. Pousser des configurations
 
 ```yaml
 # Créer des VLANs sur tous les switches
@@ -528,7 +528,7 @@ Même avec Ansible, il est crucial d'avoir un historique des configurations :
 
 ---
 
-## Intégration avec les Systèmes de Gestion
+## Intégration avec les systèmes de gestion
 
 ### NetBox comme Source of Truth
 
@@ -606,7 +606,7 @@ deploy:
 
 ---
 
-## Synthèse : Automatisation Réseau
+## Synthèse : automatisation réseau
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐

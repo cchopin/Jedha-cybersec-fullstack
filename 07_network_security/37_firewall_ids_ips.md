@@ -378,7 +378,7 @@ Mappe une IP publique complete vers une IP privee :
 
 ---
 
-## Logging et Monitoring
+## Logging et monitoring
 
 ### Types de logs pfSense
 

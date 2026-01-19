@@ -584,9 +584,9 @@ interface GigabitEthernet0/0
 
 ---
 
-## Comparaison : Quand utiliser quoi ?
+## Comparaison : quand utiliser quoi ?
 
-### ACL Standard vs Etendue
+### ACL standard vs étendue
 
 | Critere | ACL Standard | ACL Etendue |
 |---------|--------------|-------------|

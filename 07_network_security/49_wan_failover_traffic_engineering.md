@@ -42,9 +42,9 @@ Dans cette session, nous plongerons dans :
 
 ---
 
-## WAN Failover : Pourquoi C'est Important
+## WAN failover : pourquoi c'est important
 
-### Comprendre les Vulnérabilités WAN
+### Comprendre les vulnérabilités WAN
 
 Les liens WAN sont intrinsèquement susceptibles à une variété de problèmes : coupures de fibre, pannes de fournisseur, congestion, attaques DDoS, et la liste continue. Quand vos services cloud ou sites distants dépendent de ce lien, l'indisponibilité peut être coûteuse.
 
@@ -163,13 +163,13 @@ router bgp 65001
 
 ---
 
-## IP SLA : Monitoring Proactif de la Santé des Liens
+## IP SLA : monitoring proactif de la santé des liens
 
 **IP SLA** (Service Level Agreement) est une fonctionnalité Cisco utilisée pour monitorer la performance réseau et détecter les pannes de liens basées sur des critères personnalisés comme la latence, le jitter, ou la perte de paquets.
 
 Alors que BFD est focalisé sur la détection rapide au niveau liaison de données, IP SLA permet des décisions de failover tenant compte des applications.
 
-### Types de Sondes IP SLA
+### Types de sondes IP SLA
 
 | Type de Sonde | Description | Cas d'usage |
 |---------------|-------------|-------------|
@@ -246,9 +246,9 @@ Ce type de failover est particulièrement utile dans les environnements plus pet
 
 ---
 
-## Failover de Routage avec BGP et HSRP/VRRP
+## Failover de routage avec BGP et HSRP/VRRP
 
-### BGP : Failover Dynamique entre ISPs
+### BGP : failover dynamique entre ISPs
 
 **BGP** (Border Gateway Protocol) est le protocole de référence pour les organisations se connectant à plusieurs ISPs (multihoming). En plus de sa flexibilité et scalabilité, BGP offre de puissantes capacités de failover.
 
@@ -390,7 +390,7 @@ interface Vlan10
 
 Quand vous avez plusieurs liens WAN, pourquoi ne pas tous les utiliser ? Le load balancing répartit le trafic sur les chemins disponibles pour maximiser la bande passante et les performances.
 
-### Types de Load Balancing
+### Types de load balancing
 
 | Type | Description | Avantages | Inconvénients |
 |------|-------------|-----------|---------------|
@@ -470,7 +470,7 @@ Quand vous avez plusieurs liens WAN, pourquoi ne pas tous les utiliser ? Le load
 
 ---
 
-## Ingénierie de Trafic avec Route Maps et PBR
+## Ingénierie de trafic avec route maps et PBR
 
 ### Route maps : le pouvoir du routage conditionnel
 
@@ -510,7 +510,7 @@ Les **route maps** sont des outils puissants et flexibles utilisés pour appliqu
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Cas d'Usage Route Maps
+### Cas d'usage route maps
 
 | Cas d'usage | Description |
 |-------------|-------------|
