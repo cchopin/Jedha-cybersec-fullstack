@@ -45,7 +45,7 @@ Compétences visees :
 | **Auto** | PAgP | Repond a la negociation PAgP |
 | **On** | Aucun | Configuration statique |
 
-### Load Balancing
+### Load balancing
 
 | Terme | Description |
 |-------|-------------|
