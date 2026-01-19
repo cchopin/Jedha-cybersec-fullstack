@@ -1,4 +1,4 @@
-# Segmentation Reseau et DMZ
+# Segmentation réseau et DMZ
 
 ## Objectifs du cours
 

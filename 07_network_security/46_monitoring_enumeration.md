@@ -10,11 +10,11 @@
 
 ---
 
-## Énumération SNMP et Son Rôle dans la Reconnaissance
+## Énumération SNMP et son rôle dans la reconnaissance
 
 SNMP (Simple Network Management Protocol) est conçu pour la surveillance et la gestion à distance des équipements réseau. Il simplifie les tâches administratives, mais quand il est mal sécurisé, il devient une source de renseignement involontaire pour les adversaires.
 
-### Comment SNMP Expose Votre Réseau
+### Comment SNMP expose votre réseau
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -55,7 +55,7 @@ SNMP communique via UDP, principalement sur les ports :
 
 Au cœur de SNMP se trouve la **MIB** (Management Information Base), qui organise les données dans un arbre structuré d'**OID** (Object Identifiers). Ces identifiants permettent des requêtes très granulaires.
 
-### Risque d'un Seul Équipement Mal Configuré
+### Risque d'un seul équipement mal configuré
 
 Avec un seul switch ou routeur mal configuré, un attaquant peut :
 - Révéler la structure interne du réseau
@@ -65,7 +65,7 @@ Avec un seul switch ou routeur mal configuré, un attaquant peut :
 
 ---
 
-## Utiliser snmp-check pour l'Énumération
+## Utiliser snmp-check pour l'énumération
 
 `snmp-check` est un outil de reconnaissance pratique qui permet aux professionnels de sécurité (et aux attaquants) d'interroger les équipements SNMP et de récupérer des informations détaillées. Il est particulièrement efficace contre les équipements utilisant SNMPv1 ou SNMPv2 avec des community strings par défaut ou mal configurés.
 
@@ -77,7 +77,7 @@ sudo apt update
 sudo apt install snmpcheck
 ```
 
-### Utilisation de Base
+### Utilisation de base
 
 ```bash
 # Utilise "public" par défaut
@@ -90,7 +90,7 @@ snmp-check -t 192.168.1.1 -c myCustomString
 snmp-check -t 192.168.1.1 -v
 ```
 
-### Exemple de Sortie
+### Exemple de sortie
 
 ![snmp-check output](assets/snmp-check.png)
 
@@ -107,17 +107,17 @@ snmp-check -t 192.168.1.1 -v
 | **Running Processes** | Liste des processus |
 | **Installed Software** | Applications installées |
 
-### Usage Défensif
+### Usage défensif
 
 Si vous défendez un réseau, exécuter `snmp-check` contre votre propre infrastructure révèle ce que vous exposez involontairement. **Si vous pouvez le voir, un attaquant aussi.**
 
 ---
 
-## Énumération et Fingerprinting de Services
+## Énumération et fingerprinting de services
 
 Au-delà de SNMP, les opérations red team reposent sur la compréhension des services actifs sur chaque hôte et de leur comportement sous examen.
 
-### Workflow d'Énumération Typique
+### Workflow d'énumération typique
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -147,7 +147,7 @@ Au-delà de SNMP, les opérations red team reposent sur la compréhension des se
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Techniques de Fingerprinting
+### Techniques de fingerprinting
 
 | Technique | Description | Exemple |
 |-----------|-------------|---------|
@@ -158,7 +158,7 @@ Au-delà de SNMP, les opérations red team reposent sur la compréhension des se
 | **Favicon Hash** | Identifier via l'icône web | Shodan favicon search |
 | **Timing Analysis** | Différences de temps de réponse | Versions spécifiques |
 
-### Corrélation avec les Vulnérabilités
+### Corrélation avec les vulnérabilités
 
 Une fois le fingerprinting terminé, les red teamers connectent les services aux vulnérabilités connues :
 
@@ -173,11 +173,11 @@ SMBv1                    ───────>    EternalBlue (MS17-010)
 
 ---
 
-## Utiliser SNMP pour le Mapping Réseau
+## Utiliser SNMP pour le mapping réseau
 
 SNMP révèle bien plus que l'identité de l'équipement sur lequel il tourne. Il offre un aperçu de ses voisins, ce qui en fait un atout unique pour la découverte d'hôtes et le mapping de topologie.
 
-### Informations de Mapping Disponibles via SNMP
+### Informations de mapping disponibles via SNMP
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -211,7 +211,7 @@ SNMP révèle bien plus que l'identité de l'équipement sur lequel il tourne. I
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Construction d'une Carte Réseau
+### Construction d'une carte réseau
 
 ```
                     SNMP Query
@@ -258,7 +258,7 @@ SNMP révèle bien plus que l'identité de l'équipement sur lequel il tourne. I
     └───────────────────────────────────────────────┘
 ```
 
-### Avantage Stratégique
+### Avantage stratégique
 
 Cette visibilité transforme SNMP en atout de reconnaissance stratégique. Au lieu de scanner aveuglément, les attaquants planifient intelligemment :
 - Zones peu surveillées
@@ -267,11 +267,11 @@ Cette visibilité transforme SNMP en atout de reconnaissance stratégique. Au li
 
 ---
 
-## Identifier les Services et Données Exposés
+## Identifier les services et données exposés
 
 Avec une vue claire du layout réseau, les red teamers priorisent l'identification des services exposés et des données qu'ils peuvent fuir.
 
-### Services Fréquemment Vulnérables
+### Services fréquemment vulnérables
 
 | Service | Risque | Pourquoi |
 |---------|--------|----------|
@@ -282,7 +282,7 @@ Avec une vue claire du layout réseau, les red teamers priorisent l'identificati
 | **IoT dashboards** | Moyen | Oubliés, jamais mis à jour |
 | **Bases de données** | Critique | Accès direct aux données |
 
-### Questions à Se Poser
+### Questions à se poser
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -310,11 +310,11 @@ Les red teamers évaluent tous ces éléments méthodiquement. Ils ne cherchent 
 
 ---
 
-## Évaluation des Vulnérabilités par Énumération
+## Évaluation des vulnérabilités par énumération
 
 Une fois suffisamment de données de fingerprinting collectées, les attaquants alignent les versions et configurations observées avec les vulnérabilités connues.
 
-### Processus d'Évaluation
+### Processus d'évaluation
 
 ```
 FINGERPRINTING                RECHERCHE                    PRIORISATION
@@ -328,7 +328,7 @@ SMBv1 ─────────────> MITRE ATT&CK ──────> 
                                           (EternalBlue)
 ```
 
-### Sources de Vulnérabilités
+### Sources de vulnérabilités
 
 | Source | Usage |
 |--------|-------|
@@ -338,7 +338,7 @@ SMBv1 ─────────────> MITRE ATT&CK ──────> 
 | **MITRE ATT&CK** | Techniques d'attaque documentées |
 | **Searchsploit** | Recherche locale d'exploits |
 
-### SNMP et Évaluation
+### SNMP et évaluation
 
 SNMP aide à faire surface ces informations avec précision :
 - Versions de software exposées
@@ -349,11 +349,11 @@ Ce niveau de détail permet aux attaquants de prioriser quels hôtes comptent le
 
 ---
 
-## Mouvement Latéral avec l'Intelligence SNMP
+## Mouvement latéral avec l'intelligence SNMP
 
 Avec un accès initial obtenu, les red teamers se concentrent sur l'expansion de leur emprise via le mouvement latéral. Ce processus bénéficie énormément de l'intelligence collectée via SNMP.
 
-### Comment SNMP Facilite le Mouvement Latéral
+### Comment SNMP facilite le mouvement latéral
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -380,7 +380,7 @@ Avec un accès initial obtenu, les red teamers se concentrent sur l'expansion de
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Exemple de Progression
+### Exemple de progression
 
 ```
 ACCÈS INITIAL                    INTELLIGENCE SNMP              MOUVEMENT
@@ -400,11 +400,11 @@ Ce mouvement latéral n'est pas improvisé. Il est guidé par les insights colle
 
 ---
 
-## Requêtes SNMP Personnalisées et Renseignement Ciblé
+## Requêtes SNMP personnalisées et renseignement ciblé
 
 Alors que la découverte SNMP large avec des outils comme `snmpwalk` est commune, elle produit souvent de gros volumes de données. Dans les environnements avec surveillance lourde ou contraintes de bande passante, ce n'est pas idéal.
 
-### Pourquoi des Requêtes Personnalisées ?
+### Pourquoi des requêtes personnalisées ?
 
 | Requête Large | Requête Ciblée |
 |---------------|----------------|
@@ -413,7 +413,7 @@ Alors que la découverte SNMP large avec des outils comme `snmpwalk` est commune
 | Données volumineuses | Données précises |
 | Lent à analyser | Analyse rapide |
 
-### Exemples de Requêtes Ciblées
+### Exemples de requêtes ciblées
 
 ```bash
 # Récupérer uniquement le nom du système
@@ -429,7 +429,7 @@ snmpget -v2c -c public target 1.3.6.1.2.1.2.2.1.2.1
 snmpwalk -v2c -c public target 1.3.6.1.2.1.4.21
 ```
 
-### OIDs Utiles pour le Red Team
+### OIDs utiles pour le red team
 
 | OID | Information |
 |-----|-------------|
@@ -444,11 +444,11 @@ L'avantage stratégique des requêtes personnalisées réside dans leur furtivit
 
 ---
 
-## Usage Stratégique de l'Énumération en Red Teaming
+## Usage stratégique de l'énumération en red teaming
 
 L'énumération n'est pas juste une tâche, c'est une discipline. Elle définit la capacité du red team à agir délibérément plutôt que témérairement.
 
-### Principes du Red Teamer Stratégique
+### Principes du red teamer stratégique
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -482,13 +482,13 @@ L'énumération n'est pas juste une tâche, c'est une discipline. Elle définit 
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### La Clé du Succès
+### La clé du succès
 
 Le red teamer qui peut lire les signes du réseau (silencieusement, rapidement et précisément) gagne bien avant qu'un exploit ne soit jamais lancé.
 
 ---
 
-## Tableau Récapitulatif
+## Tableau récapitulatif
 
 | Phase | Technique | Outil | Résultat |
 |-------|-----------|-------|----------|
@@ -516,7 +516,7 @@ Le red teamer qui peut lire les signes du réseau (silencieusement, rapidement e
 
 ---
 
-## Schéma Récapitulatif
+## Schéma récapitulatif
 
 ```
 WORKFLOW RED TEAM COMPLET :

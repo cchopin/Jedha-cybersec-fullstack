@@ -1,4 +1,4 @@
-# Redondance du Premier Saut (FHRP) et Haute Disponibilite
+# Redondance du premier saut (FHRP) et haute disponibilité
 
 ## Introduction
 

@@ -6,7 +6,7 @@ Le WAN failover, c'est avoir un plan B automatique quand la connexion Internet t
 
 ---
 
-## Les 4 Piliers du WAN Failover
+## Les 4 piliers du WAN failover
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -23,7 +23,7 @@ Le WAN failover, c'est avoir un plan B automatique quand la connexion Internet t
 
 ---
 
-## BFD : Le Détecteur Ultra-Rapide
+## BFD : le détecteur ultra-rapide
 
 ### C'est quoi BFD ?
 
@@ -63,7 +63,7 @@ AVEC BFD :
 
 ---
 
-## IP SLA : Le Moniteur de Santé
+## IP SLA : le moniteur de santé
 
 ### C'est quoi IP SLA ?
 
@@ -100,7 +100,7 @@ IP SLA surveille la santé des liens en envoyant des tests (ping, HTTP, etc.).
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Types de Tests IP SLA
+### Types de tests IP SLA
 
 | Test | Ce qu'il vérifie |
 |------|------------------|
@@ -111,7 +111,7 @@ IP SLA surveille la santé des liens en envoyant des tests (ping, HTTP, etc.).
 
 ---
 
-## HSRP/VRRP : La Gateway Qui Ne Meurt Jamais
+## HSRP/VRRP : la gateway qui ne meurt jamais
 
 ### C'est quoi HSRP/VRRP ?
 
@@ -159,7 +159,7 @@ Plusieurs routeurs partagent une **IP virtuelle**. Si le routeur actif tombe, un
 
 ---
 
-## PBR : Le Routage Intelligent
+## PBR : le routage intelligent
 
 ### C'est quoi PBR ?
 
@@ -180,7 +180,7 @@ Trafic Backup   ──► [Match] ──► ISP-B (haute bande passante)
 Reste           ──► Table de routage ──► Normal
 ```
 
-### Exemple Concret
+### Exemple concret
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -214,9 +214,9 @@ Reste           ──► Table de routage ──► Normal
 
 ---
 
-## Load Balancing : Utiliser Tous les Liens
+## Load balancing : utiliser tous les liens
 
-### Per-Packet vs Per-Destination
+### Per-packet vs per-destination
 
 ```
 PER-PACKET (chaque paquet sur un lien différent) :
@@ -253,7 +253,7 @@ Vers Microsoft ──► ISP-A ──► Microsoft
 
 ---
 
-## Scénario Complet de Failover
+## Scénario complet de failover
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -289,7 +289,7 @@ Vers Microsoft ──► ISP-A ──► Microsoft
 
 ---
 
-## Résumé : Quand Utiliser Quoi ?
+## Résumé : quand utiliser quoi ?
 
 ```
 ┌────────────────┬─────────────────────────────────────────────┐
@@ -315,7 +315,7 @@ Vers Microsoft ──► ISP-A ──► Microsoft
 
 ---
 
-## Les Termes à Retenir
+## Les termes à retenir
 
 | Terme | Définition simple |
 |-------|-------------------|
@@ -333,7 +333,7 @@ Vers Microsoft ──► ISP-A ──► Microsoft
 
 ---
 
-## Résumé en 30 Secondes
+## Résumé en 30 secondes
 
 ```
 DÉTECTION DE PANNE :
@@ -367,7 +367,7 @@ BFD + BGP + HSRP + IP SLA = Failover en ~1 seconde
 
 ---
 
-## Schéma Récapitulatif
+## Schéma récapitulatif
 
 ```
 BFD - DÉTECTION RAPIDE :

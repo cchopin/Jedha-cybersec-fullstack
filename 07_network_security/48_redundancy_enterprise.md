@@ -1,4 +1,4 @@
-# Redondance en Entreprise : MPLS et BGP Multihoming
+# Redondance en entreprise : MPLS et BGP multihoming
 
 ## Objectifs du cours
 
@@ -47,11 +47,11 @@ Nous explorerons deux technologies avancées mais indispensables qui apportent d
 
 ---
 
-## La Redondance : Une Ligne de Vie Réseau
+## La redondance : une ligne de vie réseau
 
 Avant de plonger dans les protocoles techniques, prenons du recul. La redondance dans les réseaux d'entreprise n'est pas une question de paranoïa : c'est une question de préparation. Le matériel tombe en panne. Les fibres optiques sont coupées. Les ISPs subissent des pannes. La redondance garantit que le réseau ne bronche pas quand cela arrive.
 
-### Les Différents Niveaux de Redondance
+### Les différents niveaux de redondance
 
 | Niveau | Description | Exemple |
 |--------|-------------|---------|
@@ -72,7 +72,7 @@ Chaque paquet entrant dans le réseau MPLS se voit attribuer un label. Les route
 
 ![MPLS Architecture](assets/MPLS.png)
 
-### Concepts Clés MPLS
+### Concepts clés MPLS
 
 | Concept | Description |
 |---------|-------------|
@@ -81,7 +81,7 @@ Chaque paquet entrant dans le réseau MPLS se voit attribuer un label. Les route
 | **LER (Edge Routers)** | Équipements qui insèrent ou retirent les labels MPLS |
 | **LSR (Core Routers)** | Équipements qui commutent les paquets basés sur leurs labels |
 
-### Fonctionnement du Label Switching
+### Fonctionnement du label switching
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -113,11 +113,11 @@ Chaque paquet entrant dans le réseau MPLS se voit attribuer un label. Les route
 
 ---
 
-## MPLS pour l'Ingénierie de Trafic et la QoS
+## MPLS pour l'ingénierie de trafic et la QoS
 
 L'un des joyaux de MPLS est sa capacité à effectuer de l'**Ingénierie de Trafic (TE)**. Cela permet aux fournisseurs de services et grandes entreprises de diriger le trafic sur des chemins moins congestionnés ou plus optimisés, indépendamment de ce que les protocoles de routage traditionnels pourraient dicter.
 
-### Avantages pour la Redondance
+### Avantages pour la redondance
 
 | Avantage | Description |
 |----------|-------------|
@@ -125,7 +125,7 @@ L'un des joyaux de MPLS est sa capacité à effectuer de l'**Ingénierie de Traf
 | **LSP primaire/backup** | Les chemins peuvent être préconfigurés avec des routes principales et de secours |
 | **QoS garantie** | La bande passante peut être allouée par Class of Service (CoS) |
 
-### Exemple : Deux Circuits WAN
+### Exemple : deux circuits WAN
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -155,7 +155,7 @@ L'un des joyaux de MPLS est sa capacité à effectuer de l'**Ingénierie de Traf
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Bénéfices pour la Redondance d'Entreprise
+### Bénéfices pour la redondance d'entreprise
 
 - **Contrôle fin** sur les chemins de trafic
 - **Temps de convergence réduit** en cas de panne
@@ -166,7 +166,7 @@ De nombreux fournisseurs de services offrent des services VPN MPLS avec des SLAs
 
 ---
 
-## VPNs MPLS Layer 3 : Isolation Logique et Résilience
+## VPNs MPLS layer 3 : isolation logique et résilience
 
 Une autre application vitale de MPLS est les **VPNs Layer 3**. Ceux-ci permettent aux entreprises de connecter plusieurs sites en utilisant le backbone MPLS d'un fournisseur tout en maintenant une séparation logique entre les réseaux clients.
 
@@ -209,7 +209,7 @@ Le trafic de chaque client est transporté dans une instance **VRF (Virtual Rout
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### La Redondance Naturelle avec les VPNs MPLS
+### La redondance naturelle avec les VPNs MPLS
 
 - Vous pouvez avoir des **routeurs PE doubles** à chaque site
 - Si un circuit MPLS ou PE tombe, le routage bascule automatiquement vers l'autre
@@ -217,7 +217,7 @@ Le trafic de chaque client est transporté dans une instance **VRF (Virtual Rout
 
 Quand associés à des routeurs CE (Customer Edge) doubles à chaque site et des liens redondants, les VPNs MPLS offrent une solution WAN robuste et tolérante aux pannes.
 
-### Scénarios Réels
+### Scénarios réels
 
 | Scénario | Description |
 |----------|-------------|
@@ -229,13 +229,13 @@ Les VPNs MPLS sont robustes, mais pas magiques. Ils nécessitent toujours des po
 
 ---
 
-## BGP Multihoming : La Puissance de Plusieurs ISPs
+## BGP multihoming : la puissance de plusieurs ISPs
 
 **BGP (Border Gateway Protocol)** est le protocole de routage qui fait fonctionner Internet. Quand une entreprise se connecte à plus d'un ISP pour la redondance, cette configuration s'appelle le **multihoming**. BGP est utilisé pour gérer et router le trafic à travers ces multiples fournisseurs upstream.
 
 ![BGP Multihoming](assets/BGPMultihoming.png)
 
-### Avantages du Multihoming
+### Avantages du multihoming
 
 | Avantage | Description |
 |----------|-------------|
@@ -245,7 +245,7 @@ Les VPNs MPLS sont robustes, mais pas magiques. Ils nécessitent toujours des po
 
 Imaginez que votre ISP principal tombe. Sans BGP, vous seriez dans le noir. Mais avec le BGP multihoming, votre trafic se redirige simplement via le second ISP, souvent en quelques secondes à minutes.
 
-### Comment BGP Réalise le Multihoming
+### Comment BGP réalise le multihoming
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -289,7 +289,7 @@ Les entreprises qui possèdent leur propre espace IP public et ASN (Autonomous S
 
 ---
 
-## Comprendre l'AS Pathing et la Sélection de Route
+## Comprendre l'AS pathing et la sélection de route
 
 Dans BGP, l'attribut **AS_PATH** est utilisé pour déterminer la route la plus courte (moins de sauts) vers une destination. Chaque fois qu'une route passe à travers un système autonome, son numéro AS est ajouté au chemin.
 
@@ -303,7 +303,7 @@ Cela crée une trace de comment un paquet devrait voyager. Les routeurs BGP util
 | **Local Preference** | Prioriser les points de sortie depuis votre propre réseau | Préférer un ISP pour le trafic sortant |
 | **MED** | Suggérer des chemins d'entrée préférés aux pairs | Influencer le trafic entrant |
 
-### Exemple Pratique
+### Exemple pratique
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -338,7 +338,7 @@ Cela crée une trace de comment un paquet devrait voyager. Les routeurs BGP util
 
 ---
 
-## Filtrage de Routes : Gardez les Indésirables Dehors
+## Filtrage de routes : gardez les indésirables dehors
 
 Ce n'est pas parce que BGP fournit des informations de routage globales que vous voulez tout accepter. C'est là que le **filtrage de routes** entre en jeu.
 
@@ -347,7 +347,7 @@ Avec le filtrage de routes, vous décidez :
 - Quels préfixes leur annoncer
 - Quels chemins AS sont considérés valides ou indésirables
 
-### Stratégies de Filtrage Communes
+### Stratégies de filtrage communes
 
 | Stratégie | Description |
 |-----------|-------------|
@@ -357,7 +357,7 @@ Avec le filtrage de routes, vous décidez :
 
 C'est particulièrement critique dans les environnements multihomés. Un mauvais filtrage peut résulter en des fuites de routes, du blackholing, ou l'annonce de réseaux internes au monde entier.
 
-### Exemple de Filtrage
+### Exemple de filtrage
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -388,11 +388,11 @@ C'est particulièrement critique dans les environnements multihomés. Un mauvais
 
 ---
 
-## Partage de Charge avec BGP
+## Partage de charge avec BGP
 
 La redondance ne signifie pas toujours utiliser un ISP comme backup. Parfois, vous voulez utiliser activement les deux. C'est ce qu'on appelle le **partage de charge (load sharing)**.
 
-### Techniques de Load Sharing BGP
+### Techniques de load sharing BGP
 
 | Technique | Description |
 |-----------|-------------|
@@ -433,11 +433,11 @@ Cependant, le vrai load balancing avec BGP nécessite un contrôle précis et un
 
 ---
 
-## Mécanismes de Failover : Toujours Prêt
+## Mécanismes de failover : toujours prêt
 
 La redondance n'a de valeur que si elle fonctionne quand nécessaire. C'est là que les **mécanismes de failover** entrent en jeu. Ces mécanismes sont comme les secouristes : ils interviennent quand les choses tournent mal.
 
-### Déclencheurs de Failover BGP
+### Déclencheurs de failover BGP
 
 | Déclencheur | Description |
 |-------------|-------------|
@@ -445,7 +445,7 @@ La redondance n'a de valeur que si elle fonctionne quand nécessaire. C'est là 
 | **Session BGP dropped** | Pair qui ne répond plus |
 | **Retrait de route** | Préfixe qui disparaît de la table |
 
-### Stratégies de Redondance
+### Stratégies de redondance
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -486,7 +486,7 @@ La redondance n'a de valeur que si elle fonctionne quand nécessaire. C'est là 
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Scénario Exemple Complet
+### Scénario exemple complet
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -523,7 +523,7 @@ La redondance n'a de valeur que si elle fonctionne quand nécessaire. C'est là 
 
 ---
 
-## Synthèse : MPLS vs BGP Multihoming
+## Synthèse : MPLS vs BGP multihoming
 
 | Aspect | MPLS | BGP Multihoming |
 |--------|------|-----------------|
@@ -534,7 +534,7 @@ La redondance n'a de valeur que si elle fonctionne quand nécessaire. C'est là 
 | **Cas d'usage** | Connectivité site-à-site | Redondance Internet |
 | **Complexité** | Gérée par provider | Configuration côté client |
 
-### Quand Utiliser Quoi ?
+### Quand utiliser quoi ?
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐

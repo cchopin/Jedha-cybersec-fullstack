@@ -1,4 +1,4 @@
-# Link Aggregation et Load Balancing
+# Link aggregation et load balancing
 
 ## Objectifs du cours
 

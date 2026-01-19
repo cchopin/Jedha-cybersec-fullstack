@@ -133,7 +133,7 @@ Paquet arrive
 
 ---
 
-## ACLs Standard : Filtrage par IP Source
+## ACLs standard : filtrage par IP source
 
 ### Fonctionnement
 
@@ -252,7 +252,7 @@ line vty 0 4
 
 ---
 
-## ACLs Etendues : Controle de Trafic Precis
+## ACLs étendues : contrôle de trafic précis
 
 ### Fonctionnement
 
@@ -409,7 +409,7 @@ ip access-list extended WEB-TRAFFIC
 
 ---
 
-## Filtrage Stateless : Le Monde des ACLs
+## Filtrage stateless : le monde des ACLs
 
 ### Fonctionnement
 
@@ -466,7 +466,7 @@ Le mot-cle `established` matche les paquets TCP avec les flags ACK ou RST, indiq
 
 ---
 
-## Filtrage Stateful : Firewalls Intelligents
+## Filtrage stateful : firewalls intelligents
 
 ### Fonctionnement
 

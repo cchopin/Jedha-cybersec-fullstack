@@ -1,4 +1,4 @@
-# Routing Fundamentals et Inter-VLAN Routing
+# Routing fundamentals et inter-VLAN routing
 
 ## Objectifs du cours
 

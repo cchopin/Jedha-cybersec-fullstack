@@ -1,4 +1,4 @@
-# Capture et Analyse de Paquets
+# Capture et analyse de paquets
 
 ## Objectifs du cours
 

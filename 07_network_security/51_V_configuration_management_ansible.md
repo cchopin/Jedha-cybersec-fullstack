@@ -6,7 +6,7 @@
 
 ---
 
-## Le Problème : Gestion Manuelle
+## Le problème : gestion manuelle
 
 ```
 SANS AUTOMATISATION :
@@ -43,14 +43,14 @@ Traçabilité : TOTALE (fichier dans Git)
 
 ## Ansible : Les Bases
 
-### C'est Quoi ?
+### C'est quoi ?
 
 - Outil d'automatisation **open-source** (Red Hat)
 - **Sans agent** : pas besoin d'installer quoi que ce soit sur les équipements
 - Utilise **SSH** pour se connecter
 - Configuration en **YAML** (fichiers lisibles)
 
-### Les 3 Fichiers Clés
+### Les 3 fichiers clés
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -92,9 +92,9 @@ Traçabilité : TOTALE (fichier dans Git)
 
 ---
 
-## Exemple Concret : Créer des VLANs
+## Exemple concret : créer des VLANs
 
-### 1. L'Inventory (qui cibler ?)
+### 1. L'inventory (qui cibler ?)
 
 ```yaml
 # inventory.yml
@@ -110,7 +110,7 @@ ansible_network_os=ios          # Type d'équipement (ios = Cisco)
 ansible_connection=network_cli  # Méthode de connexion (ligne de commande via SSH)
 ```
 
-### 2. Le Playbook (quoi faire ?)
+### 2. Le playbook (quoi faire ?)
 
 ```yaml
 # playbook.yml
@@ -161,7 +161,7 @@ SW3 : ok=2 changed=2 failed=0
 
 ---
 
-## Modules Courants par Vendeur
+## Modules courants par vendeur
 
 Un **module** Ansible = un outil spécialisé pour une action précise.
 Chaque fabricant a ses propres modules.
@@ -197,9 +197,9 @@ Chaque fabricant a ses propres modules.
 
 ---
 
-## Cas d'Usage Courants
+## Cas d'usage courants
 
-### 1. Pousser des Configs
+### 1. Pousser des configs
 
 ```yaml
 # Configurer une interface
@@ -211,7 +211,7 @@ Chaque fabricant a ses propres modules.
     parents: interface GigabitEthernet0/1
 ```
 
-### 2. Collecter des Infos
+### 2. Collecter des infos
 
 ```yaml
 # Récupérer les VLANs existants
@@ -226,7 +226,7 @@ Chaque fabricant a ses propres modules.
     var: vlan_output.stdout
 ```
 
-### 3. Vérifier la Conformité
+### 3. Vérifier la conformité
 
 ```yaml
 # Vérifier que NTP est configuré
@@ -242,7 +242,7 @@ Chaque fabricant a ses propres modules.
   when: "'ntp server' not in ntp_check.stdout[0]"
 ```
 
-### 4. Sauvegarder les Configs
+### 4. Sauvegarder les configs
 
 ```yaml
 # Backup de la config
@@ -260,7 +260,7 @@ Chaque fabricant a ses propres modules.
 
 ---
 
-## L'Idempotence : Rejouer Sans Risque
+## L'idempotence : rejouer sans risque
 
 ```
 QU'EST-CE QUE L'IDEMPOTENCE ?
@@ -279,9 +279,9 @@ QU'EST-CE QUE L'IDEMPOTENCE ?
 
 ---
 
-## Outils de Backup : RANCID / Oxidized
+## Outils de backup : RANCID / Oxidized
 
-### Pourquoi Sauvegarder ?
+### Pourquoi sauvegarder ?
 
 ```
 MÊME AVEC ANSIBLE, IL FAUT DES BACKUPS :
@@ -293,7 +293,7 @@ MÊME AVEC ANSIBLE, IL FAUT DES BACKUPS :
 • Rollback → revenir à une version précédente
 ```
 
-### Comment Ça Marche ?
+### Comment ça marche ?
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -322,7 +322,7 @@ MÊME AVEC ANSIBLE, IL FAUT DES BACKUPS :
 
 ---
 
-## Workflow Complet : GitOps Réseau
+## Workflow complet : GitOps réseau
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -362,7 +362,7 @@ MÊME AVEC ANSIBLE, IL FAUT DES BACKUPS :
 
 ---
 
-## Les Termes à Retenir
+## Les termes à retenir
 
 | Terme | Définition simple |
 |-------|-------------------|
@@ -379,7 +379,7 @@ MÊME AVEC ANSIBLE, IL FAUT DES BACKUPS :
 
 ---
 
-## Résumé en 30 Secondes
+## Résumé en 30 secondes
 
 ```
 ANSIBLE = Automatiser la configuration réseau
@@ -408,7 +408,7 @@ BONUS :
 
 ---
 
-## Schéma Récapitulatif
+## Schéma récapitulatif
 
 ```
 COMPOSANTS ANSIBLE :

@@ -1,4 +1,4 @@
-# SD-WAN : Les Fondamentaux
+# SD-WAN : les fondamentaux
 
 ## Objectifs du cours
 
@@ -27,7 +27,7 @@ Dans cette session, nous explorerons :
 | **Overlay** | Réseau superposé | Tunnels virtuels au-dessus du réseau physique |
 | **Underlay** | Réseau sous-jacent | Infrastructure physique (MPLS, Internet, LTE) |
 
-### Termes Sécurité
+### Termes sécurité
 
 | Sigle | Nom complet | Description |
 |-------|-------------|-------------|
@@ -37,7 +37,7 @@ Dans cette session, nous explorerons :
 | **DPI** | Deep Packet Inspection | Inspection approfondie des paquets |
 | **IPsec** | IP Security | Protocole de chiffrement des tunnels |
 
-### Termes Performance
+### Termes performance
 
 | Sigle | Nom complet | Description |
 |-------|-------------|-------------|
@@ -48,13 +48,13 @@ Dans cette session, nous explorerons :
 
 ---
 
-## Comprendre les Limitations du WAN Traditionnel
+## Comprendre les limitations du WAN traditionnel
 
-### L'Environnement WAN Legacy
+### L'environnement WAN legacy
 
 Les architectures WAN traditionnelles ont été conçues à une époque où Internet était considéré comme non fiable et où la plupart des applications étaient hébergées dans des data centers privés. À l'époque, la solution de référence pour connecter les bureaux distants était **MPLS** (Multiprotocol Label Switching), prisé pour sa fiabilité, ses garanties de performance et ses capacités QoS.
 
-### Architecture WAN Traditionnelle
+### Architecture WAN traditionnelle
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -90,7 +90,7 @@ Les architectures WAN traditionnelles ont été conçues à une époque où Inte
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Défis du WAN Traditionnel
+### Défis du WAN traditionnel
 
 | Défi | Description |
 |------|-------------|
@@ -114,7 +114,7 @@ Le **SD-WAN** est une architecture WAN virtuelle qui permet aux entreprises d'ut
 
 Il utilise un logiciel pour diriger intelligemment le trafic à travers le WAN, exploitant le **routage applicatif**, la **gestion centralisée** et le **contrôle dynamique des chemins** pour prendre de meilleures décisions sur comment et où le trafic circule.
 
-### Concept Clé : Séparation du Plan de Contrôle et du Plan de Données
+### Concept clé : séparation du plan de contrôle et du plan de données
 
 L'une des caractéristiques définissantes du SD-WAN est la **séparation du plan de contrôle et du plan de données** :
 
@@ -125,7 +125,7 @@ L'une des caractéristiques définissantes du SD-WAN est la **séparation du pla
 
 Ce découplage permet une **orchestration centralisée** et une **application locale**, combinant visibilité globale et ajustements de performance en temps réel.
 
-### Architecture SD-WAN vs Traditionnelle
+### Architecture SD-WAN vs traditionnelle
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -173,7 +173,7 @@ Ce découplage permet une **orchestration centralisée** et une **application lo
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Points Clés
+### Points clés
 
 - **SD-WAN est défini par logiciel** : flexible et dynamique
 - **Supporte plusieurs types de transport** : pas seulement MPLS
@@ -182,9 +182,9 @@ Ce découplage permet une **orchestration centralisée** et une **application lo
 
 ---
 
-## Architecture et Composants SD-WAN
+## Architecture et composants SD-WAN
 
-### Contrôleurs Centralisés
+### Contrôleurs centralisés
 
 Le cœur d'une solution SD-WAN réside dans ses **contrôleurs centralisés**, qui maintiennent la topologie réseau en temps réel, appliquent les politiques et simplifient les opérations.
 
@@ -195,7 +195,7 @@ Le cœur d'une solution SD-WAN réside dans ses **contrôleurs centralisés**, q
 | **VMware Orchestrator** | VMware | Contrôleur pour VMware SD-WAN (ex-VeloCloud) |
 | **Juniper Mist Cloud** | Juniper | SD-WAN avec gestion AI-driven |
 
-### Fonctions des Contrôleurs
+### Fonctions des contrôleurs
 
 | Fonction | Description |
 |----------|-------------|
@@ -204,7 +204,7 @@ Le cœur d'une solution SD-WAN réside dans ses **contrôleurs centralisés**, q
 | **Application des politiques** | Sécurité réseau unifiée |
 | **Analytics et visibilité** | Insights sur les patterns de trafic et performance |
 
-### Équipements Edge (CPE)
+### Équipements edge (CPE)
 
 Les **CPE** (Customer Premises Equipment) sont les équipements SD-WAN situés à chaque branche, data center ou bureau distant. Ces appareils appliquent les politiques reçues du contrôleur et gèrent la transmission du trafic en temps réel.
 
@@ -219,7 +219,7 @@ Les **CPE** (Customer Premises Equipment) sont les équipements SD-WAN situés �
 
 Certains CPE sont physiques, d'autres virtuels, et beaucoup de vendeurs offrent les deux options selon les besoins de déploiement.
 
-### Types de Transport WAN
+### Types de transport WAN
 
 Une fabric SD-WAN supporte plusieurs underlays :
 
@@ -234,13 +234,13 @@ Le point clé : SD-WAN **abstrait ces liens** en une fabric logique unique et d�
 
 ---
 
-## Sélection Dynamique de Chemin et Routage Applicatif
+## Sélection dynamique de chemin et routage applicatif
 
-### Qu'est-ce que la Sélection Dynamique de Chemin ?
+### Qu'est-ce que la sélection dynamique de chemin ?
 
 Le SD-WAN **monitore continuellement** la santé et la performance de tous les liens WAN disponibles. Si la perte de paquets, le jitter ou la latence sur un chemin dépasse les seuils de politique, le trafic est **automatiquement rerouté** sur un chemin plus performant.
 
-#### Métriques Monitorées
+#### Métriques monitorées
 
 | Métrique | Description | Seuil typique |
 |----------|-------------|---------------|
@@ -278,11 +278,11 @@ Le SD-WAN **monitore continuellement** la santé et la performance de tous les l
 
 Cela signifie que même si votre lien haut débit commence à avoir des problèmes, le trafic voix ou vidéo peut basculer sur MPLS ou LTE en quelques secondes, souvent sans que l'utilisateur final ne s'en aperçoive.
 
-### Routage Applicatif (Application-Aware Routing)
+### Routage applicatif (application-aware routing)
 
 Contrairement au routage traditionnel qui base ses décisions sur l'adresse IP et le port, le **routage applicatif** reconnaît le type d'application et prend des décisions de transmission en conséquence.
 
-#### Exemple de Politique Applicative
+#### Exemple de politique applicative
 
 | Application | Lien préféré | Raison |
 |-------------|--------------|--------|
@@ -291,7 +291,7 @@ Contrairement au routage traditionnel qui base ses décisions sur l'adresse IP e
 | Backups | LTE/Internet | Pas critique, économique |
 | VoIP | MPLS ou Internet (meilleur) | Dynamique selon qualité |
 
-#### Comment les Applications Sont Identifiées
+#### Comment les applications sont identifiées
 
 | Technique | Description |
 |-----------|-------------|
@@ -304,9 +304,9 @@ Certaines solutions supportent des milliers de signatures applicatives et peuven
 
 ---
 
-## Intégration de la Sécurité dans SD-WAN
+## Intégration de la sécurité dans SD-WAN
 
-### Chiffrement Intégré
+### Chiffrement intégré
 
 Chaque tunnel overlay SD-WAN est **chiffré avec IPsec ou TLS**. Cela garantit la confidentialité des données quel que soit le transport WAN utilisé. Plus besoin de MPLS pour garantir la sécurité.
 
@@ -317,7 +317,7 @@ Chaque tunnel overlay SD-WAN est **chiffré avec IPsec ou TLS**. Cela garantit l
 | **Rotation des clés** | Renforcement régulier de la sécurité |
 | **VPN automatique** | Création automatique entre sites |
 
-### Pare-feu et Filtrage Intégrés
+### Pare-feu et filtrage intégrés
 
 Les solutions SD-WAN modernes incluent souvent des capacités de pare-feu intégrées :
 
@@ -372,13 +372,13 @@ Des vendeurs comme Palo Alto, Zscaler, Cisco et Fortinet mènent la convergence 
 
 ---
 
-## Comment SD-WAN Remplace ou Complète MPLS
+## Comment SD-WAN remplace ou complète MPLS
 
-### MPLS N'est Pas Mort... Pas Encore
+### MPLS n'est pas mort... pas encore
 
 Le SD-WAN n'est pas nécessairement un remplacement complet de MPLS, du moins pas tout de suite. Beaucoup d'entreprises commencent par **augmenter MPLS** avec du haut débit ou LTE, créant un WAN hybride.
 
-### Modèle de Transition Typique
+### Modèle de transition typique
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -426,9 +426,9 @@ Avec le SD-WAN, les organisations n'ont plus à choisir entre performance et co�
 
 ---
 
-## Cas d'Usage et Modèles de Déploiement
+## Cas d'usage et modèles de déploiement
 
-### Cas d'Usage 1 : Connectivité des Branches
+### Cas d'usage 1 : connectivité des branches
 
 Traditionnellement, connecter des branches nécessitait des configurations manuelles de routeurs, du MPLS dédié et un investissement temps significatif.
 
@@ -439,7 +439,7 @@ Traditionnellement, connecter des branches nécessitait des configurations manue
 
 **Résultat** : Déploiements plus rapides, moins d'erreurs, meilleure UX pour les utilisateurs distants.
 
-### Cas d'Usage 2 : Optimisation des Applications Cloud
+### Cas d'usage 2 : optimisation des applications cloud
 
 Le SD-WAN porte la performance SaaS et IaaS à de nouveaux sommets :
 
@@ -451,7 +451,7 @@ Le SD-WAN porte la performance SaaS et IaaS à de nouveaux sommets :
 
 Certains vendeurs offrent des **gateways cloud** ou des points de peering avec les principaux fournisseurs SaaS, réduisant significativement les temps aller-retour.
 
-### Cas d'Usage 3 : Retail et Entreprises Distribuées
+### Cas d'usage 3 : retail et entreprises distribuées
 
 Pensez franchises, magasins, cliniques distantes ou campus satellites. Ces sites manquent souvent de personnel IT et ont des besoins de conformité complexes.
 
@@ -460,7 +460,7 @@ Pensez franchises, magasins, cliniques distantes ou campus satellites. Ces sites
 - LTE fournit une connectivité out-of-the-box
 - WAN et sécurité unifiés dans une seule appliance
 
-### Cas d'Usage 4 : Réseaux Mobiles et Temporaires
+### Cas d'usage 4 : réseaux mobiles et temporaires
 
 Chantiers de construction, pop-up stores, événements : déployer des WANs traditionnels dans ces environnements est coûteux et chronophage.
 
@@ -468,7 +468,7 @@ Les CPE SD-WAN avec liens LTE ou satellite peuvent être déployés en quelques 
 
 ---
 
-## Synthèse : Pourquoi SD-WAN ?
+## Synthèse : pourquoi SD-WAN ?
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐

@@ -47,7 +47,7 @@ Dans cette session, vous apprendrez :
 
 ---
 
-## Le Rôle du NAC dans la Sécurité d'Entreprise
+## Le rôle du NAC dans la sécurité d'entreprise
 
 ### Pourquoi le NAC Est Plus Important Que Jamais
 
@@ -79,7 +79,7 @@ Les réseaux d'entreprise ne sont plus des périmètres verrouillés. Ce sont de
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Ce Que le NAC Apporte
+### Ce que le NAC apporte
 
 Le **Network Access Control** résout ces problèmes en appliquant **qui** est autorisé sur le réseau, **quoi** ils peuvent accéder, et sous quelles **conditions**.
 
@@ -128,7 +128,7 @@ Le NAC n'est pas seulement un outil de sécurité. C'est aussi un **moteur d'app
 
 ## Identification, Authentification & Autorisation
 
-### Flux NAC Typique
+### Flux NAC typique
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -360,7 +360,7 @@ Chaque VLAN correspond à un niveau de confiance ou segment réseau défini. Cet
 
 Tout cela se passe automatiquement, basé sur l'identité et la politique, pas de configurations de port manuelles.
 
-### Access Control Lists (ACLs)
+### Access control lists (ACLs)
 
 En plus des VLANs, le NAC peut appliquer dynamiquement des **ACLs** sur les ports switch ou sessions wireless. Ces ACLs autorisent ou refusent des flux de trafic spécifiques.
 
@@ -449,7 +449,7 @@ ISE fonctionne avec tout l'écosystème Cisco et supporte **TrustSec**, la techn
 
 ClearPass est réputé pour sa flexibilité et est souvent utilisé dans des environnements multi-vendeurs où tous les switches ne sont pas du même fabricant.
 
-### Autres Plateformes NAC
+### Autres plateformes NAC
 
 | Plateforme | Vendeur | Points forts |
 |------------|---------|--------------|
@@ -502,7 +502,7 @@ Déployer le NAC sur un réseau en production peut être challengeant. Il est sa
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Décisions Clés de Design
+### Décisions clés de design
 
 | Question | Options |
 |----------|---------|

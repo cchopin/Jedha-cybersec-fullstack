@@ -11,7 +11,7 @@
 
 ---
 
-## Introduction à l'Optimisation des Performances Réseau
+## Introduction à l'optimisation des performances réseau
 
 L'optimisation des performances réseau vise à maximiser l'efficacité, la fiabilité et la réactivité de la transmission de données. Que ce soit un LAN local ou un WAN d'entreprise global, vous devez vous assurer que les applications critiques obtiennent les ressources nécessaires sans être ralenties par du trafic moins important.
 
@@ -49,11 +49,11 @@ Un réseau lent ou non réactif peut causer des appels coupés, des vidéoconfé
 
 ---
 
-## Quality of Service (QoS) : Les Fondamentaux
+## Quality of Service (QoS) : les fondamentaux
 
 La Quality of Service est un moyen de prioriser le trafic réseau, garantissant que les données importantes passent même quand la bande passante est limitée. Sans QoS, tout le trafic est traité de manière égale, ce qui n'est pas idéal quand des applications temps réel comme la VoIP ou la vidéoconférence sont en jeu.
 
-### Classification du Trafic
+### Classification du trafic
 
 Avant d'appliquer des politiques QoS, nous devons identifier et catégoriser les types de trafic.
 
@@ -167,7 +167,7 @@ SHAPING (doux) :
 - **Policing** = Radar automatique qui vous met une amende si vous dépassez la limite
 - **Shaping** = Feu de régulation d'accès autoroute qui vous fait attendre pour entrer à un rythme sûr
 
-### Exemple Concret
+### Exemple concret
 
 Imaginez une agence qui envoie des backups la nuit. Sans QoS, ces backups pourraient monopoliser tout le lien WAN, dégradant la qualité VoIP. Avec QoS, vous pouvez :
 - Assigner au trafic voix une valeur DSCP haute comme EF
@@ -178,11 +178,11 @@ La QoS n'est pas juste un outil, c'est une philosophie d'équité, garantissant 
 
 ---
 
-## Buffering et Gestion de la Congestion
+## Buffering et gestion de la congestion
 
 La congestion réseau est inévitable. Trop de données, pas assez de place. Mais la façon dont nous gérons la congestion peut faire une énorme différence sur les performances.
 
-### Qu'est-ce que le Buffering ?
+### Qu'est-ce que le buffering ?
 
 Les routeurs et switches utilisent des buffers pour stocker temporairement les paquets pendant les périodes de congestion. Si l'interface sortante est occupée, les paquets sont mis en file dans le buffer jusqu'à ce que l'interface soit libre.
 
@@ -248,7 +248,7 @@ WRED aide à prévenir la **synchronisation globale** dans les flux TCP. Sans lu
 
 WRED encourage certains flux à ralentir tôt, permettant un comportement réseau plus fluide.
 
-### Contrôle de Congestion TCP
+### Contrôle de congestion TCP
 
 TCP est intrinsèquement conçu pour gérer la congestion. Ses algorithmes ajustent les taux de transmission basés sur les conditions réseau perçues.
 
@@ -288,7 +288,7 @@ Un réglage approprié des tailles de buffer et la compréhension des dynamiques
 
 ---
 
-## Techniques d'Optimisation WAN
+## Techniques d'optimisation WAN
 
 Les réseaux étendus (WAN) posent des défis uniques dus à la haute latence, la perte de paquets et la bande passante limitée. L'optimisation WAN y répond en améliorant le débit, la réactivité et l'efficacité.
 
@@ -362,7 +362,7 @@ Le caching stocke les données fréquemment accédées localement, réduisant le
 
 Avec un caching intelligent, les utilisateurs expérimentent des temps de chargement plus rapides et les réseaux réduisent le trafic redondant.
 
-### Optimisation de Protocoles
+### Optimisation de protocoles
 
 Beaucoup de protocoles réseau n'ont pas été conçus pour des environnements haute latence. L'optimisation WAN inclut des techniques d'optimisation de protocoles pour y remédier.
 
@@ -375,7 +375,7 @@ Beaucoup de protocoles réseau n'ont pas été conçus pour des environnements h
 
 En optimisant les protocoles, nous éliminons les inefficacités qui causeraient autrement des performances médiocres.
 
-### Appliances d'Optimisation WAN
+### Appliances d'optimisation WAN
 
 Des vendeurs comme Riverbed, Cisco, et Silver Peak offrent du matériel spécialisé ou des appliances virtuelles pour l'optimisation WAN.
 
@@ -385,7 +385,7 @@ Ces outils sont essentiels pour les entreprises avec des agences, des connexions
 
 ---
 
-## Bonnes Pratiques pour l'Optimisation des Performances
+## Bonnes pratiques pour l'optimisation des performances
 
 | Pratique | Description |
 |----------|-------------|
@@ -400,7 +400,7 @@ Ces outils sont essentiels pour les entreprises avec des agences, des connexions
 
 ---
 
-## Tableau Récapitulatif
+## Tableau récapitulatif
 
 | Technique | Couche | But |
 |-----------|--------|-----|
@@ -436,7 +436,7 @@ Ces outils sont essentiels pour les entreprises avec des agences, des connexions
 
 ---
 
-## Schéma Récapitulatif
+## Schéma récapitulatif
 
 ```
 ARCHITECTURE QoS COMPLÈTE :

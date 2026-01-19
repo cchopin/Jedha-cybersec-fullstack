@@ -1,4 +1,4 @@
-# VPNs et Firewalls Mal Configures
+# VPNs et firewalls mal configurés
 
 ## Objectifs du cours
 
@@ -68,7 +68,7 @@ Competences visees :
 
 ---
 
-## Pourquoi les Misconfigurations sont une Mine d'Or
+## Pourquoi les misconfigurations sont une mine d'or
 
 Les firewalls et VPNs sont censes etre les gardiens de votre réseau. Mais mal configures, ils deviennent souvent les faiblesses les plus dangereuses de votre infrastructure.
 
@@ -110,7 +110,7 @@ Les firewalls et VPNs sont censes etre les gardiens de votre réseau. Mais mal c
 
 ---
 
-## Misconfigurations VPN Courantes
+## Misconfigurations VPN courantes
 
 Les VPNs creent des tunnels chiffres entre utilisateurs distants et réseaux securises - mais ils ne sont securises que si leur configuration l'est.
 
@@ -230,7 +230,7 @@ Les VPNs creent des tunnels chiffres entre utilisateurs distants et réseaux sec
 
 ---
 
-## Exemple Real-World : Colonial Pipeline (2021)
+## Exemple real-world : Colonial Pipeline (2021)
 
 ### Chronologie de l'attaque
 
@@ -289,7 +289,7 @@ Les VPNs creent des tunnels chiffres entre utilisateurs distants et réseaux sec
 
 ---
 
-## Misconfigurations Firewall
+## Misconfigurations firewall
 
 Les firewalls gardent les frontieres du réseau. Mais une regle mal configuree est comme une sentinelle distraite : la menace passe sans etre remarquee.
 
@@ -401,7 +401,7 @@ access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le général
 
 ---
 
-## Comment les Attaquants Exploitent Ces Faiblesses
+## Comment les attaquants exploitent ces faiblesses
 
 ### Chaine d'attaque typique
 
@@ -464,7 +464,7 @@ access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le général
 
 ---
 
-## Outils des Attaquants
+## Outils des attaquants
 
 ### Outils de reconnaissance et brute-force
 
@@ -488,7 +488,7 @@ access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le général
 
 ---
 
-## Scenarios Red Team
+## Scénarios red team
 
 ### Scenario 1 : Craquage du VPN Gateway
 
@@ -591,7 +591,7 @@ access-list 100 permit ip 192.168.1.0 0.0.0.255 any     ! Puis le général
 
 ---
 
-## Bonnes Pratiques de Durcissement
+## Bonnes pratiques de durcissement
 
 ### Durcissement VPN
 
@@ -645,7 +645,7 @@ Firewall :
 
 ---
 
-## Detection et Monitoring
+## Détection et monitoring
 
 ### Indicateurs de compromission
 
