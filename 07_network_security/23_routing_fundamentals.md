@@ -1,4 +1,4 @@
-# Fondamentaux du Routage et Routage Inter-VLAN
+# Fondamentaux du routage et routage inter-VLAN
 
 ## Introduction
 

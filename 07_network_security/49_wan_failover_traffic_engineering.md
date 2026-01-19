@@ -50,7 +50,7 @@ Les liens WAN sont intrinsèquement susceptibles à une variété de problèmes 
 
 Les mécanismes de failover consistent à construire un filet de sécurité. Une conception WAN redondante assure la continuité des opérations et maintient les services essentiels en ligne même quand les choses tournent mal.
 
-### Les Composants Clés
+### Les composants clés
 
 | Composant | Rôle | Temps de détection |
 |-----------|------|-------------------|
@@ -69,7 +69,7 @@ Contrairement aux méthodes keepalive traditionnelles, BFD est agnostique aux pr
 
 ![BFD Architecture](assets/CYBFS-M07-D06-BFD.png)
 
-### Avantages Clés de BFD
+### Avantages clés de BFD
 
 | Avantage | Description |
 |----------|-------------|
@@ -78,7 +78,7 @@ Contrairement aux méthodes keepalive traditionnelles, BFD est agnostique aux pr
 | **Faible charge CPU** | Convergence rapide sans surcharger le routeur |
 | **Scalable** | Peut monitorer de nombreuses sessions simultanément |
 
-### Comment BFD Fonctionne
+### Comment BFD fonctionne
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -148,7 +148,7 @@ Contrairement aux méthodes keepalive traditionnelles, BFD est agnostique aux pr
 
 BFD est largement supporté et extrêmement efficace pour le failover dans les réseaux haute disponibilité. Sa vitesse de réaction en microsecondes en fait un choix de premier ordre pour les systèmes temps réel comme la VoIP ou les applications financières.
 
-### Configuration BFD (Exemple Cisco)
+### Configuration BFD (exemple Cisco)
 
 ```
 ! Activer BFD globalement
@@ -220,7 +220,7 @@ Alors que BFD est focalisé sur la détection rapide au niveau liaison de donné
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Exemple Complet IP SLA
+### Exemple complet IP SLA
 
 ```
 ! Définir la sonde
@@ -259,7 +259,7 @@ Ce type de failover est particulièrement utile dans les environnements plus pet
 | **Intégration BFD** | Pour une détection plus rapide des pannes |
 | **Route-maps** | Logique conditionnelle pour un failover intelligent |
 
-### Exemple Réel BGP
+### Exemple réel BGP
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -296,7 +296,7 @@ Ce type de failover est particulièrement utile dans les environnements plus pet
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Conseils Pro pour BGP
+### Conseils pro pour BGP
 
 - Utilisez **BFD avec BGP** pour accélérer la détection et la convergence
 - Combinez BGP avec des **communities** pour affiner les politiques de routage
@@ -384,7 +384,7 @@ interface Vlan10
 
 ---
 
-## Load Balancing sur Liens WAN
+## Load balancing sur liens WAN
 
 ### Per-Packet vs Per-Destination
 
@@ -460,7 +460,7 @@ Quand vous avez plusieurs liens WAN, pourquoi ne pas tous les utiliser ? Le load
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Bonnes Pratiques Load Balancing
+### Bonnes pratiques load balancing
 
 | Pratique | Description |
 |----------|-------------|
@@ -472,7 +472,7 @@ Quand vous avez plusieurs liens WAN, pourquoi ne pas tous les utiliser ? Le load
 
 ## Ingénierie de Trafic avec Route Maps et PBR
 
-### Route Maps : Le Pouvoir du Routage Conditionnel
+### Route maps : le pouvoir du routage conditionnel
 
 Les **route maps** sont des outils puissants et flexibles utilisés pour appliquer des politiques personnalisées aux décisions de routage. Ils fonctionnent comme des instructions "si-alors" pour les routeurs.
 
@@ -524,7 +524,7 @@ Les **route maps** sont des outils puissants et flexibles utilisés pour appliqu
 
 **PBR** (Policy-Based Routing) vous donne un contrôle encore plus granulaire. Au lieu de laisser la table de routage prendre la décision, PBR permet à l'administrateur de définir comment le trafic spécifique doit être transmis.
 
-### Quand Utiliser PBR
+### Quand utiliser PBR
 
 | Scénario | Description |
 |----------|-------------|
@@ -532,7 +532,7 @@ Les **route maps** sont des outils puissants et flexibles utilisés pour appliqu
 | **VoIP prioritaire** | Toujours sur le lien faible latence |
 | **Cloud direct** | Bypass des firewalls on-premises |
 
-### Configuration PBR Complète
+### Configuration PBR complète
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -636,7 +636,7 @@ route-map PBR_POLICY permit 10
 
 ---
 
-## Architecture Complète : Tout Assembler
+## Architecture complète : tout assembler
 
 Imaginons la conception d'un WAN pour une entreprise avec :
 - Deux ISPs Internet

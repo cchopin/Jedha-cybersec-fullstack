@@ -1,4 +1,4 @@
-# OSPF - Open Shortest Path First (Avance)
+# OSPF - Open Shortest Path First (avancé)
 
 ## Objectifs du cours
 

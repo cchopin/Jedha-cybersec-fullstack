@@ -9,7 +9,7 @@
 
 ---
 
-## ping et traceroute/tracert : Tests de Connectivité et Visualisation des Chemins
+## ping et traceroute/tracert : tests de connectivité et visualisation des chemins
 
 L'une des premières étapes du dépannage réseau est de déterminer si deux appareils peuvent communiquer. C'est là qu'interviennent ping et traceroute (ou tracert sur Windows).
 
@@ -111,7 +111,7 @@ C'est crucial pour identifier les sauts lents ou défaillants. Si un routeur sp�
 
 ---
 
-## ip route / route print : Analyse de la Table de Routage
+## ip route / route print : analyse de la table de routage
 
 La table de routage détermine comment les paquets sont acheminés. Si elle est mal configurée, même un appareil en ligne peut être inaccessible.
 
@@ -218,7 +218,7 @@ Des routes incorrectes peuvent créer des "trous noirs" de trafic ou des paquets
 
 ---
 
-## nslookup / dig : Résolution DNS et Vérification des Enregistrements
+## nslookup / dig : résolution DNS et vérification des enregistrements
 
 Quand un nom d'hôte ne se résout pas, le problème vient peut-être du DNS. C'est là que nslookup et dig brillent.
 
@@ -336,7 +336,7 @@ Pour le dépannage de performance, vérifiez les champs **Query time** et **SERV
 
 ---
 
-## MTU et Fragmentation : Résoudre les Problèmes de Taille de Paquets
+## MTU et fragmentation : résoudre les problèmes de taille de paquets
 
 **MTU** (Maximum Transmission Unit) désigne la plus grande taille de paquet qui peut être envoyée sans fragmentation.
 
@@ -436,7 +436,7 @@ icmp.type == 3 and icmp.code == 4
 
 ---
 
-## Tableau Récapitulatif des Outils
+## Tableau récapitulatif des outils
 
 | Outil | Plateforme | Usage Principal |
 |-------|------------|-----------------|
@@ -465,7 +465,7 @@ icmp.type == 3 and icmp.code == 4
 
 ---
 
-## Schéma Récapitulatif
+## Schéma récapitulatif
 
 ```
 WORKFLOW DE DIAGNOSTIC RÉSEAU :

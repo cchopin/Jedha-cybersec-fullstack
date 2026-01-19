@@ -90,7 +90,7 @@ Avantages :
 
 ---
 
-## La Magie : Routage Applicatif
+## La magie : routage applicatif
 
 ### Comment ça marche ?
 
@@ -142,9 +142,9 @@ PROBLÈME SUR MPLS :
 
 ---
 
-## Local Breakout : Fini le Détour !
+## Local breakout : fini le détour !
 
-### Le Problème du Backhaul
+### Le problème du backhaul
 
 ```
 AVANT :
@@ -165,7 +165,7 @@ AVEC SD-WAN (Local Breakout) :
                  Latence: 20ms
 ```
 
-### Ce Qui Va Où
+### Ce qui va où
 
 | Destination | Chemin | Pourquoi |
 |-------------|--------|----------|
@@ -175,9 +175,9 @@ AVEC SD-WAN (Local Breakout) :
 
 ---
 
-## Sécurité Intégrée
+## Sécurité intégrée
 
-### Tout Est Chiffré
+### Tout est chiffré
 
 ```
 TOUS les tunnels SD-WAN sont chiffrés (IPsec AES-256)
@@ -313,7 +313,7 @@ SD-WAN : CPE avec 4G/5G
 
 ---
 
-## Les Termes à Retenir
+## Les termes à retenir
 
 | Terme | Définition simple |
 |-------|-------------------|
@@ -356,7 +356,7 @@ BONUS :
 
 ---
 
-## Schéma Récapitulatif
+## Schéma récapitulatif
 
 ```
 ARCHITECTURE SD-WAN :

@@ -1,4 +1,4 @@
-# Link Aggregation et Load Balancing
+# Link aggregation et load balancing
 
 ## Objectifs du cours
 
@@ -258,11 +258,11 @@ Group  Port-channel  Protocol    Ports
 
 ---
 
-## Stratégies de Load Balancing
+## Stratégies de load balancing
 
 Une fois les liens agreges, il faut distribuer efficacement le trafic. C'est le role du load balancing.
 
-### Per-Packet Load Balancing
+### Per-packet load balancing
 
 Chaque paquet est envoyé sur un lien different en alternance.
 
@@ -273,7 +273,7 @@ Chaque paquet est envoyé sur un lien different en alternance.
 
 **Usage :** Environnements UDP ou stateless uniquement.
 
-### Per-Flow / Per-Destination Load Balancing
+### Per-flow / per-destination load balancing
 
 Le trafic est hashe selon source/destination IP, MAC ou ports, et envoyé de manière cohérente sur le même lien.
 
@@ -306,7 +306,7 @@ show etherchannel load-balance
 port-channel load-balance src-dst-ip
 ```
 
-### Adaptive Load Balancing
+### Adaptive load balancing
 
 Certains systèmes avances utilisent des retours pour adapter dynamiquement la répartition. Si un lien est congestionne, ils deplacent les flux vers des liens moins utilisés.
 
@@ -314,7 +314,7 @@ Certains systèmes avances utilisent des retours pour adapter dynamiquement la r
 
 ## Cas d'usage dans les topologies redondantes
 
-### Data Center - Couche Access
+### Data center - couche access
 
 ```
         Serveur
@@ -332,7 +332,7 @@ Les serveurs sont connectes aux switches ToR (Top of Rack) avec plusieurs liens 
 - **Redondance** : Si un lien tombe, les autres continuent
 - **Bande passante** : Plus de capacité pour le trafic
 
-### Multi-Chassis LAG (MC-LAG / MLAG)
+### Multi-chassis LAG (MC-LAG / MLAG)
 
 ```
         Serveur
@@ -355,7 +355,7 @@ Le serveur se connecte a **deux switches différents** avec des liens agreges. S
 - **Arista MLAG**
 - **Juniper MC-LAG**
 
-### Core Network Redundancy
+### Core network redundancy
 
 ```
 ┌──────────┐         ┌──────────┐
@@ -374,7 +374,7 @@ Les liens multiples entre switches core sont agreges pour :
 - Utiliser toute la bande passante disponible
 - Proteger contre les défaillances de liens individuels
 
-### Environnements virtualises
+### Environnements virtualisés
 
 Dans VMware ESXi, Microsoft Hyper-V ou KVM, les NICs des hotes sont bondes :
 

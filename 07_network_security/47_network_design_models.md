@@ -46,9 +46,9 @@ Cette session vous guidera à travers :
 
 ---
 
-## Modèle Core-Distribution-Access : L'Approche Modulaire
+## Modèle Core-Distribution-Access : l'approche modulaire
 
-### La Mentalité Modulaire dans la Conception Réseau d'Entreprise
+### La mentalité modulaire dans la conception réseau d'entreprise
 
 Quand les réseaux ont commencé à croître en taille, complexité et fonction, les ingénieurs ont rapidement réalisé qu'une architecture plate ne pourrait tout simplement pas évoluer. C'est là qu'intervient l'approche modulaire, une méthodologie qui décompose un réseau en zones fonctionnelles distinctes, chacune responsable de tâches spécifiques.
 
@@ -62,7 +62,7 @@ Décortiquons les trois couches une par une.
 
 ---
 
-## La Couche Core : L'Autoroute du Backbone
+## La couche core : l'autoroute du backbone
 
 La couche core est le backbone haute vitesse du réseau. Elle connecte plusieurs équipements de la couche distribution et gère des volumes massifs de trafic entre les sites ou sections majeures du réseau. Cette couche est entièrement dédiée à la vitesse et la fiabilité, pas à l'application de politiques ou l'inspection de paquets.
 
@@ -92,7 +92,7 @@ Une bonne pratique est de garder le core "léger" et libre de tâches complexes 
 
 ---
 
-## La Couche Distribution : Gardien des Politiques et Agrégateur
+## La couche distribution : gardien des politiques et agrégateur
 
 Située entre les couches core et access, la couche distribution est là où les choses deviennent intéressantes car elle joue le double rôle de routage et d'application des politiques.
 
@@ -100,7 +100,7 @@ Cette couche agrège le trafic de multiples switches d'accès et fournit le cont
 
 ![Distribution Layer](assets/DistributionLayer.png)
 
-### Responsabilités Clés
+### Responsabilités clés
 
 - **Routage inter-VLAN** : permet la communication entre différents VLANs
 - **Application des ACLs** : filtrage de sécurité et contrôle d'accès
@@ -108,7 +108,7 @@ Cette couche agrège le trafic de multiples switches d'accès et fournit le cont
 - **QoS** : shaping et priorisation du trafic
 - **Détermination des chemins** : décisions de routage et mises à jour
 
-### Fonctionnalités Souvent Présentes
+### Fonctionnalités souvent présentes
 
 | Fonctionnalité | Description |
 |----------------|-------------|
@@ -122,7 +122,7 @@ La couche distribution est comme le point de contrôle douanier entre les rues a
 
 ---
 
-## La Couche Access : La Passerelle Utilisateur
+## La couche access : la passerelle utilisateur
 
 La couche access est l'endroit où les utilisateurs, terminaux et équipements se connectent au réseau. Pensez à cela comme les rues de quartier, plus lentes et plus variées en trafic, mais absolument essentielles pour l'entrée et la sortie.
 
@@ -130,7 +130,7 @@ C'est la ligne de front où les PCs, téléphones IP, points d'accès sans fil, 
 
 ![Access Layer](assets/AccessLayer.png)
 
-### Responsabilités Typiques
+### Responsabilités typiques
 
 - Connexion des équipements utilisateurs
 - Sécurité des ports et filtrage d'adresses MAC
@@ -138,7 +138,7 @@ C'est la ligne de front où les PCs, téléphones IP, points d'accès sans fil, 
 - Attribution de VLAN
 - Fourniture de Power over Ethernet (PoE)
 
-### Autres Considérations
+### Autres considérations
 
 | Aspect | Description |
 |--------|-------------|
@@ -151,7 +151,7 @@ Les switches d'accès peuvent être Layer 2 ou Layer 3 selon la complexité et l
 
 ---
 
-## Pourquoi le Modèle Three-Tier Reste Pertinent
+## Pourquoi le modèle three-tier reste pertinent
 
 Malgré les avancées dans les réseaux software-defined et les architectures cloud-native, le modèle CDA reste une pierre angulaire dans de nombreuses organisations, particulièrement celles avec de grands campus, universités, hôpitaux et institutions financières.
 
@@ -169,9 +169,9 @@ Ce modèle s'aligne aussi bien avec les stratégies de segmentation réseau et l
 
 ---
 
-## Topologies Data Center : Leaf-Spine
+## Topologies data center : Leaf-Spine
 
-### Le Défi du Data Center
+### Le défi du data center
 
 Les data centers d'entreprise ne sont plus des lieux de trafic nord-sud uniquement. Avec la virtualisation, les microservices, les conteneurs et le calcul distribué, la majorité du trafic dans les data centers aujourd'hui est **est-ouest**, c'est-à-dire, serveur-à-serveur.
 
@@ -234,7 +234,7 @@ Cette conception simplifie aussi le dépannage. Puisque tout le trafic se dépla
 
 ---
 
-## Comparaison Traditionnel vs Leaf-Spine
+## Comparaison traditionnel vs Leaf-Spine
 
 | Caractéristique | Modèle Three-Tier | Leaf-Spine |
 |-----------------|-------------------|------------|
@@ -250,23 +250,23 @@ Ce n'est pas une question de l'un étant universellement meilleur que l'autre. C
 
 ---
 
-## Cas d'Usage Réels
+## Cas d'usage réels
 
-### Data Centers d'Entreprise
+### Data centers d'entreprise
 Les organisations hébergeant des services cloud privé ou hybride adoptent le Leaf-Spine pour améliorer la communication serveur-à-serveur, supporter la mobilité des VMs, et automatiser les opérations.
 
-### Hyperscalers et Fournisseurs Cloud
+### Hyperscalers et fournisseurs cloud
 Google, Amazon, Facebook et Microsoft utilisent tous des implémentations massives de Leaf-Spine pour construire des data centers distribués mondialement.
 
-### Fournisseurs de Services
+### Fournisseurs de services
 Les opérateurs télécom hébergeant des réseaux de diffusion de contenu ou gérant le routage core 5G favorisent le Leaf-Spine pour sa performance et son échelle.
 
-### Labs HPC Universitaires
+### Labs HPC universitaires
 Les clusters de calcul haute performance avec des exigences massives est-ouest utilisent le Leaf-Spine pour la communication interne entre les nœuds.
 
 ---
 
-## Synthèse : Quand Utiliser Chaque Modèle
+## Synthèse : quand utiliser chaque modèle
 
 ### Core-Distribution-Access est idéal quand :
 

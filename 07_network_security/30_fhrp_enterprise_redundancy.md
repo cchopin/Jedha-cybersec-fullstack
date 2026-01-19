@@ -277,7 +277,7 @@ standby 1 preempt delay minimum 60
 vrrp 1 preempt
 ```
 
-### Interface Tracking
+### Interface tracking
 
 Le tracking ajuste dynamiquement la priorité selon l'état d'interfaces ou d'objets.
 
@@ -321,7 +321,7 @@ interface GigabitEthernet0/1
 
 La redondance ne se limite pas aux protocoles - c'est une question d'architecture globale.
 
-### Dual Routers (Routeurs doubles)
+### Dual routers (routeurs doubles)
 
 Configuration classique : deux routeurs en HSRP/VRRP sur le même LAN.
 
@@ -355,7 +355,7 @@ Configuration classique : deux routeurs en HSRP/VRRP sur le même LAN.
          Clients LAN
 ```
 
-### Dual Uplinks (Liens doubles)
+### Dual uplinks (liens doubles)
 
 Chaque routeur dispose de liens WAN separes pour une redondance complete.
 
@@ -384,7 +384,7 @@ Chaque routeur dispose de liens WAN separes pour une redondance complete.
             Clients LAN
 ```
 
-### Configuration Active/Active
+### Configuration active/active
 
 ![Configuration Active/Active](assets/Active.jpg)
 
@@ -451,7 +451,7 @@ Pour atteindre les niveaux élevés de disponibilité :
 | Serveurs | Clustering, Load Balancing |
 | Stockage | RAID, Replication |
 
-### Fault Tolérance vs High Availability
+### Fault tolérance vs high availability
 
 | Aspect | Fault Tolérance | High Availability |
 |--------|-----------------|-------------------|

@@ -1,4 +1,4 @@
-# Rapport d'Analyse DNS - jedha.co
+# Rapport d'analyse DNS - jedha.co
 
  **Date** : 22 décembre 2025
  **Analyste** : C. Chopin
@@ -22,7 +22,7 @@
 
  ---
 
- ## 3. Résultats de l'Analyse
+ ## 3. Résultats de l'analyse
 
  ### 3.1 Adresses IP (Enregistrements A et AAAA)
 
@@ -75,7 +75,7 @@
 
  ---
 
- ## 4. Analyse des Temps de Réponse
+ ## 4. Analyse des temps de réponse
 
  | Requête | Temps de réponse |
  |---------|------------------|
@@ -89,7 +89,7 @@
 
  ---
 
- ## 5. Synthèse de l'Infrastructure
+ ## 5. Synthèse de l'infrastructure
 
  ```
                      ┌─────────────────┐
@@ -113,20 +113,20 @@
 
  ## 6. Conclusions
 
- ### Points Clés
+ ### Points clés
  1. **Hébergement** : Cloudflare CDN avec 3 IPs IPv4 et 3 IPs IPv6
  2. **Email** : Google Workspace avec redondance (5 serveurs MX)
  3. **Sécurité Email** : SPF + DKIM configurés correctement
  4. **Intégrations** : HubSpot, Mailjet, Stripe, OpenAI
 
- ### Observations de Sécurité
+ ### Observations de sécurité
  - Protection Cloudflare active (masquage IP origine)
  - SPF configuré (prévention spoofing)
  - DKIM configuré (authentification emails)
  - 
  SPF utilise `?all` (neutral) au lieu de `-all` (strict)
 
- ### Anomalies Détectées
+ ### Anomalies détectées
  - Aucune anomalie majeure dans les TTL ou les temps de résolution
  - Configuration DNS standard et bien structurée
 
@@ -134,7 +134,7 @@
 
  ## 7. Annexes
 
- ### Commandes Utilisées
+ ### Commandes utilisées
  ```bash
  dig jedha.co A
  dig jedha.co AAAA

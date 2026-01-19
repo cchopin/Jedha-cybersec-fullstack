@@ -29,7 +29,7 @@ Dans cette session, nous explorerons :
 | **Handler** | Task déclenché par une notification |
 | **Facts** | Informations collectées sur les équipements |
 
-### Termes Réseau
+### Termes réseau
 
 | Sigle | Nom complet | Description |
 |-------|-------------|-------------|
@@ -50,7 +50,7 @@ Dans cette session, nous explorerons :
 
 ---
 
-## Le Passage du Manuel à l'Automatisé
+## Le passage du manuel à l'automatisé
 
 ### Pourquoi la Gestion Manuelle Échoue
 
@@ -82,7 +82,7 @@ Dans les environnements réseau traditionnels, les ingénieurs s'appuient géné
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Les Limites de l'Approche Manuelle
+### Les limites de l'approche manuelle
 
 | Problème | Impact |
 |----------|--------|
@@ -151,7 +151,7 @@ Au lieu de cela, Ansible utilise **SSH** (ou des connexions API) pour interagir 
 | **Vendor-agnostic** | Cisco, Juniper, Arista, F5, Palo Alto... |
 | **Idempotent** | Peut être rejoué sans effets de bord |
 
-### Composants Principaux d'Ansible
+### Composants principaux d'Ansible
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -200,7 +200,7 @@ Au lieu de cela, Ansible utilise **SSH** (ou des connexions API) pour interagir 
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Modules Vendor-Spécifiques
+### Modules vendor-spécifiques
 
 Ansible inclut des modules dédiés pour les principaux vendeurs réseau :
 
@@ -217,7 +217,7 @@ Les modules gèrent toute la syntaxe spécifique à l'équipement et fournissent
 
 ---
 
-## Ce Que Vous Pouvez Faire avec Ansible
+## Ce que vous pouvez faire avec Ansible
 
 ### 1. Pousser des Configurations
 
@@ -314,7 +314,7 @@ Les modules gèrent toute la syntaxe spécifique à l'équipement et fournissent
           - write memory
 ```
 
-### Tableau Récapitulatif des Cas d'Usage
+### Tableau récapitulatif des cas d'usage
 
 | Cas d'usage | Description | Module typique |
 |-------------|-------------|----------------|
@@ -327,7 +327,7 @@ Les modules gèrent toute la syntaxe spécifique à l'équipement et fournissent
 
 ---
 
-## Lab Pratique : Ansible avec GNS3
+## Lab pratique : Ansible avec GNS3
 
 ### Architecture du Lab
 
