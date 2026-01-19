@@ -1,0 +1,146 @@
+---
+# ============================================
+# PLAYBOOK : CONFIGURATION SECURITE DU SWITCH
+# ============================================
+# Ce playbook configure le switch Cisco IOU L2 :
+# - Creation de 5 VLANs (10-50)
+# - Configuration des SVIs
+# - Port-security sur les ports access
+#
+# Prerequis: Avoir execute 01_create_topology.yml
+# Usage: ansible-playbook playbooks/02_configure_switch.yml
+#
+# ============================================
+# EXERCICE : COMPLETEZ CE PLAYBOOK
+# ============================================
+# Consultez README.md pour les exigences
+# Consultez SOLUTION.md si vous etes bloque
+
+- name: "ETAPE 2 : Configuration securite du switch"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    - name: "Afficher les informations de connexion"
+      debug:
+        msg:
+          - "Port console SW1 : {{ switch_console_port }}"
+          - "Serveur GNS3 : {{ gns3_host }}"
+
+    # ==========================================
+    # PARTIE 1 : Creation des VLANs
+    # ==========================================
+    # TODO: Creer les 5 VLANs (10, 20, 30, 40, 50)
+    # avec leurs noms respectifs
+    #
+    # Indices:
+    # - Utilisez le module 'script' avec cisco_cli.py
+    # - Les commandes sont separees par ';'
+    # - Structure: enable;configure terminal;vlan X;name Y;exit;...;end
+    #
+    # Exemple:
+    # - name: "Creer les 5 VLANs"
+    #   script: >
+    #     ../scripts/cisco_cli.py
+    #     --host {{ gns3_host }}
+    #     --port {{ switch_console_port }}
+    #     --commands "{{ vlan_commands | join(';') }}"
+    #   vars:
+    #     vlan_commands:
+    #       - "enable"
+    #       - "configure terminal"
+    #       - ...
+    #       - "end"
+
+
+
+    # ==========================================
+    # PARTIE 2 : Desactiver les SVIs non-utilisees
+    # ==========================================
+    # TODO: Desactiver les SVIs des VLANs 10, 20, 30, 40
+    #
+    # Indices:
+    # - Commande: interface vlan X / shutdown / exit
+    #
+    # Exemple:
+    # - name: "Desactiver les SVIs des VLANs 10-40"
+    #   script: >
+    #     ../scripts/cisco_cli.py
+    #     --host {{ gns3_host }}
+    #     --port {{ switch_console_port }}
+    #     --commands "{{ svi_commands | join(';') }}"
+    #   vars:
+    #     svi_commands:
+    #       - "enable"
+    #       - "configure terminal"
+    #       - ...
+
+
+
+    # ==========================================
+    # PARTIE 3 : Configurer SVI Management (VLAN 50)
+    # ==========================================
+    # TODO: Configurer l'interface VLAN 50 avec:
+    # - Description: "Ansible Management Interface"
+    # - IP: 192.168.50.2/24
+    # - no shutdown
+    #
+    # Indices:
+    # - interface vlan 50
+    # - description ...
+    # - ip address X.X.X.X Y.Y.Y.Y
+    # - no shutdown
+
+
+
+    # ==========================================
+    # PARTIE 4 : Port-Security sur ports access
+    # ==========================================
+    # TODO: Configurer port-security sur E0/0, E0/1, E0/2, E0/3
+    #
+    # Pour chaque port:
+    # - switchport mode access
+    # - switchport access vlan XX (selon le port)
+    # - switchport port-security
+    # - switchport port-security maximum 1
+    # - switchport port-security violation restrict
+    # - switchport port-security mac-address sticky
+    # - no shutdown
+    #
+    # Mapping ports/VLANs:
+    # - E0/0 -> VLAN 10
+    # - E0/1 -> VLAN 20
+    # - E0/2 -> VLAN 30
+    # - E0/3 -> VLAN 40
+
+
+
+    # ==========================================
+    # PARTIE 5 : Sauvegarde de la configuration
+    # ==========================================
+    # TODO: Sauvegarder avec "write memory"
+    #
+    # Exemple:
+    # - name: "Sauvegarder la configuration"
+    #   script: >
+    #     ../scripts/cisco_cli.py
+    #     --host {{ gns3_host }}
+    #     --port {{ switch_console_port }}
+    #     --commands "enable;write memory"
+
+
+
+    # ==========================================
+    # Affichage final
+    # ==========================================
+    - name: "Configuration terminee !"
+      debug:
+        msg:
+          - "==========================================="
+          - "Completez les sections TODO ci-dessus"
+          - "==========================================="
+          - ""
+          - "Verification : ansible-playbook playbooks/03_verify.yml"

@@ -1,0 +1,127 @@
+---
+# ============================================
+# PLAYBOOK : VERIFICATION DE LA CONFIGURATION
+# ============================================
+# Ce playbook verifie que la configuration
+# de securite a ete correctement appliquee.
+#
+# Prerequis: Avoir execute 02_configure_switch.yml
+# Usage: ansible-playbook playbooks/03_verify.yml
+
+- name: "ETAPE 3 : Verification de la configuration"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    - name: "Afficher les informations de connexion"
+      debug:
+        msg:
+          - "==========================================="
+          - "Verification de la configuration"
+          - "==========================================="
+          - "Port console SW1 : {{ switch_console_port }}"
+          - "Serveur GNS3 : {{ gns3_host }}"
+
+    # ==========================================
+    # VERIFICATION 1 : VLANs
+    # ==========================================
+    - name: "Verifier les VLANs (show vlan brief)"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --show "show vlan brief"
+      register: vlan_output
+
+    - name: "Pause"
+      pause:
+        seconds: 2
+
+    # ==========================================
+    # VERIFICATION 2 : Interfaces IP
+    # ==========================================
+    - name: "Verifier les interfaces IP (show ip interface brief)"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --show "show ip interface brief"
+      register: ip_output
+
+    - name: "Pause"
+      pause:
+        seconds: 2
+
+    # ==========================================
+    # VERIFICATION 3 : SVI Management
+    # ==========================================
+    - name: "Verifier la SVI Management (show interface vlan 50)"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --show "show interface vlan 50"
+      register: svi_output
+
+    - name: "Pause"
+      pause:
+        seconds: 2
+
+    # ==========================================
+    # VERIFICATION 4 : Port-Security
+    # ==========================================
+    - name: "Verifier port-security global (show port-security)"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --show "show port-security"
+      register: port_sec_output
+
+    - name: "Pause"
+      pause:
+        seconds: 2
+
+    - name: "Verifier port-security sur E0/0"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --show "show port-security interface Ethernet0/0"
+      register: port_sec_e00
+
+    - name: "Pause"
+      pause:
+        seconds: 2
+
+    # ==========================================
+    # RESUME
+    # ==========================================
+    - name: "Resume de la verification"
+      debug:
+        msg:
+          - "==========================================="
+          - "Verification terminee !"
+          - "==========================================="
+          - ""
+          - "Criteres de validation :"
+          - "- [ ] 5 VLANs crees (10, 20, 30, 40, 50)"
+          - "- [ ] Noms corrects (Engineering, HR, Finance, Guest, Management)"
+          - "- [ ] SVIs 10-40 desactivees (administratively down)"
+          - "- [ ] SVI 50 active avec IP 192.168.50.2/24"
+          - "- [ ] Port-security actif sur E0/0, E0/1, E0/2, E0/3"
+          - "- [ ] Maximum MAC = 1"
+          - "- [ ] Violation = Restrict"
+          - ""
+          - "Pour une verification manuelle, connectez-vous au switch :"
+          - "  telnet {{ gns3_host }} {{ switch_console_port }}"
+          - ""
+          - "Commandes utiles :"
+          - "  show vlan brief"
+          - "  show ip interface brief"
+          - "  show interface vlan 50"
+          - "  show port-security"
+          - "  show running-config"
