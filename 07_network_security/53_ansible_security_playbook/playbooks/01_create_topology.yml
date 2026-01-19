@@ -146,7 +146,7 @@
           compute_id: "local"
         status_code: [200, 201]
       when:
-        - template_kali_id
+        - template_kali_id | length > 0
         - kali.name not in existing_node_names
 
     # ==========================================

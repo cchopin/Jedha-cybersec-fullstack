@@ -1,0 +1,239 @@
+---
+# ============================================
+# PLAYBOOK : CONFIGURATION SECURITE DU SWITCH (SOLUTION)
+# ============================================
+# Ce playbook configure le switch Cisco IOU L2 :
+# - Creation de 5 VLANs (10-50)
+# - Configuration des SVIs
+# - Port-security sur les ports access
+#
+# Prerequis: Avoir execute 01_create_topology.yml
+# Usage: ansible-playbook playbooks/02_configure_switch_solution.yml
+
+- name: "ETAPE 2 : Configuration securite du switch"
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - ../switch_info.yml
+
+  tasks:
+    - name: "Afficher les informations de connexion"
+      debug:
+        msg:
+          - "Port console SW1 : {{ switch_console_port }}"
+          - "Serveur GNS3 : {{ gns3_host }}"
+
+    # ==========================================
+    # PARTIE 1 : Creation des VLANs
+    # ==========================================
+    - name: "Creer les 5 VLANs"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --commands "{{ vlan_commands | join(';') }}"
+      vars:
+        vlan_commands:
+          - "enable"
+          - "configure terminal"
+          # VLAN 10 - Engineering
+          - "vlan 10"
+          - "name Engineering"
+          - "exit"
+          # VLAN 20 - HR
+          - "vlan 20"
+          - "name HR"
+          - "exit"
+          # VLAN 30 - Finance
+          - "vlan 30"
+          - "name Finance"
+          - "exit"
+          # VLAN 40 - Guest
+          - "vlan 40"
+          - "name Guest"
+          - "exit"
+          # VLAN 50 - Management
+          - "vlan 50"
+          - "name Management"
+          - "exit"
+          - "end"
+      register: vlan_result
+
+    - name: "Pause apres creation VLANs"
+      pause:
+        seconds: 3
+
+    # ==========================================
+    # PARTIE 2 : Desactiver les SVIs non-utilisees
+    # ==========================================
+    - name: "Desactiver les SVIs des VLANs 10-40"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --commands "{{ svi_shutdown_commands | join(';') }}"
+      vars:
+        svi_shutdown_commands:
+          - "enable"
+          - "configure terminal"
+          # Desactiver SVI VLAN 10
+          - "interface vlan 10"
+          - "shutdown"
+          - "exit"
+          # Desactiver SVI VLAN 20
+          - "interface vlan 20"
+          - "shutdown"
+          - "exit"
+          # Desactiver SVI VLAN 30
+          - "interface vlan 30"
+          - "shutdown"
+          - "exit"
+          # Desactiver SVI VLAN 40
+          - "interface vlan 40"
+          - "shutdown"
+          - "exit"
+          - "end"
+
+    - name: "Pause apres desactivation SVIs"
+      pause:
+        seconds: 2
+
+    # ==========================================
+    # PARTIE 3 : Configurer SVI Management (VLAN 50)
+    # ==========================================
+    - name: "Configurer l'interface VLAN 50 (Management)"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --commands "{{ svi_mgmt_commands | join(';') }}"
+      vars:
+        svi_mgmt_commands:
+          - "enable"
+          - "configure terminal"
+          - "interface vlan 50"
+          - "description Ansible Management Interface"
+          - "ip address 192.168.50.2 255.255.255.0"
+          - "no shutdown"
+          - "exit"
+          - "end"
+
+    - name: "Pause apres configuration SVI Management"
+      pause:
+        seconds: 2
+
+    # ==========================================
+    # PARTIE 4 : Port-Security sur ports access
+    # ==========================================
+    - name: "Configurer port-security sur Ethernet0/0 (VLAN 10)"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --commands "{{ port_sec_e00_commands | join(';') }}"
+      vars:
+        port_sec_e00_commands:
+          - "enable"
+          - "configure terminal"
+          - "interface Ethernet0/0"
+          - "switchport mode access"
+          - "switchport access vlan 10"
+          - "switchport port-security"
+          - "switchport port-security maximum 1"
+          - "switchport port-security violation restrict"
+          - "switchport port-security mac-address sticky"
+          - "no shutdown"
+          - "exit"
+          - "end"
+
+    - name: "Configurer port-security sur Ethernet0/1 (VLAN 20)"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --commands "{{ port_sec_e01_commands | join(';') }}"
+      vars:
+        port_sec_e01_commands:
+          - "enable"
+          - "configure terminal"
+          - "interface Ethernet0/1"
+          - "switchport mode access"
+          - "switchport access vlan 20"
+          - "switchport port-security"
+          - "switchport port-security maximum 1"
+          - "switchport port-security violation restrict"
+          - "switchport port-security mac-address sticky"
+          - "no shutdown"
+          - "exit"
+          - "end"
+
+    - name: "Configurer port-security sur Ethernet0/2 (VLAN 30)"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --commands "{{ port_sec_e02_commands | join(';') }}"
+      vars:
+        port_sec_e02_commands:
+          - "enable"
+          - "configure terminal"
+          - "interface Ethernet0/2"
+          - "switchport mode access"
+          - "switchport access vlan 30"
+          - "switchport port-security"
+          - "switchport port-security maximum 1"
+          - "switchport port-security violation restrict"
+          - "switchport port-security mac-address sticky"
+          - "no shutdown"
+          - "exit"
+          - "end"
+
+    - name: "Configurer port-security sur Ethernet0/3 (VLAN 40)"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --commands "{{ port_sec_e03_commands | join(';') }}"
+      vars:
+        port_sec_e03_commands:
+          - "enable"
+          - "configure terminal"
+          - "interface Ethernet0/3"
+          - "switchport mode access"
+          - "switchport access vlan 40"
+          - "switchport port-security"
+          - "switchport port-security maximum 1"
+          - "switchport port-security violation restrict"
+          - "switchport port-security mac-address sticky"
+          - "no shutdown"
+          - "exit"
+          - "end"
+
+    - name: "Pause apres configuration port-security"
+      pause:
+        seconds: 3
+
+    # ==========================================
+    # PARTIE 5 : Sauvegarde de la configuration
+    # ==========================================
+    - name: "Sauvegarder la configuration"
+      script: >
+        ../scripts/cisco_cli.py
+        --host {{ gns3_host }}
+        --port {{ switch_console_port }}
+        --commands "enable;write memory"
+
+    - name: "Configuration terminee !"
+      debug:
+        msg:
+          - "==========================================="
+          - "Configuration de securite appliquee :"
+          - "==========================================="
+          - "- VLANs crees : 10, 20, 30, 40, 50"
+          - "- SVIs 10-40 : desactivees"
+          - "- SVI 50 : 192.168.50.2/24 (active)"
+          - "- Port-security : E0/0-E0/3"
+          - "- Configuration sauvegardee"
+          - ""
+          - "Verification : ansible-playbook playbooks/03_verify.yml"
