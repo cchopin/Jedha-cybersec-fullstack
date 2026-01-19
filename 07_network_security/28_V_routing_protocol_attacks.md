@@ -22,7 +22,7 @@ Les protocoles de routage ont été conçus à une époque où tous les particip
 
 ## Types d'attaques
 
-### 1. Route Injection
+### 1. Route injection
 
 L'attaquant **injecte de fausses routes** pour rediriger le trafic :
 
@@ -45,7 +45,7 @@ Résultat : tout le trafic vers 10.x.x.x disparaît
          = Déni de service
 ```
 
-### 3. Man-in-the-Middle
+### 3. Man-in-the-middle
 
 L'attaquant se place au milieu du chemin :
 

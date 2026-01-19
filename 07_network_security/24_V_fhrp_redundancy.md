@@ -101,7 +101,7 @@ Temps 10s : R2 devient ACTIF !
 
 ---
 
-## Priorité et Préemption
+## Priorité et préemption
 
 ### Priorité
 
@@ -120,7 +120,7 @@ Si le routeur principal revient après une panne, doit-il reprendre le rôle act
 standby 1 preempt    ! Active la préemption
 ```
 
-### Interface Tracking
+### Interface tracking
 
 Si le routeur perd son lien vers Internet, sa priorité baisse automatiquement :
 

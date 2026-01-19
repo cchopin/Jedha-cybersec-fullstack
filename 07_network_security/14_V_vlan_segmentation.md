@@ -57,7 +57,7 @@ Même switch physique, mais 3 réseaux logiques séparés.
 
 ## Comment cela fonctionne-t-il ?
 
-### Port Access
+### Port access
 
 Un port "access" appartient à un seul VLAN.
 
@@ -73,7 +73,7 @@ PC de l'IT ───┘
 
 Les deux PCs ne peuvent pas communiquer (sauf si explicitement permis via un routeur).
 
-### Port Trunk
+### Port trunk
 
 Un port "trunk" transporte plusieurs VLANs (entre switches ou vers un routeur).
 

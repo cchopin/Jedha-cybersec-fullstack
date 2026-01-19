@@ -6,7 +6,7 @@ La redondance WAN repose sur deux piliers : **MPLS** pour connecter les sites av
 
 ---
 
-## Pourquoi la Redondance ?
+## Pourquoi la redondance ?
 
 ```
 SANS REDONDANCE :
@@ -31,7 +31,7 @@ AVEC REDONDANCE :
 
 ---
 
-## MPLS : Le Réseau Privé du Provider
+## MPLS : le réseau privé du provider
 
 ### C'est quoi MPLS ?
 
@@ -59,7 +59,7 @@ ROUTAGE MPLS :
 = Lookup ultra-rapide basé sur un simple numéro
 ```
 
-### Les Composants MPLS
+### Les composants MPLS
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -83,7 +83,7 @@ ROUTAGE MPLS :
 └──────────────────────────────────────────────────────────────┘
 ```
 
-### Pourquoi MPLS pour la Redondance ?
+### Pourquoi MPLS pour la redondance ?
 
 ```
 1. CHEMINS GARANTIS (LSP = Label Switched Path)
@@ -152,7 +152,7 @@ Se connecter à **plusieurs ISPs** et utiliser **BGP** pour gérer le routage en
 └──────────────────────────────────────────────────────────────┘
 ```
 
-### Comment BGP Choisit le Chemin ?
+### Comment BGP choisit le chemin ?
 
 BGP utilise des **attributs** pour décider quel chemin prendre :
 
@@ -365,7 +365,7 @@ UTILISATION TYPIQUE :
 
 ---
 
-## Résumé en 30 Secondes
+## Résumé en 30 secondes
 
 ```
 MPLS = Réseau privé via le provider
@@ -393,7 +393,7 @@ ENSEMBLE = La combo gagnante
 
 ---
 
-## Schéma Récapitulatif
+## Schéma récapitulatif
 
 ```
 MPLS - LE RÉSEAU PRIVÉ :
