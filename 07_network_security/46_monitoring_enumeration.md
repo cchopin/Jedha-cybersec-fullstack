@@ -1,4 +1,4 @@
-# Monitoring et Énumération (Red Team)
+# Monitoring et énumération (red team)
 
 ## Objectifs du cours
 

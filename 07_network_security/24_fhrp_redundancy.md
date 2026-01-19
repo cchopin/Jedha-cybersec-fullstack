@@ -67,7 +67,7 @@ Comprendre la redondance réseau est essentiel pour :
 
 ---
 
-## 1. HSRP et VRRP : Passerelles Virtuelles
+## 1. HSRP et VRRP : passerelles virtuelles
 
 ![Concept FHRP - IP Virtuelle](assets/fhrp_schema_2.png)
 
@@ -138,7 +138,7 @@ interface GigabitEthernet0/1
 | VIP = IP physique | Non | Oui (possible) |
 | Authentification | MD5 | MD5, texte clair |
 
-### Point Securite : Attaques FHRP
+### Point sécurité : attaques FHRP
 
 **FHRP Hijacking** : Un attaquant annonce une priorite superieure pour devenir la passerelle active.
 
@@ -238,7 +238,7 @@ interface GigabitEthernet0/1
  standby 1 track 1 decrement 30
 ```
 
-### Point Securite : Manipulation de priorite
+### Point sécurité : manipulation de priorité
 
 Un attaquant peut **forcer un failover** en :
 1. Envoyant des paquets avec priorite 255 (max)

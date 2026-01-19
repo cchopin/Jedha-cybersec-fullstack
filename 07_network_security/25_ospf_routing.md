@@ -211,7 +211,7 @@ router ospf 1
 
 ---
 
-## Election DR/BDR
+## Élection DR/BDR
 
 ### Pourquoi DR/BDR ?
 
@@ -344,7 +344,7 @@ Les 5 paramètres de metrique EIGRP :
 
 ---
 
-## Securite OSPF et implications cyber
+## Sécurité OSPF et implications cyber
 
 ### Vulnerabilites OSPF
 
@@ -496,7 +496,7 @@ Neighbor ID     Pri   State           Dead Time   Address         Interface
 
 ---
 
-## Depannage OSPF
+## Dépannage OSPF
 
 ### Problemes courants
 

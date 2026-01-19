@@ -1,4 +1,4 @@
-# WAN Failover et Traffic Engineering - Version Simplifiée
+# WAN failover et traffic engineering - version simplifiée
 
 ## L'idée en une phrase
 

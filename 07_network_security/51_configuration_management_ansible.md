@@ -213,7 +213,7 @@ Ansible inclut des modules dédiés pour les principaux vendeurs réseau :
 | **Palo Alto** | `panos_security_rule`, `panos_address_object` |
 | **F5** | `bigip_pool`, `bigip_virtual_server` |
 
-Les modules gèrent toute la syntaxe spécifique à l'équipement et fournissent l'**idempotence** — vous pouvez rejouer les playbooks en toute sécurité sans causer de changements en double.
+Les modules gèrent toute la syntaxe spécifique à l'équipement et fournissent l'**idempotence** : vous pouvez rejouer les playbooks en toute sécurité sans causer de changements en double.
 
 ---
 

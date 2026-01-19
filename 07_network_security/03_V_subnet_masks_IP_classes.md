@@ -1,4 +1,4 @@
-# Masques de sous-réseau et Classes IP - Version Simplifiée
+# Masques de sous-réseau et classes IP - version simplifiée
 
 ## L'idée en une phrase
 

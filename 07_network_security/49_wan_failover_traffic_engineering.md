@@ -46,7 +46,7 @@ Dans cette session, nous plongerons dans :
 
 ### Comprendre les Vulnérabilités WAN
 
-Les liens WAN sont intrinsèquement susceptibles à une variété de problèmes : coupures de fibre, pannes de fournisseur, congestion, attaques DDoS — et la liste continue. Quand vos services cloud ou sites distants dépendent de ce lien, l'indisponibilité peut être coûteuse.
+Les liens WAN sont intrinsèquement susceptibles à une variété de problèmes : coupures de fibre, pannes de fournisseur, congestion, attaques DDoS, et la liste continue. Quand vos services cloud ou sites distants dépendent de ce lien, l'indisponibilité peut être coûteuse.
 
 Les mécanismes de failover consistent à construire un filet de sécurité. Une conception WAN redondante assure la continuité des opérations et maintient les services essentiels en ligne même quand les choses tournent mal.
 

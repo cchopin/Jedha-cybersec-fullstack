@@ -1,4 +1,4 @@
-# DNS en Red Team - Version Simplifiée
+# DNS en red team - version simplifiée
 
 ## L'idée en une phrase
 

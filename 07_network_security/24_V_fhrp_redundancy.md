@@ -1,4 +1,4 @@
-# Redondance du Premier Saut (FHRP) - Version Simplifiée
+# Redondance du premier saut (FHRP) - version simplifiée
 
 ## L'idée en une phrase
 

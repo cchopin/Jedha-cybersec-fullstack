@@ -1,6 +1,6 @@
-# IP Address Classification
+# IP address classification
 
-## Part 1: IPv4 Classification
+## Part 1: IPv4 classification
 
 For each IPv4 address below, specify its class (A, B, C, D, or E), determine whether it is private or public, and mention any special usage (loopback, multicast, experimental, etc.) if applicable.
 
@@ -58,7 +58,7 @@ Sortie :
 
 ---
 
-## Part 2: IPv6 Classification
+## Part 2: IPv6 classification
 
 For each IPv6 address below, determine whether it is public or private and identify its specific usage (loopback, link-local, unique local, etc.).
 

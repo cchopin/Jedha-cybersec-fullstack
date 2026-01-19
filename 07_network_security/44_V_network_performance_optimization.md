@@ -1,4 +1,4 @@
-# Optimisation des Performances Réseau - Version Simplifiée
+# Optimisation des performances réseau - version simplifiée
 
 ## L'idée en une phrase
 

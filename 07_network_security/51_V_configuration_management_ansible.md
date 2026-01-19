@@ -1,4 +1,4 @@
-# Gestion de Configuration et Ansible - Version Simplifiée
+# Gestion de configuration et Ansible - version simplifiée
 
 ## L'idée en une phrase
 

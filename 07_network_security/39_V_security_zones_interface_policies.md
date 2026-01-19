@@ -1,4 +1,4 @@
-# Zones de Sécurité et Politiques d'Interface - Version Simplifiée
+# Zones de sécurité et politiques d'interface - version simplifiée
 
 ## L'idée en une phrase
 

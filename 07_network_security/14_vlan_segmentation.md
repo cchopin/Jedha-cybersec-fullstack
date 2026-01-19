@@ -111,9 +111,9 @@ Le standard 802.1Q insère un tag de 4 octets dans la trame Ethernet :
 
 ---
 
-## Access Ports vs Trunk Ports
+## Access ports vs trunk ports
 
-### Access Ports
+### Access ports
 
 Un port access appartient à un seul VLAN.
 
@@ -130,7 +130,7 @@ Switch(config-if)# switchport mode access
 Switch(config-if)# switchport access vlan 10
 ```
 
-### Trunk Ports
+### Trunk ports
 
 Un port trunk transporte plusieurs VLANs.
 

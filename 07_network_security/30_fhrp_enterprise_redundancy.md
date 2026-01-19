@@ -1,4 +1,4 @@
-# First Hop Redundancy et Enterprise Redundancy
+# First hop redundancy et enterprise redundancy
 
 ## Objectifs du cours
 

@@ -107,7 +107,7 @@ Les protocoles de routage ont ete concus avec l'hypothese que tous les participa
 
 ---
 
-## Attaques OSPF : Rogue Router
+## Attaques OSPF : rogue router
 
 ### Scenario d'attaque
 
@@ -233,7 +233,7 @@ lsa_poison = OSPF_Router_LSA(
 
 ---
 
-## Attaques BGP : Hijacking et manipulation
+## Attaques BGP : hijacking et manipulation
 
 ### Types de BGP Hijacking
 

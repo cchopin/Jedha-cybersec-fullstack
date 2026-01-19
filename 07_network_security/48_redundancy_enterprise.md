@@ -49,7 +49,7 @@ Nous explorerons deux technologies avancées mais indispensables qui apportent d
 
 ## La Redondance : Une Ligne de Vie Réseau
 
-Avant de plonger dans les protocoles techniques, prenons du recul. La redondance dans les réseaux d'entreprise n'est pas une question de paranoïa — c'est une question de préparation. Le matériel tombe en panne. Les fibres optiques sont coupées. Les ISPs subissent des pannes. La redondance garantit que le réseau ne bronche pas quand cela arrive.
+Avant de plonger dans les protocoles techniques, prenons du recul. La redondance dans les réseaux d'entreprise n'est pas une question de paranoïa : c'est une question de préparation. Le matériel tombe en panne. Les fibres optiques sont coupées. Les ISPs subissent des pannes. La redondance garantit que le réseau ne bronche pas quand cela arrive.
 
 ### Les Différents Niveaux de Redondance
 
@@ -435,7 +435,7 @@ Cependant, le vrai load balancing avec BGP nécessite un contrôle précis et un
 
 ## Mécanismes de Failover : Toujours Prêt
 
-La redondance n'a de valeur que si elle fonctionne quand nécessaire. C'est là que les **mécanismes de failover** entrent en jeu. Ces mécanismes sont comme les secouristes — ils interviennent quand les choses tournent mal.
+La redondance n'a de valeur que si elle fonctionne quand nécessaire. C'est là que les **mécanismes de failover** entrent en jeu. Ces mécanismes sont comme les secouristes : ils interviennent quand les choses tournent mal.
 
 ### Déclencheurs de Failover BGP
 

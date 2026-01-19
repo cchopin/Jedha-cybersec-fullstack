@@ -1,4 +1,4 @@
-# BGP - Version Simplifiée
+# BGP - version simplifiée
 
 ## L'idée en une phrase
 

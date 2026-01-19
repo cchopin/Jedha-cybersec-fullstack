@@ -1,4 +1,4 @@
-# VPN, IPSec, WireGuard et ZTNA - Version Simplifiée
+# VPN, IPSec, WireGuard et ZTNA - version simplifiée
 
 ## L'idée en une phrase
 

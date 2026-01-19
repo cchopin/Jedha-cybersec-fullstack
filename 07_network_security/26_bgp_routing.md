@@ -97,7 +97,7 @@ Competences visees :
 
 ## Logique Path-Vector et AS_PATH
 
-### Pourquoi BGP est different
+### Pourquoi BGP est différent
 
 BGP est un protocole **path-vector**, fondamentalement different des protocoles distance-vector (RIP) et link-state (OSPF) :
 
@@ -143,7 +143,7 @@ router bgp 65001
  neighbor 10.0.0.2 route-map PREPEND out
 ```
 
-### Numeros AS (ASN)
+### Numéros AS (ASN)
 
 | Plage | Type | Usage |
 |-------|------|-------|

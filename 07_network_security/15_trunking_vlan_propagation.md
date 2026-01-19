@@ -80,7 +80,7 @@ Gi0/1       10,20,30
 
 ---
 
-## Dynamic Trunking Protocol (DTP)
+## Dynamic trunking protocol (DTP)
 
 ### Qu'est-ce que DTP ?
 

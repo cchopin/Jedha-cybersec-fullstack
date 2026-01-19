@@ -1,4 +1,4 @@
-# NAC (Network Access Control) - Version Simplifiée
+# NAC (network access control) - version simplifiée
 
 ## L'idée en une phrase
 

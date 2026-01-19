@@ -1,4 +1,4 @@
-# Outils de Troubleshooting Réseau
+# Outils de troubleshooting réseau
 
 ## Objectifs du cours
 

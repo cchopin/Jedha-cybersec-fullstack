@@ -1,4 +1,4 @@
-# Segmentation Réseau et DMZ - Version Simplifiée
+# Segmentation réseau et DMZ - version simplifiée
 
 ## L'idée en une phrase
 

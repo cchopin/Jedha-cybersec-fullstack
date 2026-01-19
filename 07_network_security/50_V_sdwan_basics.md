@@ -1,4 +1,4 @@
-# SD-WAN Basics - Version Simplifiée
+# SD-WAN basics - version simplifiée
 
 ## L'idée en une phrase
 

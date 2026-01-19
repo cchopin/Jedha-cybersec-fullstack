@@ -1,4 +1,4 @@
-# Protocoles de Monitoring Reseau
+# Protocoles de monitoring réseau
 
 ## Objectifs du cours
 

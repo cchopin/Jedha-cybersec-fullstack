@@ -1,4 +1,4 @@
-# Spanning Tree Protocol (STP) - Version Simplifiée
+# Spanning tree protocol (STP) - version simplifiée
 
 ## L'idée en une phrase
 

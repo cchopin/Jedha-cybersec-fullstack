@@ -1,4 +1,4 @@
-# Protocoles de Monitoring - Version Simplifiée
+# Protocoles de monitoring - version simplifiée
 
 ## L'idée en une phrase
 
