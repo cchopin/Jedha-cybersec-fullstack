@@ -41,7 +41,7 @@ Traçabilité : TOTALE (fichier dans Git)
 
 ---
 
-## Ansible : Les Bases
+## Ansible : les bases
 
 ### C'est quoi ?
 

@@ -363,7 +363,7 @@ zone-pair security OUT-TO-DMZ
 
 ---
 
-## Politiques d'Interface Expliquees
+## Politiques d'interface expliquées
 
 Une fois vos zones creees, l'étape suivante est de configurer les politiques d'interface (regles firewall). Ces politiques definissent qui peut communiquer avec qui, sous quelles conditions, et ce qui doit arriver au trafic.
 
@@ -524,7 +524,7 @@ Alias: Blocked_Countries
 
 ---
 
-## Construire une Architecture de Zones Securisee
+## Construire une architecture de zones sécurisée
 
 ### Topologie exemple
 
@@ -596,7 +596,7 @@ Alias: Blocked_Countries
 
 ---
 
-## Gestion du Trafic Inter-Zones
+## Gestion du trafic inter-zones
 
 ### Elements a considerer
 
@@ -643,7 +643,7 @@ Activer le logging pour :
 
 ---
 
-## Erreurs Courantes a Eviter
+## Erreurs courantes à éviter
 
 | Erreur | Consequence | Solution |
 |--------|-------------|----------|
@@ -657,7 +657,7 @@ Activer le logging pour :
 
 ---
 
-## Bonnes Pratiques
+## Bonnes pratiques
 
 ### Conventions de nommage
 
@@ -702,7 +702,7 @@ Exemples:
 
 ---
 
-## Concepts Avances
+## Concepts avancés
 
 ### Detection d'intrusion inter-zones
 
@@ -755,7 +755,7 @@ Exemples:
 
 ---
 
-## Verification et Depannage
+## Vérification et dépannage
 
 ### Commandes Cisco ZBFW
 

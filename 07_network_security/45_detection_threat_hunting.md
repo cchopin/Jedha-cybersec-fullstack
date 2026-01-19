@@ -184,7 +184,7 @@ SNMP est comme une fenêtre sur votre réseau. Ne la laissez pas grande ouverte.
 
 ---
 
-## Agrégation de Logs avec les Plateformes SIEM
+## Agrégation de logs avec les plateformes SIEM
 
 Passons au cœur de la chasse aux menaces moderne : l'agrégation et la corrélation de logs avec un système SIEM (Security Information and Event Management).
 
@@ -349,7 +349,7 @@ Un SIEM n'est utile que s'il est bien tunné. Une configuration soignée transfo
 
 ---
 
-## Bonnes Pratiques pour la Détection de Menaces
+## Bonnes pratiques pour la détection de menaces
 
 | Pratique | Description |
 |----------|-------------|
@@ -366,7 +366,7 @@ La détection de menaces n'est pas d'attraper chaque alerte, c'est d'attraper le
 
 ---
 
-## Tableau Récapitulatif
+## Tableau récapitulatif
 
 | Outil/Technique | Usage | Ce qu'il détecte |
 |-----------------|-------|------------------|
@@ -397,7 +397,7 @@ La détection de menaces n'est pas d'attraper chaque alerte, c'est d'attraper le
 
 ---
 
-## Schéma Récapitulatif
+## Schéma récapitulatif
 
 ```
 WORKFLOW DE DÉTECTION :

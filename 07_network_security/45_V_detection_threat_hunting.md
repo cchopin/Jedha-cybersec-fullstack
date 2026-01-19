@@ -84,7 +84,7 @@ Récupère :                           │
 
 ---
 
-## SIEM : Tout voir au même endroit
+## SIEM : tout voir au même endroit
 
 ### C'est quoi un SIEM ?
 
@@ -129,7 +129,7 @@ User: jean.dupont                User: jean.dupont
 
 ---
 
-## Threat Hunting : Chercher activement
+## Threat hunting : chercher activement
 
 ### C'est quoi le Threat Hunting ?
 

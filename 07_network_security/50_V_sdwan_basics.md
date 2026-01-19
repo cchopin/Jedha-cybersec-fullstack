@@ -6,7 +6,7 @@ Le **SD-WAN**, c'est comme avoir un chef d'orchestre intelligent pour le réseau
 
 ---
 
-## Avant/Après : Le Problème que SD-WAN Résout
+## Avant/après : le problème que SD-WAN résout
 
 ```
 AVANT (WAN Traditionnel) :
@@ -60,7 +60,7 @@ Avantages :
 
 ---
 
-## Les 3 Composants Clés
+## Les 3 composants clés
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -242,9 +242,9 @@ MPLS = MultiProtocol Label Switching
 
 ---
 
-## SASE : SD-WAN + Sécurité Cloud
+## SASE : SD-WAN + sécurité cloud
 
-### C'est Quoi SASE ?
+### C'est quoi SASE ?
 
 **SASE** = SD-WAN + toute la sécurité dans le cloud
 
@@ -269,9 +269,9 @@ MPLS = MultiProtocol Label Switching
 
 ---
 
-## Cas d'Usage Concrets
+## Cas d'usage concrets
 
-### 1. Nouvelles Branches (Zero-Touch)
+### 1. Nouvelles branches (zero-touch)
 
 ```
 AVANT :
@@ -299,7 +299,7 @@ SD-WAN :
 • Failover automatique
 ```
 
-### 3. Chantiers / Événements Temporaires
+### 3. Chantiers / événements temporaires
 
 ```
 Besoin : Réseau pour un chantier de 6 mois
@@ -331,7 +331,7 @@ SD-WAN : CPE avec 4G/5G
 
 ---
 
-## Résumé en 30 Secondes
+## Résumé en 30 secondes
 
 ```
 SD-WAN = WAN intelligent géré depuis le cloud

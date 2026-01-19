@@ -76,7 +76,7 @@ Split Tunneling :
 
 ---
 
-## Misconfigurations Firewall courantes
+## Misconfigurations firewall courantes
 
 ### 1. La pire règle possible
 

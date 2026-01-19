@@ -6,7 +6,7 @@ Le **NAC** est le videur du réseau : il vérifie l'identité des utilisateurs (
 
 ---
 
-## Le Problème : Qui Se Connecte ?
+## Le problème : qui se connecte ?
 
 ```
 SANS NAC :
@@ -65,7 +65,7 @@ AVEC NAC :
 
 ---
 
-## Méthodes d'Authentification
+## Méthodes d'authentification
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -110,9 +110,9 @@ AVEC NAC :
 
 ---
 
-## La Posture : L'Équipement Est-Il Sain ?
+## La posture : l'équipement est-il sain ?
 
-### Ce Que le NAC Vérifie
+### Ce que le NAC vérifie
 
 | Critère | Question | Explication |
 |---------|----------|-------------|
@@ -122,7 +122,7 @@ AVEC NAC :
 | **Chiffrement** | BitLocker/FileVault présent ? | BitLocker (Windows) et FileVault (Mac) = chiffrement du disque dur. Si le PC est volé, les données sont illisibles |
 | **Logiciels interdits** | Pas de P2P, crack, etc. ? | Pas de logiciels dangereux |
 
-### Les 3 Résultats Possibles
+### Les 3 résultats possibles
 
 ```
 CONFORME ✓
@@ -143,9 +143,9 @@ Pas d'agent NAC → VLAN Guest (Internet seulement)
 
 ---
 
-## L'Enforcement : Accès Accordé
+## L'enforcement : accès accordé
 
-### Assignation Dynamique de VLAN
+### Assignation dynamique de VLAN
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -165,7 +165,7 @@ Pas d'agent NAC → VLAN Guest (Internet seulement)
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### La Quarantaine
+### La quarantaine
 
 ```
 ÉQUIPEMENT NON-CONFORME :
@@ -194,7 +194,7 @@ APRÈS MISE À JOUR :
 
 ---
 
-## Les Outils NAC
+## Les outils NAC
 
 ### Cisco ISE
 
@@ -238,7 +238,7 @@ Pour : Environnements hétérogènes
 
 ---
 
-## Déploiement : Les Phases
+## Déploiement : les phases
 
 ```
 PHASE 1 : MONITOR (2-4 semaines)
@@ -268,7 +268,7 @@ PHASE 4 : FULL (ongoing)
 
 ---
 
-## Les Termes à Retenir
+## Les termes à retenir
 
 | Terme | Définition simple |
 |-------|-------------------|
@@ -287,7 +287,7 @@ PHASE 4 : FULL (ongoing)
 
 ---
 
-## Résumé en 30 Secondes
+## Résumé en 30 secondes
 
 ```
 NAC = Le videur du réseau
@@ -316,7 +316,7 @@ DÉPLOIEMENT :
 
 ---
 
-## Schéma Récapitulatif
+## Schéma récapitulatif
 
 ```
 FLUX NAC :

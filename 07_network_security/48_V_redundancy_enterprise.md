@@ -284,7 +284,7 @@ QU'EST-CE QUI DÉCLENCHE UN FAILOVER ?
    Ping 8.8.8.8 échoue → Détecté en quelques secondes
 ```
 
-### Scénario Complet de Failover
+### Scénario complet de failover
 
 ```
 ┌──────────────────────────────────────────────────────────────┐

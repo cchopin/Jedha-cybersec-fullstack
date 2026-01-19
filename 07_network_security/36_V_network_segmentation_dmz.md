@@ -174,7 +174,7 @@ deny ip 192.168.20.0/24 192.168.10.0/24
 
 ---
 
-## Microsegmentation (Zero Trust)
+## Microsegmentation (zero trust)
 
 La microsegmentation va plus loin : chaque système est sa propre zone.
 

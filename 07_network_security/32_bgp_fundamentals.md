@@ -277,9 +277,9 @@ router bgp 65001
 
 ---
 
-## Annonces de routes, Peering et Filtrage
+## Annonces de routes, peering et filtrage
 
-### Etablissement du Peering BGP
+### Etablissement du peering BGP
 
 Contrairement a OSPF ou EIGRP, BGP ne decouvre pas automatiquement ses voisins. Le peering est configuré manuellement.
 

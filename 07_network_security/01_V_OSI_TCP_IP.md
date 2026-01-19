@@ -48,7 +48,7 @@ Le modèle se présente comme un immeuble de 7 étages, chacun ayant un rôle pr
 
 ## Les couches expliquées simplement
 
-### Couche 1 : Physique - Les tuyaux
+### Couche 1 : physique - les tuyaux
 
 C'est le **matériel physique** : câbles, WiFi, fibre optique.
 
@@ -63,7 +63,7 @@ C'est le **matériel physique** : câbles, WiFi, fibre optique.
 
 ---
 
-### Couche 2 : Liaison - Le livreur du quartier
+### Couche 2 : liaison - le livreur du quartier
 
 Cette couche gère la **livraison locale** au sein du réseau (entre un PC et la box, par exemple).
 
@@ -83,7 +83,7 @@ Cette couche gère la **livraison locale** au sein du réseau (entre un PC et la
 
 ---
 
-### Couche 3 : Réseau - Le GPS
+### Couche 3 : réseau - le GPS
 
 Cette couche trouve **le chemin** pour aller d'un réseau à un autre.
 
@@ -102,7 +102,7 @@ Cette couche trouve **le chemin** pour aller d'un réseau à un autre.
 
 ---
 
-### Couche 4 : Transport - Le service de livraison
+### Couche 4 : transport - le service de livraison
 
 Cette couche décide **comment** livrer : rapidement ou de manière fiable ?
 
@@ -124,7 +124,7 @@ Cette couche décide **comment** livrer : rapidement ou de manière fiable ?
 
 ---
 
-### Couches 5-6-7 : La partie visible
+### Couches 5-6-7 : la partie visible
 
 Ces trois couches gèrent ce que **l'utilisateur voit et utilise**.
 

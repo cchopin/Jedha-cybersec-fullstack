@@ -232,7 +232,7 @@ show vrrp statistics
 
 ---
 
-## Priorité, Preemption et Tracking
+## Priorité, preemption et tracking
 
 Ces trois mécanismes rendent FHRP intelligent et adaptatif aux conditions du réseau.
 

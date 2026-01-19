@@ -387,7 +387,7 @@ entre machines qui ne communiquent normalement pas.
 
 ---
 
-## Syslog : Journalisation centralisee
+## Syslog : journalisation centralisée
 
 ### Qu'est-ce que Syslog ?
 

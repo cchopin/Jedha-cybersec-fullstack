@@ -39,7 +39,7 @@ Avec QoS :
 
 ---
 
-## DSCP et CoS : Étiqueter le trafic
+## DSCP et CoS : étiqueter le trafic
 
 ### DSCP (Couche 3 - IP)
 
@@ -73,7 +73,7 @@ CoS = 5          convertit      DSCP = EF
 
 ---
 
-## Shaping vs Policing
+## Shaping vs policing
 
 ### Policing : Le radar
 
