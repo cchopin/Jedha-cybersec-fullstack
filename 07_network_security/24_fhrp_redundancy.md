@@ -214,7 +214,7 @@ standby 1 preempt delay minimum 30  ! Attendre 30s avant preemption
 vrrp 1 preempt                 ! VRRP (active par defaut)
 ```
 
-### Interface Tracking
+### Interface tracking
 
 Le **tracking** ajuste dynamiquement la priorite selon l'etat d'interfaces ou routes.
 
@@ -496,7 +496,7 @@ ping <VIP>       # Linux (Ctrl+C pour arreter)
 - Nouveau routeur actif inattendu
 - Paquets HSRP depuis un port utilisateur
 
-### Scenario 2 : Perturbation du tracking
+### Scenario 2 : perturbation du tracking
 
 ```
 1. Attaquant identifie le lien tracke par HSRP
