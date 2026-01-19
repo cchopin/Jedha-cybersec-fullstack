@@ -85,7 +85,7 @@ interface range GigabitEthernet0/1-4
 
 ---
 
-## Load Balancing : répartir le trafic
+## Load balancing : répartir le trafic
 
 ### Le problème
 

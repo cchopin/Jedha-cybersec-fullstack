@@ -62,7 +62,7 @@ Si R1 tombe → R2 prend le relais automatiquement
 
 ---
 
-## Priorité et Préemption
+## Priorité et préemption
 
 ### Priorité
 
@@ -87,7 +87,7 @@ R1 revient...                    R1 revient...
 R2 reste Actif (pas de chgt)     R1 reprend le rôle Actif !
 ```
 
-### Interface Tracking
+### Interface tracking
 
 Le routeur baisse sa priorité si son lien vers Internet tombe :
 
@@ -104,7 +104,7 @@ R1 perd son lien Internet :
 
 ---
 
-## Configuration Active/Active
+## Configuration active/active
 
 Au lieu d'avoir un routeur qui ne fait rien (standby), on répartit la charge :
 

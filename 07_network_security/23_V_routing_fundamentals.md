@@ -50,7 +50,7 @@ Les routeurs **échangent des informations** et construisent leurs tables automa
 
 ## Comment un routeur choisit-il sa route ?
 
-### 1. Longest Prefix Match
+### 1. Longest prefix match
 
 Le routeur choisit la route **la plus spécifique** (masque le plus long).
 
@@ -63,7 +63,7 @@ Paquet vers 192.168.1.50 → Prend la route B (/24 est plus spécifique)
 
 **Analogie** : "Aller à Paris" est moins précis que "Aller au 10 rue de la Paix, Paris". La direction la plus précise est privilégiée.
 
-### 2. Administrative Distance (AD)
+### 2. Administrative distance (AD)
 
 Si deux routes ont le même préfixe, la **confiance** accordée à la source est examinée.
 
@@ -165,7 +165,7 @@ interface vlan 20
 
 ## Attaques sur le routage
 
-### Route Injection
+### Route injection
 
 Un attaquant injecte de fausses routes pour :
 - **Rediriger le trafic** vers lui (Man-in-the-Middle)
