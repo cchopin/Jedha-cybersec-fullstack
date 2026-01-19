@@ -1,4 +1,4 @@
-# Outils de Troubleshooting Réseau - Version Simplifiée
+# Outils de troubleshooting réseau - version simplifiée
 
 ## L'idée en une phrase
 

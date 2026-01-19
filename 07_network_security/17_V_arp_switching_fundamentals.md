@@ -1,4 +1,4 @@
-# ARP et Commutation - Version Simplifiée
+# ARP et commutation - version simplifiée
 
 ## L'idée en une phrase
 

@@ -1,4 +1,4 @@
-# Zones de Securite et Politiques d'Interface
+# Zones de sécurité et politiques d'interface
 
 ## Objectifs du cours
 
@@ -71,7 +71,7 @@ Competences visees :
 
 ---
 
-## Qu'est-ce qu'une Zone de Securite ?
+## Qu'est-ce qu'une zone de sécurité ?
 
 Les zones de sécurité sont des groupements logiques d'interfaces sur un firewall ou routeur. Au lieu d'appliquer des regles a chaque interface individuellement, vous assignez les interfaces a des zones comme "inside", "outside" ou "DMZ", puis definissez des politiques entre les zones.
 

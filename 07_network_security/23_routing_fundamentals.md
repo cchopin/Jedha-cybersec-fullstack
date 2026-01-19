@@ -107,7 +107,7 @@ Avant de plonger dans le cours, voici les definitions des termes techniques util
 
 ![Comparaison Routage Statique vs Dynamique](assets/routing_schema_1.png)
 
-### Routage Statique
+### Routage statique
 
 Routes configurees **manuellement** par l'administrateur.
 
@@ -127,7 +127,7 @@ ip route 192.168.2.0 255.255.255.0 10.0.0.2
 
 **Cas d'usage :** Petits réseaux, liens de backup (floating static routes), routes vers des partenaires spécifiques.
 
-### Routage Dynamique
+### Routage dynamique
 
 Les routeurs **echangent des informations** et construisent leurs tables automatiquement.
 
@@ -148,7 +148,7 @@ Les routeurs **echangent des informations** et construisent leurs tables automat
 | Surface d'attaque | Reduite | Protocole attaquable |
 | Ressources | Minimales | CPU/mémoire/bande passante |
 
-### Point Securite : Attaques sur le routage dynamique
+### Point sécurité : attaques sur le routage dynamique
 
 **Route Injection Attack** : Un attaquant injecte de fausses routes pour :
 - Rediriger le trafic vers sa machine (MitM)
@@ -201,7 +201,7 @@ Le NAT permet a plusieurs machines d'un réseau prive de partager une adresse IP
 | **Dynamic NAT** | N:N | Pool d'IPs publiques attribuees dynamiquement | Entreprise avec bloc d'IPs |
 | **PAT/Overload** | N:1 | Plusieurs IPs privees partagent 1 IP publique via les ports | Box Internet, majorite des cas |
 
-### Point Securite : NAT n'est PAS un firewall !
+### Point sécurité : NAT n'est pas un firewall !
 
 **Mythe repandu** : "Je suis derriere un NAT, je suis protege"
 
@@ -277,7 +277,7 @@ S*   0.0.0.0          0.0.0.0           10.0.0.254     Gi0/2       -       1
 | **EIGRP** | Composite | f(BW, Delay, Reliability, Load) | Modifier les composants |
 | **BGP** | Attributs | AS-Path length, Local Pref, MED... | Prepending, communities |
 
-### Distance Administrative (AD)
+### Distance administrative (AD)
 
 | Source de route | AD | Implication sécurité |
 |-----------------|-----|---------------------|
@@ -290,7 +290,7 @@ S*   0.0.0.0          0.0.0.0           10.0.0.254     Gi0/2       -       1
 | iBGP | 200 | Necessite acces au réseau interne |
 | Unknown | 255 | Route non installee |
 
-### Point Securite : Route Hijacking
+### Point sécurité : route hijacking
 
 **Scenario d'attaque :**
 
@@ -404,7 +404,7 @@ interface vlan 10
 | Cout | Moins cher (petit réseau) | Plus cher |
 | Filtrage | ACL sur routeur | ACL + VACL |
 
-### Point Securite : Attaques Inter-VLAN
+### Point sécurité : attaques inter-VLAN
 
 **VLAN Hopping - Methode 1 : Switch Spoofing**
 

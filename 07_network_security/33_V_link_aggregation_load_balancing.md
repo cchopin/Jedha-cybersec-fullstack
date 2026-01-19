@@ -1,4 +1,4 @@
-# Agrégation de Liens et Load Balancing - Version Simplifiée
+# Agrégation de liens et load balancing - version simplifiée
 
 ## L'idée en une phrase
 

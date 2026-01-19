@@ -1,8 +1,8 @@
-# Modèles de Conception Réseau : Redondance et Automatisation
+# Modèles de conception réseau : redondance et automatisation
 
 ## Objectifs du cours
 
-Dans cette session, nous plongerons dans les principes fondamentaux qui façonnent les réseaux d'entreprise modernes : les modèles de conception réseau. Ces blueprints conceptuels ne sont pas que théoriques — ce sont les frameworks directeurs derrière les réseaux évolutifs, performants et résilients. Que vous construisiez une nouvelle infrastructure ou optimisiez une existante, comprendre ces modèles est clé pour prendre des décisions intelligentes et pérennes.
+Dans cette session, nous plongerons dans les principes fondamentaux qui façonnent les réseaux d'entreprise modernes : les modèles de conception réseau. Ces blueprints conceptuels ne sont pas que théoriques : ce sont les frameworks directeurs derrière les réseaux évolutifs, performants et résilients. Que vous construisiez une nouvelle infrastructure ou optimisiez une existante, comprendre ces modèles est clé pour prendre des décisions intelligentes et pérennes.
 
 Cette session vous guidera à travers :
 
@@ -50,7 +50,7 @@ Cette session vous guidera à travers :
 
 ### La Mentalité Modulaire dans la Conception Réseau d'Entreprise
 
-Quand les réseaux ont commencé à croître en taille, complexité et fonction, les ingénieurs ont rapidement réalisé qu'une architecture plate ne pourrait tout simplement pas évoluer. C'est là qu'intervient l'approche modulaire — une méthodologie qui décompose un réseau en zones fonctionnelles distinctes, chacune responsable de tâches spécifiques.
+Quand les réseaux ont commencé à croître en taille, complexité et fonction, les ingénieurs ont rapidement réalisé qu'une architecture plate ne pourrait tout simplement pas évoluer. C'est là qu'intervient l'approche modulaire, une méthodologie qui décompose un réseau en zones fonctionnelles distinctes, chacune responsable de tâches spécifiques.
 
 Pensez à cela comme l'urbanisme. On ne construirait pas une ville sans que le zonage, les routes, les services publics et les équipements soient soigneusement planifiés. De même, dans le monde des réseaux d'entreprise, le modèle modulaire apporte structure, prévisibilité et gestion au chaos des câbles et des paquets.
 
@@ -66,7 +66,7 @@ Décortiquons les trois couches une par une.
 
 La couche core est le backbone haute vitesse du réseau. Elle connecte plusieurs équipements de la couche distribution et gère des volumes massifs de trafic entre les sites ou sections majeures du réseau. Cette couche est entièrement dédiée à la vitesse et la fiabilité, pas à l'application de politiques ou l'inspection de paquets.
 
-Le core a un seul job : le transport rapide et efficace. Imaginez-le comme les voies express d'une autoroute. Vous ne voulez pas de feux rouges, de ralentisseurs ou de péages — juste des routes propres et rapides pour que les données circulent.
+Le core a un seul job : le transport rapide et efficace. Imaginez-le comme les voies express d'une autoroute. Vous ne voulez pas de feux rouges, de ralentisseurs ou de péages, juste des routes propres et rapides pour que les données circulent.
 
 ![Core Layer](assets/CoreLayer.png)
 
@@ -118,13 +118,13 @@ Cette couche agrège le trafic de multiples switches d'accès et fournit le cont
 | **Segmentation VLAN** | Isolation logique des réseaux |
 | **Redondance gateway** | VRRP, HSRP, ou GLBP |
 
-La couche distribution est comme le point de contrôle douanier entre les rues animées de la ville (couche access) et l'autoroute haute vitesse (core). Elle assure que seul le trafic légitime et conforme aux politiques avance — et grâce à VRRP, il y a toujours une route de secours si un chemin tombe.
+La couche distribution est comme le point de contrôle douanier entre les rues animées de la ville (couche access) et l'autoroute haute vitesse (core). Elle assure que seul le trafic légitime et conforme aux politiques avance, et grâce à VRRP, il y a toujours une route de secours si un chemin tombe.
 
 ---
 
 ## La Couche Access : La Passerelle Utilisateur
 
-La couche access est l'endroit où les utilisateurs, terminaux et équipements se connectent au réseau. Pensez à cela comme les rues de quartier — plus lentes et plus variées en trafic, mais absolument essentielles pour l'entrée et la sortie.
+La couche access est l'endroit où les utilisateurs, terminaux et équipements se connectent au réseau. Pensez à cela comme les rues de quartier, plus lentes et plus variées en trafic, mais absolument essentielles pour l'entrée et la sortie.
 
 C'est la ligne de front où les PCs, téléphones IP, points d'accès sans fil, imprimantes et autres équipements clients se connectent physiquement ou sans fil. La sécurité et la gestion du trafic commencent ici, et la couche access doit fournir une connectivité fiable et sécurisée.
 
@@ -173,9 +173,9 @@ Ce modèle s'aligne aussi bien avec les stratégies de segmentation réseau et l
 
 ### Le Défi du Data Center
 
-Les data centers d'entreprise ne sont plus des lieux de trafic nord-sud uniquement. Avec la virtualisation, les microservices, les conteneurs et le calcul distribué, la majorité du trafic dans les data centers aujourd'hui est **est-ouest** — c'est-à-dire, serveur-à-serveur.
+Les data centers d'entreprise ne sont plus des lieux de trafic nord-sud uniquement. Avec la virtualisation, les microservices, les conteneurs et le calcul distribué, la majorité du trafic dans les data centers aujourd'hui est **est-ouest**, c'est-à-dire, serveur-à-serveur.
 
-Les architectures traditionnelles three-tier ne sont pas optimisées pour ces flux de trafic. Elles introduisent souvent de la latence et des goulots d'étranglement imprévisibles. La solution ? La topologie **Leaf-Spine** — une conception née des besoins des data centers modernes.
+Les architectures traditionnelles three-tier ne sont pas optimisées pour ces flux de trafic. Elles introduisent souvent de la latence et des goulots d'étranglement imprévisibles. La solution ? La topologie **Leaf-Spine**, une conception née des besoins des data centers modernes.
 
 ### Comprendre l'Architecture Leaf-Spine
 
@@ -284,7 +284,7 @@ Les clusters de calcul haute performance avec des exigences massives est-ouest u
 
 Souvent, les deux modèles coexistent. Par exemple, une université pourrait utiliser le CDA à travers ses campus et le Leaf-Spine dans son data center de recherche. Une entreprise pourrait utiliser le CDA pour les réseaux de succursales et le Leaf-Spine au siège pour les services internes.
 
-Concevoir un réseau est comme l'architecture — il n'y a pas de "one-size-fits-all". Mais avec ces modèles dans votre boîte à outils, vous pouvez aborder virtuellement n'importe quel scénario avec confiance.
+Concevoir un réseau est comme l'architecture : il n'y a pas de "one-size-fits-all". Mais avec ces modèles dans votre boîte à outils, vous pouvez aborder virtuellement n'importe quel scénario avec confiance.
 
 ---
 

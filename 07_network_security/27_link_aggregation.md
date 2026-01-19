@@ -128,7 +128,7 @@ LACP est le protocole standard pour l'agregation dynamique de liens :
 5. Retrait automatique des liens defaillants
 ```
 
-### Parametres LACP
+### Paramètres LACP
 
 | Parametre | Description | Valeur |
 |-----------|-------------|--------|

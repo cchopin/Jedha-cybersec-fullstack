@@ -1,4 +1,4 @@
-# Firewall et IDS/IPS - Version Simplifiée
+# Firewall et IDS/IPS - version simplifiée
 
 ## L'idée en une phrase
 

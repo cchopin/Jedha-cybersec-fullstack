@@ -51,7 +51,7 @@ Dans cette session, vous apprendrez :
 
 ### Pourquoi le NAC Est Plus Important Que Jamais
 
-Les réseaux d'entreprise ne sont plus des périmètres verrouillés. Ce sont des écosystèmes poreux, orientés utilisateur et mobile-first. Les employés se connectent depuis des téléphones, laptops, tablettes — même des équipements personnels. Les prestataires, vendeurs et invités ont besoin d'un accès temporaire. Les équipements IoT apparaissent dans les usines, hôpitaux et bâtiments intelligents. Sans contrôle, cela mène au chaos.
+Les réseaux d'entreprise ne sont plus des périmètres verrouillés. Ce sont des écosystèmes poreux, orientés utilisateur et mobile-first. Les employés se connectent depuis des téléphones, laptops, tablettes, voire des équipements personnels. Les prestataires, vendeurs et invités ont besoin d'un accès temporaire. Les équipements IoT apparaissent dans les usines, hôpitaux et bâtiments intelligents. Sans contrôle, cela mène au chaos.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -122,7 +122,7 @@ Le **Network Access Control** résout ces problèmes en appliquant **qui** est a
 | **Autorisation** | Décider quel niveau d'accès accorder |
 | **Évaluation de Posture** | Inspecter l'endpoint pour assurer la conformité |
 
-Le NAC n'est pas seulement un outil de sécurité. C'est aussi un **moteur d'application de politiques réseau** — votre pont entre l'ingénierie réseau et la cybersécurité.
+Le NAC n'est pas seulement un outil de sécurité. C'est aussi un **moteur d'application de politiques réseau**, votre pont entre l'ingénierie réseau et la cybersécurité.
 
 ---
 
@@ -246,7 +246,7 @@ Les conditions de politique peuvent être simples ("L'utilisateur est-il membre 
 
 ### Qu'est-ce que l'Évaluation de Posture ?
 
-L'évaluation de posture est là où le NAC devient **dynamique**. Il ne suffit pas de savoir qui est l'utilisateur — vous devez aussi savoir à quel point leur équipement est sain ou fiable.
+L'évaluation de posture est là où le NAC devient **dynamique**. Il ne suffit pas de savoir qui est l'utilisateur, vous devez aussi savoir à quel point leur équipement est sain ou fiable.
 
 L'évaluation de posture évalue l'équipement basé sur des critères comme :
 
@@ -358,7 +358,7 @@ Chaque VLAN correspond à un niveau de confiance ou segment réseau défini. Cet
 | IoT/Imprimantes | VLAN 50 | Ressources limitées |
 | Non-conforme | VLAN 999 | Remediation seulement |
 
-Tout cela se passe automatiquement, basé sur l'identité et la politique — pas de configurations de port manuelles.
+Tout cela se passe automatiquement, basé sur l'identité et la politique, pas de configurations de port manuelles.
 
 ### Access Control Lists (ACLs)
 

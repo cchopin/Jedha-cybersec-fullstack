@@ -1,4 +1,4 @@
-# Trunking et Propagation des VLANs - Version Simplifiée
+# Trunking et propagation des VLANs - version simplifiée
 
 ## L'idée en une phrase
 

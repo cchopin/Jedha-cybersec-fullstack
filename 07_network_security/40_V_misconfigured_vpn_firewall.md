@@ -1,4 +1,4 @@
-# VPN et Firewalls Mal Configurés - Version Simplifiée
+# VPN et firewalls mal configurés - version simplifiée
 
 ## L'idée en une phrase
 

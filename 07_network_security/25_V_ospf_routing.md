@@ -1,4 +1,4 @@
-# OSPF - Version Simplifiée
+# OSPF - version simplifiée
 
 ## L'idée en une phrase
 

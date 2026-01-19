@@ -1,4 +1,4 @@
-# Link Aggregation (LACP) - Version Simplifiée
+# Link aggregation (LACP) - version simplifiée
 
 ## L'idée en une phrase
 

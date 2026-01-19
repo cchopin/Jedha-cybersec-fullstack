@@ -1,4 +1,4 @@
-# Planification d'adresses et Subnetting Avancé - Version Simplifiée
+# Planification d'adresses et subnetting avancé - version simplifiée
 
 ## L'idée en une phrase
 

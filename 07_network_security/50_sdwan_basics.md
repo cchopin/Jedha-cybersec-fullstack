@@ -2,7 +2,7 @@
 
 ## Objectifs du cours
 
-Le SD-WAN représente un bond majeur dans la façon dont nous connectons les bureaux distants, les data centers, les services cloud et les télétravailleurs. Il apporte agilité, contrôle centralisé, intelligence applicative et sécurité dans une seule plateforme — le tout sans la rigidité et le coût élevé des solutions WAN traditionnelles.
+Le SD-WAN représente un bond majeur dans la façon dont nous connectons les bureaux distants, les data centers, les services cloud et les télétravailleurs. Il apporte agilité, contrôle centralisé, intelligence applicative et sécurité dans une seule plateforme, le tout sans la rigidité et le coût élevé des solutions WAN traditionnelles.
 
 Dans cette session, nous explorerons :
 
@@ -108,7 +108,7 @@ C'est là qu'intervient le **SD-WAN** : une solution moderne pour des défis mod
 
 ### Définition
 
-Le **SD-WAN** est une architecture WAN virtuelle qui permet aux entreprises d'utiliser n'importe quelle combinaison de services de transport — incluant MPLS, LTE, Internet haut débit et satellite — pour connecter de manière sécurisée les utilisateurs aux applications.
+Le **SD-WAN** est une architecture WAN virtuelle qui permet aux entreprises d'utiliser n'importe quelle combinaison de services de transport (incluant MPLS, LTE, Internet haut débit et satellite) pour connecter de manière sécurisée les utilisateurs aux applications.
 
 ![SD-WAN Architecture](assets/SDWan.png)
 
@@ -276,7 +276,7 @@ Le SD-WAN **monitore continuellement** la santé et la performance de tous les l
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Cela signifie que même si votre lien haut débit commence à avoir des problèmes, le trafic voix ou vidéo peut basculer sur MPLS ou LTE en quelques secondes — souvent sans que l'utilisateur final ne s'en aperçoive.
+Cela signifie que même si votre lien haut débit commence à avoir des problèmes, le trafic voix ou vidéo peut basculer sur MPLS ou LTE en quelques secondes, souvent sans que l'utilisateur final ne s'en aperçoive.
 
 ### Routage Applicatif (Application-Aware Routing)
 
@@ -376,7 +376,7 @@ Des vendeurs comme Palo Alto, Zscaler, Cisco et Fortinet mènent la convergence 
 
 ### MPLS N'est Pas Mort... Pas Encore
 
-Le SD-WAN n'est pas nécessairement un remplacement complet de MPLS — du moins pas tout de suite. Beaucoup d'entreprises commencent par **augmenter MPLS** avec du haut débit ou LTE, créant un WAN hybride.
+Le SD-WAN n'est pas nécessairement un remplacement complet de MPLS, du moins pas tout de suite. Beaucoup d'entreprises commencent par **augmenter MPLS** avec du haut débit ou LTE, créant un WAN hybride.
 
 ### Modèle de Transition Typique
 
@@ -422,7 +422,7 @@ Cette approche donne des économies de coûts et de meilleures performances tout
 | **Chiffrement** | Optionnel | Par défaut & obligatoire |
 | **Scalabilité** | Limitée par hardware | Définie par logiciel |
 
-Avec le SD-WAN, les organisations n'ont plus à choisir entre performance et coût — elles obtiennent les deux.
+Avec le SD-WAN, les organisations n'ont plus à choisir entre performance et coût : elles obtiennent les deux.
 
 ---
 
@@ -462,7 +462,7 @@ Pensez franchises, magasins, cliniques distantes ou campus satellites. Ces sites
 
 ### Cas d'Usage 4 : Réseaux Mobiles et Temporaires
 
-Chantiers de construction, pop-up stores, événements — déployer des WANs traditionnels dans ces environnements est coûteux et chronophage.
+Chantiers de construction, pop-up stores, événements : déployer des WANs traditionnels dans ces environnements est coûteux et chronophage.
 
 Les CPE SD-WAN avec liens LTE ou satellite peuvent être déployés en quelques heures, offrant un réseau complet sans tranchées ni pose de fibre.
 

@@ -158,7 +158,7 @@ Disabled    │ -        │ Port désactivé
 
 ---
 
-## Commandes SHOW (visualisation)
+## Commandes show (visualisation)
 
 ### Voir l'état STP global
 
@@ -378,7 +378,7 @@ end
 
 ---
 
-## Les Timers STP
+## Les timers STP
 
 | Timer | Défaut | Description |
 |-------|--------|-------------|
@@ -398,7 +398,7 @@ end
 
 ---
 
-## Bridge ID et Priority
+## Bridge ID et priority
 
 Le Bridge ID est composé de :
 
@@ -926,7 +926,7 @@ undebug all
 
 ---
 
-## Checklist Dépannage STP
+## Checklist dépannage STP
 
 ```
 □ Quel switch est le Root Bridge ? (show spanning-tree root)

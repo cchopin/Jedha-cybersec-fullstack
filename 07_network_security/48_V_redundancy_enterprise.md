@@ -1,4 +1,4 @@
-# Redondance en Entreprise - Version Simplifiée
+# Redondance en entreprise - version simplifiée
 
 ## L'idée en une phrase
 

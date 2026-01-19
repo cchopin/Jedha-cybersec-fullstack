@@ -1,4 +1,4 @@
-# VLANs et Segmentation - Version Simplifiée
+# VLANs et segmentation - version simplifiée
 
 ## L'idée en une phrase
 

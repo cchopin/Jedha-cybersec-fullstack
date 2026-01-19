@@ -1,4 +1,4 @@
-# Le Modèle OSI et TCP/IP - Version Simplifiée
+# Le modèle OSI et TCP/IP - version simplifiée
 
 ## L'idée en une phrase
 

@@ -1,4 +1,4 @@
-# Optimisation des Performances Réseau
+# Optimisation des performances réseau
 
 ## Objectifs du cours
 
