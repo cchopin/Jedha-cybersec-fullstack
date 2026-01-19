@@ -202,7 +202,7 @@ R1 (iBGP) -----> R2 (iBGP) -----> R3 (iBGP)
    - Divise l'AS en sous-AS internes
    - eBGP entre sous-AS, mais vu comme iBGP de l'exterieur
 
-### Configuration Route Reflector
+### Configuration route reflector
 
 ```cisco
 ! Sur le Route Reflector

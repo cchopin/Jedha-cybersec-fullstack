@@ -45,7 +45,7 @@ Competences visees :
 | **Auto** | PAgP | Attend une negociation PAgP |
 | **On** | Aucun | Mode statique, pas de negociation |
 
-### Load Balancing
+### Load balancing
 
 | Terme | Description |
 |-------|-------------|
@@ -95,7 +95,7 @@ Sans agregation de liens, plusieurs problèmes se posent :
 | **STP blocking** | Liens redondants bloques par Spanning Tree |
 | **Inefficacite** | Ressources réseau sous-utilisees |
 
-### La solution : Link Aggregation
+### La solution : link aggregation
 
 ![Comparaison sans/avec Link Aggregation](assets/lag_schema_1.png)
 
@@ -290,7 +290,7 @@ Avantages :
 - Haute disponibilite pour les VMs
 ```
 
-### Campus - Uplinks inter-switches
+### Campus - uplinks inter-switches
 
 ```
          ┌─────────────┐
