@@ -19,9 +19,9 @@ project_name: "Lab_53_Ansible_Security"
 # Noms des templates dans GNS3 (vérifier avec: curl http://IP:80/v2/templates)
 
 template_names:
-  switch_l2: "Cisco IOU L2 17.12.1"
+  switch_l2: "Cisco IOU L2"
   nat: "NAT"
-  kali: "Kali"
+  kali: "kalilinux-kali-rolling"
 
 # ============================================
 # TOPOLOGIE
