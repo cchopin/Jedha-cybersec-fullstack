@@ -474,27 +474,27 @@ let broadcast = networkAddr or (not mask)
 
 ## Critères de validation
 
-### Niveau 1 : Fonctionnel
+### Niveau 1 : fonctionnel
 
 - [ ] `validate` détecte correctement les IPs valides et invalides
 - [ ] `classify` identifie correctement les types (privé, public, loopback, etc.)
 - [ ] `info` calcule correctement toutes les informations réseau
 - [ ] `contains` vérifie correctement l'appartenance
 
-### Niveau 2 : Robustesse
+### Niveau 2 : robustesse
 
 - [ ] Gestion de toutes les erreurs d'entrée
 - [ ] Messages d'erreur clairs et utiles
 - [ ] Pas de crash sur entrées malformées
 
-### Niveau 3 : Qualité du code
+### Niveau 3 : qualité du code
 
 - [ ] Code modulaire (séparation des responsabilités)
 - [ ] Types bien définis (IPv4Address, CIDRNetwork, etc.)
 - [ ] Fonctions pures quand possible
 - [ ] Commentaires sur les parties complexes
 
-### Niveau 4 : Tests
+### Niveau 4 : tests
 
 - [ ] Tests unitaires pour chaque fonction de calcul
 - [ ] Tests des cas limites (/0, /31, /32)
@@ -507,7 +507,7 @@ let broadcast = networkAddr or (not mask)
 
 Ces exercices permettent de vérifier que l'implémentation est correcte. Le programme doit produire les résultats attendus pour chaque adresse.
 
-### Partie 1 : Classification IPv4
+### Partie 1 : classification IPv4
 
 Pour chaque adresse, le programme doit indiquer la classe historique (A, B, C, D, E), si elle est publique ou privée, et tout usage spécial.
 
@@ -598,7 +598,7 @@ DOCUMENTATION
   Note: Réservé pour documentation, non routable
 ```
 
-### Partie 2 : Classification IPv6
+### Partie 2 : classification IPv6
 
 Pour chaque adresse IPv6, le programme doit indiquer si elle est publique ou privée et son usage spécifique.
 
@@ -665,7 +665,7 @@ IPV4-MAPPED
   Classification IPv4: PRIVATE (RFC 1918 - 192.168.0.0/16)
 ```
 
-### Partie 3 : Tests de validation de format
+### Partie 3 : tests de validation de format
 
 Ces entrées doivent être rejetées avec des messages d'erreur appropriés :
 
@@ -757,7 +757,7 @@ proc classifyIPv6(groups: array[8, uint16]): string =
 
 ## Bonus (optionnel)
 
-### Bonus 1 : Commande `range`
+### Bonus 1 : commande `range`
 
 Lister toutes les IPs d'un petit réseau (/28 ou plus petit) :
 
@@ -769,7 +769,7 @@ $ netprobe range 192.168.1.0/30
 192.168.1.3   (broadcast)
 ```
 
-### Bonus 2 : Commande `split`
+### Bonus 2 : commande `split`
 
 Découper un réseau en N sous-réseaux :
 
@@ -782,7 +782,7 @@ Découpage de 192.168.1.0/24 en 4 sous-réseaux:
   4. 192.168.1.192/26 (62 hôtes)
 ```
 
-### Bonus 3 : Sortie JSON
+### Bonus 3 : sortie JSON
 
 Option `--json` pour une sortie structurée :
 
@@ -802,11 +802,11 @@ $ netprobe info 192.168.1.0/24 --json
 }
 ```
 
-### Bonus 4 : Couleurs
+### Bonus 4 : couleurs
 
 Ajouter des couleurs dans le terminal (vert pour VALID, rouge pour INVALID, etc.) en utilisant les codes ANSI.
 
-### Bonus 5 : Commande `info` pour IPv6
+### Bonus 5 : commande `info` pour IPv6
 
 Étendre la commande `info` pour supporter les réseaux IPv6 :
 

@@ -20,7 +20,7 @@ BGP (Border Gateway Protocol) permet à ces réseaux de s'annoncer mutuellement 
 
 ---
 
-## Les Systèmes Autonomes (AS)
+## Les systèmes autonomes (AS)
 
 ### Qu'est-ce qu'un AS ?
 

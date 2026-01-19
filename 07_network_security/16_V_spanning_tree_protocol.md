@@ -62,7 +62,7 @@ Les liens bloqués sont prêts à prendre le relais
 
 ---
 
-## Le Root Bridge : le chef du réseau
+## Le root bridge : le chef du réseau
 
 ### Qu'est-ce que c'est ?
 

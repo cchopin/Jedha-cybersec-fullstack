@@ -260,7 +260,7 @@ Switch# show port-security interface gigabitEthernet 0/1
 
 Le VLAN hopping est une technique qui permet aux attaquants de contourner la segmentation VLAN et d'accéder au trafic d'autres VLANs.
 
-### 1. Switch Spoofing
+### 1. Switch spoofing
 
 Dans le switch spoofing, un attaquant configure sa machine pour agir comme un switch, trompant le switch légitime pour qu'il transmette du trafic pour plusieurs VLANs.
 
@@ -288,7 +288,7 @@ Switch(config-if)# switchport nonegotiate
 Switch# show interfaces gigabitEthernet 0/1 switchport
 ```
 
-### 2. Double Tagging Attack
+### 2. Double tagging attack
 
 Dans le double-tagging, un attaquant envoie un paquet avec deux tags VLAN, permettant de transférer le trafic entre VLANs.
 

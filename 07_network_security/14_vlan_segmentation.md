@@ -166,7 +166,7 @@ Le Native VLAN est le VLAN dont les trames ne sont pas taguées sur un trunk.
 
 ### VLAN Hopping Attacks
 
-#### 1. Switch Spoofing
+#### 1. Switch spoofing
 
 L'attaquant configure son appareil pour négocier un trunk avec le switch.
 
@@ -186,7 +186,7 @@ Switch(config-if)# switchport mode access
 Switch(config-if)# switchport nonegotiate
 ```
 
-#### 2. Double Tagging
+#### 2. Double tagging
 
 L'attaquant envoie une trame avec deux tags VLAN.
 

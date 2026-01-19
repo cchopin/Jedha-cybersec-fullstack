@@ -236,7 +236,7 @@ lsa_poison = OSPF_Router_LSA(
 )
 ```
 
-### Cas d'usage Red Team
+### Cas d'usage red team
 
 | Scenario | Objectif | Technique |
 |----------|----------|-----------|
@@ -555,7 +555,7 @@ for elem in stream:
 
 ---
 
-## Playbook Red Team
+## Playbook red team
 
 ### Methodologie d'attaque
 
@@ -599,7 +599,7 @@ for elem in stream:
 
 ---
 
-## Playbook Blue Team
+## Playbook blue team
 
 ### Detection et reponse
 

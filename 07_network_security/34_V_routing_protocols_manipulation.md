@@ -118,7 +118,7 @@ AS 65999 (attaquant) annonce 203.0.113.0/25
 
 ---
 
-## Outils d'attaque (Red Team)
+## Outils d'attaque (red team)
 
 | Outil | Usage |
 |-------|-------|
@@ -129,7 +129,7 @@ AS 65999 (attaquant) annonce 203.0.113.0/25
 
 ---
 
-## Protections (Blue Team)
+## Protections (blue team)
 
 ### Protection OSPF
 

@@ -204,7 +204,7 @@ allow-transfer { none; };
 
 ## Outils à connaître
 
-### Pour l'attaque (Red Team)
+### Pour l'attaque (red team)
 
 | Outil | Usage |
 |-------|-------|
@@ -213,7 +213,7 @@ allow-transfer { none; };
 | dnscat2 | Tunneling et C2 via DNS |
 | responder | Spoofing DNS/LLMNR local |
 
-### Pour la défense (Blue Team)
+### Pour la défense (blue team)
 
 | Outil | Usage |
 |-------|-------|

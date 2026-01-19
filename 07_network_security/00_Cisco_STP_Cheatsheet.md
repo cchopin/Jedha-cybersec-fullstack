@@ -190,7 +190,7 @@ Et0/0            Desg FWD 100       128.1    Shr
 Et0/1            Desg FWD 100       128.2    Shr
 ```
 
-### Voir qui est le Root Bridge
+### Voir qui est le root bridge
 
 ```cisco
 show spanning-tree root
@@ -219,7 +219,7 @@ show spanning-tree summary
 
 ## Commandes de CONFIGURATION
 
-### Forcer un switch comme Root Bridge
+### Forcer un switch comme root bridge
 
 **Méthode 1 : Définir la priorité manuellement**
 ```cisco
@@ -331,7 +331,7 @@ end
 
 ---
 
-### Root Guard (protection du Root Bridge)
+### Root Guard (protection du root bridge)
 
 Empêche un port de devenir Root Port (protège la topologie).
 
@@ -386,7 +386,7 @@ end
 | Forward Delay | 15 sec | Temps dans Listening et Learning |
 | Max Age | 20 sec | Temps avant qu'un BPDU soit considéré périmé |
 
-### Modifier les timers (sur le Root Bridge uniquement !)
+### Modifier les timers (sur le root bridge uniquement !)
 
 ```cisco
 configure terminal
@@ -477,7 +477,7 @@ Tous les PCs sont dans le VLAN 10 (192.168.10.0/24)
 
 ---
 
-### SWITCH 1 - Configuration complète (Root Bridge)
+### SWITCH 1 - configuration complète (root bridge)
 
 ```cisco
 ! ============================================
@@ -753,7 +753,7 @@ Et0/0       1,10
 Et0/1       1,10
 ```
 
-#### Vérifier STP sur Switch1 (Root Bridge)
+#### Vérifier STP sur Switch1 (root bridge)
 
 ```cisco
 Switch1# show spanning-tree vlan 10
@@ -952,9 +952,9 @@ SW1 (Priority 32768, MAC 0001.0001.0001)
                          └── e0/1 ─── e0/1 ── SW2
 ```
 
-### 2. Forcer le Root Bridge
+### 2. Forcer le root bridge
 
-Comment faire de SW3 le Root Bridge pour VLAN 10 ?
+Comment faire de SW3 le root bridge pour VLAN 10 ?
 
 ### 3. Optimiser la convergence
 
@@ -978,7 +978,7 @@ Comment réduire le temps de convergence STP pour les ports vers les PC ?
   - e0/0 : Root Port (vers SW1)
   - e0/1 : **Alternate/Blocked** (vers SW2)
 
-### 2. Forcer Root Bridge
+### 2. Forcer root bridge
 
 ```cisco
 SW3# configure terminal

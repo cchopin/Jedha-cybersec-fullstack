@@ -127,7 +127,7 @@ Attaquant : "Parfait, accès à tout !"
 
 **Solution** : désactiver la négociation automatique (DTP)
 
-### 2. Double Tagging
+### 2. Double tagging
 
 **Le problème** : l'attaquant envoie une trame avec 2 étiquettes VLAN.
 
