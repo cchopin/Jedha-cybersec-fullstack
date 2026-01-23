@@ -1,39 +1,39 @@
 # Bash et scripts
 
-**Duree : 45 min**
+**Durée : 45 min**
 
 ## Ce que vous allez apprendre dans ce cours
 
-Dans cette lecon, nous allons revoir les commandes bash et les scripts. Vous allez decouvrir :
+Dans cette leçon, nous allons revoir les commandes bash et les scripts. Vous allez découvrir :
 
-- comment rediriger la sortie ou l'entree de vos commandes,
+- comment rediriger la sortie ou l'entrée de vos commandes,
 - comment compresser des fichiers,
-- ce que sont les liens de fichiers et comment les gerer,
+- ce que sont les liens de fichiers et comment les gérer,
 - et bien d'autres astuces sur bash.
 
 ---
 
 ## Commandes Bash
 
-Vous devriez deja etre familier avec les commandes bash de base. Voici un rappel des commandes essentielles :
+Vous devriez déjà être familier avec les commandes bash de base. Voici un rappel des commandes essentielles :
 
 ![Jeu des commandes bash](assets/flip_game.png)
 
-Les commandes de base a connaitre : `pwd`, `cd`, `touch`, `cp`, `ls`, `echo`, `mkdir`, `cat`.
+Les commandes de base à connaître : `pwd`, `cd`, `touch`, `cp`, `ls`, `echo`, `mkdir`, `cat`.
 
-### Redirections d'entree et de sortie
+### Redirections d'entrée et de sortie
 
-Vous connaissez deja comment rediriger la sortie de vos commandes avec `>` et `|`. Voici d'autres exemples de redirections.
+Vous connaissez déjà comment rediriger la sortie de vos commandes avec `>` et `|`. Voici d'autres exemples de redirections.
 
 #### `2>` - Rediriger la sortie d'erreur standard (stderr)
 
-Vous pouvez utiliser `2>` et `2>>` pour rediriger ou ajouter les messages d'erreur vers un fichier specifique :
+Vous pouvez utiliser `2>` et `2>>` pour rediriger ou ajouter les messages d'erreur vers un fichier spécifique :
 
 ```bash
 $ ls fichierinexistant 2> error.log
 ```
 
-Cette redirection est souvent utilisee par les attaquants pour masquer les erreurs :
+Cette redirection est souvent utilisée par les attaquants pour masquer les erreurs :
 
 ```bash
 $ ./exploit.sh 2>/dev/null
@@ -41,21 +41,21 @@ $ ./exploit.sh 2>/dev/null
 
 #### `&>` - Rediriger stdout et stderr
 
-Vous pouvez rediriger a la fois la sortie standard et la sortie d'erreur avec `&>` :
+Vous pouvez rediriger à la fois la sortie standard et la sortie d'erreur avec `&>` :
 
 ```bash
 $ ./script.sh &> output.log
 ```
 
-Equivalent a :
+Équivalent à :
 
 ```bash
 $ ./script.sh > output.log 2>&1
 ```
 
-#### `<` - Rediriger l'entree
+#### `<` - Rediriger l'entrée
 
-Plusieurs facons de rediriger l'entree vers une commande :
+Plusieurs façons de rediriger l'entrée vers une commande :
 
 ```bash
 # Depuis un fichier
@@ -70,41 +70,41 @@ Bob
 EOF
 
 # Here string (<<<) - une seule ligne
-$ grep waldo <<< "Ou est waldo dans cette phrase?"
+$ grep waldo <<< "Où est waldo dans cette phrase?"
 ```
 
-**Resume des redirections d'entree :**
+**Résumé des redirections d'entrée :**
 | Symbole | Usage |
 |---------|-------|
 | `<` | Depuis un fichier |
 | `<<` | Bloc de plusieurs lignes (here document) |
-| `<<<` | Une seule chaine (here string) |
+| `<<<` | Une seule chaîne (here string) |
 
 ---
 
-### Expressions regulieres pour grep et sed
+### Expressions régulières pour grep et sed
 
-Les expressions regulieres (regex) sont des motifs utilises pour faire correspondre des combinaisons de caracteres dans du texte.
+Les expressions régulières (regex) sont des motifs utilisés pour faire correspondre des combinaisons de caractères dans du texte.
 
 | Symbole | Signification |
 |---------|---------------|
-| `.` | Correspond a n'importe quel caractere unique |
-| `*` | Correspond a zero ou plusieurs du caractere precedent |
-| `^` | Correspond au debut d'une ligne |
-| `$` | Correspond a la fin d'une ligne |
-| `[abc]` | Correspond a un des caracteres a, b ou c |
-| `[^abc]` | Correspond a tout caractere sauf a, b ou c |
+| `.` | Correspond à n'importe quel caractère unique |
+| `*` | Correspond à zéro ou plusieurs du caractère précédent |
+| `^` | Correspond au début d'une ligne |
+| `$` | Correspond à la fin d'une ligne |
+| `[abc]` | Correspond à un des caractères a, b ou c |
+| `[^abc]` | Correspond à tout caractère sauf a, b ou c |
 
-Exemple : le motif `^[A-Z][a-z]*$` recherche toute ligne contenant uniquement une majuscule suivie de minuscules (comme un prenom).
+Exemple : le motif `^[A-Z][a-z]*$` recherche toute ligne contenant uniquement une majuscule suivie de minuscules (comme un prénom).
 
 ```bash
-# Supprimer toutes les lignes commencant par # (commentaires)
+# Supprimer toutes les lignes commençant par # (commentaires)
 $ sed '/^#/d' script.py
 ```
 
-> **Attention** : `*` en bash (wildcard) et `*` en regex ont des significations differentes !
-> - `grep 'http' *` : cherche "http" dans tous les fichiers du repertoire
-> - `grep 'http.*pdf' log.txt` : cherche une URL commencant par http et finissant par pdf
+> **Attention** : `*` en bash (wildcard) et `*` en regex ont des significations différentes !
+> - `grep 'http' *` : cherche "http" dans tous les fichiers du répertoire
+> - `grep 'http.*pdf' log.txt` : cherche une URL commençant par http et finissant par pdf
 
 ---
 
@@ -115,7 +115,7 @@ $ sed '/^#/d' script.py
 `tar` combine plusieurs fichiers en une seule archive sans les compresser :
 
 ```bash
-# Creer une archive
+# Créer une archive
 $ tar -cvf archive.tar fichier1.txt fichier2.txt
 
 # Extraire une archive
@@ -129,16 +129,16 @@ $ tar -xvf archive.tar
 ```bash
 # Compresser
 $ gzip archive.tar
-# Resultat : archive.tar.gz
+# Résultat : archive.tar.gz
 
-# Decompresser
+# Décompresser
 $ gzip -d archive.tar.gz
 
-# Decompresser et extraire en une commande
+# Décompresser et extraire en une commande
 $ tar -xvzf archive.tar.gz
 ```
 
-#### bzip2 - Compression plus elevee
+#### bzip2 - Compression plus élevée
 
 `bzip2` compresse plus efficacement que gzip, mais est plus lent :
 
@@ -146,35 +146,35 @@ $ tar -xvzf archive.tar.gz
 # Compresser
 $ bzip2 archive.tar
 
-# Decompresser
+# Décompresser
 $ bunzip2 archive.tar.bz2
 ```
 
 ---
 
-### Gerer les liens de fichiers
+### Gérer les liens de fichiers
 
-Les liens permettent de referencer des fichiers a plusieurs endroits sans dupliquer leur contenu.
+Les liens permettent de référencer des fichiers à plusieurs endroits sans dupliquer leur contenu.
 
 #### Lien physique (hard link)
 
-Cree un autre nom pour le meme contenu de fichier. Supprimer l'original ne supprime pas les donnees tant qu'un lien physique existe :
+Crée un autre nom pour le même contenu de fichier. Supprimer l'original ne supprime pas les données tant qu'un lien physique existe :
 
 ```bash
 $ ln rapport.txt rapport_copie.txt
 ```
 
-**Utilisation** : organiser les memes fichiers de differentes manieres sans duplication.
+**Utilisation** : organiser les mêmes fichiers de différentes manières sans duplication.
 
 #### Lien symbolique (symlink)
 
-Pointe vers un autre fichier ou repertoire. Si la cible est supprimee, le symlink est casse :
+Pointe vers un autre fichier ou répertoire. Si la cible est supprimée, le symlink est cassé :
 
 ```bash
 $ ln -s /var/log/syslog dernier-log
 ```
 
-**Utilisation typique** : bibliotheques partagees en Linux :
+**Utilisation typique** : bibliothèques partagées en Linux :
 
 ```
 lrwxrwxrwx. 1 root root 16 Dec 2 15:24 /usr/lib64/libcurl.so -> libcurl.so.4.2.0
@@ -182,7 +182,7 @@ lrwxrwxrwx. 1 root root 16 Dec 2 15:24 /usr/lib64/libcurl.so -> libcurl.so.4.2.0
 
 ---
 
-### Acceder a la documentation systeme
+### Accéder à la documentation système
 
 ```bash
 # Ouvrir la page de manuel d'une commande
@@ -193,10 +193,10 @@ $ man ls
 
 ### head et tail
 
-Pour manipuler de gros fichiers, utilisez `head` (debut) et `tail` (fin) :
+Pour manipuler de gros fichiers, utilisez `head` (début) et `tail` (fin) :
 
 ```bash
-# Afficher les 5 dernieres lignes et suivre les nouvelles
+# Afficher les 5 dernières lignes et suivre les nouvelles
 $ tail -n 5 -f /var/log/syslog
 ```
 
@@ -204,16 +204,16 @@ $ tail -n 5 -f /var/log/syslog
 
 ## Variables d'environnement
 
-Les variables d'environnement sont des valeurs dynamiques qui affectent le comportement de votre shell et du systeme.
+Les variables d'environnement sont des valeurs dynamiques qui affectent le comportement de votre shell et du système.
 
 ```bash
 # Voir toutes les variables
 $ printenv
 
-# Voir une variable specifique
+# Voir une variable spécifique
 $ echo $PATH
 
-# Definir une variable temporaire
+# Définir une variable temporaire
 $ MY_VAR="Hello"
 $ echo $MY_VAR
 
@@ -225,11 +225,11 @@ $ export MY_VAR
 
 | Variable | Description |
 |----------|-------------|
-| `PATH` | Liste des repertoires ou le shell cherche les executables |
-| `HOME` | Pointe vers votre repertoire personnel |
+| `PATH` | Liste des répertoires où le shell cherche les exécutables |
+| `HOME` | Pointe vers votre répertoire personnel |
 | `USER` | Affiche votre nom d'utilisateur |
 
-> **Securite** : Un `PATH` mal configure peut permettre a un attaquant d'executer des binaires malveillants. Des variables comme `LD_PRELOAD` ou des secrets exposes (cles API, mots de passe) peuvent etre exploites.
+> **Sécurité** : Un `PATH` mal configuré peut permettre à un attaquant d'exécuter des binaires malveillants. Des variables comme `LD_PRELOAD` ou des secrets exposés (clés API, mots de passe) peuvent être exploités.
 
 ---
 
@@ -237,7 +237,7 @@ $ export MY_VAR
 
 ### Shebang
 
-La ligne au debut d'un script indiquant quel interpreteur utiliser :
+La ligne au début d'un script indiquant quel interpréteur utiliser :
 
 ```bash
 #!/usr/bin/env bash
@@ -256,10 +256,10 @@ Pour Python :
 
 | Option | Effet |
 |--------|-------|
-| `set -e` | Quitte immediatement si une commande echoue |
-| `set -x` | Affiche toutes les commandes executees (debug) |
-| `set -u` | Traite les variables non definies comme des erreurs |
-| `set -o pipefail` | Fait echouer le pipeline si une commande echoue |
+| `set -e` | Quitte immédiatement si une commande échoue |
+| `set -x` | Affiche toutes les commandes exécutées (debug) |
+| `set -u` | Traite les variables non définies comme des erreurs |
+| `set -o pipefail` | Fait échouer le pipeline si une commande échoue |
 
 ```bash
 #!/usr/bin/env bash
@@ -268,69 +268,69 @@ set -e
 
 ### Exit et codes de sortie
 
-Chaque commande retourne un code de sortie : `0` = succes, autre = echec.
+Chaque commande retourne un code de sortie : `0` = succès, autre = échec.
 
 ```bash
-# Verifier le code de la derniere commande
+# Vérifier le code de la dernière commande
 $ ls /chemin/inexistant
 $ echo $?
 2
 
-# Quitter un script avec un code specifique
+# Quitter un script avec un code spécifique
 exit 1
 ```
 
 ---
 
-## Glossaire des sigles et definitions
+## Glossaire des sigles et définitions
 
-| Sigle/Terme | Definition |
+| Sigle/Terme | Définition |
 |-------------|------------|
-| **Bash** | Bourne Again SHell - Interpreteur de commandes par defaut sur la plupart des systemes Linux |
-| **stdin** | Standard Input - Entree standard (fichier descripteur 0) |
+| **Bash** | Bourne Again SHell - Interpréteur de commandes par défaut sur la plupart des systèmes Linux |
+| **stdin** | Standard Input - Entrée standard (fichier descripteur 0) |
 | **stdout** | Standard Output - Sortie standard (fichier descripteur 1) |
 | **stderr** | Standard Error - Sortie d'erreur standard (fichier descripteur 2) |
-| **Pipe** | Tube (`\|`) - Connecte la sortie d'une commande a l'entree d'une autre |
-| **Regex** | Regular Expression - Expression reguliere, motif de recherche |
-| **Shebang** | `#!` - Indique l'interpreteur a utiliser pour un script |
-| **Hard link** | Lien physique - Pointe directement vers les donnees du fichier |
+| **Pipe** | Tube (`\|`) - Connecte la sortie d'une commande à l'entrée d'une autre |
+| **Regex** | Regular Expression - Expression régulière, motif de recherche |
+| **Shebang** | `#!` - Indique l'interpréteur à utiliser pour un script |
+| **Hard link** | Lien physique - Pointe directement vers les données du fichier |
 | **Symlink** | Symbolic link - Lien symbolique, pointe vers le chemin du fichier |
-| **Here document** | Bloc de texte multi-ligne utilise comme entree (`<<`) |
-| **Here string** | Chaine unique utilisee comme entree (`<<<`) |
+| **Here document** | Bloc de texte multi-ligne utilisé comme entrée (`<<`) |
+| **Here string** | Chaîne unique utilisée comme entrée (`<<<`) |
 
 ---
 
-## Recapitulatif des commandes
+## Récapitulatif des commandes
 
 ### Redirections
 
 | Commande | Description |
 |----------|-------------|
-| `cmd > fichier` | Rediriger stdout vers un fichier (ecrase) |
+| `cmd > fichier` | Rediriger stdout vers un fichier (écrase) |
 | `cmd >> fichier` | Rediriger stdout vers un fichier (ajoute) |
 | `cmd 2> fichier` | Rediriger stderr vers un fichier |
 | `cmd &> fichier` | Rediriger stdout et stderr vers un fichier |
-| `cmd < fichier` | Utiliser un fichier comme entree |
-| `cmd1 \| cmd2` | Pipe - sortie de cmd1 vers entree de cmd2 |
+| `cmd < fichier` | Utiliser un fichier comme entrée |
+| `cmd1 \| cmd2` | Pipe - sortie de cmd1 vers entrée de cmd2 |
 
 ### Archivage et compression
 
 | Commande | Description |
 |----------|-------------|
-| `tar -cvf archive.tar fichiers` | Creer une archive tar |
+| `tar -cvf archive.tar fichiers` | Créer une archive tar |
 | `tar -xvf archive.tar` | Extraire une archive tar |
-| `tar -xvzf archive.tar.gz` | Extraire une archive tar compressee gzip |
+| `tar -xvzf archive.tar.gz` | Extraire une archive tar compressée gzip |
 | `gzip fichier` | Compresser avec gzip |
-| `gzip -d fichier.gz` | Decompresser gzip |
+| `gzip -d fichier.gz` | Décompresser gzip |
 | `bzip2 fichier` | Compresser avec bzip2 |
-| `bunzip2 fichier.bz2` | Decompresser bzip2 |
+| `bunzip2 fichier.bz2` | Décompresser bzip2 |
 
 ### Liens
 
 | Commande | Description |
 |----------|-------------|
-| `ln fichier lien` | Creer un lien physique |
-| `ln -s cible lien` | Creer un lien symbolique |
+| `ln fichier lien` | Créer un lien physique |
+| `ln -s cible lien` | Créer un lien symbolique |
 
 ### Texte et recherche
 
@@ -338,9 +338,9 @@ exit 1
 |----------|-------------|
 | `grep 'motif' fichier` | Rechercher un motif dans un fichier |
 | `sed 's/ancien/nouveau/g' fichier` | Remplacer du texte |
-| `head -n X fichier` | Afficher les X premieres lignes |
-| `tail -n X fichier` | Afficher les X dernieres lignes |
-| `tail -f fichier` | Suivre les nouvelles lignes en temps reel |
+| `head -n X fichier` | Afficher les X premières lignes |
+| `tail -n X fichier` | Afficher les X dernières lignes |
+| `tail -f fichier` | Suivre les nouvelles lignes en temps réel |
 
 ### Variables et environnement
 
@@ -348,13 +348,23 @@ exit 1
 |----------|-------------|
 | `printenv` | Afficher toutes les variables d'environnement |
 | `echo $VAR` | Afficher la valeur d'une variable |
-| `export VAR=valeur` | Definir et exporter une variable |
+| `export VAR=valeur` | Définir et exporter une variable |
 
 ### Documentation
 
 | Commande | Description |
 |----------|-------------|
 | `man commande` | Afficher le manuel d'une commande |
+
+---
+
+## Ressources pratiques - TryHackMe / HackTheBox
+
+| Plateforme | Lien | Description |
+|------------|------|-------------|
+| TryHackMe | [Linux Fundamentals Part 2](https://tryhackme.com/room/linuxfundamentalspart2) | Redirections et scripts |
+| TryHackMe | [Bash Scripting](https://tryhackme.com/room/dvbashscripting) | Scripts Bash avancés |
+| TryHackMe | [Regular Expressions](https://tryhackme.com/room/dvregularexpressions) | Expressions régulières |
 
 ---
 

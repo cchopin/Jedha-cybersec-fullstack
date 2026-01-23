@@ -1,58 +1,58 @@
 # Services et planification
 
-**Duree : 55 min**
+**Durée : 55 min**
 
 ## Ce que vous allez apprendre dans ce cours
 
-Dans la lecon precedente, nous avons explore ce que sont les processus et comment les inspecter et les gerer. Maintenant, nous allons nous concentrer sur une categorie speciale de processus : les **services**. Tous les services sont des processus, mais tous les processus ne sont pas des services. Comprendre les services est crucial car ils :
+Dans la leçon précédente, nous avons exploré ce que sont les processus et comment les inspecter et les gérer. Maintenant, nous allons nous concentrer sur une catégorie spéciale de processus : les **services**. Tous les services sont des processus, mais tous les processus ne sont pas des services. Comprendre les services est crucial car ils :
 
-- controlent les fonctions systeme cles du demarrage a l'arret,
+- contrôlent les fonctions système clés du démarrage à l'arrêt,
 - offrent aux attaquants un chemin discret vers la persistence,
-- deviennent souvent des points de defaillance ou d'escalade quand ils sont mal configures.
+- deviennent souvent des points de défaillance ou d'escalade quand ils sont mal configurés.
 
-Dans cette lecon, vous apprendrez a :
+Dans cette leçon, vous apprendrez à :
 
-- inspecter et controler les services avec systemctl,
+- inspecter et contrôler les services avec systemctl,
 - comprendre la structure des fichiers unit systemd,
-- apprendre a securiser vos services contre les attaques,
-- detecter les tactiques de persistence basees sur les services.
+- apprendre à sécuriser vos services contre les attaques,
+- détecter les tactiques de persistence basées sur les services.
 
 ---
 
 ## Qu'est-ce qu'un service ?
 
-Contrairement aux programmes reguliers (comme un editeur de texte) que vous ouvrez, utilisez et fermez, les **services** sont des processus de longue duree geres par le systeme pour effectuer des fonctions specifiques sans interaction directe de l'utilisateur. Ils demarrent generalement au boot et s'executent en arriere-plan.
+Contrairement aux programmes réguliers (comme un éditeur de texte) que vous ouvrez, utilisez et fermez, les **services** sont des processus de longue durée gérés par le système pour effectuer des fonctions spécifiques sans interaction directe de l'utilisateur. Ils démarrent généralement au boot et s'exécutent en arrière-plan.
 
 ### Daemon vs service
 
 | Concept | Description |
 |---------|-------------|
-| **Daemon** | Processus en arriere-plan executant independamment, sans interaction utilisateur |
-| **Service** | Processus en arriere-plan officiellement gere par le systeme d'init (systemd) |
+| **Daemon** | Processus en arrière-plan exécutant indépendamment, sans interaction utilisateur |
+| **Service** | Processus en arrière-plan officiellement géré par le système d'init (systemd) |
 
 Un service inclut :
-- Definition de comment et quand il demarre
-- Surveillance s'il reste actif ou redemarrage en cas de crash
-- Application de controles de securite (permissions limitees)
-- Integration aux logs systeme et pistes d'audit
+- Définition de comment et quand il démarre
+- Surveillance s'il reste actif ou redémarrage en cas de crash
+- Application de contrôles de sécurité (permissions limitées)
+- Intégration aux logs système et pistes d'audit
 
 ---
 
-## Le systeme d'init : systemd
+## Le système d'init : systemd
 
-Le **systeme d'init** est le premier processus espace utilisateur demarre par le noyau (PID 1). Il est responsable de l'amorcage du systeme et de la gestion de tous les autres processus.
+Le **système d'init** est le premier processus espace utilisateur démarré par le noyau (PID 1). Il est responsable de l'amorçage du système et de la gestion de tous les autres processus.
 
-### Autres systemes d'init
+### Autres systèmes d'init
 
-| Systeme | Description |
+| Système | Description |
 |---------|-------------|
 | **SysVinit** | Traditionnel, utilise des scripts shell dans `/etc/init.d/` |
-| **OpenRC** | Leger et rapide, utilise dans Alpine Linux et Gentoo |
+| **OpenRC** | Léger et rapide, utilisé dans Alpine Linux et Gentoo |
 | **systemd** | Standard moderne sur la plupart des distributions |
 
 ### Fichiers unit
 
-Chaque ressource ou tache que systemd gere est definie comme une **unit**. Le **fichier unit** (ex: `.service`) est un fichier de configuration specifiant comment systemd doit gerer ces ressources.
+Chaque ressource ou tâche que systemd gère est définie comme une **unit**. Le **fichier unit** (ex: `.service`) est un fichier de configuration spécifiant comment systemd doit gérer ces ressources.
 
 **Emplacement :** `/lib/systemd/system/`
 
@@ -79,17 +79,17 @@ WantedBy=printer.target multi-user.target
 | Section | Description |
 |---------|-------------|
 | `[Unit]` | Informations de base : Description, Documentation, Before, After, Requires |
-| `[Service]` | Proprietes du service : ExecStart, Type, Restart |
-| `[Install]` | Utilise par enable/disable : Also, WantedBy, RequiredBy |
+| `[Service]` | Propriétés du service : ExecStart, Type, Restart |
+| `[Install]` | Utilisé par enable/disable : Also, WantedBy, RequiredBy |
 
 **Options courantes de [Service] :**
 | Option | Description |
 |--------|-------------|
-| `ExecStart` | Commande a executer |
-| `Type` | Type de demarrage (simple, forking, notify, oneshot) |
-| `Restart` | Comportement de redemarrage (no, on-failure, always) |
-| `User` | Utilisateur sous lequel executer |
-| `Group` | Groupe sous lequel executer |
+| `ExecStart` | Commande à exécuter |
+| `Type` | Type de démarrage (simple, forking, notify, oneshot) |
+| `Restart` | Comportement de redémarrage (no, on-failure, always) |
+| `User` | Utilisateur sous lequel exécuter |
+| `Group` | Groupe sous lequel exécuter |
 
 ---
 
@@ -104,17 +104,17 @@ WantedBy=printer.target multi-user.target
 $ systemctl --type=service --state=running
 ```
 
-**Arreter un service :**
+**Arrêter un service :**
 ```bash
 $ sudo systemctl stop cups
 ```
 
-**Demarrer un service :**
+**Démarrer un service :**
 ```bash
 $ sudo systemctl start cups
 ```
 
-**Verifier le statut :**
+**Vérifier le statut :**
 ```bash
 $ systemctl status cups
 ```
@@ -122,22 +122,22 @@ $ systemctl status cups
 **Autres commandes importantes :**
 | Commande | Description |
 |----------|-------------|
-| `systemctl restart service` | Redemarrer un service |
-| `systemctl reload service` | Recharger la configuration sans redemarrer |
+| `systemctl restart service` | Redémarrer un service |
+| `systemctl reload service` | Recharger la configuration sans redémarrer |
 | `systemctl daemon-reload` | Relire tous les fichiers unit |
-| `systemctl enable service` | Activer au demarrage |
-| `systemctl disable service` | Desactiver au demarrage |
+| `systemctl enable service` | Activer au démarrage |
+| `systemctl disable service` | Désactiver au démarrage |
 
-**Lister les services actives/desactives :**
+**Lister les services activés/désactivés :**
 ```bash
 $ systemctl list-unit-files --type=service
 ```
 
-> **Bonne pratique** : Desactiver les services inutiles pour reduire la surface d'attaque.
+> **Bonne pratique** : Désactiver les services inutiles pour réduire la surface d'attaque.
 
-> **Securite - Persistence** : Les attaquants peuvent deposer un fichier unit malveillant dans `/etc/systemd/system/` ou `~/.config/systemd/user/` pour lancer un malware au demarrage.
+> **Sécurité - Persistence** : Les attaquants peuvent déposer un fichier unit malveillant dans `/etc/systemd/system/` ou `~/.config/systemd/user/` pour lancer un malware au démarrage.
 
-### Utiliser service (ancienne methode)
+### Utiliser service (ancienne méthode)
 
 Avant systemctl, on utilisait `service` :
 ```bash
@@ -147,11 +147,11 @@ $ sudo service cups restart
 $ sudo service cups status
 ```
 
-### Verifier les logs des services
+### Vérifier les logs des services
 
-**journald** est le systeme de journalisation integre a systemd. Il collecte et stocke les logs dans un format binaire structure.
+**journald** est le système de journalisation intégré à systemd. Il collecte et stocke les logs dans un format binaire structuré.
 
-**Acceder aux logs d'un service :**
+**Accéder aux logs d'un service :**
 ```bash
 $ journalctl -u cups
 ```
@@ -159,12 +159,12 @@ $ journalctl -u cups
 **Options utiles :**
 | Option | Description |
 |--------|-------------|
-| `-u service` | Logs d'un service specifique |
-| `--since "10 minutes ago"` | Logs recents |
-| `-f` | Suivre en temps reel |
-| `-e` | Aller a la fin |
+| `-u service` | Logs d'un service spécifique |
+| `--since "10 minutes ago"` | Logs récents |
+| `-f` | Suivre en temps réel |
+| `-e` | Aller à la fin |
 
-**Trouver les services echoues :**
+**Trouver les services échoués :**
 ```bash
 $ systemctl --failed
 ```
@@ -188,9 +188,9 @@ Le service **rsyslog** collecte et stocke les logs dans des fichiers sous `/var/
 
 ---
 
-## Services actives par socket
+## Services activés par socket
 
-Certains services ne demarrent que quand ils sont necessaires. systemd ecoute sur un socket et demarre automatiquement le service quand une connexion arrive.
+Certains services ne démarrent que quand ils sont nécessaires. systemd écoute sur un socket et démarre automatiquement le service quand une connexion arrive.
 
 ### Qu'est-ce qu'un socket ?
 
@@ -198,33 +198,33 @@ Un **socket** est un point de terminaison pour la communication entre deux progr
 
 | Type | Description |
 |------|-------------|
-| **Socket reseau** | Defini par protocole, adresse IP et port |
+| **Socket réseau** | Défini par protocole, adresse IP et port |
 | **Socket UNIX** | Communication locale entre processus (ex: `/var/run/docker.sock`) |
 
 ### Configuration
 
-- Un fichier `.socket` definit le socket d'ecoute
-- Un fichier `.service` correspondant definit le service a lancer
+- Un fichier `.socket` définit le socket d'écoute
+- Un fichier `.service` correspondant définit le service à lancer
 
 **Lister les sockets actifs :**
 ```bash
 $ systemctl list-sockets
 ```
 
-**Verifier un socket :**
+**Vérifier un socket :**
 ```bash
 $ systemctl status cups.socket
 ```
 
 ---
 
-## Securiser les services
+## Sécuriser les services
 
-Les services sont souvent le premier point d'entree pour les attaquants car ils sont constamment en cours d'execution et souvent accessibles via le reseau.
+Les services sont souvent le premier point d'entrée pour les attaquants car ils sont constamment en cours d'exécution et souvent accessibles via le réseau.
 
-### Executer les services en tant qu'utilisateur non-root
+### Exécuter les services en tant qu'utilisateur non-root
 
-Configurer les services pour s'executer sous des utilisateurs dedies et non privilegies :
+Configurer les services pour s'exécuter sous des utilisateurs dédiés et non privilégiés :
 
 ```ini
 [Service]
@@ -232,38 +232,38 @@ User=serviced
 Group=serviced
 ```
 
-> **Bonne pratique** : Creer un utilisateur et groupe specifique pour chaque service.
+> **Bonne pratique** : Créer un utilisateur et groupe spécifique pour chaque service.
 
-### Restreindre les capabilities et privileges
+### Restreindre les capabilities et privilèges
 
 **Limiter les capabilities :**
 ```ini
 CapabilityBoundingSet=CAP_SETGID CAP_SETUID
 ```
 
-**Accorder des capabilities specifiques :**
+**Accorder des capabilities spécifiques :**
 ```ini
 AmbientCapabilities=CAP_NET_BIND_SERVICE
 ```
 
-**Empecher l'acquisition de nouveaux privileges :**
+**Empêcher l'acquisition de nouveaux privilèges :**
 ```ini
 NoNewPrivileges=yes
 ```
 
-### Isolation du systeme de fichiers
+### Isolation du système de fichiers
 
 | Option | Description |
 |--------|-------------|
 | `ProtectSystem=full` ou `strict` | Remonte `/usr` et `/etc` en lecture seule |
-| `ProtectHome=read-only` ou `yes` | Controle l'acces aux repertoires home |
-| `ReadOnlyDirectories=` | Repertoires en lecture seule |
-| `InaccessibleDirectories=` | Repertoires completement inaccessibles |
-| `TemporaryFileSystem=` | Systeme de fichiers temporaire |
+| `ProtectHome=read-only` ou `yes` | Contrôle l'accès aux répertoires home |
+| `ReadOnlyDirectories=` | Répertoires en lecture seule |
+| `InaccessibleDirectories=` | Répertoires complètement inaccessibles |
+| `TemporaryFileSystem=` | Système de fichiers temporaire |
 
-### Analyser la securite avec systemd-analyze
+### Analyser la sécurité avec systemd-analyze
 
-**Analyser un service specifique :**
+**Analyser un service spécifique :**
 ```bash
 $ systemd-analyze security cups
 ```
@@ -273,55 +273,55 @@ $ systemd-analyze security cups
 $ systemd-analyze security
 ```
 
-Le score d'exposition va de 0.0 (tres securise) a 10.0 (tres expose).
+Le score d'exposition va de 0.0 (très sécurisé) à 10.0 (très exposé).
 
-> **Note** : Ce score est base sur les fonctionnalites de securite systemd utilisees, pas sur la securite inherente du service.
+> **Note** : Ce score est basé sur les fonctionnalités de sécurité systemd utilisées, pas sur la sécurité inhérente du service.
 
 **Analyser les performances :**
 ```bash
-# Services par temps de demarrage
+# Services par temps de démarrage
 $ systemd-analyze blame
 
-# Chaine critique de demarrage
+# Chaîne critique de démarrage
 $ systemd-analyze critical-chain
 ```
 
 ---
 
-## Planification des taches
+## Planification des tâches
 
 ### Cron jobs
 
-**Cron** est un outil classique pour automatiser les taches periodiques. Le daemon `crond` s'execute en arriere-plan et verifie chaque minute si des taches doivent etre executees.
+**Cron** est un outil classique pour automatiser les tâches périodiques. Le daemon `crond` s'exécute en arrière-plan et vérifie chaque minute si des tâches doivent être exécutées.
 
-**Structure d'une entree crontab :**
+**Structure d'une entrée crontab :**
 ```
 minute heure jour mois jour_semaine commande
 ```
 
-**Valeurs speciales :**
+**Valeurs spéciales :**
 | Symbole | Signification |
 |---------|---------------|
 | `*` | Toute valeur |
 | `-` | Plage (ex: 3-6) |
-| `/` | Pas (ex: */5 = toutes les 5 unites) |
+| `/` | Pas (ex: */5 = toutes les 5 unités) |
 | `,` | Liste (ex: 0,6 = samedi et dimanche) |
 
 **Exemples :**
 | Crontab | Signification |
 |---------|---------------|
-| `0 * * * *` | Chaque heure, a la minute 0 |
+| `0 * * * *` | Chaque heure, à la minute 0 |
 | `*/5 3-6 * * 0,6` | Toutes les 5 min, entre 3h et 6h, sam et dim |
-| `0 2 * * *` | Tous les jours a 2h du matin |
+| `0 2 * * *` | Tous les jours à 2h du matin |
 
 **Commandes cron :**
 | Commande | Description |
 |----------|-------------|
 | `crontab -l` | Lister les cron jobs de l'utilisateur |
-| `crontab -e` | Editer les cron jobs |
-| `cat /etc/crontab` | Voir le crontab systeme |
+| `crontab -e` | Éditer les cron jobs |
+| `cat /etc/crontab` | Voir le crontab système |
 
-**Repertoires cron systeme :**
+**Répertoires cron système :**
 - `/etc/cron.d/`
 - `/etc/cron.daily/`
 - `/etc/cron.weekly/`
@@ -329,11 +329,11 @@ minute heure jour mois jour_semaine commande
 
 ### Timers systemd
 
-Les **timers systemd** sont une alternative moderne a cron, avec une meilleure integration au systeme.
+Les **timers systemd** sont une alternative moderne à cron, avec une meilleure intégration au système.
 
 **Configuration requise :**
-1. Un fichier `.service` definissant l'action
-2. Un fichier `.timer` definissant quand declencher
+1. Un fichier `.service` définissant l'action
+2. Un fichier `.timer` définissant quand déclencher
 
 **Exemple de service `/etc/systemd/system/backup.service` :**
 ```ini
@@ -360,9 +360,9 @@ WantedBy=timers.target
 **Options de timer :**
 | Option | Description |
 |--------|-------------|
-| `OnCalendar=daily` | Tous les jours a minuit |
-| `OnCalendar=Mon *-*-* 06:00:00` | Tous les lundis a 6h |
-| `Persistent=true` | Execute immediatement si le systeme etait eteint |
+| `OnCalendar=daily` | Tous les jours à minuit |
+| `OnCalendar=Mon *-*-* 06:00:00` | Tous les lundis à 6h |
+| `Persistent=true` | Exécute immédiatement si le système était éteint |
 
 **Lister tous les timers :**
 ```bash
@@ -371,46 +371,46 @@ $ systemctl list-timers --all
 
 ---
 
-## Glossaire des sigles et definitions
+## Glossaire des sigles et définitions
 
-| Sigle/Terme | Definition |
+| Sigle/Terme | Définition |
 |-------------|------------|
-| **Service** | Processus en arriere-plan gere par le systeme d'init |
-| **Daemon** | Processus en arriere-plan de longue duree |
-| **systemd** | Systeme d'init moderne pour Linux |
-| **Unit** | Ressource geree par systemd (service, socket, timer...) |
+| **Service** | Processus en arrière-plan géré par le système d'init |
+| **Daemon** | Processus en arrière-plan de longue durée |
+| **systemd** | Système d'init moderne pour Linux |
+| **Unit** | Ressource gérée par systemd (service, socket, timer...) |
 | **Unit file** | Fichier de configuration d'une unit systemd |
-| **systemctl** | Commande pour controler systemd |
-| **journald** | Systeme de journalisation de systemd |
+| **systemctl** | Commande pour contrôler systemd |
+| **journald** | Système de journalisation de systemd |
 | **journalctl** | Commande pour lire les logs journald |
 | **rsyslog** | Service de journalisation traditionnel |
 | **Socket** | Point de terminaison pour la communication inter-processus |
-| **Socket activation** | Demarrage d'un service a la demande via socket |
-| **Cron** | Planificateur de taches classique Unix |
+| **Socket activation** | Démarrage d'un service à la demande via socket |
+| **Cron** | Planificateur de tâches classique Unix |
 | **Crontab** | Fichier de configuration cron |
 | **Timer** | Unit systemd pour la planification |
-| **polkit** | Service controlant les permissions pour les actions privilegiees |
-| **Persistence** | Technique d'attaquant pour maintenir l'acces apres redemarrage |
+| **polkit** | Service contrôlant les permissions pour les actions privilégiées |
+| **Persistence** | Technique d'attaquant pour maintenir l'accès après redémarrage |
 
 ---
 
-## Recapitulatif des commandes
+## Récapitulatif des commandes
 
 ### Gestion des services avec systemctl
 
 | Commande | Description |
 |----------|-------------|
-| `systemctl start service` | Demarrer un service |
-| `systemctl stop service` | Arreter un service |
-| `systemctl restart service` | Redemarrer un service |
+| `systemctl start service` | Démarrer un service |
+| `systemctl stop service` | Arrêter un service |
+| `systemctl restart service` | Redémarrer un service |
 | `systemctl reload service` | Recharger la configuration |
 | `systemctl status service` | Voir le statut |
-| `systemctl enable service` | Activer au demarrage |
-| `systemctl disable service` | Desactiver au demarrage |
-| `systemctl is-enabled service` | Verifier si active au demarrage |
+| `systemctl enable service` | Activer au démarrage |
+| `systemctl disable service` | Désactiver au démarrage |
+| `systemctl is-enabled service` | Vérifier si activé au démarrage |
 | `systemctl daemon-reload` | Relire les fichiers unit |
 | `systemctl --type=service` | Lister les services |
-| `systemctl --failed` | Lister les services echoues |
+| `systemctl --failed` | Lister les services échoués |
 | `systemctl list-unit-files` | Lister tous les fichiers unit |
 | `systemctl cat service` | Afficher le fichier unit |
 
@@ -420,10 +420,10 @@ $ systemctl list-timers --all
 |----------|-------------|
 | `journalctl` | Tous les logs |
 | `journalctl -u service` | Logs d'un service |
-| `journalctl -f` | Suivre en temps reel |
-| `journalctl -e` | Aller a la fin |
-| `journalctl --since "1 hour ago"` | Logs recents |
-| `journalctl -b` | Logs depuis le demarrage |
+| `journalctl -f` | Suivre en temps réel |
+| `journalctl -e` | Aller à la fin |
+| `journalctl --since "1 hour ago"` | Logs récents |
+| `journalctl -b` | Logs depuis le démarrage |
 
 ### Sockets
 
@@ -436,19 +436,19 @@ $ systemctl list-timers --all
 
 | Commande | Description |
 |----------|-------------|
-| `systemd-analyze security` | Analyser la securite de tous les services |
+| `systemd-analyze security` | Analyser la sécurité de tous les services |
 | `systemd-analyze security service` | Analyser un service |
-| `systemd-analyze blame` | Temps de demarrage par service |
-| `systemd-analyze critical-chain` | Chaine critique de demarrage |
+| `systemd-analyze blame` | Temps de démarrage par service |
+| `systemd-analyze critical-chain` | Chaîne critique de démarrage |
 
 ### Cron
 
 | Commande | Description |
 |----------|-------------|
 | `crontab -l` | Lister les cron jobs |
-| `crontab -e` | Editer les cron jobs |
+| `crontab -e` | Éditer les cron jobs |
 | `crontab -r` | Supprimer tous les cron jobs |
-| `cat /etc/crontab` | Voir le crontab systeme |
+| `cat /etc/crontab` | Voir le crontab système |
 
 ### Timers systemd
 
@@ -456,7 +456,7 @@ $ systemctl list-timers --all
 |----------|-------------|
 | `systemctl list-timers` | Lister tous les timers |
 | `systemctl list-timers --all` | Inclure les timers inactifs |
-| `systemctl start timer.timer` | Demarrer un timer |
+| `systemctl start timer.timer` | Démarrer un timer |
 | `systemctl enable timer.timer` | Activer un timer |
 
 ### Autres
@@ -468,17 +468,28 @@ $ systemctl list-timers --all
 
 ### Fichiers importants
 
-| Fichier/Repertoire | Description |
+| Fichier/Répertoire | Description |
 |--------------------|-------------|
-| `/lib/systemd/system/` | Fichiers unit systeme |
-| `/etc/systemd/system/` | Fichiers unit personnalises |
+| `/lib/systemd/system/` | Fichiers unit système |
+| `/etc/systemd/system/` | Fichiers unit personnalisés |
 | `~/.config/systemd/user/` | Fichiers unit utilisateur |
 | `/var/log/` | Logs rsyslog |
-| `/var/log/syslog` | Log systeme general |
+| `/var/log/syslog` | Log système général |
 | `/var/log/auth.log` | Logs d'authentification |
-| `/etc/crontab` | Crontab systeme |
-| `/etc/cron.d/` | Cron jobs systeme |
-| `/etc/cron.daily/` | Taches quotidiennes |
+| `/etc/crontab` | Crontab système |
+| `/etc/cron.d/` | Cron jobs système |
+| `/etc/cron.daily/` | Tâches quotidiennes |
+
+---
+
+## Ressources pratiques - TryHackMe / HackTheBox
+
+| Plateforme | Lien | Description |
+|------------|------|-------------|
+| TryHackMe | [Linux Privilege Escalation](https://tryhackme.com/room/linprivesc) | Services et persistence |
+| TryHackMe | [Linux Hardening](https://tryhackme.com/room/dvlinuxhardening) | Durcissement des services |
+| TryHackMe | [Linux Forensics](https://tryhackme.com/room/linuxforensics) | Investigation des services |
+| HackTheBox | [Starting Point](https://app.hackthebox.com/starting-point) | Machines avec services vulnérables |
 
 ---
 

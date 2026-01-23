@@ -1,44 +1,44 @@
 # Les processus Linux
 
-**Duree : 70 min**
+**Durée : 70 min**
 
 ## Ce que vous allez apprendre dans ce cours
 
-Hier, nous avons explore comment les permissions definissent qui peut acceder aux fichiers, executer des commandes et modifier les ressources systeme. Mais ce ne sont pas les utilisateurs qui font le travail directement : les processus agissent en leur nom. Dans cette lecon, vous apprendrez a :
+Hier, nous avons exploré comment les permissions définissent qui peut accéder aux fichiers, exécuter des commandes et modifier les ressources système. Mais ce ne sont pas les utilisateurs qui font le travail directement : les processus agissent en leur nom. Dans cette leçon, vous apprendrez à :
 
 - identifier les processus actifs,
-- les controler avec des signaux et des priorites,
-- inspecter les details d'un processus,
-- limiter les ressources consommees par un processus.
+- les contrôler avec des signaux et des priorités,
+- inspecter les détails d'un processus,
+- limiter les ressources consommées par un processus.
 
 ---
 
 ## Qu'est-ce qu'un processus ?
 
-Un **processus** sous Linux est une instance d'un programme en cours d'execution par le systeme d'exploitation. Quand vous executez une commande, lancez une application ou executez un script, Linux cree un processus pour gerer cette tache et lui attribue un **PID** (Process ID) unique.
+Un **processus** sous Linux est une instance d'un programme en cours d'exécution par le système d'exploitation. Quand vous exécutez une commande, lancez une application ou exécutez un script, Linux crée un processus pour gérer cette tâche et lui attribue un **PID** (Process ID) unique.
 
 ### Programme vs processus
 
 | Concept | Description |
 |---------|-------------|
-| **Programme** | Ensemble passif d'instructions et de donnees stockees sur disque |
-| **Processus** | Execution active de ces instructions, avec registres CPU et regions memoire (heap, stack) |
+| **Programme** | Ensemble passif d'instructions et de données stockées sur disque |
+| **Processus** | Exécution active de ces instructions, avec registres CPU et régions mémoire (heap, stack) |
 
 ### Environnement de processus
 
-Un processus possede :
+Un processus possède :
 - Son propre espace d'adressage
 - Ses fichiers ouverts
 - Ses variables d'environnement
-- Ses ressources systeme
+- Ses ressources système
 
 ![Environnement de processus](assets/Process_environment.png)
 
-Cette isolation garantit que les processus n'interferent pas entre eux.
+Cette isolation garantit que les processus n'interfèrent pas entre eux.
 
-### Creation d'un processus
+### Création d'un processus
 
-Un nouveau processus est cree quand un processus existant fait une copie exacte de lui-meme :
+Un nouveau processus est créé quand un processus existant fait une copie exacte de lui-même :
 - Le nouveau processus est le **processus enfant**
 - L'original est le **processus parent**
 
@@ -46,20 +46,20 @@ Un nouveau processus est cree quand un processus existant fait une copie exacte 
 
 ![Diagramme touch file.txt](assets/touch_file1.png)
 
-1. `bash` utilise l'appel systeme `fork()` pour creer un processus enfant
-2. La famille d'appels systeme `exec()` remplace le programme bash par `touch`
-3. `touch` s'execute : utilise memoire et CPU, interagit avec le noyau
-4. Une fois termine, `touch` appelle `exit()`, envoyant un signal au parent
-5. Le parent nettoie le processus avec l'appel systeme `wait()`
+1. `bash` utilise l'appel système `fork()` pour créer un processus enfant
+2. La famille d'appels système `exec()` remplace le programme bash par `touch`
+3. `touch` s'exécute : utilise mémoire et CPU, interagit avec le noyau
+4. Une fois terminé, `touch` appelle `exit()`, envoyant un signal au parent
+5. Le parent nettoie le processus avec l'appel système `wait()`
 
 ### Threads vs processus
 
 | Concept | Description |
 |---------|-------------|
-| **Processus** | Instance d'un programme avec son propre espace memoire |
-| **Thread** | Unite d'execution plus petite au sein d'un processus, partageant la memoire |
+| **Processus** | Instance d'un programme avec son propre espace mémoire |
+| **Thread** | Unité d'exécution plus petite au sein d'un processus, partageant la mémoire |
 
-Les threads sont plus legers et efficaces pour le traitement parallele.
+Les threads sont plus légers et efficaces pour le traitement parallèle.
 
 ---
 
@@ -67,19 +67,19 @@ Les threads sont plus legers et efficaces pour le traitement parallele.
 
 ### La commande ps
 
-`ps` (process status) donne un instantane des processus en cours. C'est un outil non interactif.
+`ps` (process status) donne un instantané des processus en cours. C'est un outil non interactif.
 
 ```bash
 # Processus du shell courant
 $ ps
 
-# Tous les processus en format detaille
+# Tous les processus en format détaillé
 $ ps aux
 ```
 
 **Signification des options :**
 - `a` : processus de tous les utilisateurs
-- `u` : format oriente utilisateur
+- `u` : format orienté utilisateur
 - `x` : inclut les processus sans terminal
 
 **Explication des colonnes de ps aux :**
@@ -91,29 +91,29 @@ $ ps aux
 $ ps aux | grep ssh
 ```
 
-### Etats des processus (STAT)
+### États des processus (STAT)
 
-| Etat | Symbole | Description |
+| État | Symbole | Description |
 |------|---------|-------------|
-| Running | `R` | En cours d'execution ou pret a s'executer |
-| Sleeping | `S` | En attente d'un evenement (entree utilisateur, donnees reseau...) |
-| Disk Sleep | `D` | Sommeil non interruptible (attente I/O) - ne peut pas etre tue |
-| Stopped | `T` | Arrete, souvent pour debogage |
-| Zombie | `Z` | Termine mais le parent n'a pas collecte son statut de sortie |
-| Dead | `X` | Rare, processus plus en cours mais pas completement nettoye |
+| Running | `R` | En cours d'exécution ou prêt à s'exécuter |
+| Sleeping | `S` | En attente d'un événement (entrée utilisateur, données réseau...) |
+| Disk Sleep | `D` | Sommeil non interruptible (attente I/O) - ne peut pas être tué |
+| Stopped | `T` | Arrêté, souvent pour débogage |
+| Zombie | `Z` | Terminé mais le parent n'a pas collecté son statut de sortie |
+| Dead | `X` | Rare, processus plus en cours mais pas complètement nettoyé |
 
-**Drapeaux supplementaires :**
+**Drapeaux supplémentaires :**
 | Drapeau | Signification |
 |---------|---------------|
-| `<` | Haute priorite (plus de temps CPU) |
-| `N` | Basse priorite |
-| `L` | Pages verrouillees en memoire |
+| `<` | Haute priorité (plus de temps CPU) |
+| `N` | Basse priorité |
+| `L` | Pages verrouillées en mémoire |
 | `s` | Leader de session |
 | `+` | En premier plan |
 
 ### top et htop
 
-Contrairement a `ps`, `top` et `htop` offrent une vue en temps reel, rafraichie toutes les quelques secondes.
+Contrairement à `ps`, `top` et `htop` offrent une vue en temps réel, rafraîchie toutes les quelques secondes.
 
 **Commande top :**
 ```bash
@@ -126,13 +126,13 @@ $ top
 | Touche | Action |
 |--------|--------|
 | `P` | Trier par CPU |
-| `M` | Trier par memoire |
+| `M` | Trier par mémoire |
 | `k` | Tuer un processus (entrer PID) |
 | `Shift+f` | Suivre un processus |
 | `q` | Quitter |
 
-**htop** est une alternative amelioree avec :
-- Barres d'utilisation colorees
+**htop** est une alternative améliorée avec :
+- Barres d'utilisation colorées
 - Support souris
 - F5 pour l'arbre des processus
 - F3 pour rechercher
@@ -149,7 +149,7 @@ $ pgrep ssh
 # Avec noms de processus
 $ pgrep -l ssh
 
-# Correspondance sur la ligne de commande complete
+# Correspondance sur la ligne de commande complète
 $ pgrep -lf systemd
 ```
 
@@ -161,30 +161,30 @@ $ pidof sshd
 
 ### Que surveiller ?
 
-#### Utilisation elevee des ressources
-- CPU eleve : application emballee, code inefficace, attaque DoS
-- RAM elevee : fuites memoire, swap excessif
+#### Utilisation élevée des ressources
+- CPU élevé : application emballée, code inefficace, attaque DoS
+- RAM élevée : fuites mémoire, swap excessif
 
 ```bash
 $ ps aux --sort=-%cpu | head
 ```
 
-#### Processus non reactifs ou bloques
-- Processus en etat `D` (Disk Sleep) ou `Z` (Zombie)
-- Peuvent causer l'epuisement des ressources
+#### Processus non réactifs ou bloqués
+- Processus en état `D` (Disk Sleep) ou `Z` (Zombie)
+- Peuvent causer l'épuisement des ressources
 
 ```bash
 # Identifier les zombies
 $ ps aux | awk '$8=="Z"'
 ```
 
-#### Problemes de securite
-- Processus inconnus ou deguises
+#### Problèmes de sécurité
+- Processus inconnus ou déguisés
 - Relations parent-enfant suspectes
-- Programmes executant depuis `/tmp` ou autres repertoires non standards
+- Programmes exécutant depuis `/tmp` ou autres répertoires non standards
 
 ```bash
-# Executables suspects
+# Exécutables suspects
 $ ps aux | grep '/tmp\|/dev\|/home'
 
 # Processus bash
@@ -194,22 +194,22 @@ $ ps aux | grep '[b]ash'
 $ watch 'ps -eo pid,ppid,cmd --sort=start_time | tail'
 ```
 
-> **Processus deguises** : Les attaquants nomment souvent leurs processus malveillants pour ressembler a des processus legitimes (kworker, sshd, cron) ou utilisent des fautes de frappe subtiles.
+> **Processus déguisés** : Les attaquants nomment souvent leurs processus malveillants pour ressembler à des processus légitimes (kworker, sshd, cron) ou utilisent des fautes de frappe subtiles.
 
 ---
 
-## Controler les processus
+## Contrôler les processus
 
 ### Envoyer des signaux avec kill et killall
 
-Les **signaux** sont une forme de communication inter-processus (IPC) pour notifier qu'un evenement s'est produit.
+Les **signaux** sont une forme de communication inter-processus (IPC) pour notifier qu'un événement s'est produit.
 
 **Envoyer un signal avec kill :**
 ```bash
-# SIGTERM par defaut (termine proprement)
+# SIGTERM par défaut (termine proprement)
 $ kill 279494
 
-# Signal specifique
+# Signal spécifique
 $ kill -s SIGKILL 279530
 ```
 
@@ -219,21 +219,21 @@ $ killall firefox
 ```
 
 **Signaux courants :**
-| Signal | Numero | Description |
+| Signal | Numéro | Description |
 |--------|--------|-------------|
 | SIGTERM | 15 | Demande de terminer proprement |
-| SIGKILL | 9 | Force la terminaison (ne peut pas etre ignore) |
-| SIGINT | 2 | Envoye avec Ctrl+C |
-| SIGHUP | 1 | Deconnexion du terminal / recharger la configuration |
+| SIGKILL | 9 | Force la terminaison (ne peut pas être ignoré) |
+| SIGINT | 2 | Envoyé avec Ctrl+C |
+| SIGHUP | 1 | Déconnexion du terminal / recharger la configuration |
 
 ```bash
 # Lister tous les signaux
 $ kill -l
 ```
 
-### Jobs en arriere-plan et premier plan
+### Jobs en arrière-plan et premier plan
 
-Quand vous executez une commande avec `&`, elle s'execute en arriere-plan :
+Quand vous exécutez une commande avec `&`, elle s'exécute en arrière-plan :
 
 ```bash
 $ sleep 1000 &
@@ -243,23 +243,23 @@ $ sleep 1000 &
 **Gestion des jobs :**
 | Action | Commande |
 |--------|----------|
-| Lancer en arriere-plan | `commande &` |
+| Lancer en arrière-plan | `commande &` |
 | Suspendre | `Ctrl+Z` |
-| Reprendre en arriere-plan | `bg` |
+| Reprendre en arrière-plan | `bg` |
 | Ramener en premier plan | `fg %[job_id]` |
 | Lister les jobs | `jobs` |
 
-### Changer les priorites : nice et renice
+### Changer les priorités : nice et renice
 
-Le **scheduler** du noyau decide quel processus obtient du temps CPU. La valeur de **niceness** (NI) influence cette decision.
+Le **scheduler** du noyau décide quel processus obtient du temps CPU. La valeur de **niceness** (NI) influence cette décision.
 
 | Valeur nice | Signification |
 |-------------|---------------|
-| -20 | Priorite la plus haute (moins "gentil") |
-| 0 | Par defaut |
-| 19 | Priorite la plus basse (plus "gentil") |
+| -20 | Priorité la plus haute (moins "gentil") |
+| 0 | Par défaut |
+| 19 | Priorité la plus basse (plus "gentil") |
 
-**Definir la priorite au lancement :**
+**Définir la priorité au lancement :**
 ```bash
 $ nice -n 10 sleep 1000 &
 ```
@@ -269,7 +269,7 @@ $ nice -n 10 sleep 1000 &
 $ renice -n 5 -p 279887
 ```
 
-> Seul root peut definir des valeurs negatives (priorite plus haute).
+> Seul root peut définir des valeurs négatives (priorité plus haute).
 
 ---
 
@@ -277,15 +277,15 @@ $ renice -n 5 -p 279887
 
 ### Inspecter via /proc
 
-Chaque processus a un repertoire sous `/proc` nomme d'apres son PID, contenant des fichiers avec des informations en temps reel.
+Chaque processus a un répertoire sous `/proc` nommé d'après son PID, contenant des fichiers avec des informations en temps réel.
 
 | Fichier | Contenu |
 |---------|---------|
-| `/proc/[pid]/status` | Resume lisible : nom, etat, PID, PPID |
-| `/proc/[pid]/cmdline` | Ligne de commande complete (separee par \0) |
-| `/proc/[pid]/environ` | Variables d'environnement (separees par \0) |
-| `/proc/[pid]/cwd` | Lien vers le repertoire de travail |
-| `/proc/[pid]/exe` | Lien vers le binaire execute |
+| `/proc/[pid]/status` | Résumé lisible : nom, état, PID, PPID |
+| `/proc/[pid]/cmdline` | Ligne de commande complète (séparée par \0) |
+| `/proc/[pid]/environ` | Variables d'environnement (séparées par \0) |
+| `/proc/[pid]/cwd` | Lien vers le répertoire de travail |
+| `/proc/[pid]/exe` | Lien vers le binaire exécuté |
 | `/proc/[pid]/fd/` | Descripteurs de fichiers ouverts |
 
 ```bash
@@ -294,20 +294,20 @@ $ ll /proc/280027/exe
 $ ll /proc/280027/fd
 ```
 
-> `/proc/` est un pseudo-systeme de fichiers : pas stocke sur disque, genere a la volee par le noyau.
+> `/proc/` est un pseudo-système de fichiers : pas stocké sur disque, généré à la volée par le noyau.
 
-### Daemons et hierarchies de processus
+### Daemons et hiérarchies de processus
 
-La plupart des processus font partie d'une hierarchie parent-enfant, commencant par **systemd** (PID 1), le premier processus espace utilisateur lance par le noyau.
+La plupart des processus font partie d'une hiérarchie parent-enfant, commençant par **systemd** (PID 1), le premier processus espace utilisateur lancé par le noyau.
 
 ```bash
 $ ps --forest
 $ pstree
 ```
 
-Un **daemon** est un processus en arriere-plan de longue duree, typiquement :
-- Detache de tout terminal
-- Cree une nouvelle session (devient leader de session)
+Un **daemon** est un processus en arrière-plan de longue durée, typiquement :
+- Détaché de tout terminal
+- Crée une nouvelle session (devient leader de session)
 - Ferme stdin/stdout/stderr ou les redirige vers /dev/null
 - Fork et laisse le parent se terminer
 
@@ -317,8 +317,8 @@ Exemple : `sshd` - le daemon OpenSSH.
 
 | Type | Description |
 |------|-------------|
-| **Zombie** | Processus termine dont le parent n'a pas lu le statut de sortie. Visible avec etat `Z`. Ne consomme pas de ressources mais encombre la table des processus. |
-| **Orphelin** | Processus dont le parent est mort. Automatiquement re-parent a systemd. |
+| **Zombie** | Processus terminé dont le parent n'a pas lu le statut de sortie. Visible avec état `Z`. Ne consomme pas de ressources mais encombre la table des processus. |
+| **Orphelin** | Processus dont le parent est mort. Automatiquement re-parenté à systemd. |
 
 ---
 
@@ -326,9 +326,9 @@ Exemple : `sshd` - le daemon OpenSSH.
 
 ### Linux Capabilities : getcap, setcap
 
-Les **capabilities** divisent le modele de privileges root en unites specifiques, permettant d'attribuer des permissions precises sans acces root complet.
+Les **capabilities** divisent le modèle de privilèges root en unités spécifiques, permettant d'attribuer des permissions précises sans accès root complet.
 
-**Voir les capabilities d'un executable :**
+**Voir les capabilities d'un exécutable :**
 ```bash
 $ getcap /usr/bin/ping
 /usr/bin/ping cap_net_raw=ep
@@ -339,9 +339,9 @@ $ getcap /usr/bin/ping
 |--------|---------------|
 | `p` (permitted) | Le processus peut utiliser cette capability |
 | `e` (effective) | Le processus utilise cette capability |
-| `i` (inheritable) | La capability est passee lors de exec() |
+| `i` (inheritable) | La capability est passée lors de exec() |
 
-**Definir une capability :**
+**Définir une capability :**
 ```bash
 $ sudo setcap cap_net_bind_service=+ep /usr/local/bin/my_server
 ```
@@ -352,14 +352,14 @@ $ sudo setcap cap_net_bind_service=+ep /usr/local/bin/my_server
 | CAP_NET_BIND_SERVICE | Lier aux ports < 1024 |
 | CAP_NET_RAW | Utiliser les raw sockets (ping) |
 | CAP_SYS_PTRACE | Tracer d'autres processus |
-| CAP_CHOWN | Changer le proprietaire des fichiers |
+| CAP_CHOWN | Changer le propriétaire des fichiers |
 | CAP_DAC_OVERRIDE | Contourner les permissions de fichiers |
 | CAP_SETUID | Changer l'UID du processus |
-| CAP_SYS_ADMIN | Super-pouvoir - nombreuses actions privilegiees |
+| CAP_SYS_ADMIN | Super-pouvoir - nombreuses actions privilégiées |
 
 ### Limites de ressources : ulimit
 
-`ulimit` affiche ou definit les limites de ressources pour les processus.
+`ulimit` affiche ou définit les limites de ressources pour les processus.
 
 ```bash
 # Voir la limite des fichiers ouverts
@@ -372,7 +372,7 @@ $ ulimit -n
 |--------|--------|
 | `-n` | Nombre max de descripteurs de fichiers ouverts |
 | `-u` | Nombre max de processus par utilisateur |
-| `-v` | Taille max de memoire virtuelle (KB) |
+| `-v` | Taille max de mémoire virtuelle (KB) |
 | `-t` | Temps CPU max (secondes) |
 
 **Modifier les limites d'un processus en cours :**
@@ -393,64 +393,64 @@ julia   soft   nofile  1024
 
 ---
 
-## Glossaire des sigles et definitions
+## Glossaire des sigles et définitions
 
-| Sigle/Terme | Definition |
+| Sigle/Terme | Définition |
 |-------------|------------|
 | **PID** | Process ID - Identifiant unique d'un processus |
 | **PPID** | Parent Process ID - PID du processus parent |
-| **UID/GID** | User/Group ID sous lequel le processus s'execute |
-| **Thread** | Unite d'execution au sein d'un processus, partageant la memoire |
-| **Daemon** | Processus en arriere-plan de longue duree |
-| **Zombie** | Processus termine dont le parent n'a pas collecte le statut |
+| **UID/GID** | User/Group ID sous lequel le processus s'exécute |
+| **Thread** | Unité d'exécution au sein d'un processus, partageant la mémoire |
+| **Daemon** | Processus en arrière-plan de longue durée |
+| **Zombie** | Processus terminé dont le parent n'a pas collecté le statut |
 | **Orphelin** | Processus dont le parent est mort |
-| **Signal** | Notification asynchrone envoyee a un processus |
-| **Nice/Niceness** | Valeur influencant la priorite d'un processus (-20 a 19) |
-| **Scheduler** | Composant du noyau decidant quel processus obtient du temps CPU |
+| **Signal** | Notification asynchrone envoyée à un processus |
+| **Nice/Niceness** | Valeur influençant la priorité d'un processus (-20 à 19) |
+| **Scheduler** | Composant du noyau décidant quel processus obtient du temps CPU |
 | **IPC** | Inter-Process Communication - Communication inter-processus |
-| **Capability** | Privilege specifique pouvant etre accorde sans acces root complet |
+| **Capability** | Privilège spécifique pouvant être accordé sans accès root complet |
 | **ulimit** | Limites de ressources pour les processus |
-| **fork()** | Appel systeme creant un processus enfant |
-| **exec()** | Appel systeme remplacant le programme d'un processus |
+| **fork()** | Appel système créant un processus enfant |
+| **exec()** | Appel système remplaçant le programme d'un processus |
 
 ---
 
-## Recapitulatif des commandes
+## Récapitulatif des commandes
 
 ### Surveillance des processus
 
 | Commande | Description |
 |----------|-------------|
-| `ps` | Instantane des processus du shell courant |
-| `ps aux` | Tous les processus en detail |
+| `ps` | Instantané des processus du shell courant |
+| `ps aux` | Tous les processus en détail |
 | `ps aux --sort=-%cpu` | Trier par utilisation CPU |
 | `ps --forest` | Afficher l'arbre des processus |
-| `top` | Vue en temps reel des processus |
-| `htop` | Version amelioree de top |
+| `top` | Vue en temps réel des processus |
+| `htop` | Version améliorée de top |
 | `pgrep motif` | Trouver PID par motif |
 | `pgrep -l motif` | Avec noms de processus |
 | `pidof nom` | Trouver PID par nom exact |
 
-### Controle des processus
+### Contrôle des processus
 
 | Commande | Description |
 |----------|-------------|
 | `kill PID` | Envoyer SIGTERM (terminer proprement) |
 | `kill -9 PID` | Envoyer SIGKILL (forcer la terminaison) |
-| `kill -s SIGNAL PID` | Envoyer un signal specifique |
+| `kill -s SIGNAL PID` | Envoyer un signal spécifique |
 | `killall nom` | Tuer tous les processus par nom |
 | `jobs` | Lister les jobs du shell |
-| `bg` | Reprendre en arriere-plan |
+| `bg` | Reprendre en arrière-plan |
 | `fg` | Ramener en premier plan |
 | `Ctrl+C` | Envoyer SIGINT (interrompre) |
 | `Ctrl+Z` | Suspendre le processus |
 
-### Priorite
+### Priorité
 
 | Commande | Description |
 |----------|-------------|
-| `nice -n 10 commande` | Lancer avec priorite reduite |
-| `renice -n 5 -p PID` | Modifier la priorite d'un processus |
+| `nice -n 10 commande` | Lancer avec priorité réduite |
+| `renice -n 5 -p PID` | Modifier la priorité d'un processus |
 
 ### Inspection /proc
 
@@ -460,7 +460,7 @@ julia   soft   nofile  1024
 | `cat /proc/PID/cmdline` | Ligne de commande |
 | `cat /proc/PID/environ` | Variables d'environnement |
 | `ls -l /proc/PID/fd` | Fichiers ouverts |
-| `ls -l /proc/PID/exe` | Lien vers l'executable |
+| `ls -l /proc/PID/exe` | Lien vers l'exécutable |
 | `cat /proc/PID/limits` | Limites de ressources |
 
 ### Capabilities et limites
@@ -468,7 +468,7 @@ julia   soft   nofile  1024
 | Commande | Description |
 |----------|-------------|
 | `getcap fichier` | Voir les capabilities d'un fichier |
-| `setcap cap=+ep fichier` | Definir une capability |
+| `setcap cap=+ep fichier` | Définir une capability |
 | `ulimit -a` | Afficher toutes les limites |
 | `ulimit -n` | Limite de fichiers ouverts |
 | `prlimit --pid PID` | Voir/modifier les limites d'un processus |
@@ -479,6 +479,16 @@ julia   soft   nofile  1024
 |----------|-------------|
 | `pstree` | Arbre des processus |
 | `kill -l` | Lister tous les signaux |
+
+---
+
+## Ressources pratiques - TryHackMe / HackTheBox
+
+| Plateforme | Lien | Description |
+|------------|------|-------------|
+| TryHackMe | [Linux Fundamentals Part 3](https://tryhackme.com/room/linuxfundamentalspart3) | Gestion des processus |
+| TryHackMe | [Linux Process Analysis](https://tryhackme.com/room/dvlinuxprocessanalysis) | Analyse de processus |
+| TryHackMe | [Linux Forensics](https://tryhackme.com/room/linuxforensics) | Investigation forensique |
 
 ---
 

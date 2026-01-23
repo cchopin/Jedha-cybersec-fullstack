@@ -1,118 +1,118 @@
-# Le systeme Linux
+# Le système Linux
 
-**Duree : 30 min**
+**Durée : 30 min**
 
 ## Ce que vous allez apprendre dans ce cours
 
-Commencons par presenter le systeme d'exploitation Linux : son histoire, ses composants principaux et comment il organise et interagit avec les ressources. Dans cette lecon, vous allez :
+Commençons par présenter le système d'exploitation Linux : son histoire, ses composants principaux et comment il organise et interagit avec les ressources. Dans cette leçon, vous allez :
 
-- enfin connaitre la difference entre Unix et Linux,
-- identifier les composants principaux du systeme Linux,
-- choisir votre distribution preferee parmi les 600 disponibles,
-- comprendre ce qui se passe quand vous executez une commande shell.
+- enfin connaître la différence entre Unix et Linux,
+- identifier les composants principaux du système Linux,
+- choisir votre distribution préférée parmi les 600 disponibles,
+- comprendre ce qui se passe quand vous exécutez une commande shell.
 
 ---
 
-## Introduction a Linux
+## Introduction à Linux
 
-Linux est un systeme d'exploitation open source cree en 1991 par Linus Torvalds. Il est compose du noyau Linux (kernel), qui est le composant central responsable de la gestion des ressources materielles, et de divers autres composants logiciels qui en font un systeme d'exploitation complet.
+Linux est un système d'exploitation open source créé en 1991 par Linus Torvalds. Il est composé du noyau Linux (kernel), qui est le composant central responsable de la gestion des ressources matérielles, et de divers autres composants logiciels qui en font un système d'exploitation complet.
 
-Generalement, vous rencontrerez Linux sous forme de **distribution** : en soi, le systeme Linux fournit un environnement minimal et manque de fonctionnalites conviviales, donc ce qui est utilise est en realite une distribution. Une distribution Linux (souvent abregee "distro") est une version packagee du systeme Linux qui inclut :
+Généralement, vous rencontrerez Linux sous forme de **distribution** : en soi, le système Linux fournit un environnement minimal et manque de fonctionnalités conviviales, donc ce qui est utilisé est en réalité une distribution. Une distribution Linux (souvent abrégée "distro") est une version packagée du système Linux qui inclut :
 
 - le noyau Linux,
-- un systeme de gestion de paquets,
-- des logiciels supplementaires tels que des environnements de bureau, des navigateurs web...
+- un système de gestion de paquets,
+- des logiciels supplémentaires tels que des environnements de bureau, des navigateurs web...
 
 Voici quelques distributions Linux courantes :
 
 | Distribution | Description |
 |--------------|-------------|
-| **Debian** | Une des premieres distributions, avec un fort engagement envers les principes du logiciel libre et une gestion de projet democratique |
-| **Ubuntu** | Derivee de Debian, une des distributions les plus populaires grace a son interface conviviale et son support communautaire |
-| **Kali Linux** | Basee sur Debian, concue pour les tests d'intrusion, le hacking ethique et l'investigation numerique |
-| **Alpine Linux** | Distribution legere proche de l'experience Linux de base, souvent utilisee pour la conteneurisation grace a sa taille minimale |
+| **Debian** | Une des premières distributions, avec un fort engagement envers les principes du logiciel libre et une gestion de projet démocratique |
+| **Ubuntu** | Dérivée de Debian, une des distributions les plus populaires grâce à son interface conviviale et son support communautaire |
+| **Kali Linux** | Basée sur Debian, conçue pour les tests d'intrusion, le hacking éthique et l'investigation numérique |
+| **Alpine Linux** | Distribution légère proche de l'expérience Linux de base, souvent utilisée pour la conteneurisation grâce à sa taille minimale |
 
-La flexibilite et l'evolutivite de Linux en font un systeme tres polyvalent : vous pouvez l'installer sur un ordinateur personnel comme Windows, mais aussi sur un serveur web, une TV connectee, un routeur, un telephone mobile (Android est base sur le noyau Linux) ou un supercalculateur.
+La flexibilité et l'évolutivité de Linux en font un système très polyvalent : vous pouvez l'installer sur un ordinateur personnel comme Windows, mais aussi sur un serveur web, une TV connectée, un routeur, un téléphone mobile (Android est basé sur le noyau Linux) ou un supercalculateur.
 
 ### Unix, GNU et Linux
 
-Vous avez peut-etre entendu que Linux est un systeme de type Unix, ou meme vu Linux appele GNU/Linux. Voici une breve lecon d'histoire :
+Vous avez peut-être entendu que Linux est un système de type Unix, ou même vu Linux appelé GNU/Linux. Voici une brève leçon d'histoire :
 
-- **Unix** : systeme d'exploitation developpe en 1969, servant de fondation a de nombreux systemes modernes comme Linux et macOS. C'est le premier OS base sur le langage C. C'est un systeme proprietaire.
+- **Unix** : système d'exploitation développé en 1969, servant de fondation à de nombreux systèmes modernes comme Linux et macOS. C'est le premier OS basé sur le langage C. C'est un système propriétaire.
 
-- **Projet GNU** : initie en 1983 par Richard Stallman pour creer un systeme d'exploitation libre de type Unix. Ce projet a produit des outils critiques comme le compilateur GCC et Bash, mais manquait de composants bas niveau.
+- **Projet GNU** : initié en 1983 par Richard Stallman pour créer un système d'exploitation libre de type Unix. Ce projet a produit des outils critiques comme le compilateur GCC et Bash, mais manquait de composants bas niveau.
 
-- **Linux** : le noyau Linux a comble ce vide, et ce que nous appelons Linux est en fait une combinaison des outils GNU et du noyau Linux pour former le systeme GNU/Linux.
+- **Linux** : le noyau Linux a comblé ce vide, et ce que nous appelons Linux est en fait une combinaison des outils GNU et du noyau Linux pour former le système GNU/Linux.
 
 ---
 
-## De quoi est compose Linux ?
+## De quoi est composé Linux ?
 
-Du plus bas niveau aux composants de plus haut niveau, voici les elements d'un systeme Linux :
+Du plus bas niveau aux composants de plus haut niveau, voici les éléments d'un système Linux :
 
 ![Composants de Linux](assets/Linux_components.png)
 
 | Composant | Description |
 |-----------|-------------|
-| **Bootloader** | Premier logiciel qui s'execute au demarrage, son role principal est de charger et demarrer le noyau. Exemple : GRUB |
-| **Kernel (noyau)** | Coeur du systeme, gere les ressources materielles (CPU, memoire, peripheriques). Fonctions cles : gestion des processus, gestion memoire, pilotes de peripheriques, operations sur les fichiers, reseau |
-| **Systeme d'init** | Premier processus demarre par le noyau et dernier a se terminer. Gere tous les autres processus. Les systemes modernes utilisent **systemd** |
-| **Daemons** | Processus en arriere-plan qui executent des taches specifiques (services reseau, journalisation...) |
-| **Serveur graphique** | Gere les elements graphiques et les affiche a l'ecran. Exemple : X Window System (X11) |
-| **Environnement de bureau** | Fournit une interface utilisateur complete (bureau, barre des taches, icones). Exemples : GNOME, KDE, XFCE |
-| **Applications** | Logiciels pour les utilisateurs (editeurs de texte, navigateurs, lecteurs video...) |
+| **Bootloader** | Premier logiciel qui s'exécute au démarrage, son rôle principal est de charger et démarrer le noyau. Exemple : GRUB |
+| **Kernel (noyau)** | Cœur du système, gère les ressources matérielles (CPU, mémoire, périphériques). Fonctions clés : gestion des processus, gestion mémoire, pilotes de périphériques, opérations sur les fichiers, réseau |
+| **Système d'init** | Premier processus démarré par le noyau et dernier à se terminer. Gère tous les autres processus. Les systèmes modernes utilisent **systemd** |
+| **Daemons** | Processus en arrière-plan qui exécutent des tâches spécifiques (services réseau, journalisation...) |
+| **Serveur graphique** | Gère les éléments graphiques et les affiche à l'écran. Exemple : X Window System (X11) |
+| **Environnement de bureau** | Fournit une interface utilisateur complète (bureau, barre des tâches, icônes). Exemples : GNOME, KDE, XFCE |
+| **Applications** | Logiciels pour les utilisateurs (éditeurs de texte, navigateurs, lecteurs vidéo...) |
 
 ### Espace utilisateur vs espace noyau
 
-Les parties de Linux "au-dessus" du noyau (environnement de bureau, applications) sont appelees **espace utilisateur** (userspace ou userland). Les applications dans l'espace utilisateur ne peuvent pas acceder directement au materiel ou effectuer des operations privilegiees. Elles communiquent avec le noyau via des **appels systeme** (syscalls).
+Les parties de Linux "au-dessus" du noyau (environnement de bureau, applications) sont appelées **espace utilisateur** (userspace ou userland). Les applications dans l'espace utilisateur ne peuvent pas accéder directement au matériel ou effectuer des opérations privilégiées. Elles communiquent avec le noyau via des **appels système** (syscalls).
 
 Cette division offre plusieurs avantages :
 
-- **Stabilite** : les plantages des programmes utilisateur n'affectent pas le systeme entier
-- **Securite** : les processus utilisateur ont des permissions restreintes
-- **Flexibilite** : les utilisateurs peuvent executer diverses applications sans interference
+- **Stabilité** : les plantages des programmes utilisateur n'affectent pas le système entier
+- **Sécurité** : les processus utilisateur ont des permissions restreintes
+- **Flexibilité** : les utilisateurs peuvent exécuter diverses applications sans interférence
 
 ### Le cas de `touch file.txt`
 
-Voici ce qui se passe quand vous executez `touch file.txt` :
+Voici ce qui se passe quand vous exécutez `touch file.txt` :
 
 ![Diagramme touch file.txt](assets/touch_file.png)
 
 1. Le shell cherche le binaire `touch` via la variable `$PATH` (ex: `/usr/bin/touch`)
-2. Le processus shell utilise l'appel systeme `fork()` pour creer un processus enfant
-3. Le noyau verifie si l'utilisateur a les permissions d'execution et de lecture sur ce binaire
-4. Si tout est correct, le noyau cree le processus
-5. Le processus `touch` s'execute dans l'espace utilisateur, verifie si `file.txt` existe et utilise le syscall `open()` pour le creer
-6. Le noyau resout le chemin de `file.txt` et utilise le VFS (Virtual Filesystem Switch) pour selectionner le pilote de systeme de fichiers approprie
+2. Le processus shell utilise l'appel système `fork()` pour créer un processus enfant
+3. Le noyau vérifie si l'utilisateur a les permissions d'exécution et de lecture sur ce binaire
+4. Si tout est correct, le noyau crée le processus
+5. Le processus `touch` s'exécute dans l'espace utilisateur, vérifie si `file.txt` existe et utilise le syscall `open()` pour le créer
+6. Le noyau résout le chemin de `file.txt` et utilise le VFS (Virtual Filesystem Switch) pour sélectionner le pilote de système de fichiers approprié
 7. Le noyau retourne un descripteur de fichier au processus `touch`
 8. Le processus `touch` se termine et on revient au processus shell
 
-**Concepts cles a retenir :**
-- Les **permissions** sont capitales pour securiser votre systeme
-- Les **processus** executent les taches dans le systeme
-- Les **systemes de fichiers** et le stockage sont cruciaux pour l'investigation de securite
+**Concepts clés à retenir :**
+- Les **permissions** sont capitales pour sécuriser votre système
+- Les **processus** exécutent les tâches dans le système
+- Les **systèmes de fichiers** et le stockage sont cruciaux pour l'investigation de sécurité
 - Le **noyau** est au centre de tout
 
 ---
 
 ## Tout est un fichier
 
-Le concept "tout est un fichier" dans Linux est un principe fondamental herite d'Unix. Cela signifie que toutes les ressources systeme (fichiers reguliers, repertoires, peripheriques, processus, sockets) sont representees comme des fichiers dans le systeme de fichiers.
+Le concept "tout est un fichier" dans Linux est un principe fondamental hérité d'Unix. Cela signifie que toutes les ressources système (fichiers réguliers, répertoires, périphériques, processus, sockets) sont représentées comme des fichiers dans le système de fichiers.
 
-Cette abstraction simplifie l'interaction avec les composants systeme en fournissant une maniere unifiee d'y acceder : ouvrir, lire, ecrire et fermer.
+Cette abstraction simplifie l'interaction avec les composants système en fournissant une manière unifiée d'y accéder : ouvrir, lire, écrire et fermer.
 
 Exemples :
 
 | Chemin | Description |
 |--------|-------------|
-| `/proc/` | Contient un repertoire par processus en cours, avec des fichiers comme `status` (metadonnees) ou `exe` (lien vers le binaire) |
-| `/dev/` | Contient les fichiers de peripheriques, comme `/dev/sda` pour un disque de stockage |
-| `/run/` | Contient souvent les sockets reseau |
+| `/proc/` | Contient un répertoire par processus en cours, avec des fichiers comme `status` (métadonnées) ou `exe` (lien vers le binaire) |
+| `/dev/` | Contient les fichiers de périphériques, comme `/dev/sda` pour un disque de stockage |
+| `/run/` | Contient souvent les sockets réseau |
 
-### Demonstration
+### Démonstration
 
 ```bash
-# Afficher le pseudo-terminal utilise
+# Afficher le pseudo-terminal utilisé
 $ tty
 /dev/pts/0
 
@@ -122,26 +122,26 @@ $ echo "hello" > /dev/pts/0
 
 ---
 
-## Glossaire des sigles et definitions
+## Glossaire des sigles et définitions
 
-| Sigle/Terme | Definition |
+| Sigle/Terme | Définition |
 |-------------|------------|
-| **OS** | Operating System - Systeme d'exploitation |
-| **Kernel** | Noyau - Composant central du systeme qui gere le materiel |
-| **Distro** | Distribution - Version packagee de Linux |
-| **GNU** | GNU's Not Unix - Projet de systeme libre initie par Richard Stallman |
-| **GRUB** | GRand Unified Bootloader - Chargeur de demarrage populaire |
-| **Daemon** | Processus en arriere-plan executant des taches specifiques |
-| **Syscall** | System Call - Appel systeme, interface entre espace utilisateur et noyau |
-| **VFS** | Virtual Filesystem Switch - Couche d'abstraction des systemes de fichiers |
+| **OS** | Operating System - Système d'exploitation |
+| **Kernel** | Noyau - Composant central du système qui gère le matériel |
+| **Distro** | Distribution - Version packagée de Linux |
+| **GNU** | GNU's Not Unix - Projet de système libre initié par Richard Stallman |
+| **GRUB** | GRand Unified Bootloader - Chargeur de démarrage populaire |
+| **Daemon** | Processus en arrière-plan exécutant des tâches spécifiques |
+| **Syscall** | System Call - Appel système, interface entre espace utilisateur et noyau |
+| **VFS** | Virtual Filesystem Switch - Couche d'abstraction des systèmes de fichiers |
 | **PID** | Process ID - Identifiant unique d'un processus |
-| **Userspace/Userland** | Espace utilisateur - Partie du systeme au-dessus du noyau |
+| **Userspace/Userland** | Espace utilisateur - Partie du système au-dessus du noyau |
 | **X11/X Window** | Serveur graphique pour Linux |
 | **GNOME/KDE/XFCE** | Environnements de bureau populaires |
 
 ---
 
-## Recapitulatif des commandes
+## Récapitulatif des commandes
 
 | Commande | Description |
 |----------|-------------|
@@ -156,3 +156,12 @@ $ echo "hello" > /dev/pts/0
 - Syscalls - Wizard Zines
 - Behind the Scenes: What happens when you execute a command in the shell? - Sergio Pietri
 - UNIX and Linux System Administration Handbook - Evi et al.
+
+### Ressources pratiques - TryHackMe / HackTheBox
+
+| Plateforme | Room/Lab | Description |
+|------------|----------|-------------|
+| TryHackMe | [Linux Fundamentals Part 1](https://tryhackme.com/room/linuxfundamentalspart1) | Introduction aux bases de Linux |
+| TryHackMe | [Linux Fundamentals Part 2](https://tryhackme.com/room/linuxfundamentalspart2) | Permissions et systèmes de fichiers |
+| TryHackMe | [Linux Fundamentals Part 3](https://tryhackme.com/room/linuxfundamentalspart3) | Automatisation et scripts |
+| HackTheBox | [Starting Point](https://app.hackthebox.com/starting-point) | Machines d'introduction incluant Linux |

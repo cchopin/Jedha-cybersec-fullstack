@@ -1,15 +1,15 @@
 # Utilisateurs et permissions
 
-**Duree : 50 min**
+**Durée : 50 min**
 
 ## Ce que vous allez apprendre dans ce cours
 
-Comprendre les utilisateurs et les groupes sous Linux est crucial car ils constituent le fondement du modele de securite et de permissions du systeme. Ils controlent qui peut acceder aux fichiers, executer des commandes et utiliser les ressources systeme. Dans cette lecon, vous allez :
+Comprendre les utilisateurs et les groupes sous Linux est crucial car ils constituent le fondement du modèle de sécurité et de permissions du système. Ils contrôlent qui peut accéder aux fichiers, exécuter des commandes et utiliser les ressources système. Dans cette leçon, vous allez :
 
 - voir les concepts d'utilisateur et de groupe,
 - revoir les principales commandes de gestion des utilisateurs,
-- decouvrir le composant PAM,
-- (re)apprendre les permissions de fichiers sous Linux.
+- découvrir le composant PAM,
+- (ré)apprendre les permissions de fichiers sous Linux.
 
 ---
 
@@ -19,59 +19,59 @@ Il existe trois types d'utilisateurs sous Linux :
 
 | Type | Description |
 |------|-------------|
-| **Utilisateurs reguliers** | Acces limite aux ressources, necessitent des privileges eleves (via sudo) pour les taches administratives |
-| **Utilisateurs systeme** | Crees pour executer des services specifiques (ex: postgres pour PostgreSQL). Ces comptes n'ont generalement pas de capacite de connexion |
-| **Utilisateur root** | Superutilisateur avec acces illimite au systeme. Peut modifier n'importe quel fichier, installer des logiciels et gerer tous les utilisateurs |
+| **Utilisateurs réguliers** | Accès limité aux ressources, nécessitent des privilèges élevés (via sudo) pour les tâches administratives |
+| **Utilisateurs système** | Créés pour exécuter des services spécifiques (ex: postgres pour PostgreSQL). Ces comptes n'ont généralement pas de capacité de connexion |
+| **Utilisateur root** | Superutilisateur avec accès illimité au système. Peut modifier n'importe quel fichier, installer des logiciels et gérer tous les utilisateurs |
 
-Les utilisateurs sont organises en **groupes** : collections d'utilisateurs permettant aux administrateurs de gerer les permissions collectivement plutot qu'individuellement.
+Les utilisateurs sont organisés en **groupes** : collections d'utilisateurs permettant aux administrateurs de gérer les permissions collectivement plutôt qu'individuellement.
 
 ### Fichiers de gestion des utilisateurs
 
 | Fichier | Contenu |
 |---------|---------|
-| `/etc/passwd` | Informations utilisateur : nom, UID, GID, repertoire home, shell |
-| `/etc/shadow` | Mots de passe haches et informations de connexion |
+| `/etc/passwd` | Informations utilisateur : nom, UID, GID, répertoire home, shell |
+| `/etc/shadow` | Mots de passe hachés et informations de connexion |
 | `/etc/group` | Liste des groupes avec leurs membres |
 
-**Structure d'une entree `/etc/passwd` :**
+**Structure d'une entrée `/etc/passwd` :**
 
 ![Structure de /etc/passwd](assets/etc_passwd.png)
 
-**Structure d'une entree `/etc/shadow` :**
+**Structure d'une entrée `/etc/shadow` :**
 
 ![Structure de /etc/shadow](assets/CYBFS-M08D01-etc-shadow.png)
 
-**Structure d'une entree `/etc/group` :**
+**Structure d'une entrée `/etc/group` :**
 
 ![Structure de /etc/group](assets/etc_group.png)
 
 ### UID et GID
 
 - Chaque utilisateur a un **UID** (User ID) unique
-- UID 1-500 : generalement reserves aux utilisateurs systeme
-- UID >= 1000 : utilisateurs reguliers (sur Ubuntu)
-- Quand vous creez un utilisateur, un groupe du meme nom est cree (groupe primaire)
-- Les autres groupes sont des **groupes supplementaires**
+- UID 1-500 : généralement réservés aux utilisateurs système
+- UID >= 1000 : utilisateurs réguliers (sur Ubuntu)
+- Quand vous créez un utilisateur, un groupe du même nom est créé (groupe primaire)
+- Les autres groupes sont des **groupes supplémentaires**
 
 ### Le groupe sudoers
 
-Le groupe **sudo** (ou **wheel** sur CentOS/RedHat) est un groupe special qui accorde a ses membres la capacite d'executer des commandes avec des privileges eleves via la commande `sudo`.
+Le groupe **sudo** (ou **wheel** sur CentOS/RedHat) est un groupe spécial qui accorde à ses membres la capacité d'exécuter des commandes avec des privilèges élevés via la commande `sudo`.
 
-Le fichier `/etc/sudoers` definit quels utilisateurs ou groupes peuvent executer des commandes en tant qu'autres utilisateurs (generalement root). Ce fichier doit etre edite avec `visudo`.
+Le fichier `/etc/sudoers` définit quels utilisateurs ou groupes peuvent exécuter des commandes en tant qu'autres utilisateurs (généralement root). Ce fichier doit être édité avec `visudo`.
 
 Exemple de configuration :
 ```
-# Specification des privileges utilisateur
+# Spécification des privilèges utilisateur
 root ALL=(ALL:ALL) ALL
 
-# Permettre aux membres du groupe sudo d'executer toute commande
+# Permettre aux membres du groupe sudo d'exécuter toute commande
 %sudo ALL=(ALL:ALL) ALL
 
 # Permettre aux membres du groupe admin
 %admin ALL=(ALL) ALL
 ```
 
-Pour voir les dernieres commandes sudo :
+Pour voir les dernières commandes sudo :
 ```bash
 $ journalctl -e | grep sudo
 ```
@@ -82,10 +82,10 @@ $ journalctl -e | grep sudo
 
 | Commande | Description |
 |----------|-------------|
-| `useradd` ou `adduser` | Creer un nouveau compte |
+| `useradd` ou `adduser` | Créer un nouveau compte |
 | `usermod` | Modifier les attributs d'un utilisateur (groupes, etc.) |
 | `userdel` | Supprimer un compte |
-| `groupadd` | Creer un groupe |
+| `groupadd` | Créer un groupe |
 | `groupmod` | Modifier un groupe |
 | `groupdel` | Supprimer un groupe |
 | `groups utilisateur` | Voir les groupes d'un utilisateur |
@@ -96,20 +96,20 @@ $ journalctl -e | grep sudo
 
 ## Authentification utilisateur
 
-### PAM : gestion centralisee de l'authentification
+### PAM : gestion centralisée de l'authentification
 
-PAM (Pluggable Authentication Modules) est une bibliotheque qui valide les identifiants utilisateur/mot de passe. Elle verifie contre le stockage securise des mots de passe (`/etc/shadow`).
+PAM (Pluggable Authentication Modules) est une bibliothèque qui valide les identifiants utilisateur/mot de passe. Elle vérifie contre le stockage sécurisé des mots de passe (`/etc/shadow`).
 
 Lors d'une connexion, voici ce qui se passe :
 
-1. L'application de connexion declenche la pile PAM configuree pour ce service (depuis `/etc/pam.d/login`, `/etc/pam.d/su`, etc.)
+1. L'application de connexion déclenche la pile PAM configurée pour ce service (depuis `/etc/pam.d/login`, `/etc/pam.d/su`, etc.)
 2. PAM lit le fichier de configuration depuis `/etc/pam.d`
-3. PAM execute les modules suivants :
-   - **account** : valide que le compte est en bon etat (expirations, limites)
-   - **authentication** : verifie l'identite (demande de mot de passe)
-   - **password** : actions liees aux changements de mot de passe
-   - **session** : taches de debut et fin de session (logs, nettoyage)
-4. Si la connexion reussit, l'application utilise `setuid()` pour passer a l'UID de l'utilisateur
+3. PAM exécute les modules suivants :
+   - **account** : valide que le compte est en bon état (expirations, limites)
+   - **authentication** : vérifie l'identité (demande de mot de passe)
+   - **password** : actions liées aux changements de mot de passe
+   - **session** : tâches de début et fin de session (logs, nettoyage)
+4. Si la connexion réussit, l'application utilise `setuid()` pour passer à l'UID de l'utilisateur
 
 ### Configuration PAM
 
@@ -125,11 +125,11 @@ password requisite pam_pwquality.so retry=3 minlen=12
 auth required pam_tally.so onerr=fail deny=3 no_magic_root
 ```
 
-**Activer l'authentification a deux facteurs** avec des modules comme `pam_google_authenticator.so` ou `pam_oath.so`.
+**Activer l'authentification à deux facteurs** avec des modules comme `pam_google_authenticator.so` ou `pam_oath.so`.
 
 ---
 
-## Proprietaires et permissions de fichiers
+## Propriétaires et permissions de fichiers
 
 ### Visualiser les permissions
 
@@ -143,44 +143,44 @@ $ ls -l
 
 ### Les permissions RWX
 
-Les permissions `rw-rw-r--` representent trois ensembles pour :
-- **user (u)** : le proprietaire du fichier
-- **group (g)** : le groupe proprietaire
+Les permissions `rw-rw-r--` représentent trois ensembles pour :
+- **user (u)** : le propriétaire du fichier
+- **group (g)** : le groupe propriétaire
 - **others (o)** : tous les autres utilisateurs
 
-Ce trio est parfois appele "UGO". Chacun peut avoir les permissions :
+Ce trio est parfois appelé "UGO". Chacun peut avoir les permissions :
 
 | Permission | Signification |
 |------------|---------------|
 | `r` (read) | Lecture |
-| `w` (write) | Ecriture |
-| `x` (execute) | Execution |
+| `w` (write) | Écriture |
+| `x` (execute) | Exécution |
 
-### Proprietaire et groupe proprietaire
+### Propriétaire et groupe propriétaire
 
-Dans l'exemple `jedha jedha`, le premier est l'utilisateur proprietaire, le second est le groupe proprietaire.
+Dans l'exemple `jedha jedha`, le premier est l'utilisateur propriétaire, le second est le groupe propriétaire.
 
-### Comment le noyau verifie les permissions
+### Comment le noyau vérifie les permissions
 
-1. Chaque processus s'execute sous un UID et GID, herites de l'utilisateur qui l'execute
-2. Quand un processus accede a un fichier, le noyau compare l'UID/GID du processus avec les metadonnees du fichier
-3. Logique appliquee :
+1. Chaque processus s'exécute sous un UID et GID, hérités de l'utilisateur qui l'exécute
+2. Quand un processus accède à un fichier, le noyau compare l'UID/GID du processus avec les métadonnées du fichier
+3. Logique appliquée :
    - Si UID processus == UID fichier → utiliser les bits utilisateur
    - Sinon si GID processus == GID fichier → utiliser les bits groupe
    - Sinon → utiliser les bits autres
-4. Si aucun bit ne correspond a l'action demandee, le noyau retourne une erreur (EACCES)
+4. Si aucun bit ne correspond à l'action demandée, le noyau retourne une erreur (EACCES)
 
 ---
 
 ## Commandes de gestion des permissions
 
-### chown - Changer le proprietaire
+### chown - Changer le propriétaire
 
 ```bash
-# Changer le proprietaire
+# Changer le propriétaire
 $ sudo chown john fichier.txt
 
-# Changer le groupe proprietaire
+# Changer le groupe propriétaire
 $ sudo chown :developers fichier.txt
 
 # Changer les deux
@@ -193,15 +193,15 @@ $ sudo chown john:developers fichier.txt
 
 Trois composants :
 1. Qui : `u` (user), `g` (group), `o` (others), `a` (all)
-2. Action : `+` (ajouter), `-` (retirer), `=` (definir)
+2. Action : `+` (ajouter), `-` (retirer), `=` (définir)
 3. Permission : `r`, `w`, `x`
 
 ```bash
-# Ajouter execution au proprietaire, retirer ecriture au groupe, lecture seule aux autres
+# Ajouter exécution au propriétaire, retirer écriture au groupe, lecture seule aux autres
 $ chmod u+x,g-w,o=r fichier
 ```
 
-#### Mode numerique
+#### Mode numérique
 
 Chaque chiffre est une somme des bits de permission :
 
@@ -227,7 +227,7 @@ $ chmod 754 fichier.txt
 
 ### SUID (Set User ID)
 
-Quand le bit SUID est defini sur un executable, le processus s'execute avec les privileges du proprietaire du fichier, pas de l'utilisateur qui l'execute.
+Quand le bit SUID est défini sur un exécutable, le processus s'exécute avec les privilèges du propriétaire du fichier, pas de l'utilisateur qui l'exécute.
 
 Exemple : `/usr/bin/sudo`
 ```bash
@@ -235,35 +235,35 @@ $ ls -l /usr/bin/sudo
 -rwsr-xr-x 1 root root 335120 Apr 8 2024 /usr/bin/sudo
 ```
 
-Le `s` au lieu de `x` indique le bit SUID. Grace a cela, `sudo` s'execute avec l'UID effectif 0 (root).
+Le `s` au lieu de `x` indique le bit SUID. Grâce à cela, `sudo` s'exécute avec l'UID effectif 0 (root).
 
 ### SGID (Set Group ID)
 
-- Sur les executables : le processus s'execute avec les permissions du groupe du fichier
-- Sur les repertoires : les nouveaux fichiers heritent du groupe du repertoire
+- Sur les exécutables : le processus s'exécute avec les permissions du groupe du fichier
+- Sur les répertoires : les nouveaux fichiers héritent du groupe du répertoire
 
 ### Le sticky bit
 
-Permission speciale utilisee principalement sur les repertoires partages. Quand il est defini, seul le proprietaire du fichier (ou root) peut supprimer ou renommer les fichiers.
+Permission spéciale utilisée principalement sur les répertoires partagés. Quand il est défini, seul le propriétaire du fichier (ou root) peut supprimer ou renommer les fichiers.
 
 Exemple : `/tmp`
 ```
 drwxrwxrwt
 ```
 
-Le `t` a la fin indique le sticky bit.
+Le `t` à la fin indique le sticky bit.
 
 ---
 
-## ACLs : permissions a grain fin
+## ACLs : permissions à grain fin
 
-Les listes de controle d'acces (ACL) etendent le modele de permissions de base en permettant a plusieurs utilisateurs et groupes d'avoir des droits d'acces personnalises sur un seul fichier.
+Les listes de contrôle d'accès (ACL) étendent le modèle de permissions de base en permettant à plusieurs utilisateurs et groupes d'avoir des droits d'accès personnalisés sur un seul fichier.
 
 ```bash
 # Voir les ACLs
 $ getfacl fichier.txt
 
-# Donner l'acces en lecture a john
+# Donner l'accès en lecture à john
 $ sudo setfacl -m u:john:r fichier.txt
 ```
 
@@ -273,46 +273,46 @@ $ sudo setfacl -m u:john:r fichier.txt
 
 Les permissions de fichiers sont essentielles mais ne couvrent pas toutes les actions :
 
-| Domaine | Mecanisme |
+| Domaine | Mécanisme |
 |---------|-----------|
-| **Processus** | Envoyer des signaux, changer les priorites, utiliser ptrace |
-| **Reseau** | Lier aux ports privilegies (<1024), ouvrir des sockets raw |
-| **Capabilities** | Les capabilities Linux divisent les privileges root en unites discretes |
-| **Modules de securite** | SELinux et AppArmor appliquent des politiques obligatoires |
-| **Operations systeme** | Monter des systemes de fichiers, charger des modules noyau |
+| **Processus** | Envoyer des signaux, changer les priorités, utiliser ptrace |
+| **Réseau** | Lier aux ports privilégiés (<1024), ouvrir des sockets raw |
+| **Capabilities** | Les capabilities Linux divisent les privilèges root en unités discrètes |
+| **Modules de sécurité** | SELinux et AppArmor appliquent des politiques obligatoires |
+| **Opérations système** | Monter des systèmes de fichiers, charger des modules noyau |
 
 ---
 
-## Glossaire des sigles et definitions
+## Glossaire des sigles et définitions
 
-| Sigle/Terme | Definition |
+| Sigle/Terme | Définition |
 |-------------|------------|
 | **UID** | User ID - Identifiant unique de l'utilisateur |
 | **GID** | Group ID - Identifiant unique du groupe |
 | **PAM** | Pluggable Authentication Modules - Modules d'authentification enfichables |
-| **SUID** | Set User ID - Bit special permettant l'execution avec les privileges du proprietaire |
-| **SGID** | Set Group ID - Bit special pour les privileges de groupe |
-| **ACL** | Access Control List - Liste de controle d'acces |
-| **UGO** | User, Group, Others - Les trois categories de permissions |
-| **Sticky bit** | Bit special empechant la suppression de fichiers par des non-proprietaires |
-| **Root** | Superutilisateur avec tous les privileges (UID 0) |
-| **Sudoers** | Fichier definissant qui peut utiliser sudo et comment |
+| **SUID** | Set User ID - Bit spécial permettant l'exécution avec les privilèges du propriétaire |
+| **SGID** | Set Group ID - Bit spécial pour les privilèges de groupe |
+| **ACL** | Access Control List - Liste de contrôle d'accès |
+| **UGO** | User, Group, Others - Les trois catégories de permissions |
+| **Sticky bit** | Bit spécial empêchant la suppression de fichiers par des non-propriétaires |
+| **Root** | Superutilisateur avec tous les privilèges (UID 0) |
+| **Sudoers** | Fichier définissant qui peut utiliser sudo et comment |
 
 ---
 
-## Recapitulatif des commandes
+## Récapitulatif des commandes
 
 ### Gestion des utilisateurs
 
 | Commande | Description |
 |----------|-------------|
-| `useradd nom` | Creer un utilisateur |
-| `adduser nom` | Creer un utilisateur (interactif) |
-| `usermod -aG groupe user` | Ajouter un utilisateur a un groupe |
+| `useradd nom` | Créer un utilisateur |
+| `adduser nom` | Créer un utilisateur (interactif) |
+| `usermod -aG groupe user` | Ajouter un utilisateur à un groupe |
 | `userdel nom` | Supprimer un utilisateur |
 | `passwd nom` | Changer le mot de passe |
 | `su - utilisateur` | Changer d'utilisateur |
-| `sudo commande` | Executer en tant que root |
+| `sudo commande` | Exécuter en tant que root |
 | `id` | Afficher UID, GID et groupes |
 | `groups` | Afficher les groupes |
 | `whoami` | Afficher l'utilisateur courant |
@@ -321,7 +321,7 @@ Les permissions de fichiers sont essentielles mais ne couvrent pas toutes les ac
 
 | Commande | Description |
 |----------|-------------|
-| `groupadd nom` | Creer un groupe |
+| `groupadd nom` | Créer un groupe |
 | `groupmod -n nouveau ancien` | Renommer un groupe |
 | `groupdel nom` | Supprimer un groupe |
 
@@ -330,10 +330,10 @@ Les permissions de fichiers sont essentielles mais ne couvrent pas toutes les ac
 | Commande | Description |
 |----------|-------------|
 | `ls -l` | Afficher les permissions |
-| `chmod 755 fichier` | Changer les permissions (numerique) |
-| `chmod u+x fichier` | Ajouter execution au proprietaire |
-| `chown user:group fichier` | Changer proprietaire et groupe |
-| `chown user fichier` | Changer le proprietaire |
+| `chmod 755 fichier` | Changer les permissions (numérique) |
+| `chmod u+x fichier` | Ajouter exécution au propriétaire |
+| `chown user:group fichier` | Changer propriétaire et groupe |
+| `chown user fichier` | Changer le propriétaire |
 | `chown :group fichier` | Changer le groupe |
 
 ### ACLs
@@ -341,8 +341,8 @@ Les permissions de fichiers sont essentielles mais ne couvrent pas toutes les ac
 | Commande | Description |
 |----------|-------------|
 | `getfacl fichier` | Voir les ACLs d'un fichier |
-| `setfacl -m u:user:rwx fichier` | Definir une ACL pour un utilisateur |
-| `setfacl -m g:group:rx fichier` | Definir une ACL pour un groupe |
+| `setfacl -m u:user:rwx fichier` | Définir une ACL pour un utilisateur |
+| `setfacl -m g:group:rx fichier` | Définir une ACL pour un groupe |
 | `setfacl -x u:user fichier` | Supprimer une ACL |
 
 ### Fichiers importants
@@ -350,10 +350,21 @@ Les permissions de fichiers sont essentielles mais ne couvrent pas toutes les ac
 | Fichier | Description |
 |---------|-------------|
 | `/etc/passwd` | Informations des utilisateurs |
-| `/etc/shadow` | Mots de passe haches |
+| `/etc/shadow` | Mots de passe hachés |
 | `/etc/group` | Informations des groupes |
 | `/etc/sudoers` | Configuration sudo |
 | `/etc/pam.d/` | Configuration PAM |
+
+---
+
+## Ressources pratiques - TryHackMe / HackTheBox
+
+| Plateforme | Lien | Description |
+|------------|------|-------------|
+| TryHackMe | [Linux Fundamentals Part 2](https://tryhackme.com/room/linuxfundamentalspart2) | Permissions Linux |
+| TryHackMe | [Linux Privilege Escalation](https://tryhackme.com/room/linprivesc) | Élévation de privilèges |
+| TryHackMe | [Linux PrivEsc](https://tryhackme.com/room/dvlinuxprivesc) | Techniques privesc |
+| HackTheBox | [Starting Point](https://app.hackthebox.com/starting-point) | Machines avec permissions mal configurées |
 
 ---
 
