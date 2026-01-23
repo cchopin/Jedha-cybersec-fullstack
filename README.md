@@ -4,10 +4,10 @@ Ce repository contient l'ensemble des projets, exercices et documentations réal
 
 ## Progression
 
-**5/16 modules complétés** • **Durée totale :** 61 jours
+**7/16 modules complétés** • **Durée totale :** 61 jours
 
 ```
-█████████░░░░░░░░░░░░░░░░░░░ 31%
+████████████░░░░░░░░░░░░░░░░ 44%
 ```
 
 ## Vue d'ensemble des modules
@@ -19,8 +19,8 @@ Ce repository contient l'ensemble des projets, exercices et documentations réal
 | 03 | Email Security | 1 jour | ✅ | Phishing, SPF/DKIM/DMARC, Gophish |
 | 04 | Databases | 2 jours | ✅ | SQL/NoSQL, injections, sécurisation |
 | 05 | Web Security | 6 jours | ✅ | Python/Flask, XSS, SQLi, CSRF, Docker, CI/CD |
-| 06 | Cloud Security | 3 jours | ⏳ | AWS, IAM, VPC, CloudWatch |
-| 07 | Network Security | 6 jours | ⏳ | TCP/IP, VLANs, routing, firewalls, VPN, Wireshark |
+| 06 | Cloud Security | 3 jours | ✅ | AWS, IAM, VPC, CloudWatch |
+| 07 | Network Security | 6 jours | ✅ | TCP/IP, VLANs, routing, firewalls, VPN, Wireshark |
 | 08 | Linux System Security | 8 jours | ⏳ | Users, processes, kernel, SELinux, containers |
 | 09 | Windows Security | 8 jours | ⏳ | Active Directory, GPO, Kerberos, exploitation |
 | 10 | Incident Response | 4 jours | ⏳ | SIEM, Wazuh, playbooks, malware analysis |
@@ -47,8 +47,8 @@ jedha/
 │   ├── sql-injection/               # ✅ Démo complète des injections SQL
 │   ├── web-log-security-analyzer/   # ✅ Analyseur de logs de sécurité
 │   └── xss/                         # ✅ Démonstrations XSS
-├── 06_cloud_security/               # ⏳ AWS, IAM, monitoring
-├── 07_network_security/             # ⏳ TCP/IP, firewalls, VPN
+├── 06_cloud_security/               # ✅ AWS, IAM, monitoring
+├── 07_network_security/             # ✅ TCP/IP, firewalls, VPN
 ├── 08_linux_system_security/        # ⏳ Kernel, containers, hardening
 ├── 09_windows_security/             # ⏳ AD, Kerberos, exploitation
 ├── 10_incident_response/            # ⏳ SIEM, forensics, playbooks
@@ -126,35 +126,31 @@ Analyseur de logs pour la détection d'intrusions :
 - Parsing de logs Apache/Nginx
 - Détection de patterns malveillants
 
+### 06 - Cloud Security ✅
+**Technologies :** AWS (EC2, S3, IAM, VPC, CloudWatch)
+
+**Compétences acquises :**
+- Configuration et sécurisation des comptes AWS
+- Gestion des identités et accès (IAM)
+- Architecture réseau cloud (VPC, Security Groups, NACLs)
+- Monitoring et alertes avec CloudWatch
+- Déploiement d'applications 3-tiers sécurisées
+
+### 07 - Network Security ✅
+**Technologies :** TCP/IP, Wireshark, Cisco Packet Tracer, pfSense
+
+**Compétences acquises :**
+- Analyse de protocoles réseau (TCP/IP, ARP, DNS, HTTP)
+- Configuration de VLANs et segmentation réseau
+- Mise en place de firewalls et règles de filtrage
+- Configuration VPN (site-to-site, client-to-site)
+- Analyse de trafic avec Wireshark
+- Architecture réseau d'entreprise sécurisée
+
 ## Module en cours
 
-### 06 - Cloud Security ⏳
-**Durée :** 3 jours • **Progression :** 0%
-
-#### Foundations of Cloud and IAM
-- [ ] Cloud 101
-- [ ] AWS Account Setup
-- [ ] AWS Core Services Overview
-- [ ] Introduction to IAM
-- [ ] Dev Team Example
-- [ ] Cloud and IAM Foundations Quiz
-- [ ] Creative Flow Document Management System
-
-#### Cloud Network Security & Isolation
-- [ ] VPC Fundamentals
-- [ ] Security Groups vs NACLs
-- [ ] Network Segmentation Best Practices
-- [ ] AWS Network Security Services
-- [ ] Cloud Network Security Quiz
-- [ ] Deploy a Basic 3-Tier App
-
-#### Cloud Monitoring and Security
-- [ ] AWS Security and Compliance
-- [ ] AWS CloudWatch
-- [ ] AWS Monitoring Demo
-- [ ] Cloud Monitoring Quiz
-- [ ] StartupExcuses Monitoring
-- [ ] StartupExcuses Deployment (Optional)
+### 08 - Linux System Security ⏳
+**Durée :** 8 jours
 
 ## Technologies et outils
 
