@@ -1,37 +1,37 @@
-# Les executables
+# Les exécutables
 
-**Duree : 45 min**
+**Durée : 45 min**
 
 ## Ce que vous allez apprendre dans ce cours
 
-Dans la lecon precedente, nous avons explore comment fonctionnent les processus et comment les surveiller et les controler. Mais chaque processus commence par une chose : un fichier executable. Ces binaires, qu'il s'agisse de programmes compiles ou de scripts, sont le code reellement execute. Dans cette lecon, vous apprendrez :
+Dans la leçon précédente, nous avons exploré comment fonctionnent les processus et comment les surveiller et les contrôler. Mais chaque processus commence par une chose : un fichier exécutable. Ces binaires, qu'il s'agisse de programmes compilés ou de scripts, sont le code réellement exécuté. Dans cette leçon, vous apprendrez :
 
-- quels sont les differents types d'executables,
-- comment le systeme identifie l'executable necessaire a partir des variables d'environnement,
+- quels sont les différents types d'exécutables,
+- comment le système identifie l'exécutable nécessaire à partir des variables d'environnement,
 - les outils courants pour l'analyse binaire de base,
-- comment gerer et assurer l'authenticite des paquets.
+- comment gérer et assurer l'authenticité des paquets.
 
 ---
 
-## Qu'est-ce qu'un executable ?
+## Qu'est-ce qu'un exécutable ?
 
-Un **fichier executable** est un fichier informatique contenant une serie d'instructions que le systeme d'exploitation peut executer directement pour effectuer des taches ou lancer des applications. Ces fichiers sont des formes "pretes a l'execution" de programmes :
-- Soit compiles depuis du code source en code machine (executables binaires)
-- Soit des scripts avec des instructions pour un interpreteur (Bash, Python)
+Un **fichier exécutable** est un fichier informatique contenant une série d'instructions que le système d'exploitation peut exécuter directement pour effectuer des tâches ou lancer des applications. Ces fichiers sont des formes "prêtes à l'exécution" de programmes :
+- Soit compilés depuis du code source en code machine (exécutables binaires)
+- Soit des scripts avec des instructions pour un interpréteur (Bash, Python)
 
 ---
 
 ## Programmes binaires
 
-Les **programmes binaires** sont des fichiers executables contenant des instructions encodees en code machine, que le processeur peut directement interpreter et executer.
+Les **programmes binaires** sont des fichiers exécutables contenant des instructions encodées en code machine, que le processeur peut directement interpréter et exécuter.
 
-Ces programmes sont le produit final de la **compilation** du code source ecrit dans des langages comme C, C++ ou Java, dans un format correspondant au systeme d'exploitation et a l'architecture materielle cible.
+Ces programmes sont le produit final de la **compilation** du code source écrit dans des langages comme C, C++ ou Java, dans un format correspondant au système d'exploitation et à l'architecture matérielle cible.
 
-> **Note** : Si vous avez compile votre code pour Linux, vous ne pouvez pas l'executer directement sur Windows.
+> **Note** : Si vous avez compilé votre code pour Linux, vous ne pouvez pas l'exécuter directement sur Windows.
 
 ### Format ELF
 
-La plupart des binaires incluent un **en-tete** qui identifie le type de fichier et fournit les metadonnees necessaires au systeme. Linux utilise le format **ELF** (Executable and Linkable Format).
+La plupart des binaires incluent un **en-tête** qui identifie le type de fichier et fournit les métadonnées nécessaires au système. Linux utilise le format **ELF** (Executable and Linkable Format).
 
 ```bash
 $ file /usr/bin/ls
@@ -41,71 +41,71 @@ for GNU/Linux 3.7.0, stripped
 ```
 
 Cette sortie indique :
-- Executable compile pour architecture ARM 64-bit
-- Lie dynamiquement (utilise des bibliotheques partagees)
+- Exécutable compilé pour architecture ARM 64-bit
+- Lié dynamiquement (utilise des bibliothèques partagées)
 - Pour un noyau Linux version 3.7.0 minimum
 
-### Processus de creation
+### Processus de création
 
 1. **Compilateur** : traduit le code source en code machine
-2. **Linker (editeur de liens)** : combine votre code et les bibliotheques en un seul binaire
+2. **Linker (éditeur de liens)** : combine votre code et les bibliothèques en un seul binaire
 
 ![Processus de compilation](assets/compilation.png)
 
-### Bibliotheques (libraries)
+### Bibliothèques (libraries)
 
-Une **bibliotheque** est une collection de code precompile que les programmes peuvent utiliser pour effectuer des taches courantes (afficher un message, fonctions mathematiques).
+Une **bibliothèque** est une collection de code précompilé que les programmes peuvent utiliser pour effectuer des tâches courantes (afficher un message, fonctions mathématiques).
 
 | Type | Description |
 |------|-------------|
-| **Statique** | Code inclus dans le binaire, executable autonome mais plus gros |
-| **Dynamique/Partagee** | Metadonnees ajoutees, bibliotheques chargees a l'execution |
+| **Statique** | Code inclus dans le binaire, exécutable autonome mais plus gros |
+| **Dynamique/Partagée** | Métadonnées ajoutées, bibliothèques chargées à l'exécution |
 
-**Emplacements courants des bibliotheques :**
+**Emplacements courants des bibliothèques :**
 | Chemin | Contenu |
 |--------|---------|
-| `/lib` et `/lib64` | Bibliotheques systeme essentielles |
-| `/usr/lib` et `/usr/lib64` | Bibliotheques pour logiciels installes |
-| `/usr/local/lib` | Bibliotheques compilees localement |
+| `/lib` et `/lib64` | Bibliothèques système essentielles |
+| `/usr/lib` et `/usr/lib64` | Bibliothèques pour logiciels installés |
+| `/usr/local/lib` | Bibliothèques compilées localement |
 
-**Voir les bibliotheques utilisees par un binaire :**
+**Voir les bibliothèques utilisées par un binaire :**
 ```bash
 $ ldd /usr/bin/ls
 ```
 
-### Chargement et execution
+### Chargement et exécution
 
-- **Binaire statique** : le noyau le charge directement en memoire
-- **Binaire dynamique** : le **loader** (chargeur dynamique) mappe le binaire, resout et charge les bibliotheques partagees, puis execute le programme
+- **Binaire statique** : le noyau le charge directement en mémoire
+- **Binaire dynamique** : le **loader** (chargeur dynamique) mappe le binaire, résout et charge les bibliothèques partagées, puis exécute le programme
 
 ---
 
-## Scripts interpretes
+## Scripts interprétés
 
-Les **scripts interpretes** sont des fichiers texte contenant du code source dans un langage de script (Bash, Python, Perl) pouvant etre executes directement depuis la ligne de commande.
+Les **scripts interprétés** sont des fichiers texte contenant du code source dans un langage de script (Bash, Python, Perl) pouvant être exécutés directement depuis la ligne de commande.
 
-Contrairement aux binaires, ces scripts sont lus et executes par un **interpreteur** ligne par ligne, ce qui les rend generalement plus lents que les programmes compiles.
+Contrairement aux binaires, ces scripts sont lus et exécutés par un **interpréteur** ligne par ligne, ce qui les rend généralement plus lents que les programmes compilés.
 
-**Execution d'un script :**
+**Exécution d'un script :**
 ```bash
 # Avec shebang dans le script
 $ ./mon_script.sh
 
-# Sans shebang, en specifiant l'interpreteur
+# Sans shebang, en spécifiant l'interpréteur
 $ python3 monscript.py
 ```
 
-Le script doit avoir la permission d'execution pour que le systeme sache qu'il peut etre execute comme un programme.
+Le script doit avoir la permission d'exécution pour que le système sache qu'il peut être exécuté comme un programme.
 
 ---
 
-## Decouverte des executables et environnement
+## Découverte des exécutables et environnement
 
 ### La variable PATH
 
-Quand vous tapez `touch file.txt`, comment le systeme trouve-t-il l'executable correspondant ?
+Quand vous tapez `touch file.txt`, comment le système trouve-t-il l'exécutable correspondant ?
 
-Le shell utilise la variable d'environnement **PATH** pour localiser les executables. C'est une liste de repertoires separes par des deux-points, parcourus dans l'ordre.
+Le shell utilise la variable d'environnement **PATH** pour localiser les exécutables. C'est une liste de répertoires séparés par des deux-points, parcourus dans l'ordre.
 
 ```bash
 $ echo $PATH
@@ -120,21 +120,21 @@ $ which touch
 $ export PATH="/tmp:$PATH"
 ```
 
-> **Securite - PATH hijacking** : Si un attaquant peut reecrire votre PATH et placer un binaire malveillant `ls` dans `/tmp`, ce binaire sera execute a la place du vrai `ls`.
+> **Sécurité - PATH hijacking** : Si un attaquant peut réécrire votre PATH et placer un binaire malveillant `ls` dans `/tmp`, ce binaire sera exécuté à la place du vrai `ls`.
 
 ### Autres variables d'environnement importantes
 
 | Variable | Description | Risque |
 |----------|-------------|--------|
-| `LD_LIBRARY_PATH` | Repertoires pour les bibliotheques partagees | Peut etre detourne pour charger des bibliotheques malveillantes |
-| `LD_PRELOAD` | Bibliotheques a charger avant toutes les autres | Permet de remplacer des fonctions a l'execution |
-| `PYTHONPATH` | Repertoires pour les modules Python | Peut remplacer des modules standards |
+| `LD_LIBRARY_PATH` | Répertoires pour les bibliothèques partagées | Peut être détourné pour charger des bibliothèques malveillantes |
+| `LD_PRELOAD` | Bibliothèques à charger avant toutes les autres | Permet de remplacer des fonctions à l'exécution |
+| `PYTHONPATH` | Répertoires pour les modules Python | Peut remplacer des modules standards |
 
 ---
 
 ## Analyse binaire
 
-L'analyse binaire permet de comprendre le comportement d'un executable, verifier sa legitimite ou enqueter sur des compromissions. Voici quelques commandes utiles sans avoir besoin de lire le code machine.
+L'analyse binaire permet de comprendre le comportement d'un exécutable, vérifier sa légitimité ou enquêter sur des compromissions. Voici quelques commandes utiles sans avoir besoin de lire le code machine.
 
 ### Identifier avec file
 
@@ -151,9 +151,9 @@ $ file /usr/bin/ls
 /usr/bin/ls: ELF 64-bit LSB pie executable, ARM aarch64...
 ```
 
-### Afficher les dependances avec ldd
+### Afficher les dépendances avec ldd
 
-`ldd` liste les bibliotheques partagees requises par un binaire.
+`ldd` liste les bibliothèques partagées requises par un binaire.
 
 ```bash
 $ ldd /usr/bin/ping
@@ -164,17 +164,17 @@ $ ldd /usr/bin/ping
     /lib/ld-linux-aarch64.so.1
 ```
 
-**Interpretation :**
-| Bibliotheque | Description |
+**Interprétation :**
+| Bibliothèque | Description |
 |--------------|-------------|
 | `linux-vdso.so.1` | Objet virtuel fourni par le noyau |
-| `libc.so.6` | Bibliotheque C standard |
+| `libc.so.6` | Bibliothèque C standard |
 | `libcap.so.2` | Support des capabilities |
 | `/lib/ld-linux-*.so.1` | Chargeur dynamique |
 
-> **Alerte securite** : Si un binaire systeme comme `/bin/ls` est lie a un chemin non standard (ex: `/tmp/libc.so.6`), c'est un signal d'alarme majeur.
+> **Alerte sécurité** : Si un binaire système comme `/bin/ls` est lié à un chemin non standard (ex: `/tmp/libc.so.6`), c'est un signal d'alarme majeur.
 
-> **Attention** : Ne jamais utiliser `ldd` sur des executables non fiables ! Utilisez plutot `objdump` ou `readelf` :
+> **Attention** : Ne jamais utiliser `ldd` sur des exécutables non fiables ! Utilisez plutôt `objdump` ou `readelf` :
 > ```bash
 > $ objdump -p /usr/bin/ping | grep NEEDED
 > $ readelf -d /usr/bin/ping
@@ -188,18 +188,18 @@ $ ldd /usr/bin/ping
 $ strings /usr/bin/ls | head
 ```
 
-Peut reveler :
-- Chemins de fichiers codes en dur
+Peut révéler :
+- Chemins de fichiers codés en dur
 - Messages d'erreur
-- Numeros de version
+- Numéros de version
 - URLs suspectes
-- Identifiants potentiellement integres
+- Identifiants potentiellement intégrés
 
-> **Limitation** : Ne detecte que le texte en clair, pas les donnees chiffrees ou obfusquees.
+> **Limitation** : Ne détecte que le texte en clair, pas les données chiffrées ou obfusquées.
 
 ### Tracer les appels avec strace et ltrace
 
-**strace** surveille les appels systeme et signaux d'un processus :
+**strace** surveille les appels système et signaux d'un processus :
 ```bash
 $ strace ls
 execve("/usr/bin/ls", ["ls"], 0xfffffc191010 /* 26 vars */) = 0
@@ -207,38 +207,38 @@ brk(NULL)                               = 0xb381e88fd000
 ...
 ```
 
-**ltrace** trace les appels aux fonctions de bibliotheques :
+**ltrace** trace les appels aux fonctions de bibliothèques :
 ```bash
 $ ltrace ls
 ```
 
-**Ce qu'on peut detecter :**
-- Acces a des fichiers sensibles (`/etc/passwd`)
-- Connexions reseau inattendues
+**Ce qu'on peut détecter :**
+- Accès à des fichiers sensibles (`/etc/passwd`)
+- Connexions réseau inattendues
 - Processus enfants suspects
-- Appels a `setuid` ou `chmod`
+- Appels à `setuid` ou `chmod`
 
 ---
 
 ## Gestion des paquets avec apt
 
-La plupart des logiciels sous Linux sont installes via des **paquets**. Les distributions basees sur Debian/Ubuntu utilisent **APT** (Advanced Package Tool).
+La plupart des logiciels sous Linux sont installés via des **paquets**. Les distributions basées sur Debian/Ubuntu utilisent **APT** (Advanced Package Tool).
 
 ### Commandes de base
 
 | Commande | Description |
 |----------|-------------|
 | `sudo apt install paquet` | Installer un paquet |
-| `sudo apt update` | Telecharger les dernieres metadonnees |
-| `sudo apt upgrade` | Mettre a jour les paquets installes |
-| `apt list --installed` | Lister les paquets installes |
+| `sudo apt update` | Télécharger les dernières métadonnées |
+| `sudo apt upgrade` | Mettre à jour les paquets installés |
+| `apt list --installed` | Lister les paquets installés |
 | `apt search nom` | Rechercher un paquet |
 | `apt show paquet` | Afficher les infos d'un paquet |
-| `apt-cache policy paquet` | Verifier l'origine d'un paquet |
+| `apt-cache policy paquet` | Vérifier l'origine d'un paquet |
 
 ### Sources des paquets
 
-APT recupere les paquets depuis des depots definis dans :
+APT récupère les paquets depuis des dépôts définis dans :
 - `/etc/apt/sources.list` (ancien format)
 - `/etc/apt/sources.list.d/` (fichiers individuels)
 
@@ -254,87 +254,87 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 | Champ | Description |
 |-------|-------------|
 | `Types` | Type de paquet (deb) |
-| `URIs` | URL du depot |
+| `URIs` | URL du dépôt |
 | `Suites` | Version de la distribution |
-| `Components` | Categories (main, restricted, universe, multiverse) |
-| `Signed-By` | Cle GPG pour la verification |
+| `Components` | Catégories (main, restricted, universe, multiverse) |
+| `Signed-By` | Clé GPG pour la vérification |
 
-### Assurer l'authenticite des paquets
+### Assurer l'authenticité des paquets
 
-| Mecanisme | Description |
+| Mécanisme | Description |
 |-----------|-------------|
-| **Verification GPG** | Signature numerique du fichier Release |
+| **Vérification GPG** | Signature numérique du fichier Release |
 | **Validation des checksums** | Hashes SHA256 pour chaque paquet |
-| **Configuration des depots** | Seuls les depots listes sont utilises |
+| **Configuration des dépôts** | Seuls les dépôts listés sont utilisés |
 
 **Bonnes pratiques :**
-- Ne jamais ignorer un avertissement sur des paquets non authentifies
-- Eviter les depots non officiels ou non fiables
-- Verifier regulierement les fichiers sources
+- Ne jamais ignorer un avertissement sur des paquets non authentifiés
+- Éviter les dépôts non officiels ou non fiables
+- Vérifier régulièrement les fichiers sources
 
-**Verifier l'integrite des fichiers installes :**
+**Vérifier l'intégrité des fichiers installés :**
 ```bash
 $ sudo debsums -s
 ```
 
 ---
 
-## Glossaire des sigles et definitions
+## Glossaire des sigles et définitions
 
-| Sigle/Terme | Definition |
+| Sigle/Terme | Définition |
 |-------------|------------|
 | **ELF** | Executable and Linkable Format - Format binaire standard sous Linux |
 | **Compiler** | Compilateur - Traduit le code source en code machine |
-| **Linker** | Editeur de liens - Combine le code et les bibliotheques en un binaire |
-| **Library** | Bibliotheque - Collection de code precompile reutilisable |
-| **Static linking** | Liaison statique - Bibliotheques incluses dans le binaire |
-| **Dynamic linking** | Liaison dynamique - Bibliotheques chargees a l'execution |
-| **Loader** | Chargeur dynamique - Charge les bibliotheques a l'execution |
-| **Shebang** | `#!` - Indique l'interpreteur pour les scripts |
-| **PATH** | Variable listant les repertoires d'executables |
-| **LD_LIBRARY_PATH** | Variable pour les chemins de bibliotheques |
-| **LD_PRELOAD** | Variable pour precharger des bibliotheques |
+| **Linker** | Éditeur de liens - Combine le code et les bibliothèques en un binaire |
+| **Library** | Bibliothèque - Collection de code précompilé réutilisable |
+| **Static linking** | Liaison statique - Bibliothèques incluses dans le binaire |
+| **Dynamic linking** | Liaison dynamique - Bibliothèques chargées à l'exécution |
+| **Loader** | Chargeur dynamique - Charge les bibliothèques à l'exécution |
+| **Shebang** | `#!` - Indique l'interpréteur pour les scripts |
+| **PATH** | Variable listant les répertoires d'exécutables |
+| **LD_LIBRARY_PATH** | Variable pour les chemins de bibliothèques |
+| **LD_PRELOAD** | Variable pour précharger des bibliothèques |
 | **APT** | Advanced Package Tool - Gestionnaire de paquets Debian/Ubuntu |
 | **GPG** | GNU Privacy Guard - Outil de chiffrement et signature |
-| **Checksum** | Somme de controle pour verifier l'integrite |
-| **PATH hijacking** | Attaque exploitant une variable PATH mal configuree |
+| **Checksum** | Somme de contrôle pour vérifier l'intégrité |
+| **PATH hijacking** | Attaque exploitant une variable PATH mal configurée |
 
 ---
 
-## Recapitulatif des commandes
+## Récapitulatif des commandes
 
 ### Identification de fichiers
 
 | Commande | Description |
 |----------|-------------|
 | `file fichier` | Identifier le type d'un fichier |
-| `which commande` | Trouver le chemin d'un executable |
+| `which commande` | Trouver le chemin d'un exécutable |
 | `type commande` | Afficher le type d'une commande |
 
-### Analyse des dependances
+### Analyse des dépendances
 
 | Commande | Description |
 |----------|-------------|
-| `ldd binaire` | Lister les bibliotheques partagees (attention securite!) |
-| `objdump -p binaire \| grep NEEDED` | Alternative securisee a ldd |
-| `readelf -d binaire` | Afficher les dependances dynamiques |
+| `ldd binaire` | Lister les bibliothèques partagées (attention sécurité!) |
+| `objdump -p binaire \| grep NEEDED` | Alternative sécurisée à ldd |
+| `readelf -d binaire` | Afficher les dépendances dynamiques |
 
 ### Analyse de contenu
 
 | Commande | Description |
 |----------|-------------|
-| `strings binaire` | Extraire les chaines lisibles |
-| `strings -n 8 binaire` | Chaines d'au moins 8 caracteres |
-| `hexdump -C binaire \| head` | Afficher en hexadecimal |
+| `strings binaire` | Extraire les chaînes lisibles |
+| `strings -n 8 binaire` | Chaînes d'au moins 8 caractères |
+| `hexdump -C binaire \| head` | Afficher en hexadécimal |
 
-### Tracage
+### Traçage
 
 | Commande | Description |
 |----------|-------------|
-| `strace commande` | Tracer les appels systeme |
+| `strace commande` | Tracer les appels système |
 | `strace -p PID` | Tracer un processus existant |
 | `strace -f commande` | Suivre les processus enfants |
-| `ltrace commande` | Tracer les appels de bibliotheques |
+| `ltrace commande` | Tracer les appels de bibliothèques |
 
 ### Variables d'environnement
 
@@ -348,15 +348,15 @@ $ sudo debsums -s
 
 | Commande | Description |
 |----------|-------------|
-| `sudo apt update` | Mettre a jour les metadonnees |
-| `sudo apt upgrade` | Mettre a jour les paquets |
+| `sudo apt update` | Mettre à jour les métadonnées |
+| `sudo apt upgrade` | Mettre à jour les paquets |
 | `sudo apt install paquet` | Installer un paquet |
 | `sudo apt remove paquet` | Supprimer un paquet |
 | `apt search terme` | Rechercher un paquet |
 | `apt show paquet` | Informations sur un paquet |
-| `apt list --installed` | Lister les paquets installes |
-| `apt-cache policy paquet` | Verifier l'origine |
-| `sudo debsums -s` | Verifier l'integrite des fichiers |
+| `apt list --installed` | Lister les paquets installés |
+| `apt-cache policy paquet` | Vérifier l'origine |
+| `sudo debsums -s` | Vérifier l'intégrité des fichiers |
 
 ### Fichiers importants
 
@@ -364,8 +364,19 @@ $ sudo debsums -s
 |---------|-------------|
 | `/etc/apt/sources.list` | Sources des paquets (ancien) |
 | `/etc/apt/sources.list.d/` | Sources des paquets (fichiers) |
-| `/lib`, `/usr/lib` | Bibliotheques systeme |
-| `/usr/local/lib` | Bibliotheques locales |
+| `/lib`, `/usr/lib` | Bibliothèques système |
+| `/usr/local/lib` | Bibliothèques locales |
+
+---
+
+## Ressources pratiques - TryHackMe / HackTheBox
+
+| Plateforme | Lien | Description |
+|------------|------|-------------|
+| TryHackMe | [Linux Privilege Escalation](https://tryhackme.com/room/linprivesc) | PATH hijacking et binaires |
+| TryHackMe | [Malware Analysis](https://tryhackme.com/room/dvhistoryofmalware) | Introduction à l'analyse |
+| TryHackMe | [REMnux](https://tryhackme.com/room/dvmalwareremnux) | Analyse de malware Linux |
+| HackTheBox | [Challenges Reversing](https://app.hackthebox.com/challenges) | Défis d'analyse binaire |
 
 ---
 
