@@ -66,32 +66,32 @@ You need to create subnets for different departments based on their IP address r
     Logistics Department: 5 devices
 
 IT
- Réseau:      192.168.10.0/26
- Masque:      255.255.255.192
- Broadcast:   192.168.10.63
- Plage:       192.168.10.1 - 192.168.10.62
- Nb d'hotes:  62
+ Réseau:      192.168.10.0/26  
+ Masque:      255.255.255.192  
+ Broadcast:   192.168.10.63  
+ Plage:       192.168.10.1 - 192.168.10.62  
+ Nb d'hotes:  62  
 
 HR
- Réseau:      192.168.10.64/27
- Masque:      255.255.255.224
- Broadcast:   192.168.10.95
- Plage:       192.168.10.65 - 192.168.10.94
- Nb d'hotes:  30
+ Réseau:      192.168.10.64/27  
+ Masque:      255.255.255.224  
+ Broadcast:   192.168.10.95  
+ Plage:       192.168.10.65 - 192.168.10.94  
+ Nb d'hotes:  30  
 
 Sales
- Réseau:      192.168.10.96/28
- Masque:      255.255.255.240
- Broadcast:   192.168.10.111
- Plage:       192.168.10.97 - 192.168.10.110
+ Réseau:      192.168.10.96/28  
+ Masque:      255.255.255.240  
+ Broadcast:   192.168.10.111  
+ Plage:       192.168.10.97 - 192.168.10.110 
  Nb d'hotes:  14
 
 Logistics
- Réseau:      192.168.10.112/29
- Masque:      255.255.255.248
- Broadcast:   192.168.10.119
- Plage:       192.168.10.113 - 192.168.10.118
- Nb d'hotes:  6
+ Réseau:      192.168.10.112/29  
+ Masque:      255.255.255.248  
+ Broadcast:   192.168.10.119  
+ Plage:       192.168.10.113 - 192.168.10.118  
+ Nb d'hotes:  6  
 
 ### Vérification VLSM avec NetProbe
 
