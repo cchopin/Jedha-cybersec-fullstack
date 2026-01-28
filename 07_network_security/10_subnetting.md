@@ -2,35 +2,35 @@
 
 ## Exercise 1: Basic Subnetting
 
-Divide this network into 4 equal subnets.
+Divide this network into 4 equal subnets.  
 
 Sous-réseau 1
-   Réseau:      192.168.10.0/26
-   Masque:      255.255.255.192
-   Broadcast:   192.168.10.63
-   Plage:       192.168.10.1 - 192.168.10.62
-   Nb d'hotes:  62
+   Réseau:      192.168.10.0/26  
+   Masque:      255.255.255.192  
+   Broadcast:   192.168.10.63  
+   Plage:       192.168.10.1 - 192.168.10.62  
+   Nb d'hotes:  62  
 
 Sous-réseau 2
-  Réseau:      192.168.10.64/26
-  Masque:      255.255.255.192
-  Broadcast:   192.168.10.127
-  Plage:       192.168.10.65 - 192.168.10.126
-  Nb d'hotes:  62
+  Réseau:      192.168.10.64/26  
+  Masque:      255.255.255.192    
+  Broadcast:   192.168.10.127  
+  Plage:       192.168.10.65 - 192.168.10.126  
+  Nb d'hotes:  62  
 
 Sous-réseau 3
-  Réseau:      192.168.10.128/26
-  Masque:      255.255.255.192
-  Broadcast:   192.168.10.191
-  Plage:       192.168.10.129 - 192.168.10.190
-  Nb d'hotes:  62
+  Réseau:      192.168.10.128/26  
+  Masque:      255.255.255.192  
+  Broadcast:   192.168.10.191  
+  Plage:       192.168.10.129 - 192.168.10.190  
+  Nb d'hotes:  62  
 
 Sous-réseau 4
-  Réseau:      192.168.10.192/26
-  Masque:      255.255.255.192
-  Broadcast:   192.168.10.255
-  Plage:       192.168.10.193 - 192.168.10.254
-  Nb d'hotes:  62
+  Réseau:      192.168.10.192/26  
+  Masque:      255.255.255.192  
+  Broadcast:   192.168.10.255  
+  Plage:       192.168.10.193 - 192.168.10.254  
+  Nb d'hotes:  62   
 
 ### Vérification avec NetProbe
 
