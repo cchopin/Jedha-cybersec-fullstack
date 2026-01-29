@@ -325,7 +325,7 @@ UUID=04a7d4a0-d85a-4344-94c0-cefc73133f91  /mnt/my_mountpoint  ext4  defaults  0
 Vérifiez la syntaxe avec :
 
 ```bash
-$ sudo mount -a
+sudo mount -a
 ```
 
 > **Attention** : Une entrée fstab mal configurée peut empêcher le système de démarrer !

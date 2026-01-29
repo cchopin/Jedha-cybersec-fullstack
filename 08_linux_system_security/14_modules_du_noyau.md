@@ -133,7 +133,7 @@ options dummy numdummies=2
 `rmmod` supprime un module du noyau. Contrairement à `modprobe -r` qui supprime le module spécifié et tous les modules qui en dépendent, `rmmod` échoue si un autre module utilise celui que vous essayez de supprimer :
 
 ```bash
-$ sudo rmmod dummy
+sudo rmmod dummy
 ```
 
 ### insmod - Insertion directe
@@ -141,7 +141,7 @@ $ sudo rmmod dummy
 `insmod` insère directement un module du noyau dans le noyau en cours d'exécution. Il prend le chemin exact vers le fichier module et le charge sans vérifier les dépendances ou configuration :
 
 ```bash
-$ sudo insmod /lib/modules/6.8.0-60-generic/kernel/drivers/net/dummy.ko.zst
+sudo insmod /lib/modules/6.8.0-60-generic/kernel/drivers/net/dummy.ko.zst
 ```
 
 > **Note** : Vous avez peut-être remarqué l'extension `.ko.zst` au lieu de `.ko` : les systèmes Ubuntu et Debian modernes compressent maintenant les modules noyau avec Zstandard pour économiser de l'espace disque.
@@ -165,13 +165,13 @@ dummy
 Pour appliquer cette configuration :
 
 ```bash
-$ sudo systemctl restart systemd-modules-load
+sudo systemctl restart systemd-modules-load
 ```
 
 ### Structure de /lib/modules/<kernel_version>/
 
 ```bash
-$ ll /lib/modules/6.8.0-60-generic/
+ll /lib/modules/6.8.0-60-generic/
 ```
 
 | Répertoire/Fichier | Description |
@@ -215,7 +215,7 @@ Un rootkit noyau peut :
 Le paramètre sysctl `kernel.modules_disabled` est un paramètre noyau runtime qui, quand il est mis à 1, désactive tout chargement ou déchargement futur de modules pour le reste de la durée de fonctionnement du système :
 
 ```bash
-$ echo 1 | sudo tee /proc/sys/kernel/modules_disabled
+echo 1 | sudo tee /proc/sys/kernel/modules_disabled
 ```
 
 Une fois fait :
@@ -273,8 +273,8 @@ Même si vous ne pouvez pas tout bloquer, vous pouvez détecter et répondre aux
 **Surveiller les logs :**
 
 ```bash
-$ journalctl -k | grep module
-$ dmesg | grep -i "module"
+journalctl -k | grep module
+dmesg | grep -i "module"
 ```
 
 **Avec auditd :**

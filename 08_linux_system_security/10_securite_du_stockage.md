@@ -69,9 +69,9 @@ $ sudo bash -c 'echo "Secret hello!" > hello.txt'
 ### Fermer un volume chiffré
 
 ```bash
-$ sudo umount /mnt/secure
-$ sudo cryptsetup close secure_volume
-$ sudo losetup -d /dev/loop10
+sudo umount /mnt/secure
+sudo cryptsetup close secure_volume
+sudo losetup -d /dev/loop10
 ```
 
 ### Vérifier le chiffrement
@@ -179,7 +179,7 @@ Savez-vous comment supprimer des données de manière sécurisée ? Quand vous s
 `shred` écrase le contenu d'un fichier plusieurs fois avec des données aléatoires :
 
 ```bash
-$ shred -u -z secret.txt
+shred -u -z secret.txt
 ```
 
 | Option | Description |

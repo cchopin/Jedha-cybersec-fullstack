@@ -83,7 +83,7 @@ olcTLSCACertificateFile: /etc/ldap/ssl/ca.crt
 ```
 
 ```bash
-$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f tls.ldif
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f tls.ldif
 ```
 
 3. **Activer LDAPS dans le service** :
@@ -161,7 +161,7 @@ olcAccess: {4}to *
 ```
 
 ```bash
-$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f acl.ldif
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f acl.ldif
 ```
 
 ### Vérifier les ACL
@@ -195,7 +195,7 @@ olcRequires: authc
 ```
 
 ```bash
-$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f disable-anon.ldif
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f disable-anon.ldif
 ```
 
 ---
@@ -346,7 +346,7 @@ local4.* /var/log/slapd.log
 ```
 
 ```bash
-$ sudo systemctl restart rsyslog
+sudo systemctl restart rsyslog
 ```
 
 ### Surveiller les tentatives échouées

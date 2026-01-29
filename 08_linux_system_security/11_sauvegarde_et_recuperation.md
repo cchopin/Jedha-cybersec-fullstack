@@ -215,8 +215,8 @@ La récupération est plus efficace quand elle est effectuée immédiatement, av
 **testdisk** se spécialise dans la récupération de partitions perdues et la réparation de tables de partition corrompues. Si un système devient non bootable ou qu'un disque apparaît vide, testdisk peut souvent reconstruire la structure nécessaire pour rendre les données accessibles.
 
 ```bash
-$ sudo apt install testdisk
-$ sudo testdisk
+sudo apt install testdisk
+sudo testdisk
 ```
 
 ### photorec - Récupération de fichiers
@@ -224,7 +224,7 @@ $ sudo testdisk
 **photorec** est un choix puissant pour récupérer des fichiers individuels plutôt que des partitions entières. Malgré son nom, il peut récupérer plus que des photos. Il scanne les secteurs bruts du disque à la recherche de signatures de fichiers, le rendant utile même quand le système de fichiers est fortement endommagé ou a été formaté.
 
 ```bash
-$ sudo photorec
+sudo photorec
 ```
 
 > **Bonne pratique** : Que vous récupériez un fichier accidentellement supprimé ou essayiez de sauver des données d'une partition endommagée, il est critique de travailler à partir d'une **image disque** quand c'est possible. Des outils comme `dd` peuvent aider à cloner le disque affecté, préservant l'état original et permettant des tentatives de récupération répétées sans risque supplémentaire.

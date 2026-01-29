@@ -177,8 +177,8 @@ $ du -sh /var/* | sort -h
 `ncdu` est un visualiseur interactif de `du`, excellent pour scanner de gros disques :
 
 ```bash
-$ sudo apt install ncdu
-$ ncdu /
+sudo apt install ncdu
+ncdu /
 ```
 
 ![ncdu](assets/ncdu.png)
@@ -188,8 +188,8 @@ $ ncdu /
 `iotop` affiche une vue en temps réel de l'utilisation du disque par processus :
 
 ```bash
-$ sudo apt install iotop
-$ sudo iotop
+sudo apt install iotop
+sudo iotop
 ```
 
 **Que surveiller :**

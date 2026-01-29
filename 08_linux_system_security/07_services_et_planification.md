@@ -116,7 +116,7 @@ sudo systemctl start cups
 
 **Vérifier le statut :**
 ```bash
-$ systemctl status cups
+systemctl status cups
 ```
 
 **Autres commandes importantes :**
@@ -130,21 +130,21 @@ $ systemctl status cups
 
 **Lister les services activés/désactivés :**
 ```bash
-$ systemctl list-unit-files --type=service
+systemctl list-unit-files --type=service
 ```
 
 > **Bonne pratique** : Désactiver les services inutiles pour réduire la surface d'attaque.
-
+>
 > **Sécurité - Persistence** : Les attaquants peuvent déposer un fichier unit malveillant dans `/etc/systemd/system/` ou `~/.config/systemd/user/` pour lancer un malware au démarrage.
 
 ### Utiliser service (ancienne méthode)
 
 Avant systemctl, on utilisait `service` :
 ```bash
-$ sudo service cups stop
-$ sudo service cups start
-$ sudo service cups restart
-$ sudo service cups status
+sudo service cups stop
+sudo service cups start
+sudo service cups restart
+sudo service cups status
 ```
 
 ### Vérifier les logs des services
@@ -153,7 +153,7 @@ $ sudo service cups status
 
 **Accéder aux logs d'un service :**
 ```bash
-$ journalctl -u cups
+journalctl -u cups
 ```
 
 **Options utiles :**
@@ -166,17 +166,17 @@ $ journalctl -u cups
 
 **Trouver les services échoués :**
 ```bash
-$ systemctl --failed
+systemctl --failed
 ```
 
 **Voir le fichier unit d'un service :**
 ```bash
-$ systemctl cat cups
+systemctl cat cups
 ```
 
 **Messages du noyau avec dmesg :**
 ```bash
-$ sudo dmesg | tail
+sudo dmesg | tail
 ```
 
 ### rsyslog
@@ -208,12 +208,12 @@ Un **socket** est un point de terminaison pour la communication entre deux progr
 
 **Lister les sockets actifs :**
 ```bash
-$ systemctl list-sockets
+systemctl list-sockets
 ```
 
 **Vérifier un socket :**
 ```bash
-$ systemctl status cups.socket
+systemctl status cups.socket
 ```
 
 ---
@@ -265,12 +265,12 @@ NoNewPrivileges=yes
 
 **Analyser un service spécifique :**
 ```bash
-$ systemd-analyze security cups
+systemd-analyze security cups
 ```
 
 **Analyser tous les services :**
 ```bash
-$ systemd-analyze security
+systemd-analyze security
 ```
 
 Le score d'exposition va de 0.0 (très sécurisé) à 10.0 (très exposé).
@@ -366,7 +366,7 @@ WantedBy=timers.target
 
 **Lister tous les timers :**
 ```bash
-$ systemctl list-timers --all
+systemctl list-timers --all
 ```
 
 ---
