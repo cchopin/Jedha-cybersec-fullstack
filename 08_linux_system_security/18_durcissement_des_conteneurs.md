@@ -217,7 +217,7 @@ Les **user namespaces** permettent de mapper root dans le conteneur à un utilis
 2. Redémarrer Docker :
 
 ```bash
-$ sudo systemctl restart docker
+sudo systemctl restart docker
 ```
 
 3. Vérifier la configuration :
@@ -305,7 +305,7 @@ Créer un profil restrictif (`profil-restrictif.json`) :
 ```
 
 ```bash
-$ docker run --security-opt seccomp=profil-restrictif.json nginx
+docker run --security-opt seccomp=profil-restrictif.json nginx
 ```
 
 ---
