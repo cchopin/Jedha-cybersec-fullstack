@@ -88,7 +88,7 @@ $ ps aux
 
 **Combiner ps et grep :**
 ```bash
-$ ps aux | grep ssh
+ps aux | grep ssh
 ```
 
 ### États des processus (STAT)
@@ -117,7 +117,7 @@ Contrairement à `ps`, `top` et `htop` offrent une vue en temps réel, rafraîch
 
 **Commande top :**
 ```bash
-$ top
+top
 ```
 
 ![Sortie de top](assets/top.png)
@@ -166,7 +166,7 @@ $ pidof sshd
 - RAM élevée : fuites mémoire, swap excessif
 
 ```bash
-$ ps aux --sort=-%cpu | head
+ps aux --sort=-%cpu | head
 ```
 
 #### Processus non réactifs ou bloqués
@@ -215,7 +215,7 @@ $ kill -s SIGKILL 279530
 
 **Tuer par nom avec killall :**
 ```bash
-$ killall firefox
+killall firefox
 ```
 
 **Signaux courants :**
@@ -261,12 +261,12 @@ Le **scheduler** du noyau décide quel processus obtient du temps CPU. La valeur
 
 **Définir la priorité au lancement :**
 ```bash
-$ nice -n 10 sleep 1000 &
+nice -n 10 sleep 1000 &
 ```
 
 **Modifier un processus en cours :**
 ```bash
-$ renice -n 5 -p 279887
+renice -n 5 -p 279887
 ```
 
 > Seul root peut définir des valeurs négatives (priorité plus haute).
@@ -289,9 +289,9 @@ Chaque processus a un répertoire sous `/proc` nommé d'après son PID, contenan
 | `/proc/[pid]/fd/` | Descripteurs de fichiers ouverts |
 
 ```bash
-$ cat /proc/280027/status
-$ ll /proc/280027/exe
-$ ll /proc/280027/fd
+cat /proc/280027/status
+ll /proc/280027/exe
+ll /proc/280027/fd
 ```
 
 > `/proc/` est un pseudo-système de fichiers : pas stocké sur disque, généré à la volée par le noyau.
@@ -301,8 +301,8 @@ $ ll /proc/280027/fd
 La plupart des processus font partie d'une hiérarchie parent-enfant, commençant par **systemd** (PID 1), le premier processus espace utilisateur lancé par le noyau.
 
 ```bash
-$ ps --forest
-$ pstree
+ps --forest
+pstree
 ```
 
 Un **daemon** est un processus en arrière-plan de longue durée, typiquement :
@@ -343,7 +343,7 @@ $ getcap /usr/bin/ping
 
 **Définir une capability :**
 ```bash
-$ sudo setcap cap_net_bind_service=+ep /usr/local/bin/my_server
+sudo setcap cap_net_bind_service=+ep /usr/local/bin/my_server
 ```
 
 **Capabilities courantes :**
@@ -377,12 +377,12 @@ $ ulimit -n
 
 **Modifier les limites d'un processus en cours :**
 ```bash
-$ sudo prlimit --pid 278697 --nofile=1024:4096
+sudo prlimit --pid 278697 --nofile=1024:4096
 ```
 
 **Voir les limites d'un processus :**
 ```bash
-$ cat /proc/278697/limits
+cat /proc/278697/limits
 ```
 
 **Limites permanentes dans `/etc/security/limits.conf` :**

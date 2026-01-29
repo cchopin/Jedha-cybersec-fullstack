@@ -70,7 +70,7 @@ Une **bibliothèque** est une collection de code précompilé que les programmes
 
 **Voir les bibliothèques utilisées par un binaire :**
 ```bash
-$ ldd /usr/bin/ls
+ldd /usr/bin/ls
 ```
 
 ### Chargement et exécution
@@ -117,7 +117,7 @@ $ which touch
 
 **Modifier le PATH :**
 ```bash
-$ export PATH="/tmp:$PATH"
+export PATH="/tmp:$PATH"
 ```
 
 > **Sécurité - PATH hijacking** : Si un attaquant peut réécrire votre PATH et placer un binaire malveillant `ls` dans `/tmp`, ce binaire sera exécuté à la place du vrai `ls`.
@@ -173,11 +173,12 @@ $ ldd /usr/bin/ping
 | `/lib/ld-linux-*.so.1` | Chargeur dynamique |
 
 > **Alerte sécurité** : Si un binaire système comme `/bin/ls` est lié à un chemin non standard (ex: `/tmp/libc.so.6`), c'est un signal d'alarme majeur.
-
+>
 > **Attention** : Ne jamais utiliser `ldd` sur des exécutables non fiables ! Utilisez plutôt `objdump` ou `readelf` :
+>
 > ```bash
-> $ objdump -p /usr/bin/ping | grep NEEDED
-> $ readelf -d /usr/bin/ping
+> objdump -p /usr/bin/ping | grep NEEDED
+> readelf -d /usr/bin/ping
 > ```
 
 ### Rechercher du texte avec strings
@@ -185,7 +186,7 @@ $ ldd /usr/bin/ping
 `strings` extrait le texte ASCII et UTF-8 lisible des fichiers binaires.
 
 ```bash
-$ strings /usr/bin/ls | head
+strings /usr/bin/ls | head
 ```
 
 Peut révéler :
@@ -209,7 +210,7 @@ brk(NULL)                               = 0xb381e88fd000
 
 **ltrace** trace les appels aux fonctions de bibliothèques :
 ```bash
-$ ltrace ls
+ltrace ls
 ```
 
 **Ce qu'on peut détecter :**
@@ -274,7 +275,7 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
 **Vérifier l'intégrité des fichiers installés :**
 ```bash
-$ sudo debsums -s
+sudo debsums -s
 ```
 
 ---

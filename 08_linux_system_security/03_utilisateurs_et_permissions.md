@@ -73,7 +73,7 @@ root ALL=(ALL:ALL) ALL
 
 Pour voir les dernières commandes sudo :
 ```bash
-$ journalctl -e | grep sudo
+journalctl -e | grep sudo
 ```
 
 ---

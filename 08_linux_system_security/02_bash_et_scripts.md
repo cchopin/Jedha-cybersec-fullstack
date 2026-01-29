@@ -30,13 +30,13 @@ Vous connaissez déjà comment rediriger la sortie de vos commandes avec `>` et 
 Vous pouvez utiliser `2>` et `2>>` pour rediriger ou ajouter les messages d'erreur vers un fichier spécifique :
 
 ```bash
-$ ls fichierinexistant 2> error.log
+ls fichierinexistant 2> error.log
 ```
 
 Cette redirection est souvent utilisée par les attaquants pour masquer les erreurs :
 
 ```bash
-$ ./exploit.sh 2>/dev/null
+./exploit.sh 2>/dev/null
 ```
 
 #### `&>` - Rediriger stdout et stderr
@@ -44,13 +44,13 @@ $ ./exploit.sh 2>/dev/null
 Vous pouvez rediriger à la fois la sortie standard et la sortie d'erreur avec `&>` :
 
 ```bash
-$ ./script.sh &> output.log
+./script.sh &> output.log
 ```
 
 Équivalent à :
 
 ```bash
-$ ./script.sh > output.log 2>&1
+./script.sh > output.log 2>&1
 ```
 
 #### `<` - Rediriger l'entrée
@@ -161,7 +161,7 @@ Les liens permettent de référencer des fichiers à plusieurs endroits sans dup
 Crée un autre nom pour le même contenu de fichier. Supprimer l'original ne supprime pas les données tant qu'un lien physique existe :
 
 ```bash
-$ ln rapport.txt rapport_copie.txt
+ln rapport.txt rapport_copie.txt
 ```
 
 **Utilisation** : organiser les mêmes fichiers de différentes manières sans duplication.
@@ -171,7 +171,7 @@ $ ln rapport.txt rapport_copie.txt
 Pointe vers un autre fichier ou répertoire. Si la cible est supprimée, le symlink est cassé :
 
 ```bash
-$ ln -s /var/log/syslog dernier-log
+ln -s /var/log/syslog dernier-log
 ```
 
 **Utilisation typique** : bibliothèques partagées en Linux :
