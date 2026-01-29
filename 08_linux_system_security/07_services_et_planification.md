@@ -101,17 +101,17 @@ WantedBy=printer.target multi-user.target
 
 **Voir tous les services en cours :**
 ```bash
-$ systemctl --type=service --state=running
+systemctl --type=service --state=running
 ```
 
 **Arrêter un service :**
 ```bash
-$ sudo systemctl stop cups
+sudo systemctl stop cups
 ```
 
 **Démarrer un service :**
 ```bash
-$ sudo systemctl start cups
+sudo systemctl start cups
 ```
 
 **Vérifier le statut :**
