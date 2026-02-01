@@ -72,3 +72,9 @@ certificates/*
 ssl/*
 !ssl/README.md
 !ssl/.gitkeep
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
