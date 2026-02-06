@@ -358,6 +358,6 @@ The attackers weren't sophisticated. They used commodity malware (Mirai), public
 
 *This write-up is based on a real incident. Server identifying information has been redacted. IOCs are defanged for safety.*
 
-**Author:** Security Incident Response Team
-**Date:** February 2026
-**Classification:** TLP:CLEAR
+**Author:** Security Incident Response Team  
+**Date:** February 2026  
+**Classification:** TLP:CLEAR  
