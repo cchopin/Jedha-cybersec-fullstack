@@ -358,6 +358,6 @@ Les attaquants n'étaient pas sophistiqués. Ils ont utilisé des malwares commo
 
 *Ce write-up est basé sur un incident réel. Les informations d'identification du serveur ont été expurgées. Les IOCs sont défangés pour la sécurité.*
 
-**Auteur :** Équipe de réponse aux incidents de sécurité
-**Date :** Février 2026
-**Classification :** TLP:CLEAR
+**Auteur :** Équipe de réponse aux incidents de sécurité  
+**Date :** Février 2026  
+**Classification :** TLP:CLEAR  
