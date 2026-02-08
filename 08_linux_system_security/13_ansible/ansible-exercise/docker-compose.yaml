@@ -1,0 +1,64 @@
+services:
+  control-node:
+    image: jedha/lab-ansible-controller
+    container_name: ansible-controller
+    hostname: ansible-controller
+    volumes:
+      - ./ansible-volume:/ansible
+    depends_on:
+      - db-backend
+      - web-frontend
+      - logs-collector
+    command: sh -c "
+      ssh-keyscan -H web-frontend >> /root/.ssh/known_hosts && \
+      ssh-keyscan -H db-backend >> /root/.ssh/known_hosts && \
+      ssh-keyscan -H logs-collector >> /root/.ssh/known_hosts && \
+      tail -f /dev/null"
+    networks:
+      lab-network:
+        ipv4_address: 11.10.10.12
+
+  web-frontend:
+    image: jedha/lab-ansible-conode
+    container_name: web-frontend
+    hostname: web-frontend
+    expose:
+      - 22
+    privileged: true
+    command: bash -c "\
+      /usr/sbin/sshd -D && tail -f /dev/null"
+    networks:
+      lab-network:
+        ipv4_address: 11.10.10.23
+
+  db-backend:
+    image: jedha/lab-ansible-clnode
+    container_name: db-backend
+    hostname: db-backend
+    expose:
+      - 22
+    command: "/usr/sbin/sshd -D && tail -f /dev/null"
+    networks:
+      lab-network:
+        ipv4_address: 11.10.10.24
+
+  logs-collector:
+    image: jedha/lab-ansible-conode
+    container_name: logs-collector
+    hostname: logs-collector
+    expose:
+      - 22
+    privileged: true
+    command: bash -c "\
+      /usr/sbin/sshd -D && tail -f /dev/null"
+    networks:
+      lab-network:
+        ipv4_address: 11.10.10.25
+
+networks:
+  lab-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 11.10.10.0/24

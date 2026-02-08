@@ -1,0 +1,21 @@
+- name: Find .sh files in /tmp
+  find:
+    paths: /tmp
+    patterns: "*.sh"
+  register: suspicious_scripts
+  tags: [detect, fix]
+
+- name: Show suspicious scripts
+  debug:
+    msg: "Suspicious script found: {{ item.path }}"
+  loop: "{{ suspicious_scripts.files }}"
+  when: suspicious_scripts.files | length > 0
+  tags: [detect]
+
+- name: Delete suspicious scripts
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ suspicious_scripts.files }}"
+  when: suspicious_scripts.files | length > 0
+  tags: [fix]

@@ -1,0 +1,19 @@
+- name: Check for syscheck user
+  shell: getent passwd syscheck
+  register: rogue_user
+  failed_when: false
+  tags: [detect, fix]
+
+- name: Show rogue user if present
+  debug:
+    msg: "Suspicious user syscheck detected!"
+  when: rogue_user.stdout != ""
+  tags: [detect]
+
+- name: Remove syscheck user
+  user:
+    name: syscheck
+    state: absent
+    remove: yes
+  when: rogue_user.stdout != ""
+  tags: [fix]

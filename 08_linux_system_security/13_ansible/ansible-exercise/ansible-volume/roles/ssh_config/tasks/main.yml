@@ -1,0 +1,31 @@
+- name: Check for PasswordAuthentication yes
+  shell: grep -E '^PasswordAuthentication\s+yes' /etc/ssh/sshd_config
+  register: password_auth
+  failed_when: false
+  tags: [detect]
+
+- name: Check for PermitRootLogin yes
+  shell: grep -E '^PermitRootLogin\s+yes' /etc/ssh/sshd_config
+  register: root_login
+  failed_when: false
+  tags: [detect]
+
+- name: Show SSH misconfiguration warning
+  debug:
+    msg: "SSH misconfiguration detected! PasswordAuth={{ password_auth.stdout != '' }}, RootLogin={{ root_login.stdout != '' }}"
+  when: password_auth.stdout != "" or root_login.stdout != ""
+  tags: [detect]
+
+- name: Disable PasswordAuthentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication\s+'
+    line: 'PasswordAuthentication no'
+  tags: [fix]
+
+- name: Disable PermitRootLogin
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin\s+'
+    line: 'PermitRootLogin no'
+  tags: [fix]

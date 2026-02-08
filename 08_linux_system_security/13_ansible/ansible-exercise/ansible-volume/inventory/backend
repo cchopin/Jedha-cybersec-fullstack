@@ -1,0 +1,3 @@
+[backend]
+db-backend ansible_host=db-backend ansible_port=22 ansible_user=root
+logs-collector ansible_host=logs-collector ansible_port=22 ansible_user=root

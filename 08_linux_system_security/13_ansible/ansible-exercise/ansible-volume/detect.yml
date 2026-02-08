@@ -1,0 +1,43 @@
+- name: Detect compromises
+  hosts: all
+  become: true
+  tasks:
+    # --- Step 2: Detect rogue user ---
+    - name: Check for syscheck user
+      shell: getent passwd syscheck
+      register: rogue_user
+      failed_when: false
+
+    - name: Show rogue user if present
+      debug:
+        msg: "Suspicious user syscheck detected!"
+      when: rogue_user.stdout != ""
+
+    # --- Step 3: Check SSH configuration ---
+    - name: Check for PasswordAuthentication yes
+      shell: grep -E '^PasswordAuthentication\s+yes' /etc/ssh/sshd_config
+      register: password_auth
+      failed_when: false
+
+    - name: Check for PermitRootLogin yes
+      shell: grep -E '^PermitRootLogin\s+yes' /etc/ssh/sshd_config
+      register: root_login
+      failed_when: false
+
+    - name: Show SSH misconfiguration warning
+      debug:
+        msg: "SSH misconfiguration detected! PasswordAuth={{ password_auth.stdout != '' }}, RootLogin={{ root_login.stdout != '' }}"
+      when: password_auth.stdout != "" or root_login.stdout != ""
+
+    # --- Step 4: Find suspicious bash scripts in /tmp ---
+    - name: Find .sh files in /tmp
+      find:
+        paths: /tmp
+        patterns: "*.sh"
+      register: suspicious_scripts
+
+    - name: Show suspicious scripts
+      debug:
+        msg: "Suspicious script found: {{ item.path }}"
+      loop: "{{ suspicious_scripts.files }}"
+      when: suspicious_scripts.files | length > 0

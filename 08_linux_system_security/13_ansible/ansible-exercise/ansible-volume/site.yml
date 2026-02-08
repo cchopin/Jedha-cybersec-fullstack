@@ -1,0 +1,7 @@
+- name: Detect and fix compromises
+  hosts: all
+  become: true
+  roles:
+    - rogue_user
+    - ssh_config
+    - suspicious_scripts
