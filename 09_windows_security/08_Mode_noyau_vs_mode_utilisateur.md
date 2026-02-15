@@ -134,28 +134,28 @@ Le mode noyau est composé de quatre couches principales :
 
 ```
 ┌───────────────────────────────────────────────────┐
-│                 Mode utilisateur (Ring 3)          │
+│                 Mode utilisateur (Ring 3)         │
 │  Applications, Services, NTDLL.DLL                │
 ├───────────────────────────────────────────────────┤
-│                 Mode noyau (Ring 0)                │
+│                 Mode noyau (Ring 0)               │
 │                                                   │
 │  ┌─────────────────────────────────────────────┐  │
-│  │          Executive (ntoskrnl.exe)            │  │
+│  │          Executive (ntoskrnl.exe)           │  │
 │  │  I/O Manager, Memory Manager, Object        │  │
 │  │  Manager, Security Reference Monitor,       │  │
 │  │  Process Manager, Configuration Manager     │  │
 │  ├─────────────────────────────────────────────┤  │
-│  │          Pilotes de périphériques            │  │
+│  │          Pilotes de périphériques           │  │
 │  │  Pilotes disque, réseau, USB, graphiques    │  │
 │  ├─────────────────────────────────────────────┤  │
-│  │       Windowing & Graphics (win32k.sys)      │  │
+│  │       Windowing & Graphics (win32k.sys)     │  │
 │  │  Sous-système graphique, GDI, DirectX       │  │
 │  ├─────────────────────────────────────────────┤  │
-│  │    Hardware Abstraction Layer (hal.dll)       │  │
-│  │  Interface uniforme vers le matériel         │  │
+│  │    Hardware Abstraction Layer (hal.dll)     │  │
+│  │  Interface uniforme vers le matériel        │  │
 │  └─────────────────────────────────────────────┘  │
 │                                                   │
-│              Matériel (CPU, RAM, Disques)          │
+│              Matériel (CPU, RAM, Disques)         │
 └───────────────────────────────────────────────────┘
 ```
 
