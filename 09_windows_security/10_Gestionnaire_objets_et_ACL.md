@@ -1,20 +1,20 @@
-# Gestionnaire d'objets et listes de controle d'acces (ACL)
+# Gestionnaire d'objets et listes de contrôle d'accès (ACL)
 
-**Module** : comprendre l'Object Manager, la Win32 API et le systeme de permissions Windows
+**Module** : comprendre l'Object Manager, la Win32 API et le système de permissions Windows
 
 ---
 
 ## Objectifs du module
 
-A l'issue de ce module, les competences suivantes seront acquises :
+À l'issue de ce module, les compétences suivantes seront acquises :
 
-- Comprendre le role de l'Object Manager dans l'architecture du noyau Windows
-- Maitriser le concept d'objet noyau et de handle
-- Connaitre la Win32 API et son role d'intermediaire entre les applications et le noyau
-- Comprendre la resolution des chemins par le noyau (chemins Win32 vs chemins kernel)
-- Maitriser le systeme d'ACL Windows : Security Descriptor, DACL, SACL, ACE
+- Comprendre le rôle de l'Object Manager dans l'architecture du noyau Windows
+- Maîtriser le concept d'objet noyau et de handle
+- Connaître la Win32 API et son rôle d'intermédiaire entre les applications et le noyau
+- Comprendre la résolution des chemins par le noyau (chemins Win32 vs chemins kernel)
+- Maîtriser le système d'ACL Windows : Security Descriptor, DACL, SACL, ACE
 - Utiliser `icacls`, `Get-Acl` et SDDL pour auditer et configurer les permissions
-- Configurer l'audit d'acces via les SACL
+- Configurer l'audit d'accès via les SACL
 
 ---
 
@@ -22,47 +22,47 @@ A l'issue de ce module, les competences suivantes seront acquises :
 
 ### 1.1 Principe fondamental : tout est un objet
 
-Dans l'architecture Windows, le noyau manipule toutes les ressources systeme sous forme d'**objets**. L'**Object Manager** est le composant de l'Executive du noyau responsable de la creation, de la gestion et de la destruction de ces objets.
+Dans l'architecture Windows, le noyau manipule toutes les ressources système sous forme d'**objets**. L'**Object Manager** est le composant de l'Executive du noyau responsable de la création, de la gestion et de la destruction de ces objets.
 
-Exemples de ressources representees comme des objets noyau :
+Exemples de ressources représentées comme des objets noyau :
 
 | Type d'objet | Exemples |
 |---|---|
-| **Fichier** | Document Word, image, executable |
-| **Dossier** | Repertoire du systeme de fichiers |
-| **Processus** | Instance en cours d'execution d'un programme |
-| **Thread** | Fil d'execution au sein d'un processus |
-| **Cle de registre** | Cle dans la base de registre |
-| **Section** | Zone de memoire partagee entre processus |
-| **Mutex** | Mecanisme de synchronisation entre threads |
-| **Evenement** | Signal de notification entre processus |
+| **Fichier** | Document Word, image, exécutable |
+| **Dossier** | Répertoire du système de fichiers |
+| **Processus** | Instance en cours d'exécution d'un programme |
+| **Thread** | Fil d'exécution au sein d'un processus |
+| **Clé de registre** | Clé dans la base de registre |
+| **Section** | Zone de mémoire partagée entre processus |
+| **Mutex** | Mécanisme de synchronisation entre threads |
+| **Événement** | Signal de notification entre processus |
 | **Pipe** | Canal de communication entre processus |
 
-### 1.2 Proprietes d'un objet noyau
+### 1.2 Propriétés d'un objet noyau
 
-Chaque objet noyau possede des proprietes communes :
+Chaque objet noyau possède des propriétés communes :
 
-| Propriete | Description |
+| Propriété | Description |
 |---|---|
 | **Nom** | Identifiant dans l'espace de noms du noyau (ex : `\Device\HarddiskVolume1\Users\...`) |
 | **Type** | Type de l'objet (File, Process, Key, etc.) |
-| **Security Descriptor** | Descripteur de securite contenant les ACL (qui peut acceder a cet objet et avec quelles permissions) |
-| **Compteur de references** | Nombre de handles et de references pointant vers l'objet. L'objet est detruit quand ce compteur atteint zero |
-| **Handle** | Reference opaque permettant aux programmes en mode utilisateur d'interagir avec l'objet |
+| **Security Descriptor** | Descripteur de sécurité contenant les ACL (qui peut accéder à cet objet et avec quelles permissions) |
+| **Compteur de références** | Nombre de handles et de références pointant vers l'objet. L'objet est détruit quand ce compteur atteint zéro |
+| **Handle** | Référence opaque permettant aux programmes en mode utilisateur d'interagir avec l'objet |
 
 ### 1.3 Les handles
 
-Un **handle** est une reference indirecte et opaque vers un objet noyau. Les programmes en mode utilisateur ne peuvent jamais acceder directement aux structures internes du noyau. Ils utilisent des handles (de simples numeros) que le noyau traduit en references vers les vrais objets.
+Un **handle** est une référence indirecte et opaque vers un objet noyau. Les programmes en mode utilisateur ne peuvent jamais accéder directement aux structures internes du noyau. Ils utilisent des handles (de simples numéros) que le noyau traduit en références vers les vrais objets.
 
-Chaque processus dispose d'une **table de handles** privee, geree par le noyau. Lorsqu'un programme ouvre un fichier, le noyau :
+Chaque processus dispose d'une **table de handles** privée, gérée par le noyau. Lorsqu'un programme ouvre un fichier, le noyau :
 
-1. Cree ou localise l'objet fichier
-2. Verifie les permissions via le Security Reference Monitor
-3. Ajoute une entree dans la table de handles du processus
-4. Retourne le numero de handle au programme
+1. Crée ou localise l'objet fichier
+2. Vérifie les permissions via le Security Reference Monitor
+3. Ajoute une entrée dans la table de handles du processus
+4. Retourne le numéro de handle au programme
 
 ```powershell
-# Voir les handles ouverts par un processus (necessite Process Explorer ou handle.exe de Sysinternals)
+# Voir les handles ouverts par un processus (nécessite Process Explorer ou handle.exe de Sysinternals)
 # handle.exe -p explorer.exe
 ```
 
@@ -70,29 +70,29 @@ Chaque processus dispose d'une **table de handles** privee, geree par le noyau. 
 
 ## 2. La Win32 API
 
-### 2.1 Role
+### 2.1 Rôle
 
-La **Win32 API** (Windows Application Programming Interface) est la couche intermediaire entre les applications et les appels systeme (`ntdll.dll`). Elle est implementee principalement dans trois DLL :
+La **Win32 API** (Windows Application Programming Interface) est la couche intermédiaire entre les applications et les appels système (`ntdll.dll`). Elle est implémentée principalement dans trois DLL :
 
 | DLL | Contenu |
 |---|---|
-| `kernel32.dll` | Fonctions systeme : fichiers, processus, memoire, threads |
-| `user32.dll` | Fonctions interface graphique : fenetres, messages, entrees |
-| `advapi32.dll` | Fonctions de securite : registre, services, tokens, chiffrement |
+| `kernel32.dll` | Fonctions système : fichiers, processus, mémoire, threads |
+| `user32.dll` | Fonctions interface graphique : fenêtres, messages, entrées |
+| `advapi32.dll` | Fonctions de sécurité : registre, services, tokens, chiffrement |
 
 ### 2.2 Pourquoi la Win32 API existe-t-elle ?
 
-Les fonctions de `ntdll.dll` (prefixees par `Nt` ou `Zw`) sont des fonctions **internes** dont l'interface peut changer entre les versions de Windows. Microsoft ne documente pas publiquement la plupart de ces fonctions et ne garantit pas leur stabilite.
+Les fonctions de `ntdll.dll` (préfixées par `Nt` ou `Zw`) sont des fonctions **internes** dont l'interface peut changer entre les versions de Windows. Microsoft ne documente pas publiquement la plupart de ces fonctions et ne garantit pas leur stabilité.
 
-La Win32 API fournit une interface **stable et documentee** que les developpeurs peuvent utiliser en toute confiance. Chaque fonction de la Win32 API appelle en interne une ou plusieurs fonctions de `ntdll.dll`.
+La Win32 API fournit une interface **stable et documentée** que les développeurs peuvent utiliser en toute confiance. Chaque fonction de la Win32 API appelle en interne une ou plusieurs fonctions de `ntdll.dll`.
 
-Chaine d'appel typique :
+Chaîne d'appel typique :
 
 ```
 Application
     │
     ▼
-kernel32.dll!CreateFile()       <- Win32 API (documentee, stable)
+kernel32.dll!CreateFile()       <- Win32 API (documentée, stable)
     │
     ▼
 ntdll.dll!NtCreateFile()        <- Interface noyau (interne, instable)
@@ -101,12 +101,12 @@ ntdll.dll!NtCreateFile()        <- Interface noyau (interne, instable)
 syscall                         <- Transition Ring 3 → Ring 0
     │
     ▼
-ntoskrnl.exe!NtCreateFile()     <- Implementation dans le noyau
+ntoskrnl.exe!NtCreateFile()     <- Implémentation dans le noyau
 ```
 
 ### 2.3 Exemple concret : CTRL+S dans Word
 
-Lorsqu'un utilisateur appuie sur CTRL+S dans Microsoft Word, voici la sequence detaillee impliquant l'Object Manager :
+Lorsqu'un utilisateur appuie sur CTRL+S dans Microsoft Word, voici la séquence détaillée impliquant l'Object Manager :
 
 ```
 1. Word appelle CreateFile() (kernel32.dll)
@@ -119,29 +119,29 @@ Lorsqu'un utilisateur appuie sur CTRL+S dans Microsoft Word, voici la sequence d
 3. Transition vers le mode noyau (syscall)
           │
           ▼
-4. L'Object Manager recoit la requete et resout le chemin :
+4. L'Object Manager reçoit la requête et résout le chemin :
    "C:\Users\Alice\Documents\rapport.docx"
    devient :
    "\Device\HarddiskVolume1\Users\Alice\Documents\rapport.docx"
           │
           ▼
-5. L'Object Manager verifie que l'objet fichier existe
-   (via le systeme de fichiers NTFS)
+5. L'Object Manager vérifie que l'objet fichier existe
+   (via le système de fichiers NTFS)
           │
           ▼
-6. Le Security Reference Monitor (SRM) verifie les permissions :
-   - Lit le token d'acces du processus Word (SID de l'utilisateur)
+6. Le Security Reference Monitor (SRM) vérifie les permissions :
+   - Lit le token d'accès du processus Word (SID de l'utilisateur)
    - Lit le Security Descriptor du fichier (DACL)
-   - Compare les deux pour determiner si l'ecriture est autorisee
+   - Compare les deux pour déterminer si l'écriture est autorisée
           │
           ▼
-7. Si autorise : le noyau cree un objet fichier,
-   l'ajoute a la table de handles de Word,
+7. Si autorisé : le noyau crée un objet fichier,
+   l'ajoute à la table de handles de Word,
    et retourne le handle au programme
           │
           ▼
 8. Word utilise ce handle pour appeler WriteFile()
-   et ecrire le contenu du document
+   et écrire le contenu du document
 ```
 
 ---
@@ -150,14 +150,14 @@ Lorsqu'un utilisateur appuie sur CTRL+S dans Microsoft Word, voici la sequence d
 
 ### 3.1 Deux espaces de noms
 
-Windows utilise deux systemes de chemins :
+Windows utilise deux systèmes de chemins :
 
-| Type | Exemple | Utilise par |
+| Type | Exemple | Utilisé par |
 |---|---|---|
 | **Chemin Win32** | `C:\Users\Alice\Documents\rapport.docx` | Applications, utilisateurs, explorateur de fichiers |
 | **Chemin noyau** | `\Device\HarddiskVolume1\Users\Alice\Documents\rapport.docx` | Object Manager, pilotes, noyau |
 
-Le lecteur `C:` est en realite un **lien symbolique** (symlink) gere par l'Object Manager. Il pointe vers le peripherique physique correspondant :
+Le lecteur `C:` est en réalité un **lien symbolique** (symlink) géré par l'Object Manager. Il pointe vers le périphérique physique correspondant :
 
 ```
 C:  →  \Device\HarddiskVolume1\
@@ -166,48 +166,48 @@ D:  →  \Device\HarddiskVolume2\
 
 ### 3.2 L'espace de noms de l'Object Manager
 
-L'Object Manager maintient un espace de noms hierarchique similaire a un systeme de fichiers. On peut l'explorer avec l'outil **WinObj** de Sysinternals :
+L'Object Manager maintient un espace de noms hiérarchique similaire à un système de fichiers. On peut l'explorer avec l'outil **WinObj** de Sysinternals :
 
 ```
 \
-├── Device                    <- Peripheriques physiques
+├── Device                    <- Périphériques physiques
 │     ├── HarddiskVolume1     <- Partition C:
 │     ├── HarddiskVolume2     <- Partition D:
-│     └── Tcp                 <- Pile reseau TCP
+│     └── Tcp                 <- Pile réseau TCP
 ├── DosDevices                <- Liens symboliques (C:, D:, etc.)
-├── ObjectTypes               <- Types d'objets enregistres
+├── ObjectTypes               <- Types d'objets enregistrés
 ├── Sessions                  <- Sessions utilisateur
-├── BaseNamedObjects          <- Objets nommes (mutex, events, etc.)
-└── KnownDlls                 <- DLL pre-chargees par le systeme
+├── BaseNamedObjects          <- Objets nommés (mutex, events, etc.)
+└── KnownDlls                 <- DLL pré-chargées par le système
 ```
 
-> **A noter** : la connaissance des chemins noyau est utile en forensique et en analyse de malwares. Certains malwares utilisent directement les chemins noyau (prefixes `\??\` ou `\\.\`) pour contourner les controles de securite bases sur les chemins Win32.
+> **À noter** : la connaissance des chemins noyau est utile en forensique et en analyse de malwares. Certains malwares utilisent directement les chemins noyau (préfixés `\??\` ou `\\.\`) pour contourner les contrôles de sécurité basés sur les chemins Win32.
 
 ---
 
-## 4. Les listes de controle d'acces (ACL)
+## 4. Les listes de contrôle d'accès (ACL)
 
 ### 4.1 Le Security Descriptor
 
-Chaque objet noyau possede un **Security Descriptor** (descripteur de securite) qui definit qui peut faire quoi avec cet objet. Le Security Descriptor contient quatre elements :
+Chaque objet noyau possède un **Security Descriptor** (descripteur de sécurité) qui définit qui peut faire quoi avec cet objet. Le Security Descriptor contient quatre éléments :
 
-| Element | Description |
+| Élément | Description |
 |---|---|
-| **Owner** | SID du proprietaire de l'objet |
-| **Group** | SID du groupe proprietaire (principalement pour compatibilite POSIX) |
-| **DACL** | Discretionary Access Control List : definit **qui peut acceder** a l'objet et avec quelles permissions |
-| **SACL** | System Access Control List : definit quels acces doivent etre **audites** (journalises) |
+| **Owner** | SID du propriétaire de l'objet |
+| **Group** | SID du groupe propriétaire (principalement pour compatibilité POSIX) |
+| **DACL** | Discretionary Access Control List : définit **qui peut accéder** à l'objet et avec quelles permissions |
+| **SACL** | System Access Control List : définit quels accès doivent être **audités** (journalisés) |
 
 ### 4.2 La DACL (Discretionary Access Control List)
 
-La **DACL** est la composante principale du controle d'acces. Elle est composee d'une liste d'**ACE** (Access Control Entry), chacune specifiant :
+La **DACL** est la composante principale du contrôle d'accès. Elle est composée d'une liste d'**ACE** (Access Control Entry), chacune spécifiant :
 
 | Champ de l'ACE | Description |
 |---|---|
 | **Type** | `Allow` (autoriser) ou `Deny` (refuser) |
-| **SID** | Identifiant de l'utilisateur ou du groupe concerne |
-| **Permissions** | Droits accordes ou refuses |
-| **Heritage** | Si l'ACE se propage aux sous-dossiers et fichiers enfants |
+| **SID** | Identifiant de l'utilisateur ou du groupe concerné |
+| **Permissions** | Droits accordés ou refusés |
+| **Héritage** | Si l'ACE se propage aux sous-dossiers et fichiers enfants |
 
 Exemple de DACL pour un fichier :
 
@@ -218,17 +218,17 @@ Exemple de DACL pour un fichier :
 | Allow | Alice | Read, Write |
 | Deny | Bob | Delete |
 
-> **A noter** : les ACE de type **Deny** sont toujours evaluees **avant** les ACE de type **Allow**. Si un utilisateur fait partie d'un groupe autorise mais aussi d'un groupe refuse, le refus prevaut.
+> **À noter** : les ACE de type **Deny** sont toujours évaluées **avant** les ACE de type **Allow**. Si un utilisateur fait partie d'un groupe autorisé mais aussi d'un groupe refusé, le refus prévaut.
 
 ### 4.3 Les permissions NTFS
 
 | Permission | Code icacls | Description |
 |---|---|---|
 | **Full Control** | `F` | Tous les droits, y compris la modification des permissions |
-| **Modify** | `M` | Lire, ecrire, executer et supprimer |
-| **Read & Execute** | `RX` | Lire le contenu et executer les programmes |
+| **Modify** | `M` | Lire, écrire, exécuter et supprimer |
+| **Read & Execute** | `RX` | Lire le contenu et exécuter les programmes |
 | **Read** | `R` | Lire le contenu et les attributs |
-| **Write** | `W` | Creer des fichiers, ecrire des donnees, modifier les attributs |
+| **Write** | `W` | Créer des fichiers, écrire des données, modifier les attributs |
 | **Delete** | `D` | Supprimer l'objet |
 
 ### 4.4 Examiner les DACL avec icacls
@@ -253,33 +253,33 @@ Lecture des flags :
 
 | Flag | Signification |
 |---|---|
-| `F` | Full Control (controle total) |
+| `F` | Full Control (contrôle total) |
 | `M` | Modify (modification) |
-| `RX` | Read and Execute (lecture et execution) |
+| `RX` | Read and Execute (lecture et exécution) |
 | `R` | Read (lecture) |
-| `W` | Write (ecriture) |
+| `W` | Write (écriture) |
 | `D` | Delete (suppression) |
 | `(OI)` | Object Inherit - l'ACE s'applique aux fichiers enfants |
 | `(CI)` | Container Inherit - l'ACE s'applique aux sous-dossiers enfants |
-| `(IO)` | Inherit Only - l'ACE ne s'applique qu'aux enfants, pas a l'objet lui-meme |
-| `(NP)` | No Propagate - l'heritage ne se propage pas au-dela du premier niveau |
+| `(IO)` | Inherit Only - l'ACE ne s'applique qu'aux enfants, pas à l'objet lui-même |
+| `(NP)` | No Propagate - l'héritage ne se propage pas au-delà du premier niveau |
 
 Modifier les DACL avec `icacls` :
 
 ```cmd
-REM Accorder la lecture a Bob
+REM Accorder la lecture à Bob
 icacls C:\Data\rapport.docx /grant Bob:R
 
-REM Accorder le controle total avec heritage
+REM Accorder le contrôle total avec héritage
 icacls C:\Data\SharedFolder /grant "Marketing:(OI)(CI)F"
 
-REM Refuser la suppression a un groupe
+REM Refuser la suppression à un groupe
 icacls C:\Data\rapport.docx /deny "Stagiaires:D"
 
 REM Supprimer toutes les permissions d'un utilisateur
 icacls C:\Data\rapport.docx /remove Bob
 
-REM Reinitialiser les permissions (reappliquer l'heritage)
+REM Réinitialiser les permissions (réappliquer l'héritage)
 icacls C:\Data\SharedFolder /reset
 ```
 
@@ -308,7 +308,7 @@ BUILTIN\Users            Read              Allow
 ```
 
 ```powershell
-# Voir les ACL d'une cle de registre
+# Voir les ACL d'une clé de registre
 Get-Acl "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" |
     Select-Object -ExpandProperty Access |
     Format-Table IdentityReference, RegistryRights, AccessControlType -AutoSize
@@ -318,28 +318,28 @@ Get-Acl "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" |
 
 ## 5. Le format SDDL
 
-### 5.1 Definition
+### 5.1 Définition
 
-Le **SDDL** (Security Descriptor Definition Language) est une representation textuelle compacte d'un Security Descriptor. Il est utilise dans les scripts, les GPO et les outils en ligne de commande.
+Le **SDDL** (Security Descriptor Definition Language) est une représentation textuelle compacte d'un Security Descriptor. Il est utilisé dans les scripts, les GPO et les outils en ligne de commande.
 
 ### 5.2 Structure
 
-Un SDDL se compose de quatre sections, chacune precedee d'un prefixe :
+Un SDDL se compose de quatre sections, chacune précédée d'un préfixe :
 
 ```
 O:<owner>G:<group>D:<dacl>S:<sacl>
 ```
 
-| Prefixe | Contenu |
+| Préfixe | Contenu |
 |---|---|
-| `O:` | SID du proprietaire |
+| `O:` | SID du propriétaire |
 | `G:` | SID du groupe |
-| `D:` | DACL (liste des ACE d'acces) |
+| `D:` | DACL (liste des ACE d'accès) |
 | `S:` | SACL (liste des ACE d'audit) |
 
 ### 5.3 Format d'une ACE en SDDL
 
-Chaque ACE est encadree par des parentheses et suit le format :
+Chaque ACE est encadrée par des parenthèses et suit le format :
 
 ```
 (type;flags;permissions;;;SID)
@@ -360,12 +360,12 @@ O:BAG:SYD:(A;;FA;;;SY)(A;;FA;;;BA)(A;;FR;;;BU)
 
 Lecture :
 
-| Element | Signification |
+| Élément | Signification |
 |---|---|
-| `O:BA` | Proprietaire : Built-in Administrators |
+| `O:BA` | Propriétaire : Built-in Administrators |
 | `G:SY` | Groupe : SYSTEM |
-| `D:` | Debut de la DACL |
-| `(A;;FA;;;SY)` | Allow Full Access a SYSTEM |
+| `D:` | Début de la DACL |
+| `(A;;FA;;;SY)` | Allow Full Access à SYSTEM |
 | `(A;;FA;;;BA)` | Allow Full Access aux Administrators |
 | `(A;;FR;;;BU)` | Allow File Read aux Built-in Users |
 
@@ -374,64 +374,64 @@ Lecture :
 (Get-Acl C:\Data).Sddl
 ```
 
-> **Bonne pratique** : le format SDDL est difficile a lire pour un humain. En pratique, on utilise `Get-Acl` avec `Format-Table` pour une lecture plus claire, et le SDDL pour les scripts d'automatisation ou les GPO.
+> **Bonne pratique** : le format SDDL est difficile à lire pour un humain. En pratique, on utilise `Get-Acl` avec `Format-Table` pour une lecture plus claire, et le SDDL pour les scripts d'automatisation ou les GPO.
 
 ---
 
 ## 6. La SACL (System Access Control List) et l'audit
 
-### 6.1 Role de la SACL
+### 6.1 Rôle de la SACL
 
-La **SACL** definit quels acces a un objet doivent etre enregistres dans le journal de securite Windows (Security Event Log). Elle ne controle pas l'acces lui-meme (c'est le role de la DACL), mais permet de detecter les tentatives d'acces suspectes.
+La **SACL** définit quels accès à un objet doivent être enregistrés dans le journal de sécurité Windows (Security Event Log). Elle ne contrôle pas l'accès lui-même (c'est le rôle de la DACL), mais permet de détecter les tentatives d'accès suspectes.
 
-### 6.2 Activer l'audit d'acces
+### 6.2 Activer l'audit d'accès
 
-L'audit d'acces necessite deux etapes :
+L'audit d'accès nécessite deux étapes :
 
-**Etape 1 : Activer la politique d'audit globale**
+**Étape 1 : Activer la politique d'audit globale**
 
 ```powershell
-# Activer l'audit des acces aux objets (succes et echecs)
+# Activer l'audit des accès aux objets (succès et échecs)
 auditpol /set /subcategory:"File System" /success:enable /failure:enable
 
-# Verifier la configuration
+# Vérifier la configuration
 auditpol /get /subcategory:"File System"
 ```
 
-**Etape 2 : Configurer la SACL sur l'objet a auditer**
+**Étape 2 : Configurer la SACL sur l'objet à auditer**
 
 ```powershell
-# Recuperer les ACL actuelles
+# Récupérer les ACL actuelles
 $acl = Get-Acl "C:\Data\Confidentiel"
 
-# Creer une regle d'audit : auditer toutes les ecritures de tous les utilisateurs
+# Créer une règle d'audit : auditer toutes les écritures de tous les utilisateurs
 $auditRule = New-Object System.Security.AccessControl.FileSystemAuditRule(
     "Everyone",                          # Qui auditer
     "Write,Delete",                      # Quelles actions auditer
-    "ContainerInherit,ObjectInherit",    # Heritage
+    "ContainerInherit,ObjectInherit",    # Héritage
     "None",                              # Flags de propagation
-    "Success,Failure"                    # Auditer les succes et les echecs
+    "Success,Failure"                    # Auditer les succès et les échecs
 )
 
-# Ajouter la regle d'audit
+# Ajouter la règle d'audit
 $acl.AddAuditRule($auditRule)
 
 # Appliquer
 Set-Acl "C:\Data\Confidentiel" $acl
 
-# Verifier
+# Vérifier
 (Get-Acl "C:\Data\Confidentiel").Audit |
     Format-Table IdentityReference, FileSystemRights, AuditFlags -AutoSize
 ```
 
-Les evenements d'audit sont ensuite consultables dans l'**Observateur d'evenements** (`eventvwr.msc`), journal "Securite" (Security), avec les ID d'evenement :
+Les événements d'audit sont ensuite consultables dans l'**Observateur d'événements** (`eventvwr.msc`), journal "Sécurité" (Security), avec les ID d'événement :
 
 | Event ID | Description |
 |---|---|
-| **4663** | Acces a un objet (succes) |
-| **4656** | Handle demande pour un objet |
-| **4660** | Objet supprime |
-| **4670** | Permissions modifiees sur un objet |
+| **4663** | Accès à un objet (succès) |
+| **4656** | Handle demandé pour un objet |
+| **4660** | Objet supprimé |
+| **4670** | Permissions modifiées sur un objet |
 
 ---
 
@@ -440,19 +440,19 @@ Les evenements d'audit sont ensuite consultables dans l'**Observateur d'evenemen
 ### 7.1 Ajouter une permission
 
 ```powershell
-# Recuperer les ACL actuelles
+# Récupérer les ACL actuelles
 $acl = Get-Acl "C:\Data\SharedFolder"
 
-# Creer une nouvelle regle d'acces
+# Créer une nouvelle règle d'accès
 $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
     "Marketing",                         # Utilisateur ou groupe
     "Modify",                            # Permission
-    "ContainerInherit,ObjectInherit",    # Heritage (s'applique aux sous-dossiers et fichiers)
+    "ContainerInherit,ObjectInherit",    # Héritage (s'applique aux sous-dossiers et fichiers)
     "None",                              # Flags de propagation
     "Allow"                              # Type (Allow ou Deny)
 )
 
-# Ajouter la regle
+# Ajouter la règle
 $acl.AddAccessRule($rule)
 
 # Appliquer les modifications
@@ -464,26 +464,26 @@ Set-Acl "C:\Data\SharedFolder" $acl
 ```powershell
 $acl = Get-Acl "C:\Data\SharedFolder"
 
-# Trouver la regle a supprimer
+# Trouver la règle à supprimer
 $ruleToRemove = $acl.Access | Where-Object {
     $_.IdentityReference -eq "BUILTIN\Users" -and
     $_.FileSystemRights -eq "ReadAndExecute, Synchronize"
 }
 
-# Supprimer la regle
+# Supprimer la règle
 $acl.RemoveAccessRule($ruleToRemove)
 
 Set-Acl "C:\Data\SharedFolder" $acl
 ```
 
-### 7.3 Desactiver l'heritage
+### 7.3 Désactiver l'héritage
 
 ```powershell
 $acl = Get-Acl "C:\Data\SharedFolder"
 
-# Desactiver l'heritage et convertir les permissions heritees en permissions explicites
-# Premier parametre : $true = proteger contre l'heritage
-# Deuxieme parametre : $true = conserver les permissions heritees comme explicites
+# Désactiver l'héritage et convertir les permissions héritées en permissions explicites
+# Premier paramètre : $true = protéger contre l'héritage
+# Deuxième paramètre : $true = conserver les permissions héritées comme explicites
 $acl.SetAccessRuleProtection($true, $true)
 
 Set-Acl "C:\Data\SharedFolder" $acl
@@ -492,7 +492,7 @@ Set-Acl "C:\Data\SharedFolder" $acl
 ### 7.4 Prendre possession d'un objet
 
 ```powershell
-# Prendre possession (necessite le privilege SeTakeOwnershipPrivilege)
+# Prendre possession (nécessite le privilège SeTakeOwnershipPrivilege)
 $acl = Get-Acl "C:\Data\Protege"
 $acl.SetOwner([System.Security.Principal.NTAccount]"Administrators")
 Set-Acl "C:\Data\Protege" $acl
@@ -500,19 +500,19 @@ Set-Acl "C:\Data\Protege" $acl
 
 ---
 
-## Recapitulatif
+## Récapitulatif
 
 | Concept | Description |
 |---|---|
-| **Object Manager** | Composant du noyau qui gere tous les objets (fichiers, processus, cles de registre) |
-| **Handle** | Reference opaque vers un objet noyau, utilisee par les programmes en mode utilisateur |
-| **Win32 API** | Couche intermediaire stable et documentee entre les applications et `ntdll.dll` |
-| **Chemin noyau** | `\Device\HarddiskVolume1\...` - chemin reel utilise par le noyau |
-| **Security Descriptor** | Structure contenant le proprietaire, le groupe, la DACL et la SACL d'un objet |
-| **DACL** | Liste d'ACE definissant qui peut acceder a l'objet et avec quelles permissions |
-| **SACL** | Liste d'ACE definissant quels acces doivent etre audites |
-| **ACE** | Entree dans une ACL : type (Allow/Deny) + SID + permissions |
-| **SDDL** | Representation textuelle compacte d'un Security Descriptor |
+| **Object Manager** | Composant du noyau qui gère tous les objets (fichiers, processus, clés de registre) |
+| **Handle** | Référence opaque vers un objet noyau, utilisée par les programmes en mode utilisateur |
+| **Win32 API** | Couche intermédiaire stable et documentée entre les applications et `ntdll.dll` |
+| **Chemin noyau** | `\Device\HarddiskVolume1\...` - chemin réel utilisé par le noyau |
+| **Security Descriptor** | Structure contenant le propriétaire, le groupe, la DACL et la SACL d'un objet |
+| **DACL** | Liste d'ACE définissant qui peut accéder à l'objet et avec quelles permissions |
+| **SACL** | Liste d'ACE définissant quels accès doivent être audités |
+| **ACE** | Entrée dans une ACL : type (Allow/Deny) + SID + permissions |
+| **SDDL** | Représentation textuelle compacte d'un Security Descriptor |
 | **icacls** | Commande pour afficher et modifier les DACL |
 | **Get-Acl / Set-Acl** | Cmdlets PowerShell pour manipuler les Security Descriptors complets |
 

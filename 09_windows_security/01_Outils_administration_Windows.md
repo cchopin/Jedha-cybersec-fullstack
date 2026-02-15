@@ -10,15 +10,15 @@
 
 - Naviguer dans l'arborescence Windows et identifier les dossiers critiques pour la sécurité
 - Utiliser les commandes système essentielles pour auditer une machine
-- Connaitre les outils d'administration et savoir quand les utiliser
+- Connaître les outils d'administration et savoir quand les utiliser
 
 ---
 
 ## Pourquoi maîtriser Windows en cybersécurité ?
 
-Avec plus de 70 % de parts de marché mondial, Windows est de loin le système d'exploitation le plus déployé en entreprise. C'est donc aussi la cible principale des attaquants. Toute démarché d'administration ou de sécurisation d'un SI passe inévitablement par une maîtrise solide de cet environnement.
+Avec plus de 70 % de parts de marché mondial, Windows est de loin le système d'exploitation le plus déployé en entreprise. C'est donc aussi la cible principale des attaquants. Toute démarche d'administration ou de sécurisation d'un SI passe inévitablement par une maîtrise solide de cet environnement.
 
-Ce module pose les basés : système de fichiers, commandes d'audit, outils d'administration. Ces connaissances seront mobilisées dans tous les modules suivants du programme.
+Ce module pose les bases : système de fichiers, commandes d'audit, outils d'administration. Ces connaissances seront mobilisées dans tous les modules suivants du programme.
 
 ---
 
@@ -26,7 +26,7 @@ Ce module pose les basés : système de fichiers, commandes d'audit, outils d'ad
 
 ### 1.1 Vue d'ensemble de l'arborescence
 
-Windows utilisé le système de fichiers **NTFS** (New Technology File System). L'arborescence racine est accèssible via PowerShell :
+Windows utilise le système de fichiers **NTFS** (New Technology File System). L'arborescence racine est accessible via PowerShell :
 
 ```powershell
 cd /
@@ -46,16 +46,16 @@ d-----         4/1/2025  11:55 PM                Windows
 d-----         4/2/2025   2:39 AM                Windows.old
 ```
 
-### 1.2 Role de chaque dossier racine
+### 1.2 Rôle de chaque dossier racine
 
-| Dossier | Role |
+| Dossier | Rôle |
 |---|---|
 | `PerfLogs` | Journaux de performance système (utilisés par l'Analyseur de performances) |
 | `Program Files` | Applications **64 bits** installées (Excel, Firefox, etc.) |
 | `Program Files (x86)` | Applications **32 bits** sur un Windows 64 bits |
-| `Users` | Profils utilisateurs et donnees personnelles (Bureau, Documents...). Un utilisateur standard ne peut pas accéder au profil d'un autre |
+| `Users` | Profils utilisateurs et données personnelles (Bureau, Documents...). Un utilisateur standard ne peut pas accéder au profil d'un autre |
 | `Windows` | Répertoire d'installation du système d'exploitation |
-| `Windows.old` | Sauvegarde de l'installation précédente, utilisée pour un éventuel retour en arrière apres mise à jour |
+| `Windows.old` | Sauvegarde de l'installation précédente, utilisée pour un éventuel retour en arrière après mise à jour |
 
 > **Bonne pratique** : prendre le temps d'explorer ces dossiers pour se familiariser avec la structure. En revanche, ne jamais supprimer de fichiers dans `C:\Windows` sous peine de corrompre le système.
 
@@ -63,12 +63,12 @@ d-----         4/2/2025   2:39 AM                Windows.old
 
 C'est le dossier le moins intuitif, mais aussi le plus important à connaître en cybersécurité. Voici les sous-dossiers essentiels, regroupés par usage :
 
-**Coeur du système**
+**Cœur du système**
 
 | Dossier | Contenu | Intérêt sécurité |
 |---|---|---|
 | `System32` | Exécutables (.exe), bibliothèques (.dll), pilotes (.sys), services. On y trouve `cmd.exe`, `taskmgr.exe`, `powershell.exe` | Analyse de malwares, escalade de privilèges |
-| `WinSxS` | Stockage "Side-by-Side" de toutes les versions de composants Windows | Gestion des correctifs, comprehension du DLL hijacking |
+| `WinSxS` | Stockage "Side-by-Side" de toutes les versions de composants Windows | Gestion des correctifs, compréhension du DLL hijacking |
 | `assembly` | Global Assembly Cache (GAC) : bibliothèques .NET | Analyse de malwares .NET, attaques LOLBAS |
 
 **Journalisation et diagnostic**
@@ -76,14 +76,14 @@ C'est le dossier le moins intuitif, mais aussi le plus important à connaître e
 | Dossier | Contenu | Intérêt sécurité |
 |---|---|---|
 | `Logs` | Journaux générés par l'OS (`CBS.log`, `WindowsUpdate.log`...) | Diagnostic, investigation forensique |
-| `Prefetch` | Métadonnées d'execution des applications (optimisation de lancement) | Forensique : retracer l'historique d'execution des programmes |
-| `Temp` / `%TEMP%` | Fichiers temporaires d'installation et d'execution | Souvent utilisé par les malwares pour déposer leurs charges utiles |
+| `Prefetch` | Métadonnées d'exécution des applications (optimisation de lancement) | Forensique : retracer l'historique d'exécution des programmes |
+| `Temp` / `%TEMP%` | Fichiers temporaires d'installation et d'exécution | Souvent utilisé par les malwares pour déposer leurs charges utiles |
 
-**Configuration et persistence**
+**Configuration et persistance**
 
 | Dossier | Contenu | Intérêt sécurité |
 |---|---|---|
-| `Tasks` / `System32\Tasks` | Définitions des tâches planifiées | Détournement fréquent pour la persistence (lancement de malwares au démarrage) |
+| `Tasks` / `System32\Tasks` | Définitions des tâches planifiées | Détournement fréquent pour la persistance (lancement de malwares au démarrage) |
 | `INF` | Fichiers `.inf` de configuration des pilotes | Détection de malwares basés sur les pilotes |
 | `PolicyDéfinitions` | Templates ADMX pour les stratégies de groupe (GPO) | Gestion des GPO et politique de sécurité |
 
@@ -91,9 +91,9 @@ C'est le dossier le moins intuitif, mais aussi le plus important à connaître e
 
 | Dossier | Contenu | Intérêt sécurité |
 |---|---|---|
-| `SystemApps` | Applications modernes intégrées (Paramètres, Cortana...) | Debloating, comprehension de l'architecture UWP |
+| `SystemApps` | Applications modernes intégrées (Paramètres, Cortana...) | Debloating, compréhension de l'architecture UWP |
 | `Fonts` | Polices système (.ttf, .otf) | DLL hijacking via polices (rare) |
-| `Resources` | Themes, sons, fonds d'ecran | Rarement cible, utile pour le durcissement |
+| `Resources` | Themes, sons, fonds d'écran | Rarement cible, utile pour le durcissement |
 
 > **À noter** : beaucoup de ces dossiers sont masqués ou protégés par défaut. Leur exploration nécessite des droits administrateur ou des outils spécialisés comme FTK Imager ou la suite Sysinternals (Autoruns, Procmon). La cmdlet `Get-Acl` permet également d'inspecter les permissions.
 
@@ -203,7 +203,7 @@ Microsoft Windows [Version 10.0.22621.2715]
 
 #### `hostname`
 
-Affiche le nom de la machine. Indispensable lorsqu'on travaille sur plusieurs serveurs en parallele pour confirmer sur lequel on se trouve.
+Affiche le nom de la machine. Indispensable lorsqu'on travaille sur plusieurs serveurs en parallèle pour confirmer sur lequel on se trouve.
 
 ### 2.2 Processus et services
 
@@ -215,7 +215,7 @@ Avant de voir les commandes, il est important de distinguer ces deux notions :
 
 | | Processus | Service |
 |---|---|---|
-| **Définition** | Tout programme en cours d'execution | Type particulier de processus tournant en arrière-plan |
+| **Définition** | Tout programme en cours d'exécution | Type particulier de processus tournant en arrière-plan |
 | **Démarrage** | Lancé par un utilisateur ou le système | Démarré généralement automatiquement au boot |
 | **Interaction** | Peut avoir une interface graphique | Pas d'interaction utilisateur directe |
 | **Privileges** | Variables | Souvent élevés (compte SYSTEM) |
@@ -223,7 +223,7 @@ Avant de voir les commandes, il est important de distinguer ces deux notions :
 
 #### `Get-Process`
 
-Affiche tous les processus en cours d'execution :
+Affiche tous les processus en cours d'exécution :
 
 ```
 NPM(K)    PM(M)      WS(M)     CPU(s)      Id  SI ProcessName
@@ -260,7 +260,7 @@ Get-Process | Where-Object {$_.ProcessName -like "*chrome*"}
 
 #### `net start`
 
-Liste tous les services en cours d'execution :
+Liste tous les services en cours d'exécution :
 
 ```
 These Windows services are started:
@@ -302,7 +302,7 @@ Informations clés à relever :
 | `IPv4 Address` | Adresse IP de la machine sur le réseau |
 | `Subnet Mask` | Définit la plage du réseau |
 | `Default Gateway` | Adresse IP du routeur |
-| `DNS Servers` | Serveurs DNS utilisés pour la resolution de noms |
+| `DNS Servers` | Serveurs DNS utilisés pour la résolution de noms |
 
 > **Variante** : `ipconfig` (sans `/all`) affiche une version simplifiée, suffisante pour une vérification rapide.
 
@@ -334,7 +334,7 @@ Lecture des colonnes :
 |---|---|
 | `LISTENING` | Port ouvert, en attente de connexions entrantes |
 | `ESTABLISHED` | Connexion active avec une machine distante |
-| `TIME_WAIT` | Connexion recemment fermée, en attente de nettoyage |
+| `TIME_WAIT` | Connexion récemment fermée, en attente de nettoyage |
 
 > **Réflexe sécurité** : croiser la sortie de `netstat -ano` avec `Get-Process` permet d'identifier quel programme est responsable de chaque connexion. Un processus inconnu avec une connexion `ESTABLISHED` vers une IP externe mérite investigation.
 
@@ -353,9 +353,9 @@ SharedDocs   C:\Users\Public\Documents       Public documents
 
 Partagés par défaut de Windows :
 
-| Partage | Role |
+| Partage | Rôle |
 |---|---|
-| `C$`, `D$`, etc. | Partagés administratifs pour chaque lecteur (accèssibles uniquement par les administrateurs) |
+| `C$`, `D$`, etc. | Partagés administratifs pour chaque lecteur (accessibles uniquement par les administrateurs) |
 | `ADMIN$` | Pointe vers le répertoire Windows |
 | `IPC$` | Inter-Process Communication, utilisé pour l'administration à distance |
 

@@ -1,17 +1,17 @@
 # Audit Manuel - VAGRANT-2008R2 (10.10.3.41)
 
 **Date :** 2026-02-14
-**Identifiants de l'auditeur :** Jeremie / hunter22  
-**Nom de la machine :** VAGRANT-2008R2  
-**Connexion :** `ssh Jeremie@10.10.3.41`  
+**Identifiants de l'auditeur :** Jeremie / hunter22
+**Nom de la machine :** VAGRANT-2008R2
+**Connexion :** `ssh Jeremie@10.10.3.41`
 
 ---
 
-## 1. Informations sur le systeme d'exploitation
+## 1. Informations sur le système d'exploitation
 
-### 1.1 Identification du systeme
+### 1.1 Identification du système
 
-La commande `systeminfo` (cf. cours *01 - Outils d'administration Windows*) fournit les informations les plus completes sur la machine :
+La commande `systeminfo` (cf. cours *01 - Outils d'administration Windows*) fournit les informations les plus complètes sur la machine :
 
 ```powershell
 PS> systeminfo
@@ -42,7 +42,7 @@ Hotfix(s):                 2 Hotfix(s) Installed.
                            [02]: KB976902
 ```
 
-Commandes complementaires :
+Commandes complémentaires :
 
 ```powershell
 PS> ver
@@ -73,42 +73,42 @@ OS                             Linux 6.17.8-orbstack-00308-g8f9c941121b1
 Platform                       Unix
 ```
 
-### 1.2 Tableau recapitulatif
+### 1.2 Tableau récapitulatif
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | Nom de la machine | VAGRANT-2008R2 |
-| Systeme d'exploitation | Microsoft Windows Server 2008 R2 Standard |
+| Système d'exploitation | Microsoft Windows Server 2008 R2 Standard |
 | Version | 6.1.7601 Service Pack 1 Build 7601 |
 | Architecture | x64 |
 | Configuration | Standalone Server (WORKGROUP) |
-| Fabricant systeme | innotek GmbH (VirtualBox) |
+| Fabricant système | innotek GmbH (VirtualBox) |
 | Processeur | Intel64 ~1992 Mhz |
 | RAM totale | 4 096 Mo |
-| Disque C: | 52.93 Go utilises / 648.24 Go libres |
+| Disque C: | 52.93 Go utilisés / 648.24 Go libres |
 | Version PowerShell | 7.2.6 (Core) |
-| Correctifs installes | 2 (KB3134760, KB976902) |
+| Correctifs installés | 2 (KB3134760, KB976902) |
 | Date d'installation | 06/08/2017 |
-| Dernier demarrage | 05/10/2022 |
+| Dernier démarrage | 05/10/2022 |
 
-### 1.3 Problemes de securite identifies
+### 1.3 Problèmes de sécurité identifiés
 
-- **Windows Server 2008 R2 est en fin de vie (EOL depuis janvier 2020).** Il ne recoit plus de correctifs de securite, ce qui le rend vulnerable a toutes les CVE decouvertes depuis. Comme indique dans le cours (*01 - systeminfo permet de verifier rapidement le niveau de correctifs*), un nombre faible de hotfixes est un signal d'alerte.
+- **Windows Server 2008 R2 est en fin de vie (EOL depuis janvier 2020).** Il ne reçoit plus de correctifs de sécurité, ce qui le rend vulnérable à toutes les CVE découvertes depuis. Comme indiqué dans le cours (*01 - systeminfo permet de vérifier rapidement le niveau de correctifs*), un nombre faible de hotfixes est un signal d'alerte.
   - **Commande :** `systeminfo` → "OS Name", "Hotfix(s)"
-- **Seulement 2 correctifs installes** (KB3134760 et KB976902) depuis l'installation en 2017. Cela signifie que le serveur n'a quasiment jamais ete mis a jour.
+- **Seulement 2 correctifs installés** (KB3134760 et KB976902) depuis l'installation en 2017. Cela signifie que le serveur n'a quasiment jamais été mis à jour.
   - **Commande :** `systeminfo` → "Hotfix(s): 2 Hotfix(s) Installed"
-- **PowerShell 7.2.6 est obsolete** (la version stable actuelle est 7.5.4). Des vulnerabilites connues peuvent exister.
+- **PowerShell 7.2.6 est obsolète** (la version stable actuelle est 7.5.4). Des vulnérabilités connues peuvent exister.
   - **Commande :** `$PSVersionTable` → champ `PSVersion`
-- **La machine n'a pas ete redemarree depuis le 05/10/2022**, ce qui signifie que les mises a jour noyau ne sont pas appliquees (cf. cours : *une machine jamais rebootee n'applique pas ses mises a jour noyau*).
+- **La machine n'a pas été redémarrée depuis le 05/10/2022**, ce qui signifie que les mises à jour noyau ne sont pas appliquées (cf. cours : *une machine jamais rebootée n'applique pas ses mises à jour noyau*).
   - **Commande :** `systeminfo` → "System Boot Time"
 
 ---
 
 ## 2. Gestion des utilisateurs et groupes
 
-*Reference : cours 02 - Gestion des utilisateurs et groupes sous Windows*
+*Référence : cours 02 - Gestion des utilisateurs et groupes sous Windows*
 
-### 2.1 Enumeration des utilisateurs
+### 2.1 Énumération des utilisateurs
 
 ```powershell
 PS> net user
@@ -121,9 +121,9 @@ Administrator            Jeremie               Guest
 vagrant
 ```
 
-### 2.2 Details de chaque utilisateur
+### 2.2 Détails de chaque utilisateur
 
-Les details ont ete obtenus avec `net user <nom>` (cf. cours *02 - section 3.1*) :
+Les détails ont été obtenus avec `net user <nom>` (cf. cours *02 - section 3.1*) :
 
 ```powershell
 PS> net user Jeremie
@@ -173,14 +173,14 @@ PS> net user vagrant
 The user name could not be found.
 ```
 
-| Utilisateur | Compte actif | Mot de passe expire | Derniere connexion | Groupes |
+| Utilisateur | Compte actif | Mot de passe expire | Dernière connexion | Groupes |
 |-------------|-------------|---------------------|-------------------|---------|
 | **Jeremie** | Oui | Jamais | 06/10/2022 | Users |
 | **Administrator** | Oui | Jamais | 20/11/2010 | Administrators |
-| **Guest** | Liste mais introuvable via `net user` | - | - | - |
-| **vagrant** | Liste mais introuvable via `net user` | - | - | - |
+| **Guest** | Listé mais introuvable via `net user` | - | - | - |
+| **vagrant** | Listé mais introuvable via `net user` | - | - | - |
 
-### 2.3 Enumeration des groupes
+### 2.3 Énumération des groupes
 
 ```powershell
 PS> net localgroup
@@ -244,33 +244,33 @@ Lockout observation window (minutes):                 30
 Computer role:                                        SERVER
 ```
 
-### 2.6 Problemes de securite identifies
+### 2.6 Problèmes de sécurité identifiés
 
 En comparant avec les bonnes pratiques du cours (*02 - section 2.3*) :
 
-- **`sshd_server` fait partie du groupe Administrators.** C'est un compte de service qui ne devrait PAS avoir de privileges administrateur (cf. cours : *principe du moindre privilege*). Si un attaquant compromet le service SSH ou execute des commandes en tant que `sshd_server`, il obtient un acces administrateur complet. Il s'agit d'un **vecteur d'escalade de privileges**.
+- **`sshd_server` fait partie du groupe Administrators.** C'est un compte de service qui ne devrait PAS avoir de privilèges administrateur (cf. cours : *principe du moindre privilège*). Si un attaquant compromet le service SSH ou exécute des commandes en tant que `sshd_server`, il obtient un accès administrateur complet. Il s'agit d'un **vecteur d'escalade de privilèges**.
   - **Commande :** `net localgroup Administrators`
 
-- **Le compte Administrator est actif et non renomme.** Le cours indique : *le compte Administrator integre est la premiere cible des attaques par force brute. Il convient de le renommer, de le desactiver ou d'appliquer des restrictions via GPO.* Ici, il est actif avec une derniere connexion en 2010 — le mot de passe est potentiellement faible ou par defaut.
+- **Le compte Administrator est actif et non renommé.** Le cours indique : *le compte Administrator intégré est la première cible des attaques par force brute. Il convient de le renommer, de le désactiver ou d'appliquer des restrictions via GPO.* Ici, il est actif avec une dernière connexion en 2010 — le mot de passe est potentiellement faible ou par défaut.
   - **Commande :** `net user Administrator`
 
-- **La politique de mots de passe est inexistante.** Le cours recommande une longueur minimale de 12 caracteres (recommandation ANSSI), un historique de mots de passe, et une deconnexion automatique. Ici :
+- **La politique de mots de passe est inexistante.** Le cours recommande une longueur minimale de 12 caractères (recommandation ANSSI), un historique de mots de passe, et une déconnexion automatique. Ici :
   - Longueur minimale : **0** (aucun minimum !)
-  - Age minimum : **0 jours**
-  - Age maximum : **Illimite** (les mots de passe n'expirent jamais)
-  - Historique : **Aucun** (reutilisation possible)
+  - Âge minimum : **0 jours**
+  - Âge maximum : **Illimité** (les mots de passe n'expirent jamais)
+  - Historique : **Aucun** (réutilisation possible)
   - Seuil de verrouillage : **Jamais** (aucune protection contre le brute-force !)
-  - Deconnexion forcee : **Jamais**
+  - Déconnexion forcée : **Jamais**
   - **Commande :** `net accounts`
 
-- **Le groupe Backup Operators existe.** Le cours previent : *ce groupe permet de contourner les permissions de fichiers, ce qui represente un risque important. Son utilisation doit etre surveillee.*
+- **Le groupe Backup Operators existe.** Le cours prévient : *ce groupe permet de contourner les permissions de fichiers, ce qui représente un risque important. Son utilisation doit être surveillée.*
   - **Commande :** `net localgroup`
 
 ---
 
-## 3. Services et executables en cours d'execution
+## 3. Services et exécutables en cours d'exécution
 
-*Reference : cours 01 - section 2.2 (Processus et services)*
+*Référence : cours 01 - section 2.2 (Processus et services)*
 
 ### 3.1 Services actifs
 
@@ -341,11 +341,11 @@ PS> Get-Process | Format-Table -AutoSize Id, ProcessName, Path
 682 sshd
 ```
 
-### 3.3 Taches planifiees
+### 3.3 Tâches planifiées
 
-*Reference : cours 04 - Planification de taches sous Windows*
+*Référence : cours 04 - Planification de tâches sous Windows*
 
-Comme indique dans le cours, les taches planifiees sont un vecteur de **persistence** tres repandu (technique **T1053.005** du framework MITRE ATT&CK). Plusieurs commandes ont ete tentees pour les enumerer :
+Comme indiqué dans le cours, les tâches planifiées sont un vecteur de **persistance** très répandu (technique **T1053.005** du framework MITRE ATT&CK). Plusieurs commandes ont été tentées pour les énumérer :
 
 ```powershell
 PS> schtasks /query
@@ -354,7 +354,7 @@ PS> schtasks /query /fo TABLE /v
 PS> Get-ScheduledTask
 ```
 
-Aucune de ces commandes n'a retourne de resultats. Les cles de registre associees ont aussi ete verifiees :
+Aucune de ces commandes n'a retourné de résultats. Les clés de registre associées ont aussi été vérifiées :
 
 ```powershell
 PS> reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Schedule\TaskCache\Tasks
@@ -365,7 +365,7 @@ PS> reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Schedule\TaskCache\
 ERROR: The system was unable to find the specified registry key or value.
 ```
 
-Le dossier `C:\Windows\System32\Tasks` est vide. Cependant, le log du Task Scheduler a ete retrouve :
+Le dossier `C:\Windows\System32\Tasks` est vide. Cependant, le log du Task Scheduler a été retrouvé :
 
 ```powershell
 PS> Get-ChildItem C:/Windows/Tasks -Force
@@ -390,9 +390,9 @@ PS> Get-Content C:/Windows/Tasks/SCHEDLGU.txt
 [ ***** Most recent entry is above this line ***** ]
 ```
 
-La version du Task Scheduler (**6.1.7600.16385** = build RTM) confirme que le systeme n'a jamais ete mis a jour.
+La version du Task Scheduler (**6.1.7600.16385** = build RTM) confirme que le système n'a jamais été mis à jour.
 
-Les dossiers de demarrage automatique et les cles de registre d'auto-demarrage ont aussi ete verifies :
+Les dossiers de démarrage automatique et les clés de registre d'auto-démarrage ont aussi été vérifiés :
 
 ```powershell
 PS> dir "C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup"
@@ -402,39 +402,39 @@ PS> reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce
 PS> reg query HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
 ```
 
-Tous vides ou introuvables. **Aucune tache planifiee personnalisee ni programme de demarrage automatique n'a ete identifie.**
+Tous vides ou introuvables. **Aucune tâche planifiée personnalisée ni programme de démarrage automatique n'a été identifié.**
 
-### 3.4 Problemes de securite identifies
+### 3.4 Problèmes de sécurité identifiés
 
-- **ManageEngine Desktop Central** est en cours d'execution — ce logiciel a de nombreuses CVE critiques connues (ex : CVE-2020-10189 pour du RCE, CVE-2021-44515 pour un contournement d'authentification). Sur un serveur 2008 R2 non mis a jour, il est tres probablement vulnerable.
+- **ManageEngine Desktop Central** est en cours d'exécution — ce logiciel a de nombreuses CVE critiques connues (ex : CVE-2020-10189 pour du RCE, CVE-2021-44515 pour un contournement d'authentification). Sur un serveur 2008 R2 non mis à jour, il est très probablement vulnérable.
   - **Commande :** `net start` → "ManageEngine Desktop Central Server", "MEDC Server Component - Apache", "MEDC Server Component - Notification Server"
 
-- **Le service Remote Registry est actif** — il permet l'acces distant au registre Windows. Cela peut etre utilise pour de la collecte d'informations et potentiellement de l'escalade de privileges.
+- **Le service Remote Registry est actif** — il permet l'accès distant au registre Windows. Cela peut être utilisé pour de la collecte d'informations et potentiellement de l'escalade de privilèges.
   - **Commande :** `net start` → "Remote Registry"
 
-- **Remote Desktop Services (RDP) est actif** sur le port 3389 — combine avec la politique de mots de passe faible, c'est une cible pour le brute-force. Le cours (*02 - section 2.3*) recommande de restreindre le groupe `Remote Desktop Users` et de combiner avec du MFA et de la segmentation reseau.
+- **Remote Desktop Services (RDP) est actif** sur le port 3389 — combiné avec la politique de mots de passe faible, c'est une cible pour le brute-force. Le cours (*02 - section 2.3*) recommande de restreindre le groupe `Remote Desktop Users` et de combiner avec du MFA et de la segmentation réseau.
   - **Commande :** `net start` → "Remote Desktop Services" + `netstat -ano` → port 3389
 
-- **wampapache et wampmysqld sont actifs** — pile WAMP (Apache + MySQL). MySQL sur le port 3306 pourrait avoir des identifiants par defaut.
+- **wampapache et wampmysqld sont actifs** — pile WAMP (Apache + MySQL). MySQL sur le port 3306 pourrait avoir des identifiants par défaut.
   - **Commande :** `net start` → "wampapache", "wampmysqld" + `netstat -ano` → port 3306
 
-- **Windows Remote Management (WinRM)** est actif sur le port 5985 — peut etre utilise pour l'execution de commandes a distance si des identifiants sont obtenus.
+- **Windows Remote Management (WinRM)** est actif sur le port 5985 — peut être utilisé pour l'exécution de commandes à distance si des identifiants sont obtenus.
   - **Commande :** `net start` → "Windows Remote Management (WS-Management)" + `netstat -ano` → port 5985
 
-- **VirtualBox Guest Additions** — indique que c'est une VM, possibilite de chemins d'escalade specifiques a VBox.
+- **VirtualBox Guest Additions** — indique que c'est une VM, possibilité de chemins d'escalade spécifiques à VBox.
   - **Commande :** `net start` → "VirtualBox Guest Additions Service"
 
-- **Print Spooler est actif** — historiquement vulnerable a PrintNightmare (CVE-2021-34527) et d'autres exploits du spooler.
+- **Print Spooler est actif** — historiquement vulnérable à PrintNightmare (CVE-2021-34527) et d'autres exploits du spooler.
   - **Commande :** `net start` → "Print Spooler"
 
-- **Le Task Scheduler est a la version RTM (6.1.7600.16385)**, jamais patche, coherent avec le constat general d'un systeme non maintenu.
+- **Le Task Scheduler est à la version RTM (6.1.7600.16385)**, jamais patché, cohérent avec le constat général d'un système non maintenu.
   - **Commande :** `Get-Content C:/Windows/Tasks/SCHEDLGU.txt`
 
 ---
 
-## 4. Configuration reseau
+## 4. Configuration réseau
 
-*Reference : cours 01 - section 2.3 (Configuration et surveillance reseau)*
+*Référence : cours 01 - section 2.3 (Configuration et surveillance réseau)*
 
 ### 4.1 Configuration IP
 
@@ -465,9 +465,9 @@ Tunnel adapter Local Area Connection* 9:
    DHCP Enabled. . . . . . . . . . . : No
 ```
 
-### 4.2 Partages reseau
+### 4.2 Partages réseau
 
-Comme indique dans le cours (*01 - section 2.3*), les partages administratifs (`C$`, `ADMIN$`, `IPC$`) sont actifs par defaut. En contexte de durcissement, il est important d'evaluer s'ils doivent rester ouverts.
+Comme indiqué dans le cours (*01 - section 2.3*), les partages administratifs (`C$`, `ADMIN$`, `IPC$`) sont actifs par défaut. En contexte de durcissement, il est important d'évaluer s'ils doivent rester ouverts.
 
 ```powershell
 PS> net share
@@ -481,15 +481,15 @@ IPC$                                         Remote IPC
 ADMIN$       C:\Windows                      Remote Admin
 ```
 
-### 4.3 Ports en ecoute
+### 4.3 Ports en écoute
 
-La commande `netstat -ano` (cf. cours *01 - section 2.3*) affiche les connexions actives et ports en ecoute. Le cours recommande de *croiser la sortie de `netstat -ano` avec `Get-Process` pour identifier quel programme est responsable de chaque connexion*.
+La commande `netstat -ano` (cf. cours *01 - section 2.3*) affiche les connexions actives et ports en écoute. Le cours recommande de *croiser la sortie de `netstat -ano` avec `Get-Process` pour identifier quel programme est responsable de chaque connexion*.
 
 ```powershell
 PS> netstat -ano | Select-String LISTENING
 ```
 
-| Port | Protocole | PID | Service (deduit) |
+| Port | Protocole | PID | Service (déduit) |
 |------|-----------|-----|------------------|
 | 22 | TCP | 4100 | OpenSSH |
 | 135 | TCP | 704 | RPC |
@@ -497,7 +497,7 @@ PS> netstat -ano | Select-String LISTENING
 | 1617 | TCP | 1788 | ManageEngine |
 | 3000 | TCP | 1988 | Serveur Rails |
 | 3306 | TCP | 1196 | MySQL (WAMP) |
-| 3389 | TCP | 5024 | Bureau a distance (RDP) |
+| 3389 | TCP | 5024 | Bureau à distance (RDP) |
 | 3700 | TCP | 1836 | GlassFish |
 | 4848 | TCP | 1836 | GlassFish Admin |
 | 5985 | TCP | 4 | WinRM |
@@ -516,7 +516,7 @@ PS> netstat -ano | Select-String LISTENING
 | 9200 | TCP | 1272 | ElasticSearch HTTP |
 | 9300 | TCP | 1272 | ElasticSearch Transport |
 | 32000 | TCP | 1088 | Inconnu (localhost uniquement) |
-| 47001 | TCP | 4 | Ecouteur WinRM |
+| 47001 | TCP | 4 | Écouteur WinRM |
 | 161 | UDP | - | SNMP |
 
 ### 4.4 Configuration du pare-feu
@@ -526,9 +526,9 @@ PS> netsh firewall show state
 PS> netsh firewall show config
 ```
 
-**Profil standard : mode operationnel = DESACTIVE**
+**Profil standard : mode opérationnel = DÉSACTIVÉ**
 
-Le pare-feu est effectivement **desactive** sur le profil standard. Des regles existent mais ne sont pas appliquees :
+Le pare-feu est effectivement **désactivé** sur le profil standard. Des règles existent mais ne sont pas appliquées :
 
 ```
 Standard profile configuration (current):
@@ -563,70 +563,70 @@ Port   Protocol  Mode     Traffic direction  Name
 2222   TCP       Enable   Inbound            OpenSSH
 ```
 
-### 4.5 Problemes de securite identifies
+### 4.5 Problèmes de sécurité identifiés
 
-- **Le pare-feu est DESACTIVE** — tous les ports sont exposes sur le reseau, independamment des regles configurees. C'est une mauvaise configuration critique.
+- **Le pare-feu est DÉSACTIVÉ** — tous les ports sont exposés sur le réseau, indépendamment des règles configurées. C'est une mauvaise configuration critique.
   - **Commande :** `netsh firewall show config` → "Operational mode = Disable"
 
-- **Les partages administratifs sont actifs** (C$, ADMIN$, IPC$) — avec des identifiants admin, un attaquant pourrait acceder a l'integralite du disque C: a distance.
+- **Les partages administratifs sont actifs** (C$, ADMIN$, IPC$) — avec des identifiants admin, un attaquant pourrait accéder à l'intégralité du disque C: à distance.
   - **Commande :** `net share`
 
-- **Surface d'attaque massive** — plus de 30 ports en ecoute avec de multiples applications web :
-  - **ElasticSearch (9200)** — souvent sans authentification par defaut, permet l'exfiltration de donnees
-  - **Jenkins (8484)** — s'il n'est pas correctement securise, permet l'execution de code a distance via la console de scripts
-  - **phpMyAdmin (8585)** — interface web de gestion MySQL, vulnerable au brute-force
-  - **GlassFish Admin (4848)** — console d'administration du serveur d'applications, identifiants par defaut possibles
-  - **Apache Struts (8282)** — historiquement vulnerable a des RCE critiques (ex : CVE-2017-5638)
-  - **Serveur Rails (3000)** — vulnerabilites potentielles de l'application web
-  - **ManageEngine (8020/8383)** — vulnerabilites critiques connues
-  - **SNMP (UDP 161)** — si la communaute par defaut "public" est utilisee, fuite d'informations systeme
+- **Surface d'attaque massive** — plus de 30 ports en écoute avec de multiples applications web :
+  - **ElasticSearch (9200)** — souvent sans authentification par défaut, permet l'exfiltration de données
+  - **Jenkins (8484)** — s'il n'est pas correctement sécurisé, permet l'exécution de code à distance via la console de scripts
+  - **phpMyAdmin (8585)** — interface web de gestion MySQL, vulnérable au brute-force
+  - **GlassFish Admin (4848)** — console d'administration du serveur d'applications, identifiants par défaut possibles
+  - **Apache Struts (8282)** — historiquement vulnérable à des RCE critiques (ex : CVE-2017-5638)
+  - **Serveur Rails (3000)** — vulnérabilités potentielles de l'application web
+  - **ManageEngine (8020/8383)** — vulnérabilités critiques connues
+  - **SNMP (UDP 161)** — si la communauté par défaut "public" est utilisée, fuite d'informations système
   - **Commandes :** `netstat -ano | Select-String LISTENING` + `netsh firewall show config`
 
 ---
 
-## 5. Resume des decouvertes critiques
+## 5. Résumé des découvertes critiques
 
-| # | Decouverte | Severite | Categorie | Commande(s) utilisee(s) |
+| # | Découverte | Sévérité | Catégorie | Commande(s) utilisée(s) |
 |---|-----------|----------|-----------|------------------------|
 | 1 | Windows Server 2008 R2 (fin de vie depuis 01/2020) | **CRITIQUE** | OS | `systeminfo`, `ver` |
-| 2 | Seulement 2 correctifs installes depuis 2017 | **CRITIQUE** | OS | `systeminfo` → "Hotfix(s)" |
-| 3 | Le pare-feu est DESACTIVE | **CRITIQUE** | Reseau | `netsh firewall show config` |
-| 4 | `sshd_server` dans le groupe Administrators (escalade de privileges) | **ELEVE** | Utilisateurs | `net localgroup Administrators` |
-| 5 | Aucune politique de mots de passe (longueur=0, pas de verrouillage, pas d'expiration) | **ELEVE** | Utilisateurs | `net accounts` |
-| 6 | ManageEngine Desktop Central (CVE critiques connues) | **ELEVE** | Services | `net start`, `netstat -ano` |
-| 7 | Jenkins expose (RCE potentiel via console de scripts) | **ELEVE** | Services | `netstat -ano` (port 8484) |
-| 8 | ElasticSearch expose (probablement sans authentification) | **ELEVE** | Services | `netstat -ano` (port 9200) |
-| 9 | Apache Struts expose (RCE critiques connus) | **ELEVE** | Services | `netstat -ano` (port 8282) |
-| 10 | Print Spooler actif (potentiel PrintNightmare CVE-2021-34527) | **ELEVE** | Services | `net start` |
-| 11 | Console d'administration GlassFish exposee (port 4848) | **MOYEN** | Services | `netstat -ano` (port 4848) |
-| 12 | phpMyAdmin / WordPress exposes | **MOYEN** | Services | `netstat -ano` (port 8585) |
-| 13 | MySQL (3306) expose sur le reseau | **MOYEN** | Services | `netstat -ano` (port 3306) |
-| 14 | Bureau a distance (3389) + mots de passe faibles | **MOYEN** | Reseau | `net start`, `netstat -ano`, `net accounts` |
+| 2 | Seulement 2 correctifs installés depuis 2017 | **CRITIQUE** | OS | `systeminfo` → "Hotfix(s)" |
+| 3 | Le pare-feu est DÉSACTIVÉ | **CRITIQUE** | Réseau | `netsh firewall show config` |
+| 4 | `sshd_server` dans le groupe Administrators (escalade de privilèges) | **ÉLEVÉ** | Utilisateurs | `net localgroup Administrators` |
+| 5 | Aucune politique de mots de passe (longueur=0, pas de verrouillage, pas d'expiration) | **ÉLEVÉ** | Utilisateurs | `net accounts` |
+| 6 | ManageEngine Desktop Central (CVE critiques connues) | **ÉLEVÉ** | Services | `net start`, `netstat -ano` |
+| 7 | Jenkins exposé (RCE potentiel via console de scripts) | **ÉLEVÉ** | Services | `netstat -ano` (port 8484) |
+| 8 | ElasticSearch exposé (probablement sans authentification) | **ÉLEVÉ** | Services | `netstat -ano` (port 9200) |
+| 9 | Apache Struts exposé (RCE critiques connus) | **ÉLEVÉ** | Services | `netstat -ano` (port 8282) |
+| 10 | Print Spooler actif (potentiel PrintNightmare CVE-2021-34527) | **ÉLEVÉ** | Services | `net start` |
+| 11 | Console d'administration GlassFish exposée (port 4848) | **MOYEN** | Services | `netstat -ano` (port 4848) |
+| 12 | phpMyAdmin / WordPress exposés | **MOYEN** | Services | `netstat -ano` (port 8585) |
+| 13 | MySQL (3306) exposé sur le réseau | **MOYEN** | Services | `netstat -ano` (port 3306) |
+| 14 | Bureau à distance (3389) + mots de passe faibles | **MOYEN** | Réseau | `net start`, `netstat -ano`, `net accounts` |
 | 15 | Remote Registry actif | **MOYEN** | Services | `net start` |
-| 16 | Partages administratifs (C$, ADMIN$) actifs | **MOYEN** | Reseau | `net share` |
-| 17 | WinRM (5985) expose | **MOYEN** | Reseau | `net start`, `netstat -ano` (port 5985) |
-| 18 | Compte Administrator actif, non renomme, derniere connexion en 2010 | **MOYEN** | Utilisateurs | `net user Administrator` |
-| 19 | Machine non redemarree depuis le 05/10/2022 | **MOYEN** | OS | `systeminfo` → "System Boot Time" |
-| 20 | SNMP (UDP 161) ouvert — fuite d'informations possible | **FAIBLE** | Reseau | `netstat -ano`, `netsh firewall show config` |
+| 16 | Partages administratifs (C$, ADMIN$) actifs | **MOYEN** | Réseau | `net share` |
+| 17 | WinRM (5985) exposé | **MOYEN** | Réseau | `net start`, `netstat -ano` (port 5985) |
+| 18 | Compte Administrator actif, non renommé, dernière connexion en 2010 | **MOYEN** | Utilisateurs | `net user Administrator` |
+| 19 | Machine non redémarrée depuis le 05/10/2022 | **MOYEN** | OS | `systeminfo` → "System Boot Time" |
+| 20 | SNMP (UDP 161) ouvert — fuite d'informations possible | **FAIBLE** | Réseau | `netstat -ano`, `netsh firewall show config` |
 
 ---
 
-## 6. Recapitulatif des commandes d'audit utilisees
+## 6. Récapitulatif des commandes d'audit utilisées
 
-| Commande | Usage | Reference cours |
+| Commande | Usage | Référence cours |
 |----------|-------|-----------------|
-| `systeminfo` | Informations systeme completes (OS, correctifs, RAM, etc.) | 01 - section 2.1 |
+| `systeminfo` | Informations système complètes (OS, correctifs, RAM, etc.) | 01 - section 2.1 |
 | `ver` | Version de Windows | 01 - section 2.1 |
 | `hostname` | Nom de la machine | 01 - section 2.1 |
 | `$PSVersionTable` | Version de PowerShell | - |
-| `net user` / `net user <nom>` | Lister et detailler les utilisateurs | 02 - section 3.1 |
+| `net user` / `net user <nom>` | Lister et détailler les utilisateurs | 02 - section 3.1 |
 | `net localgroup` / `net localgroup <groupe>` | Lister les groupes et leurs membres | 02 - section 3.3 |
 | `net accounts` | Politique de mots de passe | 02 - section 3.2 |
-| `net start` | Services en cours d'execution | 01 - section 2.2 |
+| `net start` | Services en cours d'exécution | 01 - section 2.2 |
 | `Get-Process` | Processus actifs avec PID et chemin | 01 - section 2.2 |
-| `schtasks /query` | Taches planifiees (cmd) | 04 - section 3.7 |
-| `Get-ScheduledTask` | Taches planifiees (PowerShell) | 04 - section 3.7 |
-| `ipconfig /all` | Configuration reseau complete | 01 - section 2.3 |
-| `netstat -ano` | Ports en ecoute et connexions actives | 01 - section 2.3 |
-| `net share` | Partages reseau | 01 - section 2.3 |
+| `schtasks /query` | Tâches planifiées (cmd) | 04 - section 3.7 |
+| `Get-ScheduledTask` | Tâches planifiées (PowerShell) | 04 - section 3.7 |
+| `ipconfig /all` | Configuration réseau complète | 01 - section 2.3 |
+| `netstat -ano` | Ports en écoute et connexions actives | 01 - section 2.3 |
+| `net share` | Partages réseau | 01 - section 2.3 |
 | `netsh firewall show config` | Configuration du pare-feu | - |

@@ -1,79 +1,79 @@
-# Continuite d'activite et reprise apres sinistre
+# Continuité d'activité et reprise après sinistre
 
-**Module** : BCA (Plan de Continuite d'Activite) et PRA (Plan de Reprise d'Activite)
+**Module** : BCA (Plan de Continuité d'Activité) et PRA (Plan de Reprise d'Activité)
 
 ---
 
 ## Objectifs du module
 
-A l'issue de ce module, les competences suivantes seront acquises :
+À l'issue de ce module, les compétences suivantes seront acquises :
 
-- Comprendre la difference entre un BCA (Plan de Continuite d'Activite) et un PRA (Plan de Reprise d'Activite)
-- Maitriser les concepts de RTO (Recovery Time Objective) et RPO (Recovery Point Objective)
-- Savoir structurer un BCA et un PRA adaptes aux besoins de l'entreprise
-- Evaluer le cout de l'indisponibilite pour dimensionner correctement les plans de reprise
-- Identifier les erreurs courantes dans la mise en oeuvre des plans de continuite et de reprise
+- Comprendre la différence entre un BCA (Plan de Continuité d'Activité) et un PRA (Plan de Reprise d'Activité)
+- Maîtriser les concepts de RTO (Recovery Time Objective) et RPO (Recovery Point Objective)
+- Savoir structurer un BCA et un PRA adaptés aux besoins de l'entreprise
+- Évaluer le coût de l'indisponibilité pour dimensionner correctement les plans de reprise
+- Identifier les erreurs courantes dans la mise en œuvre des plans de continuité et de reprise
 
 ---
 
-## 1. BCA : Plan de Continuite d'Activite
+## 1. BCA : Plan de Continuité d'Activité
 
-### 1.1 Definition
+### 1.1 Définition
 
-Le **BCA** (Business Continuity Access, ou Plan de Continuite d'Activite -- PCA en francais) est un plan proactif qui definit comment une organisation maintient ses operations essentielles pendant et apres une perturbation majeure.
+Le **BCA** (Business Continuity Access, ou Plan de Continuité d'Activité -- PCA en français) est un plan proactif qui définit comment une organisation maintient ses opérations essentielles pendant et après une perturbation majeure.
 
-Le BCA couvre l'ensemble de l'organisation : les processus metier, les personnes, les locaux, les fournisseurs et les systemes IT. Son objectif est de garantir que l'activite business continue, meme en mode degrade.
+Le BCA couvre l'ensemble de l'organisation : les processus métier, les personnes, les locaux, les fournisseurs et les systèmes IT. Son objectif est de garantir que l'activité business continue, même en mode dégradé.
 
 ### 1.2 Types de perturbations couvertes
 
 | Type de perturbation | Exemples |
 |---|---|
-| **Catastrophes naturelles** | Inondation, seisme, tempete, incendie |
-| **Cyberattaques** | Ransomware, attaque DDoS, compromission de donnees |
-| **Pannes techniques** | Panne de datacenter, defaillance d'un fournisseur cloud, panne reseau |
-| **Pandemies** | Impossibilite d'acceder aux locaux, absenteisme massif |
-| **Pannes humaines** | Depart de personnel cle, erreur humaine critique |
-| **Problemes fournisseurs** | Faillite d'un prestataire, rupture de contrat, indisponibilite d'un service tiers |
+| **Catastrophes naturelles** | Inondation, séisme, tempête, incendie |
+| **Cyberattaques** | Ransomware, attaque DDoS, compromission de données |
+| **Pannes techniques** | Panne de datacenter, défaillance d'un fournisseur cloud, panne réseau |
+| **Pandémies** | Impossibilité d'accéder aux locaux, absentéisme massif |
+| **Pannes humaines** | Départ de personnel clé, erreur humaine critique |
+| **Problèmes fournisseurs** | Faillite d'un prestataire, rupture de contrat, indisponibilité d'un service tiers |
 
-### 1.3 Perimetre du BCA
+### 1.3 Périmètre du BCA
 
-Le BCA ne se limite pas a l'IT. Il couvre :
+Le BCA ne se limite pas à l'IT. Il couvre :
 
-- **Les processus metier** : quels processus sont critiques et doivent etre maintenus en priorite ?
-- **Les personnes** : qui est responsable de quoi en cas de crise ? Comment communiquer avec les equipes ?
-- **Les locaux** : existe-t-il un site de repli ? Le teletravail est-il possible ?
-- **Les fournisseurs** : quelles dependances externes sont critiques ?
-- **Les systemes IT** : quels systemes doivent etre restaures en priorite ? (cette partie est couverte par le PRA)
+- **Les processus métier** : quels processus sont critiques et doivent être maintenus en priorité ?
+- **Les personnes** : qui est responsable de quoi en cas de crise ? Comment communiquer avec les équipes ?
+- **Les locaux** : existe-t-il un site de repli ? Le télétravail est-il possible ?
+- **Les fournisseurs** : quelles dépendances externes sont critiques ?
+- **Les systèmes IT** : quels systèmes doivent être restaurés en priorité ? (cette partie est couverte par le PRA)
 
 ---
 
-## 2. PRA : Plan de Reprise d'Activite
+## 2. PRA : Plan de Reprise d'Activité
 
-### 2.1 Definition
+### 2.1 Définition
 
-Le **PRA** (Plan de Reprise d'Activite, ou DRP -- Disaster Recovery Plan en anglais) est un plan focalise sur la **recuperation technique des systemes IT** apres un sinistre. Contrairement au BCA qui couvre l'ensemble de l'organisation, le PRA se concentre specifiquement sur l'infrastructure informatique.
+Le **PRA** (Plan de Reprise d'Activité, ou DRP -- Disaster Recovery Plan en anglais) est un plan focalisé sur la **récupération technique des systèmes IT** après un sinistre. Contrairement au BCA qui couvre l'ensemble de l'organisation, le PRA se concentre spécifiquement sur l'infrastructure informatique.
 
 ### 2.2 Composants du PRA
 
 | Composant | Description |
 |---|---|
-| **Sauvegardes** | Copies regulieres des donnees stockees dans un emplacement distinct du site principal |
-| **Strategies de failover** | Mecanismes de basculement automatique ou manuel vers un site de secours |
-| **Equipe de recuperation** | Personnes designees avec des roles et responsabilites clairs pour piloter la reprise |
-| **Procedures de restauration** | Etapes documentees pour restaurer chaque systeme dans un ordre de priorite defini |
-| **Communication** | Protocole de notification des parties prenantes (equipes internes, clients, autorites) |
+| **Sauvegardes** | Copies régulières des données stockées dans un emplacement distinct du site principal |
+| **Stratégies de failover** | Mécanismes de basculement automatique ou manuel vers un site de secours |
+| **Équipe de récupération** | Personnes désignées avec des rôles et responsabilités clairs pour piloter la reprise |
+| **Procédures de restauration** | Étapes documentées pour restaurer chaque système dans un ordre de priorité défini |
+| **Communication** | Protocole de notification des parties prenantes (équipes internes, clients, autorités) |
 
-### 2.3 BCA vs PRA : complementaires, pas interchangeables
+### 2.3 BCA vs PRA : complémentaires, pas interchangeables
 
 | Aspect | BCA | PRA |
 |---|---|---|
-| **Perimetre** | Organisation entiere (business, RH, logistique, IT) | Systemes IT et donnees |
-| **Objectif** | Maintenir l'activite business | Restaurer les systemes techniques |
-| **Temporalite** | Pendant la perturbation | Apres la perturbation |
-| **Responsable** | Direction generale, responsable continuite | DSI, equipe infrastructure |
-| **Focus** | Processus metier critiques | Serveurs, bases de donnees, reseaux, applications |
+| **Périmètre** | Organisation entière (business, RH, logistique, IT) | Systèmes IT et données |
+| **Objectif** | Maintenir l'activité business | Restaurer les systèmes techniques |
+| **Temporalité** | Pendant la perturbation | Après la perturbation |
+| **Responsable** | Direction générale, responsable continuité | DSI, équipe infrastructure |
+| **Focus** | Processus métier critiques | Serveurs, bases de données, réseaux, applications |
 
-> **A noter** : un PRA sans BCA est incomplet (les systemes sont restaures mais personne ne sait comment reprendre l'activite). Un BCA sans PRA est inoperant (le plan existe mais les systemes ne sont pas restaurables). Les deux sont necessaires et doivent etre alignes.
+> **À noter** : un PRA sans BCA est incomplet (les systèmes sont restaurés mais personne ne sait comment reprendre l'activité). Un BCA sans PRA est inopérant (le plan existe mais les systèmes ne sont pas restaurables). Les deux sont nécessaires et doivent être alignés.
 
 ---
 
@@ -81,56 +81,56 @@ Le **PRA** (Plan de Reprise d'Activite, ou DRP -- Disaster Recovery Plan en angl
 
 ### 3.1 RTO : Recovery Time Objective
 
-Le **RTO** (Recovery Time Objective) definit la duree maximale d'interruption acceptable pour un systeme ou un processus. En d'autres termes : **combien de temps le business peut-il rester down ?**
+Le **RTO** (Recovery Time Objective) définit la durée maximale d'interruption acceptable pour un système ou un processus. En d'autres termes : **combien de temps le business peut-il rester down ?**
 
 ```
-     Incident                     Reprise complete
+     Incident                     Reprise complète
         |                              |
-        |<--- RTO (duree maximale) --->|
+        |<--- RTO (durée maximale) --->|
         |                              |
-   Le systeme                    Le systeme est
-   est down                      de nouveau operationnel
+   Le système                    Le système est
+   est down                      de nouveau opérationnel
 ```
 
 ### 3.2 RPO : Recovery Point Objective
 
-Le **RPO** (Recovery Point Objective) definit la quantite maximale de donnees que l'organisation peut se permettre de perdre. En d'autres termes : **combien de donnees peut-on perdre ?**
+Le **RPO** (Recovery Point Objective) définit la quantité maximale de données que l'organisation peut se permettre de perdre. En d'autres termes : **combien de données peut-on perdre ?**
 
 ```
-   Derniere                    Incident
+   Dernière                    Incident
    sauvegarde                     |
       |                           |
       |<--- RPO (perte max) ---->|
       |                           |
-   Donnees                    Donnees entre la
-   sauvegardees               derniere sauvegarde
+   Données                    Données entre la
+   sauvegardées               dernière sauvegarde
                               et l'incident sont
                               perdues
 ```
 
-### 3.3 Exemples concrets par type de systeme
+### 3.3 Exemples concrets par type de système
 
-| Systeme | RTO | RPO | Justification |
+| Système | RTO | RPO | Justification |
 |---|---|---|---|
-| **Plateforme e-commerce** | < 1 heure | < 5 minutes | Chaque minute d'indisponibilite = perte de revenus directe. Les transactions ne doivent pas etre perdues |
-| **Transactions financieres** | < 30 minutes | < 5 minutes | Obligations reglementaires, impact financier direct, reconciliation impossible si donnees perdues |
-| **CRM (gestion clients)** | < 4 heures | < 1 heure | L'equipe commerciale peut travailler temporairement sans le CRM, mais la perte de donnees clients est couteuse |
-| **Email interne** | < 4 heures | < 1 heure | L'email n'est pas critique a la minute pres, mais les equipes ne peuvent pas fonctionner longtemps sans |
-| **Archives / documentation** | < 24 heures | < 24 heures | Acces non critique, les equipes peuvent utiliser des copies locales temporairement |
+| **Plateforme e-commerce** | < 1 heure | < 5 minutes | Chaque minute d'indisponibilité = perte de revenus directe. Les transactions ne doivent pas être perdues |
+| **Transactions financières** | < 30 minutes | < 5 minutes | Obligations réglementaires, impact financier direct, réconciliation impossible si données perdues |
+| **CRM (gestion clients)** | < 4 heures | < 1 heure | L'équipe commerciale peut travailler temporairement sans le CRM, mais la perte de données clients est coûteuse |
+| **Email interne** | < 4 heures | < 1 heure | L'email n'est pas critique à la minute près, mais les équipes ne peuvent pas fonctionner longtemps sans |
+| **Archives / documentation** | < 24 heures | < 24 heures | Accès non critique, les équipes peuvent utiliser des copies locales temporairement |
 | **Logs applicatifs** | < 24 heures | < 24 heures | Utiles pour le diagnostic mais pas essentiels au fonctionnement quotidien |
 
-### 3.4 Relation entre RTO/RPO et cout
+### 3.4 Relation entre RTO/RPO et coût
 
-Plus le RTO et le RPO sont bas, plus l'infrastructure necessaire est complexe et couteuse :
+Plus le RTO et le RPO sont bas, plus l'infrastructure nécessaire est complexe et coûteuse :
 
-| Niveau | Mecanismes requis | Cout relatif |
+| Niveau | Mécanismes requis | Coût relatif |
 |---|---|---|
-| RPO < 5 min, RTO < 30 min | Replication synchrone, hot standby, failover automatique | Tres eleve |
-| RPO < 1h, RTO < 4h | Replication asynchrone, warm standby, basculement semi-automatique | Eleve |
-| RPO < 24h, RTO < 24h | Sauvegardes quotidiennes, cold standby, restauration manuelle | Modere |
+| RPO < 5 min, RTO < 30 min | Réplication synchrone, hot standby, failover automatique | Très élevé |
+| RPO < 1h, RTO < 4h | Réplication asynchrone, warm standby, basculement semi-automatique | Élevé |
+| RPO < 24h, RTO < 24h | Sauvegardes quotidiennes, cold standby, restauration manuelle | Modéré |
 | RPO > 24h, RTO > 24h | Sauvegardes hebdomadaires, pas de site de secours | Faible |
 
-> **Bonne pratique** : le RTO et le RPO doivent etre alignes avec la criticite reelle de chaque systeme. Appliquer un RPO de 5 minutes a un systeme d'archives est un gaspillage de ressources. Inversement, un RPO de 24 heures pour une base de transactions financieres est inacceptable.
+> **Bonne pratique** : le RTO et le RPO doivent être alignés avec la criticité réelle de chaque système. Appliquer un RPO de 5 minutes à un système d'archives est un gaspillage de ressources. Inversement, un RPO de 24 heures pour une base de transactions financières est inacceptable.
 
 ---
 
@@ -142,32 +142,32 @@ Un BCA complet contient les sections suivantes :
 
 | Section | Contenu |
 |---|---|
-| **1. Introduction et objectifs** | Perimetre du plan, objectifs de continuite, parties prenantes, historique des revisions |
-| **2. BIA (Business Impact Analysis)** | Identification des processus critiques, evaluation de l'impact financier et operationnel de leur interruption, classification par ordre de priorite |
-| **3. Plan de communication** | Arbre d'appel, canaux de communication de secours, modeles de notification (interne, clients, autorites, medias) |
-| **4. Procedures de continuite** | Procedures detaillees pour maintenir chaque processus critique en mode degrade |
-| **5. Formation et tests** | Programme de sensibilisation, exercices reguliers, retours d'experience |
+| **1. Introduction et objectifs** | Périmètre du plan, objectifs de continuité, parties prenantes, historique des révisions |
+| **2. BIA (Business Impact Analysis)** | Identification des processus critiques, évaluation de l'impact financier et opérationnel de leur interruption, classification par ordre de priorité |
+| **3. Plan de communication** | Arbre d'appel, canaux de communication de secours, modèles de notification (interne, clients, autorités, médias) |
+| **4. Procédures de continuité** | Procédures détaillées pour maintenir chaque processus critique en mode dégradé |
+| **5. Formation et tests** | Programme de sensibilisation, exercices réguliers, retours d'expérience |
 
 ### 4.2 Le BIA (Business Impact Analysis)
 
-Le **BIA** est la pierre angulaire du BCA. Il identifie les processus critiques et evalue l'impact de leur interruption :
+Le **BIA** est la pierre angulaire du BCA. Il identifie les processus critiques et évalue l'impact de leur interruption :
 
-| Processus | Impact si indisponible 1h | Impact si indisponible 24h | Priorite de reprise |
+| Processus | Impact si indisponible 1h | Impact si indisponible 24h | Priorité de reprise |
 |---|---|---|---|
-| Paiements en ligne | Perte de CA directe | Perte majeure + atteinte reputation | 1 (critique) |
-| Service client | Clients insatisfaits | Perte de clients, avis negatifs | 2 (important) |
-| Paie des employes | Aucun impact immediat | Aucun impact (cycle mensuel) | 3 (normal) |
-| Site web vitrine | Visibilite reduite | Impact SEO, prospects perdus | 2 (important) |
+| Paiements en ligne | Perte de CA directe | Perte majeure + atteinte réputation | 1 (critique) |
+| Service client | Clients insatisfaits | Perte de clients, avis négatifs | 2 (important) |
+| Paie des employés | Aucun impact immédiat | Aucun impact (cycle mensuel) | 3 (normal) |
+| Site web vitrine | Visibilité réduite | Impact SEO, prospects perdus | 2 (important) |
 
 ### 4.3 Tests du BCA
 
-Un BCA qui n'est pas teste est un BCA qui ne fonctionne pas. Les types de tests :
+Un BCA qui n'est pas testé est un BCA qui ne fonctionne pas. Les types de tests :
 
-| Type de test | Description | Frequence recommandee |
+| Type de test | Description | Fréquence recommandée |
 |---|---|---|
 | **Revue documentaire** | Relecture du plan par les parties prenantes | Trimestrielle |
-| **Exercice sur table** | Simulation theorique d'un scenario de crise en reunion | Semestrielle |
-| **Exercice partiel** | Test reel d'un composant specifique (ex. basculement d'un serveur) | Semestrielle |
+| **Exercice sur table** | Simulation théorique d'un scénario de crise en réunion | Semestrielle |
+| **Exercice partiel** | Test réel d'un composant spécifique (ex. basculement d'un serveur) | Semestrielle |
 | **Exercice complet** | Simulation grandeur nature d'un sinistre | Annuelle |
 
 ---
@@ -178,21 +178,21 @@ Un BCA qui n'est pas teste est un BCA qui ne fonctionne pas. Les types de tests 
 
 | Section | Contenu |
 |---|---|
-| **1. Perimetre** | Systemes couverts, RTO et RPO par systeme, criteres de declenchement du PRA |
-| **2. Equipe de reponse** | Noms, roles, coordonnees, chaine d'escalade, suppleants |
-| **3. Procedures de recuperation** | Etapes detaillees pour restaurer chaque systeme, dans l'ordre de priorite defini par le BIA |
-| **4. Sauvegarde et restauration** | Politique de sauvegarde (frequence, retention, emplacement), procedures de restauration testees |
-| **5. Strategies failover / failback** | Mecanismes de basculement vers le site de secours (failover) et de retour vers le site principal (failback) |
-| **6. Tests et validation** | Plan de test, resultats des derniers tests, actions correctives |
+| **1. Périmètre** | Systèmes couverts, RTO et RPO par système, critères de déclenchement du PRA |
+| **2. Équipe de réponse** | Noms, rôles, coordonnées, chaîne d'escalade, suppléants |
+| **3. Procédures de récupération** | Étapes détaillées pour restaurer chaque système, dans l'ordre de priorité défini par le BIA |
+| **4. Sauvegarde et restauration** | Politique de sauvegarde (fréquence, rétention, emplacement), procédures de restauration testées |
+| **5. Stratégies failover / failback** | Mécanismes de basculement vers le site de secours (failover) et de retour vers le site principal (failback) |
+| **6. Tests et validation** | Plan de test, résultats des derniers tests, actions correctives |
 
 ### 5.2 Failover et failback
 
-| Concept | Definition |
+| Concept | Définition |
 |---|---|
 | **Failover** | Basculement du site principal vers le site de secours en cas de sinistre |
-| **Failback** | Retour du site de secours vers le site principal une fois celui-ci restaure |
+| **Failback** | Retour du site de secours vers le site principal une fois celui-ci restauré |
 
-Le failback est souvent plus complexe que le failover car il necessite de synchroniser les donnees qui ont ete modifiees sur le site de secours pendant la periode de fonctionnement en mode degrade.
+Le failback est souvent plus complexe que le failover car il nécessite de synchroniser les données qui ont été modifiées sur le site de secours pendant la période de fonctionnement en mode dégradé.
 
 ```
 Site principal          Site de secours
@@ -202,19 +202,19 @@ Site principal          Site de secours
     |                       |
 [Down]                  [Actif]        <- Failover
     |                       |
-    | --- REPARATION ---    |
+    | --- RÉPARATION ---    |
     |                       |
 [Actif]                 [Passif]       <- Failback (+ synchronisation)
 ```
 
 ### 5.3 Types de sites de secours
 
-| Type | Description | RTO | Cout |
+| Type | Description | RTO | Coût |
 |---|---|---|---|
-| **Cold site** | Local equipe en electricite et reseau, mais sans serveurs. Les serveurs doivent etre commandes et installes | > 24 heures | Faible |
-| **Warm site** | Local equipe avec des serveurs pre-configures mais pas totalement a jour. Necessite une synchronisation des donnees | 4 a 24 heures | Modere |
-| **Hot site** | Replique quasi identique du site principal, avec replication en temps reel. Basculement possible en minutes | < 1 heure | Eleve |
-| **Cloud DR** | Site de secours provisionne dans le cloud, active a la demande | 1 a 4 heures | Variable (pay-as-you-go) |
+| **Cold site** | Local équipé en électricité et réseau, mais sans serveurs. Les serveurs doivent être commandés et installés | > 24 heures | Faible |
+| **Warm site** | Local équipé avec des serveurs pré-configurés mais pas totalement à jour. Nécessite une synchronisation des données | 4 à 24 heures | Modéré |
+| **Hot site** | Réplique quasi identique du site principal, avec réplication en temps réel. Basculement possible en minutes | < 1 heure | Élevé |
+| **Cloud DR** | Site de secours provisionné dans le cloud, activé à la demande | 1 à 4 heures | Variable (pay-as-you-go) |
 
 ---
 
@@ -222,48 +222,48 @@ Site principal          Site de secours
 
 ### 6.1 Ignorer les facteurs non techniques
 
-Le PRA ne peut pas fonctionner si les aspects humains et organisationnels sont negliges :
+Le PRA ne peut pas fonctionner si les aspects humains et organisationnels sont négligés :
 
-- **Personnel** : les membres de l'equipe de recuperation sont-ils disponibles en dehors des heures de bureau ? Ont-ils ete formes ?
-- **Fournisseurs** : les contrats de support prevoient-ils une intervention en cas de sinistre ? Quels sont les SLA ?
-- **Communication** : comment prevenir les clients si le systeme de communication principal est hors service ?
+- **Personnel** : les membres de l'équipe de récupération sont-ils disponibles en dehors des heures de bureau ? Ont-ils été formés ?
+- **Fournisseurs** : les contrats de support prévoient-ils une intervention en cas de sinistre ? Quels sont les SLA ?
+- **Communication** : comment prévenir les clients si le système de communication principal est hors service ?
 
 ### 6.2 Tests insuffisants
 
-| Probleme | Consequence |
+| Problème | Conséquence |
 |---|---|
-| Le PRA n'a jamais ete teste | On decouvre le jour du sinistre que les procedures ne fonctionnent pas |
-| Les sauvegardes ne sont pas testees | Les fichiers de sauvegarde sont corrompus ou incomplets |
-| L'equipe n'a jamais fait d'exercice | Panique, perte de temps, erreurs en chaine |
-| Le plan n'a pas ete mis a jour | Les procedures font reference a des systemes qui n'existent plus |
+| Le PRA n'a jamais été testé | On découvre le jour du sinistre que les procédures ne fonctionnent pas |
+| Les sauvegardes ne sont pas testées | Les fichiers de sauvegarde sont corrompus ou incomplets |
+| L'équipe n'a jamais fait d'exercice | Panique, perte de temps, erreurs en chaîne |
+| Le plan n'a pas été mis à jour | Les procédures font référence à des systèmes qui n'existent plus |
 
-> **Bonne pratique** : une sauvegarde qui n'a pas ete testee par une restauration reelle n'est pas une sauvegarde. Planifier des tests de restauration reguliers et documenter les resultats.
+> **Bonne pratique** : une sauvegarde qui n'a pas été testée par une restauration réelle n'est pas une sauvegarde. Planifier des tests de restauration réguliers et documenter les résultats.
 
-### 6.3 Dependance excessive aux fournisseurs cloud
+### 6.3 Dépendance excessive aux fournisseurs cloud
 
-Le cloud offre des mecanismes de reprise puissants (replication multi-region, snapshots automatiques, etc.) mais il ne dispense pas d'un PRA :
+Le cloud offre des mécanismes de reprise puissants (réplication multi-région, snapshots automatiques, etc.) mais il ne dispense pas d'un PRA :
 
 - Les fournisseurs cloud connaissent aussi des pannes majeures (AWS us-east-1 en 2017, Azure AD en 2021, etc.)
-- Le modele de responsabilite partagee signifie que le provider est responsable de l'infrastructure, mais le client est responsable de ses donnees et de ses configurations
-- Une erreur de configuration (suppression accidentelle d'une base de donnees, mauvaise politique de retention) ne sera pas corrigee par le provider
+- Le modèle de responsabilité partagée signifie que le provider est responsable de l'infrastructure, mais le client est responsable de ses données et de ses configurations
+- Une erreur de configuration (suppression accidentelle d'une base de données, mauvaise politique de rétention) ne sera pas corrigée par le provider
 
-### 6.4 Roles mal definis
+### 6.4 Rôles mal définis
 
-| Situation | Consequence |
+| Situation | Conséquence |
 |---|---|
-| Personne n'est designe comme responsable du PRA | Le plan existe mais personne ne le maintient ni ne le declenche |
-| Un seul responsable sans suppleant | Si cette personne est indisponible lors du sinistre, le plan est bloque |
-| Les roles ne sont pas communiques | Chacun attend que quelqu'un d'autre agisse |
-| Pas de chaine d'escalade | Les decisions tardent, le temps de reprise s'allonge |
+| Personne n'est désigné comme responsable du PRA | Le plan existe mais personne ne le maintient ni ne le déclenche |
+| Un seul responsable sans suppléant | Si cette personne est indisponible lors du sinistre, le plan est bloqué |
+| Les rôles ne sont pas communiqués | Chacun attend que quelqu'un d'autre agisse |
+| Pas de chaîne d'escalade | Les décisions tardent, le temps de reprise s'allonge |
 
-> **A noter** : le BCA et le PRA sont des documents vivants. Ils doivent etre revises et mis a jour a chaque changement significatif de l'infrastructure, de l'organisation ou des processus metier. Un plan obsolete est aussi dangereux qu'un plan inexistant.
+> **À noter** : le BCA et le PRA sont des documents vivants. Ils doivent être révisés et mis à jour à chaque changement significatif de l'infrastructure, de l'organisation ou des processus métier. Un plan obsolète est aussi dangereux qu'un plan inexistant.
 
 ---
 
 ## Pour aller plus loin
 
-- [ISO 22301 -- Systemes de management de la continuite d'activite](https://www.iso.org/standard/75106.html)
-- [ANSSI -- Guide de continuite d'activite](https://cyber.gouv.fr/publications/guide-pour-realiser-un-plan-de-continuite-dactivite)
+- [ISO 22301 -- Systèmes de management de la continuité d'activité](https://www.iso.org/standard/75106.html)
+- [ANSSI -- Guide de continuité d'activité](https://cyber.gouv.fr/publications/guide-pour-realiser-un-plan-de-continuite-dactivite)
 - [AWS -- Disaster Recovery Whitepaper](https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-workloads-on-aws.html)
 - [NIST SP 800-34 -- Contingency Planning Guide for Federal Information Systems](https://csrc.nist.gov/publications/detail/sp/800-34/rev-1/final)
 - [Uptime Institute -- Tier Classification System](https://uptimeinstitute.com/tiers)

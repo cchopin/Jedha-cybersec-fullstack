@@ -6,68 +6,68 @@
 
 ## Objectifs du module
 
-A l'issue de ce module, les competences suivantes seront acquises :
+À l'issue de ce module, les compétences suivantes seront acquises :
 
-- Comprendre les deux protocoles d'authentification utilises dans Active Directory : NTLM et Kerberos
-- Maitriser le flux challenge-response de NTLM et identifier ses faiblesses de securite
-- Connaitre le fonctionnement complet de Kerberos et son systeme de tickets
-- Identifier les composants du KDC (Key Distribution Center) et leur role
-- Comprendre pourquoi Kerberos resout les problemes de securite poses par NTLM
+- Comprendre les deux protocoles d'authentification utilisés dans Active Directory : NTLM et Kerberos
+- Maîtriser le flux challenge-response de NTLM et identifier ses faiblesses de sécurité
+- Connaître le fonctionnement complet de Kerberos et son système de tickets
+- Identifier les composants du KDC (Key Distribution Center) et leur rôle
+- Comprendre pourquoi Kerberos résout les problèmes de sécurité posés par NTLM
 
 ---
 
 ## 1. Vue d'ensemble des protocoles d'authentification AD
 
-Active Directory repose sur deux protocoles d'authentification reseau :
+Active Directory repose sur deux protocoles d'authentification réseau :
 
 | Protocole | Statut | Introduit avec | Utilisation |
 |---|---|---|---|
-| **Kerberos** | Protocole par defaut | Windows 2000 | Authentification moderne dans les environnements AD |
-| **NTLM** | Legacy (compatibilite) | Windows NT | Fallback lorsque Kerberos ne peut pas etre utilise |
+| **Kerberos** | Protocole par défaut | Windows 2000 | Authentification moderne dans les environnements AD |
+| **NTLM** | Legacy (compatibilité) | Windows NT | Fallback lorsque Kerberos ne peut pas être utilisé |
 
-Kerberos est le protocole principal depuis Windows 2000. NTLM est conserve pour la compatibilite descendante et entre en jeu lorsque Kerberos echoue ou n'est pas disponible (par exemple, lorsque le client ne peut pas joindre un Domain Controller, ou lorsqu'une adresse IP est utilisee au lieu d'un nom DNS).
+Kerberos est le protocole principal depuis Windows 2000. NTLM est conservé pour la compatibilité descendante et entre en jeu lorsque Kerberos échoue ou n'est pas disponible (par exemple, lorsque le client ne peut pas joindre un Domain Controller, ou lorsqu'une adresse IP est utilisée au lieu d'un nom DNS).
 
-> **A noter** : meme dans les environnements modernes, NTLM reste actif par defaut. Sa desactivation complete est souvent difficile en raison de dependances legacy. Comprendre ses faiblesses est donc essentiel pour securiser un domaine AD.
+> **À noter** : même dans les environnements modernes, NTLM reste actif par défaut. Sa désactivation complète est souvent difficile en raison de dépendances legacy. Comprendre ses faiblesses est donc essentiel pour sécuriser un domaine AD.
 
 ---
 
 ## 2. NTLM : protocole challenge-response
 
-### 2.1 Principe general
+### 2.1 Principe général
 
-NTLM (NT LAN Manager) est un protocole d'authentification de type **challenge-response**. Le mot de passe de l'utilisateur n'est jamais transmis sur le reseau. A la place, le client prouve qu'il connait le mot de passe en repondant correctement a un defi (challenge) envoye par le serveur.
+NTLM (NT LAN Manager) est un protocole d'authentification de type **challenge-response**. Le mot de passe de l'utilisateur n'est jamais transmis sur le réseau. À la place, le client prouve qu'il connaît le mot de passe en répondant correctement à un défi (challenge) envoyé par le serveur.
 
-La version actuelle est **NTLMv2**, qui renforce la securite par rapport a NTLMv1 en ajoutant un nonce client et un horodatage dans la reponse.
+La version actuelle est **NTLMv2**, qui renforce la sécurité par rapport à NTLMv1 en ajoutant un nonce client et un horodatage dans la réponse.
 
 ### 2.2 Flux d'authentification NTLM
 
-Le flux NTLMv2 se deroule en quatre etapes principales :
+Le flux NTLMv2 se déroule en quatre étapes principales :
 
-#### Step 0 : Negociation
+#### Step 0 : Négociation
 
-Le client et le serveur negocient la version du protocole a utiliser. Dans un environnement correctement configure, NTLMv2 est selectionne.
+Le client et le serveur négocient la version du protocole à utiliser. Dans un environnement correctement configuré, NTLMv2 est sélectionné.
 
 ```
 Client ──── NEGOTIATE_MESSAGE ────> Serveur
-       (annonce les capacites NTLM supportees)
+       (annonce les capacités NTLM supportées)
 ```
 
 #### Step 1 : Challenge du serveur
 
-Le serveur genere un **challenge aleatoire de 8 octets** (Server Challenge) et l'envoie au client.
+Le serveur génère un **challenge aléatoire de 8 octets** (Server Challenge) et l'envoie au client.
 
 ```
 Client <──── CHALLENGE_MESSAGE ──── Serveur
         (contient le Server Challenge de 8 bytes)
 ```
 
-#### Step 2 : Construction de la reponse par le client
+#### Step 2 : Construction de la réponse par le client
 
-Le client construit la reponse NTLMv2 en plusieurs sous-etapes :
+Le client construit la réponse NTLMv2 en plusieurs sous-étapes :
 
-1. Le client genere un **nonce client aleatoire de 16 octets** (Client Challenge)
+1. Le client génère un **nonce client aléatoire de 16 octets** (Client Challenge)
 2. Le client collecte les informations contextuelles : **timestamp** (heure courante), **nom de domaine**, **nom du serveur**
-3. Ces elements sont assembles dans une structure appelee **NTLMv2 Blob** :
+3. Ces éléments sont assemblés dans une structure appelée **NTLMv2 Blob** :
 
 ```
 NTLMv2 Blob = Client Challenge (16 bytes) + Timestamp + Domain Info + ...
@@ -79,24 +79,24 @@ NTLMv2 Blob = Client Challenge (16 bytes) + Timestamp + Domain Info + ...
 NT Hash = MD4(UTF-16LE(password))
 ```
 
-5. Le client derive une cle intermediaire :
+5. Le client dérive une clé intermédiaire :
 
 ```
 NTLMv2 Hash = HMAC-MD5(NT Hash, UPPERCASE(Username) + DomainName)
 ```
 
-6. La reponse finale est calculee :
+6. La réponse finale est calculée :
 
 ```
 NTLMv2 Response = HMAC-MD5(NTLMv2 Hash, Server Challenge + NTLMv2 Blob)
 ```
 
-#### Step 3 : Envoi de la reponse et verification
+#### Step 3 : Envoi de la réponse et vérification
 
 Le client envoie au serveur un message contenant :
 
 - Le **nom d'utilisateur** (username)
-- La **reponse NTLMv2** calculee
+- La **réponse NTLMv2** calculée
 - Le **NTLMv2 Blob** (contenant le nonce client, le timestamp, les informations de domaine)
 
 ```
@@ -104,81 +104,81 @@ Client ──── AUTHENTICATE_MESSAGE ────> Serveur
        (username + NTLMv2 Response + NTLMv2 Blob)
 ```
 
-Le serveur **ne peut pas verifier lui-meme la reponse** car il ne possede pas le NT hash de l'utilisateur. Il forwarde donc l'ensemble des informations au **Domain Controller** via le protocole **Netlogon RPC** (Secure Channel).
+Le serveur **ne peut pas vérifier lui-même la réponse** car il ne possède pas le NT hash de l'utilisateur. Il forwarde donc l'ensemble des informations au **Domain Controller** via le protocole **Netlogon RPC** (Secure Channel).
 
 ```
 Serveur ──── Netlogon RPC ────> Domain Controller
         (Server Challenge + Username + NTLMv2 Response + Blob)
 ```
 
-Le DC effectue la verification :
+Le DC effectue la vérification :
 
-1. Il recupere le **NT hash** de l'utilisateur depuis la base Active Directory
-2. Il recalcule le HMAC avec les memes parametres (Server Challenge + NTLMv2 Blob)
-3. Si le resultat correspond a la NTLMv2 Response envoyee, l'authentification est reussie
+1. Il récupère le **NT hash** de l'utilisateur depuis la base Active Directory
+2. Il recalcule le HMAC avec les mêmes paramètres (Server Challenge + NTLMv2 Blob)
+3. Si le résultat correspond à la NTLMv2 Response envoyée, l'authentification est réussie
 
 ```
-DC ──── Resultat (succes/echec) ────> Serveur
+DC ──── Résultat (succès/échec) ────> Serveur
 ```
 
-### 2.3 Faiblesses de securite de NTLM
+### 2.3 Faiblesses de sécurité de NTLM
 
-Le probleme fondamental de NTLM est l'**absence d'authentification mutuelle** :
+Le problème fondamental de NTLM est l'**absence d'authentification mutuelle** :
 
-| Verification | Presente dans NTLM ? | Consequence |
+| Vérification | Présente dans NTLM ? | Conséquence |
 |---|---|---|
-| Le serveur authentifie le client | Oui (via le challenge-response) | Le serveur sait que le client connait le mot de passe |
-| Le client authentifie le serveur | **Non** | Le client ne peut pas verifier qu'il parle au bon serveur |
+| Le serveur authentifie le client | Oui (via le challenge-response) | Le serveur sait que le client connaît le mot de passe |
+| Le client authentifie le serveur | **Non** | Le client ne peut pas vérifier qu'il parle au bon serveur |
 | Le client authentifie le DC | **Non** | Le client fait confiance au serveur pour contacter le DC |
 
-Cette absence d'authentification mutuelle ouvre la voie a deux attaques majeures :
+Cette absence d'authentification mutuelle ouvre la voie à deux attaques majeures :
 
-- **Attaque Man-in-the-Middle (MITM)** : un attaquant se positionne entre le client et le serveur et intercepte les echanges NTLM
-- **Attaque NTLM Relay** : un attaquant capture la reponse NTLM d'un client et la rejoue vers un autre serveur pour s'authentifier en tant que la victime
+- **Attaque Man-in-the-Middle (MITM)** : un attaquant se positionne entre le client et le serveur et intercepte les échanges NTLM
+- **Attaque NTLM Relay** : un attaquant capture la réponse NTLM d'un client et la rejoue vers un autre serveur pour s'authentifier en tant que la victime
 
 > **Bonne pratique** : restreindre l'utilisation de NTLM au maximum via les GPO (Group Policy) `Network security: Restrict NTLM`. Activer le signing SMB et le channel binding pour limiter les attaques relay.
 
-### 2.4 Cas d'utilisation residuels de NTLM
+### 2.4 Cas d'utilisation résiduels de NTLM
 
-Malgre ses faiblesses, NTLM reste utilise dans les situations suivantes :
+Malgré ses faiblesses, NTLM reste utilisé dans les situations suivantes :
 
-| Scenario | Raison |
+| Scénario | Raison |
 |---|---|
-| **Imprimantes reseau** | Firmware ancien ne supportant pas Kerberos |
-| **Scanners** | Protocoles d'authentification limites |
-| **Applications legacy** | Applications internes developpees pour Windows NT/2000 |
-| **RDP mal configure** | Connexion RDP utilisant une adresse IP au lieu d'un FQDN |
-| **Acces par IP** | Kerberos necessite un nom DNS, pas une adresse IP |
-| **Workgroups** | Machines hors domaine sans acces au KDC |
+| **Imprimantes réseau** | Firmware ancien ne supportant pas Kerberos |
+| **Scanners** | Protocoles d'authentification limités |
+| **Applications legacy** | Applications internes développées pour Windows NT/2000 |
+| **RDP mal configuré** | Connexion RDP utilisant une adresse IP au lieu d'un FQDN |
+| **Accès par IP** | Kerberos nécessite un nom DNS, pas une adresse IP |
+| **Workgroups** | Machines hors domaine sans accès au KDC |
 
 ---
 
 ## 3. Kerberos : authentification par tickets
 
-### 3.1 Principe general
+### 3.1 Principe général
 
-**Kerberos** est un protocole d'authentification reseau base sur un systeme de **tickets** et de **cles symetriques**. Contrairement a NTLM, Kerberos assure une **authentification mutuelle** : le client authentifie le serveur et le serveur authentifie le client.
+**Kerberos** est un protocole d'authentification réseau basé sur un système de **tickets** et de **clés symétriques**. Contrairement à NTLM, Kerberos assure une **authentification mutuelle** : le client authentifie le serveur et le serveur authentifie le client.
 
-Le protocole porte le nom du chien a trois tetes de la mythologie grecque, refletant les trois entites impliquees dans chaque transaction d'authentification.
+Le protocole porte le nom du chien à trois têtes de la mythologie grecque, reflétant les trois entités impliquées dans chaque transaction d'authentification.
 
 ### 3.2 Composants de Kerberos
 
-| Composant | Role | Localisation |
+| Composant | Rôle | Localisation |
 |---|---|---|
-| **Client** | Utilisateur ou machine qui souhaite acceder a un service | Poste de travail |
-| **Service** | Application reseau cible (partage de fichiers, serveur web, etc.) | Serveur membre |
-| **KDC (Key Distribution Center)** | Centre de distribution de cles, autorite de confiance | Chaque Domain Controller |
+| **Client** | Utilisateur ou machine qui souhaite accéder à un service | Poste de travail |
+| **Service** | Application réseau cible (partage de fichiers, serveur web, etc.) | Serveur membre |
+| **KDC (Key Distribution Center)** | Centre de distribution de clés, autorité de confiance | Chaque Domain Controller |
 
-Le **KDC** est installe sur chaque Domain Controller et se compose de deux sous-services :
+Le **KDC** est installé sur chaque Domain Controller et se compose de deux sous-services :
 
-| Sous-service du KDC | Role |
+| Sous-service du KDC | Rôle |
 |---|---|
-| **Authentication Server (AS)** | Authentifie l'utilisateur et delivre le **TGT** (Ticket Granting Ticket) |
-| **Ticket Granting Server (TGS)** | Delivre les **Service Tickets** permettant d'acceder aux services specifiques |
+| **Authentication Server (AS)** | Authentifie l'utilisateur et délivre le **TGT** (Ticket Granting Ticket) |
+| **Ticket Granting Server (TGS)** | Délivre les **Service Tickets** permettant d'accéder aux services spécifiques |
 
 ### 3.3 Service Principal Name (SPN)
 
-Un **SPN** (Service Principal Name) est un identifiant unique qui lie un service reseau a un compte de domaine (compte de service ou compte machine). Il permet a Kerberos d'identifier de facon non ambigue le service auquel le client souhaite acceder.
+Un **SPN** (Service Principal Name) est un identifiant unique qui lie un service réseau à un compte de domaine (compte de service ou compte machine). Il permet à Kerberos d'identifier de façon non ambiguë le service auquel le client souhaite accéder.
 
 Format d'un SPN :
 
@@ -191,193 +191,193 @@ Exemples :
 ```
 HTTP/webserver01.corp.local          # Serveur web IIS
 MSSQLSvc/sqlserver.corp.local:1433   # Instance SQL Server
-HOST/dc01.corp.local                 # Services generiques du DC
+HOST/dc01.corp.local                 # Services génériques du DC
 ```
 
-Pour lister les SPN enregistres dans le domaine :
+Pour lister les SPN enregistrés dans le domaine :
 
 ```powershell
 # Lister tous les SPN du domaine
 setspn -T corp.local -Q */*
 
-# Lister les SPN d'un compte specifique
+# Lister les SPN d'un compte spécifique
 setspn -L svc_sql
 ```
 
-### 3.4 Gestion des cles dans Kerberos
+### 3.4 Gestion des clés dans Kerberos
 
-Kerberos utilise exclusivement le **chiffrement symetrique**. Le KDC stocke les cles secretes (derivees des mots de passe) de tous les comptes du domaine :
+Kerberos utilise exclusivement le **chiffrement symétrique**. Le KDC stocke les clés secrètes (dérivées des mots de passe) de tous les comptes du domaine :
 
-| Cle | Derivee de | Stockee par |
+| Clé | Dérivée de | Stockée par |
 |---|---|---|
-| **Cle client** | Hash du mot de passe de l'utilisateur | KDC + client (derive a la volee) |
-| **Cle TGS** | Hash du mot de passe du compte `krbtgt` | KDC uniquement |
-| **Cle service** | Hash du mot de passe du compte de service | KDC + service |
+| **Clé client** | Hash du mot de passe de l'utilisateur | KDC + client (dérivé à la volée) |
+| **Clé TGS** | Hash du mot de passe du compte `krbtgt` | KDC uniquement |
+| **Clé service** | Hash du mot de passe du compte de service | KDC + service |
 
-> **A noter** : le compte **krbtgt** est un compte AD special dont le hash est utilise pour chiffrer tous les TGT. Si ce hash est compromis, un attaquant peut forger des TGT arbitraires : c'est l'attaque **Golden Ticket**.
+> **À noter** : le compte **krbtgt** est un compte AD spécial dont le hash est utilisé pour chiffrer tous les TGT. Si ce hash est compromis, un attaquant peut forger des TGT arbitraires : c'est l'attaque **Golden Ticket**.
 
 ### 3.5 Flux complet d'authentification Kerberos
 
-Le flux Kerberos complet comprend trois echanges distincts : l'authentification initiale (AS Exchange), l'obtention du ticket de service (TGS Exchange), et l'acces au service (AP Exchange).
+Le flux Kerberos complet comprend trois échanges distincts : l'authentification initiale (AS Exchange), l'obtention du ticket de service (TGS Exchange), et l'accès au service (AP Exchange).
 
 #### Phase 1 : AS Exchange (Client <-> Authentication Server)
 
-**Etape 1 -- Le client demande un TGT**
+**Étape 1 -- Le client demande un TGT**
 
-Le client envoie un message **AS-REQ** (Authentication Service Request) a l'Authentication Server du KDC. Ce message contient :
+Le client envoie un message **AS-REQ** (Authentication Service Request) à l'Authentication Server du KDC. Ce message contient :
 
 - Le nom d'utilisateur (principal name)
 - Le nom du service TGS (demande d'un TGT)
-- Un horodatage (timestamp) chiffre avec la cle derivee du mot de passe de l'utilisateur (pre-authentification)
+- Un horodatage (timestamp) chiffré avec la clé dérivée du mot de passe de l'utilisateur (pré-authentification)
 
 ```
 Client ──── AS-REQ ────> Authentication Server (KDC)
        (username + encrypted timestamp)
 ```
 
-> **A noter** : l'etape de pre-authentification (PA-DATA) empeche un attaquant de demander un TGT pour n'importe quel utilisateur. Sans pre-authentification, il suffirait de connaitre le nom d'un utilisateur pour obtenir un blob chiffre avec sa cle et tenter un brute-force hors ligne. Si la pre-authentification est desactivee sur un compte, ce compte est vulnerable a l'attaque **AS-REP Roasting**.
+> **À noter** : l'étape de pré-authentification (PA-DATA) empêche un attaquant de demander un TGT pour n'importe quel utilisateur. Sans pré-authentification, il suffirait de connaître le nom d'un utilisateur pour obtenir un blob chiffré avec sa clé et tenter un brute-force hors ligne. Si la pré-authentification est désactivée sur un compte, ce compte est vulnérable à l'attaque **AS-REP Roasting**.
 
-**Etape 2 -- Le KDC delivre le TGT**
+**Étape 2 -- Le KDC délivre le TGT**
 
-L'Authentication Server dechiffre le timestamp avec la cle de l'utilisateur (stockee dans AD). Si le dechiffrement reussit et que le timestamp est recent, l'utilisateur est authentifie.
+L'Authentication Server déchiffre le timestamp avec la clé de l'utilisateur (stockée dans AD). Si le déchiffrement réussit et que le timestamp est récent, l'utilisateur est authentifié.
 
-Le KDC genere une **TGS Session Key** aleatoire et retourne deux elements :
+Le KDC génère une **TGS Session Key** aléatoire et retourne deux éléments :
 
-| Element | Chiffre avec | Contenu |
+| Élément | Chiffré avec | Contenu |
 |---|---|---|
-| **TGT** (Ticket Granting Ticket) | Cle secrete du compte `krbtgt` | TGS Session Key + identite de l'utilisateur + timestamp + duree de validite |
-| **Session Message** | Cle de l'utilisateur | TGS Session Key + timestamp + duree de validite du TGT |
+| **TGT** (Ticket Granting Ticket) | Clé secrète du compte `krbtgt` | TGS Session Key + identité de l'utilisateur + timestamp + durée de validité |
+| **Session Message** | Clé de l'utilisateur | TGS Session Key + timestamp + durée de validité du TGT |
 
 ```
 Client <──── AS-REP ──── Authentication Server (KDC)
-        (TGT chiffre avec cle krbtgt + Session Message chiffre avec cle client)
+        (TGT chiffré avec clé krbtgt + Session Message chiffré avec clé client)
 ```
 
-**Etape 3 -- Le client recupere la TGS Session Key**
+**Étape 3 -- Le client récupère la TGS Session Key**
 
-Le client dechiffre le **Session Message** avec sa propre cle (derivee de son mot de passe) et recupere la **TGS Session Key**. Cette cle sera utilisee pour communiquer avec le TGS.
+Le client déchiffre le **Session Message** avec sa propre clé (dérivée de son mot de passe) et récupère la **TGS Session Key**. Cette clé sera utilisée pour communiquer avec le TGS.
 
-Le client **ne peut pas dechiffrer le TGT** car il est chiffre avec la cle du compte `krbtgt` que seul le KDC connait. Le TGT est stocke en memoire et presente tel quel au TGS lors des requetes suivantes.
+Le client **ne peut pas déchiffrer le TGT** car il est chiffré avec la clé du compte `krbtgt` que seul le KDC connaît. Le TGT est stocké en mémoire et présenté tel quel au TGS lors des requêtes suivantes.
 
 #### Phase 2 : TGS Exchange (Client <-> Ticket Granting Server)
 
-**Etape 4 -- Le client demande un Service Ticket**
+**Étape 4 -- Le client demande un Service Ticket**
 
-Le client souhaite acceder a un service specifique (ex. un partage de fichiers). Il envoie un message **TGS-REQ** au Ticket Granting Server contenant :
+Le client souhaite accéder à un service spécifique (ex. un partage de fichiers). Il envoie un message **TGS-REQ** au Ticket Granting Server contenant :
 
-| Element | Chiffrement | Contenu |
+| Élément | Chiffrement | Contenu |
 |---|---|---|
-| **TGT** | Inchange (chiffre avec cle krbtgt) | Presente tel que recu a l'etape 2 |
-| **SPN du service cible** | Non chiffre | Identifie le service demande |
-| **User Authenticator** | Chiffre avec la TGS Session Key | Username + timestamp |
+| **TGT** | Inchangé (chiffré avec clé krbtgt) | Présenté tel que reçu à l'étape 2 |
+| **SPN du service cible** | Non chiffré | Identifie le service demandé |
+| **User Authenticator** | Chiffré avec la TGS Session Key | Username + timestamp |
 
 ```
 Client ──── TGS-REQ ────> Ticket Granting Server (KDC)
        (TGT + SPN + User Authenticator)
 ```
 
-**Etape 5 -- Le TGS verifie l'identite du client**
+**Étape 5 -- Le TGS vérifie l'identité du client**
 
-Le TGS effectue les operations suivantes :
+Le TGS effectue les opérations suivantes :
 
-1. Il **dechiffre le TGT** avec la cle du compte `krbtgt` et recupere la **TGS Session Key** ainsi que l'identite de l'utilisateur
-2. Il utilise la **TGS Session Key** pour **dechiffrer le User Authenticator**
-3. Il compare l'identite contenue dans le User Authenticator avec celle du TGT
-4. Il verifie que le timestamp est recent (protection contre le replay)
+1. Il **déchiffre le TGT** avec la clé du compte `krbtgt` et récupère la **TGS Session Key** ainsi que l'identité de l'utilisateur
+2. Il utilise la **TGS Session Key** pour **déchiffrer le User Authenticator**
+3. Il compare l'identité contenue dans le User Authenticator avec celle du TGT
+4. Il vérifie que le timestamp est récent (protection contre le replay)
 
-Si toutes les verifications sont positives, l'utilisateur est authentifie aupres du TGS.
+Si toutes les vérifications sont positives, l'utilisateur est authentifié auprès du TGS.
 
-**Etape 6 -- Le TGS delivre le Service Ticket**
+**Étape 6 -- Le TGS délivre le Service Ticket**
 
-Le TGS genere une **Service Session Key** aleatoire et retourne deux elements :
+Le TGS génère une **Service Session Key** aléatoire et retourne deux éléments :
 
-| Element | Chiffre avec | Contenu |
+| Élément | Chiffré avec | Contenu |
 |---|---|---|
-| **Ticket Service Message** | TGS Session Key | Service Session Key + SPN + timestamp + duree de validite |
-| **Service Ticket** | Cle secrete du service (Secret Key du compte de service) | Service Session Key + identite de l'utilisateur + PAC (Privilege Attribute Certificate) |
+| **Ticket Service Message** | TGS Session Key | Service Session Key + SPN + timestamp + durée de validité |
+| **Service Ticket** | Clé secrète du service (Secret Key du compte de service) | Service Session Key + identité de l'utilisateur + PAC (Privilege Attribute Certificate) |
 
 ```
 Client <──── TGS-REP ──── Ticket Granting Server (KDC)
         (Ticket Service Message + Service Ticket)
 ```
 
-**Etape 7 -- Le client recupere la Service Session Key**
+**Étape 7 -- Le client récupère la Service Session Key**
 
-Le client dechiffre le **Ticket Service Message** avec la **TGS Session Key** et recupere la **Service Session Key**. Le client **ne peut pas dechiffrer le Service Ticket** car il est chiffre avec la cle du service.
+Le client déchiffre le **Ticket Service Message** avec la **TGS Session Key** et récupère la **Service Session Key**. Le client **ne peut pas déchiffrer le Service Ticket** car il est chiffré avec la clé du service.
 
 #### Phase 3 : AP Exchange (Client <-> Service)
 
-**Etape 8 -- Le client s'authentifie aupres du service**
+**Étape 8 -- Le client s'authentifie auprès du service**
 
 Le client envoie un message **AP-REQ** au service cible contenant :
 
-| Element | Chiffrement | Contenu |
+| Élément | Chiffrement | Contenu |
 |---|---|---|
-| **Service Ticket** | Inchange (chiffre avec cle du service) | Presente tel que recu a l'etape 6 |
-| **User Authenticator** | Chiffre avec la Service Session Key | Username + timestamp |
+| **Service Ticket** | Inchangé (chiffré avec clé du service) | Présenté tel que reçu à l'étape 6 |
+| **User Authenticator** | Chiffré avec la Service Session Key | Username + timestamp |
 
 ```
 Client ──── AP-REQ ────> Service
        (Service Ticket + User Authenticator)
 ```
 
-**Etape 9 -- Le service authentifie le client**
+**Étape 9 -- Le service authentifie le client**
 
-Le service effectue les operations suivantes :
+Le service effectue les opérations suivantes :
 
-1. Il **dechiffre le Service Ticket** avec sa propre cle secrete et recupere la **Service Session Key** et l'identite de l'utilisateur
-2. Il utilise la **Service Session Key** pour **dechiffrer le User Authenticator**
-3. Il compare les identites et verifie le timestamp
-4. Il consulte le **PAC** (Privilege Attribute Certificate) pour connaitre les groupes de l'utilisateur et appliquer les autorisations
+1. Il **déchiffre le Service Ticket** avec sa propre clé secrète et récupère la **Service Session Key** et l'identité de l'utilisateur
+2. Il utilise la **Service Session Key** pour **déchiffrer le User Authenticator**
+3. Il compare les identités et vérifie le timestamp
+4. Il consulte le **PAC** (Privilege Attribute Certificate) pour connaître les groupes de l'utilisateur et appliquer les autorisations
 
-Le client est desormais **authentifie aupres du service**.
+Le client est désormais **authentifié auprès du service**.
 
-**Etape 10 -- Authentification mutuelle**
+**Étape 10 -- Authentification mutuelle**
 
-Le service renvoie un **Service Authenticator** au client, chiffre avec la **Service Session Key**. Ce message contient le timestamp du User Authenticator recu a l'etape 8.
+Le service renvoie un **Service Authenticator** au client, chiffré avec la **Service Session Key**. Ce message contient le timestamp du User Authenticator reçu à l'étape 8.
 
 ```
 Client <──── AP-REP ──── Service
-        (Service Authenticator chiffre avec Service Session Key)
+        (Service Authenticator chiffré avec Service Session Key)
 ```
 
-Le client dechiffre le Service Authenticator et verifie le timestamp. Si la verification reussit, le client a la preuve que le service est bien celui qu'il pretend etre (car seul le vrai service possede la cle pour dechiffrer le Service Ticket et recuperer la Service Session Key).
+Le client déchiffre le Service Authenticator et vérifie le timestamp. Si la vérification réussit, le client a la preuve que le service est bien celui qu'il prétend être (car seul le vrai service possède la clé pour déchiffrer le Service Ticket et récupérer la Service Session Key).
 
-L'**authentification mutuelle est complete** : le client et le service se sont mutuellement authentifies.
+L'**authentification mutuelle est complète** : le client et le service se sont mutuellement authentifiés.
 
-### 3.6 Resume du flux Kerberos
+### 3.6 Résumé du flux Kerberos
 
 ```
 Phase 1 : AS Exchange
   [1] Client ──── AS-REQ (username + encrypted timestamp) ────> KDC (AS)
   [2] Client <──── AS-REP (TGT + Session Message) ──────────── KDC (AS)
-  [3] Client dechiffre Session Message -> TGS Session Key
+  [3] Client déchiffre Session Message -> TGS Session Key
 
 Phase 2 : TGS Exchange
   [4] Client ──── TGS-REQ (TGT + SPN + Authenticator) ────> KDC (TGS)
-  [5] TGS dechiffre TGT, verifie Authenticator
+  [5] TGS déchiffre TGT, vérifie Authenticator
   [6] Client <──── TGS-REP (Service Ticket + Ticket Service Message) ──── KDC (TGS)
-  [7] Client dechiffre Ticket Service Message -> Service Session Key
+  [7] Client déchiffre Ticket Service Message -> Service Session Key
 
 Phase 3 : AP Exchange
   [8] Client ──── AP-REQ (Service Ticket + Authenticator) ────> Service
-  [9] Service dechiffre Service Ticket, verifie Authenticator -> Client authentifie
+  [9] Service déchiffre Service Ticket, vérifie Authenticator -> Client authentifié
   [10] Client <──── AP-REP (Service Authenticator) ──── Service -> Authentification mutuelle
 ```
 
 ### 3.7 Comparaison NTLM vs Kerberos
 
-| Critere | NTLM | Kerberos |
+| Critère | NTLM | Kerberos |
 |---|---|---|
-| **Type** | Challenge-response | Tickets + cles symetriques |
+| **Type** | Challenge-response | Tickets + clés symétriques |
 | **Authentification mutuelle** | Non | Oui |
-| **Delegation** | Non native | Supportee (constrained, unconstrained, RBCD) |
-| **Resistance au relay** | Faible (necessite des protections supplementaires) | Forte (tickets lies au service cible via SPN) |
-| **Performance** | Contact du DC a chaque authentification | TGT reutilisable pendant sa duree de validite |
-| **Prerequis** | Aucun (fonctionne avec IP) | DNS fonctionnel + synchronisation horaire (<5 min) |
-| **Protocole par defaut** | Non (fallback) | Oui (depuis Windows 2000) |
+| **Délégation** | Non native | Supportée (constrained, unconstrained, RBCD) |
+| **Résistance au relay** | Faible (nécessite des protections supplémentaires) | Forte (tickets liés au service cible via SPN) |
+| **Performance** | Contact du DC à chaque authentification | TGT réutilisable pendant sa durée de validité |
+| **Prérequis** | Aucun (fonctionne avec IP) | DNS fonctionnel + synchronisation horaire (<5 min) |
+| **Protocole par défaut** | Non (fallback) | Oui (depuis Windows 2000) |
 
-> **Bonne pratique** : surveiller les evenements NTLM dans les journaux d'evenements (Event ID 4776 pour la validation NTLM) pour identifier les systemes et applications qui utilisent encore NTLM, afin de planifier leur migration vers Kerberos.
+> **Bonne pratique** : surveiller les événements NTLM dans les journaux d'événements (Event ID 4776 pour la validation NTLM) pour identifier les systèmes et applications qui utilisent encore NTLM, afin de planifier leur migration vers Kerberos.
 
 ---
 

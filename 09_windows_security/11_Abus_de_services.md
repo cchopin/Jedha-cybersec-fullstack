@@ -1,8 +1,8 @@
 # Abus de services
 
 **Type** : Exercice pratique
-**Duree estimee** : 2h
+**Durée estimée** : 2h
 
 ---
 
-> Cet exercice sera realise en classe. Le contenu sera complete ulterieurement.
+> Cet exercice sera réalisé en classe. Le contenu sera complété ultérieurement.

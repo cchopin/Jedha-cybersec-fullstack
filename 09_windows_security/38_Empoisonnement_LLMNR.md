@@ -1,8 +1,8 @@
 # Empoisonnement LLMNR
 
 **Type** : Exercice pratique
-**Duree estimee** : 50 minutes
+**Durée estimée** : 50 minutes
 
 ---
 
-> Cet exercice sera realise en classe. Le contenu sera complete ulterieurement.
+> Cet exercice sera réalisé en classe. Le contenu sera complété ultérieurement.
