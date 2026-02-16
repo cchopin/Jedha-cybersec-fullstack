@@ -35,7 +35,7 @@
            │                   │                   │
     ┌──────┴──────┐     ┌──────┴──────┐     ┌──────┴──────┐
     │   ACCESS    │     │   ACCESS    │     │   ACCESS    │
-    │  Switches   │     │  Switches   │     │  (Leaf-Spine)│
+    │  Switches   │     │  Switches   │     │ (Leaf-Spine)│
     └─────────────┘     └─────────────┘     └─────────────┘
 ```
 
@@ -504,8 +504,8 @@ Device Connect → 802.1X Auth → Posture Check
          ┌──────────┴──────────┐   ┌────────┴────────┐   ┌───────────┴──────────┐
          │                     │   │                 │   │                      │
     ┌────┴────┐           ┌────┴───┴───┐        ┌────┴───┴───┐            ┌─────┴─────┐
-    │  DISTRIB │           │   DISTRIB  │        │   DISTRIB  │            │  DISTRIB  │
-    │  Campus  │           │   R&D/Fin  │        │    DC Prod │            │   DC DR   │
+    │ DISTRIB │           │   DISTRIB  │        │   DISTRIB  │            │  DISTRIB  │
+    │ Campus  │           │   R&D/Fin  │        │    DC Prod │            │   DC DR   │
     └────┬────┘           └────┬───────┘        └────┬───────┘            └─────┬─────┘
          │                     │                     │                          │
     ┌────┴────┐           ┌────┴───────┐        ┌────┴───────┐            ┌─────┴─────┐
