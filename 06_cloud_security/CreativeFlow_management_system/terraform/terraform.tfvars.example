@@ -1,0 +1,21 @@
+# =============================================================================
+# CreativeFlow - Exemple de configuration
+# =============================================================================
+# Copiez ce fichier en terraform.tfvars et modifiez les valeurs :
+#   cp terraform.tfvars.example terraform.tfvars
+# =============================================================================
+
+# Region AWS (Paris par defaut)
+aws_region = "eu-west-3"
+
+# Nom de votre key pair SSH (OBLIGATOIRE - doit exister dans AWS)
+key_name = "creativeflow-key"
+
+# Type d'instance (t2.micro = gratuit avec Free Tier)
+instance_type = "t2.micro"
+
+# Role IAM : "Developer" (acces complet) ou "Contributor" (acces restreint)
+iam_role = "Developer"
+
+# Votre IP publique pour SSH (laisser vide = detection automatique)
+# admin_ip = "1.2.3.4"

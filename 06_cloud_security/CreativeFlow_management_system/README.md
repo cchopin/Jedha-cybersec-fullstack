@@ -6,7 +6,8 @@ Système de gestion documentaire sécurisé pour une agence marketing utilisant 
 
 | Document | Description |
 |----------|-------------|
-| [GUIDE_DEPLOIEMENT.md](GUIDE_DEPLOIEMENT.md) | Installation, configuration et déploiement |
+| [GUIDE_DEPLOIEMENT.md](GUIDE_DEPLOIEMENT.md) | Installation, configuration et déploiement (scripts shell) |
+| [terraform/TUTO_TERRAFORM.md](terraform/TUTO_TERRAFORM.md) | Tutoriel de déploiement avec Terraform (Windows + Mac) |
 | [SECURITY_DOCUMENTATION.md](SECURITY_DOCUMENTATION.md) | Architecture et mesures de sécurité |
 | [aws-config/iam-policies/EXPLICATION_POLICIES.md](aws-config/iam-policies/EXPLICATION_POLICIES.md) | Explication des politiques IAM |
 
@@ -18,16 +19,22 @@ CreativeFlow_management_system/
 │   ├── app.py
 │   └── templates/index.html
 ├── aws-config/iam-policies/      # Politiques IAM
-├── scripts/                      # Scripts de déploiement
+├── scripts/                      # Scripts de déploiement (Bash)
 │   ├── setup-s3.sh
 │   ├── setup-iam.sh
 │   ├── setup-security-group.sh
 │   ├── deploy-ec2.sh
 │   └── cleanup.sh
+├── terraform/                    # Déploiement Terraform (Windows + Mac)
+│   ├── TUTO_TERRAFORM.md
+│   ├── *.tf
+│   └── user-data.sh
 └── *.md                          # Documentation
 ```
 
 ## Déploiement
+
+### Option 1 : Scripts shell (Mac/Linux)
 
 ```bash
 export AWS_REGION=eu-west-3
@@ -42,6 +49,17 @@ chmod +x scripts/*.sh
 
 Instructions complètes : [GUIDE_DEPLOIEMENT.md](GUIDE_DEPLOIEMENT.md)
 
+### Option 2 : Terraform (Windows + Mac)
+
+```bash
+cd terraform/
+cp terraform.tfvars.example terraform.tfvars
+terraform init
+terraform apply
+```
+
+Instructions complètes : [terraform/TUTO_TERRAFORM.md](terraform/TUTO_TERRAFORM.md)
+
 ## Identifiants de Connexion
 
 | Utilisateur | Mot de passe | Accès |
@@ -51,6 +69,13 @@ Instructions complètes : [GUIDE_DEPLOIEMENT.md](GUIDE_DEPLOIEMENT.md)
 
 ## Nettoyage
 
+**Scripts shell :**
 ```bash
 ./scripts/cleanup.sh
+```
+
+**Terraform :**
+```bash
+cd terraform/
+terraform destroy
 ```

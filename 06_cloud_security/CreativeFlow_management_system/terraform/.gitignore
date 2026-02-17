@@ -1,0 +1,13 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfplan
+.terraform.lock.hcl
+
+# Variables locales (contient potentiellement des infos sensibles)
+terraform.tfvars
+
+# Crash logs
+crash.log
+crash.*.log
