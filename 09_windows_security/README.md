@@ -30,7 +30,6 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Blue | Easy | [hackthebox.com/machines/blue](https://www.hackthebox.com/machines/blue) | Exploitation EternalBlue (MS17-010), énumération SMB et administration Windows de base |
 | Legacy | Easy | [hackthebox.com/machines/legacy](https://www.hackthebox.com/machines/legacy) | Exploitation SMB (MS08-067), énumération de services Windows fondamentaux |
 | Jerry | Easy | [hackthebox.com/machines/jerry](https://www.hackthebox.com/machines/jerry) | Credentials par défaut sur Tomcat, énumération de services et modèle de permissions |
-| Devel | Easy | [hackthebox.com/machines/devel](https://www.hackthebox.com/machines/devel) | Configuration par défaut FTP/IIS, élévation de privilèges Windows basique |
 
 ---
 
@@ -51,7 +50,6 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Return | Easy | [hackthebox.com/machines/return](https://www.hackthebox.com/machines/return) | Abus du groupe Server Operators pour modifier les binaires de services et escalader les privilèges |
 | Optimum | Easy | [hackthebox.com/machines/optimum](https://www.hackthebox.com/machines/optimum) | Exploitation de services vulnérables et escalade kernel (MS16-032) |
 | Bastard | Medium | [hackthebox.com/machines/bastard](https://www.hackthebox.com/machines/bastard) | Abus de SeImpersonatePrivilege et JuicyPotato, frontière kernel/user mode |
-| Resolute | Medium | [hackthebox.com/machines/resolute](https://www.hackthebox.com/machines/resolute) | Abus du groupe DnsAdmins pour charger une DLL malveillante dans le service DNS |
 
 ---
 
@@ -68,9 +66,9 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 **Boxes HTB associées :**
 | Box | Difficulté | Lien | Pertinence |
 |-----|-----------|------|------------|
-| Blackfield | Hard | [hackthebox.com/machines/blackfield](https://www.hackthebox.com/machines/blackfield) | Analyse forensique d'un dump mémoire LSASS, extraction de credentials |
+| Devel | Easy | [hackthebox.com/machines/devel](https://www.hackthebox.com/machines/devel) | Escalade de privilèges via exploit kernel (MS11-046), exploitation mémoire bas niveau |
 | Arctic | Easy | [hackthebox.com/machines/arctic](https://www.hackthebox.com/machines/arctic) | Escalade via exploit kernel (MS10-059), vulnérabilités de pilotes kernel |
-| Bastard | Medium | [hackthebox.com/machines/bastard](https://www.hackthebox.com/machines/bastard) | Token impersonation et exploits kernel, frontière kernel/user mode |
+| Blackfield | Hard | [hackthebox.com/machines/blackfield](https://www.hackthebox.com/machines/blackfield) | Analyse forensique d'un dump mémoire LSASS, extraction de credentials |
 
 ---
 
@@ -90,10 +88,9 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 **Boxes HTB associées :**
 | Box | Difficulté | Lien | Pertinence |
 |-----|-----------|------|------------|
-| Blackfield | Hard | [hackthebox.com/machines/blackfield](https://www.hackthebox.com/machines/blackfield) | Dump LSASS, extraction de hashes NTLM, ASREPRoasting et dump NTDS.dit |
-| Sauna | Easy | [hackthebox.com/machines/sauna](https://www.hackthebox.com/machines/sauna) | AS-REP Roasting, DCSync, extraction de hashes NTLM depuis LSASS |
-| Cascade | Medium | [hackthebox.com/machines/cascade](https://www.hackthebox.com/machines/cascade) | Extraction de credentials LDAP, déchiffrement de registre TightVNC, AD Recycle Bin |
 | Granny | Easy | [hackthebox.com/machines/granny](https://www.hackthebox.com/machines/granny) | Exploitation WebDAV avec token impersonation, abus de jetons d'accès Windows |
+| Jeeves | Medium | [hackthebox.com/machines/jeeves](https://www.hackthebox.com/machines/jeeves) | Extraction de credentials Jenkins, KeePass et alternate data streams, pass the hash |
+| Cascade | Medium | [hackthebox.com/machines/cascade](https://www.hackthebox.com/machines/cascade) | Extraction de credentials LDAP, déchiffrement de registre TightVNC, récupération de mots de passe |
 
 ---
 
@@ -111,7 +108,6 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Box | Difficulté | Lien | Pertinence |
 |-----|-----------|------|------------|
 | Forest | Easy | [hackthebox.com/machines/forest](https://www.hackthebox.com/machines/forest) | Énumération LDAP anonyme, découverte utilisateurs/groupes, AS-REP Roasting et abus ACL |
-| Active | Easy | [hackthebox.com/machines/active](https://www.hackthebox.com/machines/active) | Exposition de mots de passe GPP (Group Policy Preferences) et Kerberoasting |
 | Support | Easy | [hackthebox.com/machines/support](https://www.hackthebox.com/machines/support) | Énumération LDAP, analyse des groupes, Resource Based Constrained Delegation |
 | Timelapse | Easy | [hackthebox.com/machines/timelapse](https://www.hackthebox.com/machines/timelapse) | Authentification par certificat, abus LAPS, énumération SMB et groupes AD |
 
@@ -152,7 +148,6 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Box | Difficulté | Lien | Pertinence |
 |-----|-----------|------|------------|
 | Active | Easy | [hackthebox.com/machines/active](https://www.hackthebox.com/machines/active) | Kerberoasting classique : exposition GPP puis Kerberoasting du SPN Administrator |
-| Forest | Easy | [hackthebox.com/machines/forest](https://www.hackthebox.com/machines/forest) | AS-REP Roasting, abus ACL guidé par BloodHound (WriteDACL) et attaque DCSync |
 | Sauna | Easy | [hackthebox.com/machines/sauna](https://www.hackthebox.com/machines/sauna) | AS-REP Roasting, credential dumping, DCSync et découverte AutoLogon |
 | Sizzle | Insane | [hackthebox.com/machines/sizzle](https://www.hackthebox.com/machines/sizzle) | Vol de hash NTLM via SCF sur partage SMB, abus de certificats, Kerberoasting et DCSync |
 
@@ -171,6 +166,6 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 **Boxes HTB associées :**
 | Box | Difficulté | Lien | Pertinence |
 |-----|-----------|------|------------|
-| Timelapse | Easy | [hackthebox.com/machines/timelapse](https://www.hackthebox.com/machines/timelapse) | LAPS pour la sécurité d'infrastructure, authentification par certificat, gestion de backups |
-| Monteverde | Medium | [hackthebox.com/machines/monteverde](https://www.hackthebox.com/machines/monteverde) | Intégration Azure AD Connect, gestion de comptes de service et bonnes pratiques de stockage de credentials |
-| Cascade | Medium | [hackthebox.com/machines/cascade](https://www.hackthebox.com/machines/cascade) | AD Recycle Bin, récupération d'objets supprimés, gestion multi-couches de credentials |
+| Mantis | Hard | [hackthebox.com/machines/mantis](https://www.hackthebox.com/machines/mantis) | Exploitation complexe d'un Domain Controller, connaissance approfondie de l'infrastructure Windows Server |
+| Search | Hard | [hackthebox.com/machines/search](https://www.hackthebox.com/machines/search) | Environnement AD complexe multi-couches, Kerberoasting, credential spraying et abus d'ACL |
+| Reel | Hard | [hackthebox.com/machines/reel](https://www.hackthebox.com/machines/reel) | Attaque client-side pour contourner le périmètre, escalade de privilèges AD en environnement sécurisé |
