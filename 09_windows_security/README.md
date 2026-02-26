@@ -31,6 +31,12 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Legacy | Easy | [hackthebox.com/machines/legacy](https://www.hackthebox.com/machines/legacy) | Exploitation SMB (MS08-067), énumération de services Windows fondamentaux |
 | Jerry | Easy | [hackthebox.com/machines/jerry](https://www.hackthebox.com/machines/jerry) | Credentials par défaut sur Tomcat, énumération de services et modèle de permissions |
 
+**Sherlocks HTB associés :**
+| Sherlock | Difficulté | Lien | Pertinence |
+|----------|-----------|------|------------|
+| BFT | Very Easy | [app.hackthebox.com/sherlocks/BFT](https://app.hackthebox.com/sherlocks/BFT) | Analyse forensique de la Master File Table (MFT) NTFS, détection d'activité malveillante |
+| HyperFileTable | Easy | [app.hackthebox.com/sherlocks/HyperFileTable](https://app.hackthebox.com/sherlocks/HyperFileTable) | Analyse MFT, Zone Identifiers, vérification de hash et audit de fichiers téléchargés |
+
 ---
 
 ### Chapitre 2 - Windows Kernel Executive
@@ -51,6 +57,12 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Optimum | Easy | [hackthebox.com/machines/optimum](https://www.hackthebox.com/machines/optimum) | Exploitation de services vulnérables et escalade kernel (MS16-032) |
 | Bastard | Medium | [hackthebox.com/machines/bastard](https://www.hackthebox.com/machines/bastard) | Abus de SeImpersonatePrivilege et JuicyPotato, frontière kernel/user mode |
 
+**Sherlocks HTB associés :**
+| Sherlock | Difficulté | Lien | Pertinence |
+|----------|-----------|------|------------|
+| Unit42 | Very Easy | [app.hackthebox.com/sherlocks/Unit42](https://app.hackthebox.com/sherlocks/Unit42) | Analyse de logs Sysmon, traçage de processus malveillants et persistance via services |
+| Logjammer | Easy | [app.hackthebox.com/sherlocks/Logjammer](https://app.hackthebox.com/sherlocks/Logjammer) | Analyse de 5 sources d'event logs Windows (Security, System, Defender, Firewall, PowerShell) |
+
 ---
 
 ### Chapitre 3 - Pilotes et gestion mémoire
@@ -69,6 +81,12 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Devel | Easy | [hackthebox.com/machines/devel](https://www.hackthebox.com/machines/devel) | Escalade de privilèges via exploit kernel (MS11-046), exploitation mémoire bas niveau |
 | Arctic | Easy | [hackthebox.com/machines/arctic](https://www.hackthebox.com/machines/arctic) | Escalade via exploit kernel (MS10-059), vulnérabilités de pilotes kernel |
 | Access | Easy | [hackthebox.com/machines/access](https://www.hackthebox.com/machines/access) | Credentials sauvegardées, partages FTP non sécurisés, extraction de fichiers sensibles |
+
+**Sherlocks / Challenges HTB associés :**
+| Nom | Type | Difficulté | Lien | Pertinence |
+|-----|------|-----------|------|------------|
+| Recollection | Sherlock | Easy | [app.hackthebox.com/sherlocks/Recollection](https://app.hackthebox.com/sherlocks/Recollection) | Forensique mémoire avec Volatility (clipboard, cmdscan, filescan, pstree) |
+| Reminiscent | Challenge | Medium | [app.hackthebox.com/challenges/Reminiscent](https://app.hackthebox.com/challenges/Reminiscent) | Analyse de dump mémoire Windows, extraction de payloads PowerShell encodés en Base64 |
 
 ---
 
@@ -92,6 +110,12 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Jeeves | Medium | [hackthebox.com/machines/jeeves](https://www.hackthebox.com/machines/jeeves) | Extraction de credentials Jenkins, KeePass et alternate data streams, pass the hash |
 | Cascade | Medium | [hackthebox.com/machines/cascade](https://www.hackthebox.com/machines/cascade) | Extraction de credentials LDAP, déchiffrement de registre TightVNC, récupération de mots de passe |
 
+**Sherlocks HTB associés :**
+| Sherlock | Difficulté | Lien | Pertinence |
+|----------|-----------|------|------------|
+| Noted | Easy | [app.hackthebox.com/sherlocks/Noted](https://app.hackthebox.com/sherlocks/Noted) | Investigation d'exfiltration de données, forensique de poste de travail et artefacts applicatifs |
+| Tracer | Easy | [app.hackthebox.com/sherlocks/Tracer](https://app.hackthebox.com/sherlocks/Tracer) | Mouvement latéral via PSExec, création de services, utilisation de jetons d'accès et named pipes |
+
 ---
 
 ### Chapitre 5 - Introduction à Active Directory
@@ -111,6 +135,12 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Support | Easy | [hackthebox.com/machines/support](https://www.hackthebox.com/machines/support) | Énumération LDAP, analyse des groupes, Resource Based Constrained Delegation |
 | Timelapse | Easy | [hackthebox.com/machines/timelapse](https://www.hackthebox.com/machines/timelapse) | Authentification par certificat, abus LAPS, énumération SMB et groupes AD |
 
+**Sherlocks HTB associés :**
+| Sherlock | Difficulté | Lien | Pertinence |
+|----------|-----------|------|------------|
+| Bumblebee | Easy | [app.hackthebox.com/sherlocks/Bumblebee](https://app.hackthebox.com/sherlocks/Bumblebee) | Analyse de base de données et logs d'accès, compromission de comptes utilisateurs |
+| Meerkat | Easy | [app.hackthebox.com/sherlocks/Meerkat](https://app.hackthebox.com/sherlocks/Meerkat) | Détection de credential stuffing, alertes Suricata et analyse PCAP en environnement entreprise |
+
 ---
 
 ### Chapitre 6 - Réseau dans Active Directory
@@ -128,6 +158,12 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Intelligence | Medium | [hackthebox.com/machines/intelligence](https://www.hackthebox.com/machines/intelligence) | Manipulation de records DNS dans AD pour intercepter des requêtes authentifiées |
 | Resolute | Medium | [hackthebox.com/machines/resolute](https://www.hackthebox.com/machines/resolute) | Abus du groupe DnsAdmins pour charger une DLL malveillante dans le service DNS |
 | Monteverde | Medium | [hackthebox.com/machines/monteverde](https://www.hackthebox.com/machines/monteverde) | Exploitation Azure AD Connect, énumération SMB et intégration de services réseau AD |
+
+**Sherlocks HTB associés :**
+| Sherlock | Difficulté | Lien | Pertinence |
+|----------|-----------|------|------------|
+| Litter | Easy | [app.hackthebox.com/sherlocks/Litter](https://app.hackthebox.com/sherlocks/Litter) | Détection de tunneling DNS pour exfiltration de données, analyse PCAP réseau |
+| Knock Knock | Medium | [app.hackthebox.com/sherlocks/Knock Knock](https://app.hackthebox.com/sherlocks/Knock%20Knock) | Analyse forensique réseau, port knocking, password spraying FTP et déploiement de ransomware |
 
 ---
 
@@ -151,6 +187,14 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Sauna | Easy | [hackthebox.com/machines/sauna](https://www.hackthebox.com/machines/sauna) | AS-REP Roasting, credential dumping, DCSync et découverte AutoLogon |
 | Sniper | Medium | [hackthebox.com/machines/sniper](https://www.hackthebox.com/machines/sniper) | Capture de hash NetNTLM-v2, RFI, cracking de credentials et escalade de privilèges |
 
+**Sherlocks HTB associés :**
+| Sherlock | Difficulté | Lien | Pertinence |
+|----------|-----------|------|------------|
+| Noxious | Very Easy | [app.hackthebox.com/sherlocks/Noxious](https://app.hackthebox.com/sherlocks/Noxious) | Investigation d'un empoisonnement LLMNR dans un AD, capture et cracking de hash NTLM |
+| Reaper | Very Easy | [app.hackthebox.com/sherlocks/Reaper](https://app.hackthebox.com/sherlocks/Reaper) | Investigation d'une attaque NTLM relay, analyse PCAP et event logs Windows Security |
+| Campfire-1 | Very Easy | [app.hackthebox.com/sherlocks/Campfire-1](https://app.hackthebox.com/sherlocks/Campfire-1) | Détection de Kerberoasting via Event ID 4769, analyse Prefetch et PowerShell logs |
+| Campfire-2 | Very Easy | [app.hackthebox.com/sherlocks/Campfire-2](https://app.hackthebox.com/sherlocks/Campfire-2) | Détection d'AS-REP Roasting, analyse de comptes sans pré-authentification Kerberos |
+
 ---
 
 ### Chapitre 8 - Projet Nova Syndicate
@@ -169,3 +213,9 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 | Netmon | Easy | [hackthebox.com/machines/netmon](https://www.hackthebox.com/machines/netmon) | PRTG Network Monitor, supervision d'infrastructure, exploitation de fichiers de configuration |
 | ServMon | Easy | [hackthebox.com/machines/servmon](https://www.hackthebox.com/machines/servmon) | NVMS-1000 et NSClient++, monitoring de services et escalade via outils de supervision |
 | Worker | Medium | [hackthebox.com/machines/worker](https://www.hackthebox.com/machines/worker) | Azure DevOps, pipelines CI/CD, conception et sécurisation d'environnements de développement |
+
+**Sherlocks HTB associés :**
+| Sherlock | Difficulté | Lien | Pertinence |
+|----------|-----------|------|------------|
+| Brutus | Very Easy | [app.hackthebox.com/sherlocks/Brutus](https://app.hackthebox.com/sherlocks/Brutus) | Brute force SSH sur serveur Confluence, réponse à incident et analyse de logs d'authentification |
+| i-like-to | Easy | [app.hackthebox.com/sherlocks/i-like-to](https://app.hackthebox.com/sherlocks/i-like-to) | Incident response complet sur MOVEit Transfer (CVE-2023-34362), analyse multi-artefacts (mémoire, IIS, MFT, PowerShell) |
