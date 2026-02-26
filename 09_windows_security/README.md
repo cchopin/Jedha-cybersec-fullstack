@@ -68,7 +68,7 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 |-----|-----------|------|------------|
 | Devel | Easy | [hackthebox.com/machines/devel](https://www.hackthebox.com/machines/devel) | Escalade de privilèges via exploit kernel (MS11-046), exploitation mémoire bas niveau |
 | Arctic | Easy | [hackthebox.com/machines/arctic](https://www.hackthebox.com/machines/arctic) | Escalade via exploit kernel (MS10-059), vulnérabilités de pilotes kernel |
-| Blackfield | Hard | [hackthebox.com/machines/blackfield](https://www.hackthebox.com/machines/blackfield) | Analyse forensique d'un dump mémoire LSASS, extraction de credentials |
+| Access | Easy | [hackthebox.com/machines/access](https://www.hackthebox.com/machines/access) | Credentials sauvegardées, partages FTP non sécurisés, extraction de fichiers sensibles |
 
 ---
 
@@ -149,7 +149,7 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 |-----|-----------|------|------------|
 | Active | Easy | [hackthebox.com/machines/active](https://www.hackthebox.com/machines/active) | Kerberoasting classique : exposition GPP puis Kerberoasting du SPN Administrator |
 | Sauna | Easy | [hackthebox.com/machines/sauna](https://www.hackthebox.com/machines/sauna) | AS-REP Roasting, credential dumping, DCSync et découverte AutoLogon |
-| Sizzle | Insane | [hackthebox.com/machines/sizzle](https://www.hackthebox.com/machines/sizzle) | Vol de hash NTLM via SCF sur partage SMB, abus de certificats, Kerberoasting et DCSync |
+| Sniper | Medium | [hackthebox.com/machines/sniper](https://www.hackthebox.com/machines/sniper) | Capture de hash NetNTLM-v2, RFI, cracking de credentials et escalade de privilèges |
 
 ---
 
@@ -166,6 +166,6 @@ Maîtriser la sécurité des environnements Windows, de l'architecture système 
 **Boxes HTB associées :**
 | Box | Difficulté | Lien | Pertinence |
 |-----|-----------|------|------------|
-| Mantis | Hard | [hackthebox.com/machines/mantis](https://www.hackthebox.com/machines/mantis) | Exploitation complexe d'un Domain Controller, connaissance approfondie de l'infrastructure Windows Server |
-| Search | Hard | [hackthebox.com/machines/search](https://www.hackthebox.com/machines/search) | Environnement AD complexe multi-couches, Kerberoasting, credential spraying et abus d'ACL |
-| Reel | Hard | [hackthebox.com/machines/reel](https://www.hackthebox.com/machines/reel) | Attaque client-side pour contourner le périmètre, escalade de privilèges AD en environnement sécurisé |
+| Netmon | Easy | [hackthebox.com/machines/netmon](https://www.hackthebox.com/machines/netmon) | PRTG Network Monitor, supervision d'infrastructure, exploitation de fichiers de configuration |
+| ServMon | Easy | [hackthebox.com/machines/servmon](https://www.hackthebox.com/machines/servmon) | NVMS-1000 et NSClient++, monitoring de services et escalade via outils de supervision |
+| Worker | Medium | [hackthebox.com/machines/worker](https://www.hackthebox.com/machines/worker) | Azure DevOps, pipelines CI/CD, conception et sécurisation d'environnements de développement |
