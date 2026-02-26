@@ -1,6 +1,6 @@
 # 09 - Sécurité Windows
 
-**Durée :** 8 jours
+**Durée :** 8 jours  
 **Modules :** 8 chapitres | 28 cours | 19 exercices/projets
 
 ---
