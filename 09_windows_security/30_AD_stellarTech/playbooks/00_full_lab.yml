@@ -1,0 +1,63 @@
+---
+# ============================================
+# PLAYBOOK : DEPLOIEMENT COMPLET DU LAB
+# ============================================
+# Ce playbook execute toutes les etapes du lab :
+# 1. Creation de la topologie GNS3 (3 Windows Server + pfSense)
+#
+# Usage: ansible-playbook playbooks/00_full_lab.yml
+#
+# Note: La configuration AD est faite manuellement via
+# les scripts PowerShell dans le dossier scripts/
+
+- name: "LAB 30 : Deploiement complet"
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: "Afficher le debut du lab"
+      debug:
+        msg:
+          - "==========================================="
+          - "Lab 30 : AD StellarTech"
+          - "==========================================="
+          - ""
+          - "Ce lab va :"
+          - "  1. Creer la topologie GNS3"
+          - "     - pfSense (firewall/routeur)"
+          - "     - DC1 (Windows Server 2022)"
+          - "     - DC2 (Windows Server 2022)"
+          - "     - SRV1 (Windows Server 2022)"
+          - ""
+          - "Serveur GNS3 : {{ gns3_server }}"
+
+# Etape 1 : Creation de la topologie
+- import_playbook: 01_create_topology.yml
+
+- name: "LAB 30 : Fin du deploiement"
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: "Afficher les instructions"
+      debug:
+        msg:
+          - "==========================================="
+          - "Topologie creee !"
+          - "==========================================="
+          - ""
+          - "Prochaines etapes (via console GNS3) :"
+          - ""
+          - "  1. Configurez pfSense (LAN: 10.0.0.1/24)"
+          - "  2. Sur DC1 : Configurez IP 10.0.0.10/24"
+          - "     puis executez scripts/01_install_ad_dc1.ps1"
+          - "  3. Sur DC1 : scripts/02_create_ou_structure.ps1"
+          - "  4. Sur DC1 : scripts/03_create_users_groups.ps1"
+          - "  5. Sur DC2 : Configurez IP 10.0.0.11/24"
+          - "     puis executez scripts/04_configure_dc2_rodc.ps1"
+          - "  6. Sur SRV1 : Configurez IP 10.0.0.20/24"
+          - "     puis executez scripts/05_configure_file_server.ps1"
+          - "  7. Sur DC1 : scripts/06_configure_gpo.ps1"
+          - "  8. Sur DC1 : scripts/07_verify.ps1"
+          - ""
+          - "Consultez SOLUTION.md si vous etes bloque."

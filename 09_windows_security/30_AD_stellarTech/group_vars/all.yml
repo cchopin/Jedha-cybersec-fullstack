@@ -1,0 +1,192 @@
+# ============================================
+# Configuration pour Lab 30 - AD StellarTech
+# ============================================
+
+# ============================================
+# CONNEXION GNS3 - A MODIFIER SELON VOTRE SETUP
+# ============================================
+
+# IP de votre serveur GNS3
+gns3_server: "http://192.168.155.153:80"
+gns3_host: "192.168.155.153"
+
+# Nom du projet qui sera cree dans GNS3
+project_name: "Lab_30_AD_StellarTech"
+
+# ============================================
+# TEMPLATES GNS3
+# ============================================
+# Noms des templates dans GNS3 (verifier avec: curl http://IP:80/v2/templates)
+
+template_names:
+  windows_server: "Windows Server"
+  pfsense: "Pfsense"
+  nat: "NAT"
+  switch: "Ethernet switch"
+
+# ============================================
+# TOPOLOGIE
+# ============================================
+
+# pfSense (routeur/firewall)
+pfsense:
+  name: "pfSense"
+  x: 0
+  y: -200
+
+# NAT pour acces Internet
+nat:
+  name: "NAT1"
+  x: 0
+  y: -400
+
+# Switch Ethernet (LAN bridge)
+lan_switch:
+  name: "SW-LAN"
+  x: 0
+  y: -50
+
+# Domain Controller 1 (Primary)
+dc1:
+  name: "DC1"
+  x: -300
+  y: 100
+
+# Domain Controller 2 (RODC)
+dc2:
+  name: "DC2"
+  x: 0
+  y: 100
+
+# File Server
+srv1:
+  name: "SRV1"
+  x: 300
+  y: 100
+
+# ============================================
+# CONFIGURATION RESEAU
+# ============================================
+
+network:
+  domain: "stellar.local"
+  netbios: "STELLAR"
+  subnet: "10.0.0.0/24"
+  gateway: "10.0.0.1"
+  dns_primary: "10.0.0.10"
+
+# Adresses IP des serveurs
+servers:
+  pfsense_lan: "10.0.0.1"
+  dc1: "10.0.0.10"
+  dc2: "10.0.0.11"
+  srv1: "10.0.0.20"
+
+# ============================================
+# CONFIGURATION ACTIVE DIRECTORY
+# ============================================
+
+ad_domain:
+  name: "stellar.local"
+  netbios: "STELLAR"
+  forest_mode: "WinThreshold"
+  domain_mode: "WinThreshold"
+  dsrm_password: "P@ssw0rd123!"
+
+# ============================================
+# STRUCTURE OUs
+# ============================================
+
+organizational_units:
+  - name: "Stellar Teams"
+    path: "DC=stellar,DC=local"
+    children:
+      - name: "Engineering"
+        path: "OU=Stellar Teams,DC=stellar,DC=local"
+      - name: "Marketing"
+        path: "OU=Stellar Teams,DC=stellar,DC=local"
+      - name: "HR"
+        path: "OU=Stellar Teams,DC=stellar,DC=local"
+  - name: "Servers"
+    path: "DC=stellar,DC=local"
+  - name: "Groups"
+    path: "DC=stellar,DC=local"
+  - name: "Policies"
+    path: "DC=stellar,DC=local"
+
+# ============================================
+# UTILISATEURS
+# ============================================
+
+users:
+  engineering:
+    - name: "anakin"
+      display_name: "Anakin Skywalker"
+      password: "Welcome1!"
+    - name: "ahsoka"
+      display_name: "Ahsoka Tano"
+      password: "Welcome1!"
+    - name: "obiwan"
+      display_name: "Obi-Wan Kenobi"
+      password: "Welcome1!"
+  marketing:
+    - name: "padme"
+      display_name: "Padme Amidala"
+      password: "Welcome1!"
+    - name: "leia"
+      display_name: "Leia Organa"
+      password: "Welcome1!"
+  hr:
+    - name: "monmothma"
+      display_name: "Mon Mothma"
+      password: "Welcome1!"
+
+# ============================================
+# GROUPES (MODELE AGDLP)
+# ============================================
+
+groups:
+  global:
+    - name: "GG_Engineering_Read"
+      members: ["anakin", "ahsoka", "obiwan"]
+    - name: "GG_Marketing_Read"
+      members: ["padme", "leia"]
+    - name: "GG_HR_Read"
+      members: ["monmothma"]
+  domain_local:
+    - name: "DL_Share_Engineering"
+      members_groups: ["GG_Engineering_Read"]
+    - name: "DL_Share_Marketing"
+      members_groups: ["GG_Marketing_Read"]
+    - name: "DL_Share_HR"
+      members_groups: ["GG_HR_Read"]
+
+# ============================================
+# PARTAGES RESEAU
+# ============================================
+
+shares:
+  - name: "share_engineering"
+    path: "C:\\Shares\\Engineering"
+    dl_group: "DL_Share_Engineering"
+  - name: "share_marketing"
+    path: "C:\\Shares\\Marketing"
+    dl_group: "DL_Share_Marketing"
+  - name: "share_hr"
+    path: "C:\\Shares\\HR"
+    dl_group: "DL_Share_HR"
+
+# ============================================
+# GPOs
+# ============================================
+
+gpos:
+  - name: "WallpaperPolicy"
+    target: "OU=Stellar Teams,DC=stellar,DC=local"
+    description: "Fond d'ecran corporate"
+  - name: "SecurityPolicy"
+    target: "OU=Stellar Teams,DC=stellar,DC=local"
+    description: "Desactive Panneau de config, cmd et registre"
+  - name: "PasswordPolicy"
+    target: "DC=stellar,DC=local"
+    description: "Mots de passe 8+ chars, verrouillage 5 tentatives"
