@@ -1,0 +1,71 @@
+---
+# ============================================
+# PLAYBOOK : NETTOYAGE DU LAB
+# ============================================
+# Ce playbook supprime le projet GNS3 et
+# arrete toutes les VMs associees.
+#
+# ATTENTION : Cette action est irreversible !
+#
+# Usage: ansible-playbook playbooks/99_cleanup.yml
+
+- name: "NETTOYAGE : Suppression du lab"
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: "Confirmation"
+      pause:
+        prompt: |
+          ATTENTION : Le projet '{{ project_name }}' et toutes ses VMs
+          vont etre supprimes.
+
+          Appuyer sur Entree pour continuer ou Ctrl+C pour annuler.
+
+    - name: "Recuperer les projets"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+      register: projects
+
+    - name: "Trouver le projet"
+      set_fact:
+        project: "{{ projects.json | selectattr('name', 'equalto', project_name) | list | first | default(none) }}"
+
+    - name: "Arreter les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/nodes/stop"
+        method: POST
+        status_code: [200, 204]
+      when: project is not none
+
+    - name: "Attendre l'arret"
+      pause:
+        seconds: 5
+      when: project is not none
+
+    - name: "Fermer le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}/close"
+        method: POST
+        status_code: [200, 201, 204]
+      when: project is not none
+
+    - name: "Supprimer le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project.project_id }}"
+        method: DELETE
+        status_code: [200, 204]
+      when: project is not none
+
+    - name: "Supprimer server_info.yml"
+      file:
+        path: "{{ playbook_dir }}/../server_info.yml"
+        state: absent
+
+    - name: "Nettoyage termine"
+      debug:
+        msg:
+          - "==========================================="
+          - "Projet '{{ project_name }}' supprime."
+          - "==========================================="

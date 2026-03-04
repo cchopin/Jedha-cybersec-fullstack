@@ -1,0 +1,7 @@
+# Fichiers generes automatiquement
+server_info.yml
+
+# Fichiers temporaires
+*.retry
+*.pyc
+__pycache__/

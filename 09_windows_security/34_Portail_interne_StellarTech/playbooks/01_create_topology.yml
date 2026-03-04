@@ -1,0 +1,364 @@
+---
+# ============================================
+# PLAYBOOK : CREATION DE LA TOPOLOGIE
+# ============================================
+# Ce playbook cree la meme topologie que le Lab 30 :
+# - 3 VMs Windows Server 2022 (DC1, DC2, SRV1)
+# - 1 pfSense (firewall/routeur)
+# - 1 switch Ethernet (bridge LAN)
+# - 1 NAT (acces Internet)
+#
+# Topologie :
+#   NAT -- pfSense(WAN) -- pfSense(LAN) -- SW-LAN -- DC1
+#                                              |---- DC2
+#                                              |---- SRV1
+#
+# Usage: ansible-playbook playbooks/01_create_topology.yml
+
+- name: "ETAPE 1 : Creation de la topologie GNS3"
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    # ==========================================
+    # PARTIE 1 : Recuperer les templates GNS3
+    # ==========================================
+    - name: "1.1 - Recuperer la liste des templates"
+      uri:
+        url: "{{ gns3_server }}/v2/templates"
+        method: GET
+        return_content: yes
+      register: templates
+
+    - name: "1.2 - Trouver le template Windows Server"
+      set_fact:
+        template_winserver_id: "{{ templates.json | selectattr('name', 'search', template_names.windows_server) | map(attribute='template_id') | first | default('') }}"
+
+    - name: "1.3 - Trouver le template pfSense"
+      set_fact:
+        template_pfsense_id: "{{ templates.json | selectattr('name', 'search', template_names.pfsense) | map(attribute='template_id') | first | default('') }}"
+
+    - name: "1.4 - Trouver le template NAT"
+      set_fact:
+        template_nat_id: "{{ templates.json | selectattr('name', 'equalto', template_names.nat) | map(attribute='template_id') | first | default('') }}"
+
+    - name: "1.5 - Trouver le template Ethernet switch"
+      set_fact:
+        template_switch_id: "{{ templates.json | selectattr('name', 'equalto', template_names.switch) | map(attribute='template_id') | first | default('') }}"
+
+    - name: "1.6 - Verifier que les templates existent"
+      fail:
+        msg: |
+          Templates non trouves !
+          - Template Windows Server: {{ 'OK' if template_winserver_id else 'NON TROUVE' }}
+          - Template pfSense: {{ 'OK' if template_pfsense_id else 'NON TROUVE' }}
+          - Template NAT: {{ 'OK' if template_nat_id else 'NON TROUVE' }}
+          - Template Switch: {{ 'OK' if template_switch_id else 'NON TROUVE' }}
+
+          Verifier que les templates sont bien importes dans GNS3.
+          Commande: curl {{ gns3_server }}/v2/templates
+      when: not template_winserver_id or not template_pfsense_id or not template_nat_id or not template_switch_id
+
+    - name: "Afficher les templates trouves"
+      debug:
+        msg:
+          - "Template Windows Server : {{ template_winserver_id }}"
+          - "Template pfSense : {{ template_pfsense_id }}"
+          - "Template NAT : {{ template_nat_id }}"
+          - "Template Switch : {{ template_switch_id }}"
+
+    # ==========================================
+    # PARTIE 2 : Creer ou recuperer le projet
+    # ==========================================
+    - name: "2.1 - Recuperer les projets existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: GET
+      register: projects
+
+    - name: "2.2 - Chercher si notre projet existe"
+      set_fact:
+        existing_project: "{{ projects.json | selectattr('name', 'equalto', project_name) | list | first | default(none) }}"
+
+    - name: "2.3 - Creer le projet (si nouveau)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ project_name }}"
+        status_code: [200, 201]
+      register: new_project
+      when: existing_project is none
+
+    - name: "2.4 - Definir l'ID du projet"
+      set_fact:
+        project_id: "{{ existing_project.project_id if existing_project else new_project.json.project_id }}"
+
+    - name: "2.5 - Ouvrir le projet"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/open"
+        method: POST
+        status_code: [200, 201]
+
+    - name: "Afficher l'ID du projet"
+      debug:
+        msg: "Projet '{{ project_name }}' - ID: {{ project_id }}"
+
+    # ==========================================
+    # PARTIE 3 : Creer les nodes
+    # ==========================================
+    - name: "3.1 - Recuperer les nodes existants"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+      register: existing_nodes
+
+    - name: "3.2 - Liste des noms existants"
+      set_fact:
+        existing_node_names: "{{ existing_nodes.json | map(attribute='name') | list }}"
+
+    - name: "3.3 - Creer le NAT"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_nat_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ nat.name }}"
+          x: "{{ nat.x }}"
+          y: "{{ nat.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      when: nat.name not in existing_node_names
+
+    - name: "3.4 - Creer pfSense"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_pfsense_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ pfsense.name }}"
+          x: "{{ pfsense.x }}"
+          y: "{{ pfsense.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      when: pfsense.name not in existing_node_names
+
+    - name: "3.5 - Creer le switch LAN"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_switch_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ lan_switch.name }}"
+          x: "{{ lan_switch.x }}"
+          y: "{{ lan_switch.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      when: lan_switch.name not in existing_node_names
+
+    - name: "3.6 - Creer DC1 (Windows Server)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_winserver_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ dc1.name }}"
+          x: "{{ dc1.x }}"
+          y: "{{ dc1.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      when: dc1.name not in existing_node_names
+
+    - name: "3.7 - Creer DC2 (Windows Server)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_winserver_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ dc2.name }}"
+          x: "{{ dc2.x }}"
+          y: "{{ dc2.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      when: dc2.name not in existing_node_names
+
+    - name: "3.8 - Creer SRV1 (Windows Server)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/templates/{{ template_winserver_id }}"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ srv1.name }}"
+          x: "{{ srv1.x }}"
+          y: "{{ srv1.y }}"
+          compute_id: "local"
+        status_code: [200, 201]
+      when: srv1.name not in existing_node_names
+
+    # ==========================================
+    # PARTIE 4 : Creer les liens
+    # ==========================================
+    - name: "4.1 - Recuperer tous les nodes (avec leurs IDs)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+      register: all_nodes
+
+    - name: "4.2 - Creer le dictionnaire des nodes"
+      set_fact:
+        nodes_dict: "{{ nodes_dict | default({}) | combine({item.name: item}) }}"
+      loop: "{{ all_nodes.json }}"
+
+    # NAT -> pfSense (WAN - adapter 0)
+    - name: "4.3 - Connecter NAT a pfSense (WAN)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[nat.name].node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[pfsense.name].node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+      when: nat.name in nodes_dict and pfsense.name in nodes_dict
+
+    # pfSense (LAN - adapter 1) -> Switch port 0
+    - name: "4.4 - Connecter pfSense (LAN) au switch"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 1
+              node_id: "{{ nodes_dict[pfsense.name].node_id }}"
+              port_number: 0
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[lan_switch.name].node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+      when: pfsense.name in nodes_dict and lan_switch.name in nodes_dict
+
+    # Switch port 1 -> DC1
+    - name: "4.5 - Connecter switch a DC1"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[lan_switch.name].node_id }}"
+              port_number: 1
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[dc1.name].node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+      when: lan_switch.name in nodes_dict and dc1.name in nodes_dict
+
+    # Switch port 2 -> DC2
+    - name: "4.6 - Connecter switch a DC2"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[lan_switch.name].node_id }}"
+              port_number: 2
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[dc2.name].node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+      when: lan_switch.name in nodes_dict and dc2.name in nodes_dict
+
+    # Switch port 3 -> SRV1
+    - name: "4.7 - Connecter switch a SRV1"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/links"
+        method: POST
+        body_format: json
+        body:
+          nodes:
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[lan_switch.name].node_id }}"
+              port_number: 3
+            - adapter_number: 0
+              node_id: "{{ nodes_dict[srv1.name].node_id }}"
+              port_number: 0
+        status_code: [200, 201, 409]
+      when: lan_switch.name in nodes_dict and srv1.name in nodes_dict
+
+    # ==========================================
+    # PARTIE 5 : Demarrer les nodes
+    # ==========================================
+    - name: "5.1 - Demarrer tous les nodes"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes/start"
+        method: POST
+        status_code: [200, 204]
+
+    - name: "5.2 - Attendre le demarrage (120 secondes)"
+      pause:
+        seconds: 120
+        prompt: |
+          Les equipements demarrent...
+          - pfSense demarre en ~60 secondes
+          - Les Windows Server peuvent prendre 2-5 minutes
+          - Patience requise pour les VMs QEMU
+
+    # ==========================================
+    # PARTIE 6 : Sauvegarder les infos
+    # ==========================================
+    - name: "6.1 - Recuperer les nodes (avec ports console)"
+      uri:
+        url: "{{ gns3_server }}/v2/projects/{{ project_id }}/nodes"
+        method: GET
+      register: final_nodes
+
+    - name: "6.2 - Mettre a jour le dictionnaire"
+      set_fact:
+        nodes_dict: "{{ nodes_dict | default({}) | combine({item.name: item}) }}"
+      loop: "{{ final_nodes.json }}"
+
+    - name: "6.3 - Sauvegarder server_info.yml"
+      copy:
+        content: |
+          # Fichier genere automatiquement par 01_create_topology.yml
+          # Contient les ports console pour la configuration
+
+          project_id: "{{ project_id }}"
+
+          # Ports console des serveurs (VNC)
+          dc1_console_port: {{ nodes_dict[dc1.name].console }}
+          dc2_console_port: {{ nodes_dict[dc2.name].console }}
+          srv1_console_port: {{ nodes_dict[srv1.name].console }}
+          pfsense_console_port: {{ nodes_dict[pfsense.name].console }}
+
+          # Informations supplementaires
+          gns3_host: "{{ gns3_host }}"
+        dest: "{{ playbook_dir }}/../server_info.yml"
+
+    - name: "Afficher les informations"
+      debug:
+        msg:
+          - "==========================================="
+          - "Topologie creee avec succes !"
+          - "==========================================="
+          - "Projet: {{ project_name }}"
+          - ""
+          - "Ports console (VNC) :"
+          - "  pfSense : {{ nodes_dict[pfsense.name].console }}"
+          - "  DC1     : {{ nodes_dict[dc1.name].console }}"
+          - "  DC2     : {{ nodes_dict[dc2.name].console }}"
+          - "  SRV1    : {{ nodes_dict[srv1.name].console }}"
+          - ""
+          - "Prochaine etape :"
+          - "  1. S'assurer que le Lab 30 est configure (AD, DNS, OUs, utilisateurs)"
+          - "  2. Executer les scripts PowerShell du Lab 34"

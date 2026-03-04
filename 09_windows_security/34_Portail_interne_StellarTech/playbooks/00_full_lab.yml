@@ -1,0 +1,65 @@
+---
+# ============================================
+# PLAYBOOK : DEPLOIEMENT COMPLET DU LAB
+# ============================================
+# Ce playbook execute toutes les etapes du lab :
+# 1. Creation de la topologie GNS3 (3 Windows Server + pfSense)
+#
+# Usage: ansible-playbook playbooks/00_full_lab.yml
+#
+# Note: La configuration est faite manuellement via
+# les scripts PowerShell dans le dossier scripts/
+
+- name: "LAB 34 : Deploiement complet"
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: "Afficher le debut du lab"
+      debug:
+        msg:
+          - "==========================================="
+          - "Lab 34 : Portail Interne StellarTech"
+          - "==========================================="
+          - ""
+          - "Ce lab va :"
+          - "  1. Creer la topologie GNS3"
+          - "     - pfSense (firewall/routeur)"
+          - "     - DC1 (Windows Server 2022)"
+          - "     - DC2 (Windows Server 2022)"
+          - "     - SRV1 (Windows Server 2022)"
+          - ""
+          - "Prerequis : Lab 30 (AD stellar.local) doit etre configure"
+          - ""
+          - "Serveur GNS3 : {{ gns3_server }}"
+
+# Etape 1 : Creation de la topologie
+- import_playbook: 01_create_topology.yml
+
+- name: "LAB 34 : Fin du deploiement"
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: "Afficher les instructions"
+      debug:
+        msg:
+          - "==========================================="
+          - "Topologie creee !"
+          - "==========================================="
+          - ""
+          - "Prerequis : Le Lab 30 doit etre configure !"
+          - "  (AD DS, DNS, OUs, utilisateurs, groupes sur DC1/DC2/SRV1)"
+          - ""
+          - "Prochaines etapes (via console GNS3) :"
+          - ""
+          - "  1. Sur SRV1 : scripts/01_install_iis_website.ps1"
+          - "  2. Sur DC1  : scripts/02_create_vpn_group.ps1"
+          - "  3. Sur DC1  : scripts/03_create_dns_record.ps1"
+          - "  4. Sur SRV1 : scripts/04_configure_vpn_rras.ps1"
+          - "  5. Sur SRV1 : scripts/05_configure_nps.ps1"
+          - "  6. Sur DC1  : scripts/06_configure_gpo_intranet.ps1"
+          - "  7. Sur SRV1 : scripts/07_configure_https_bonus.ps1 (bonus)"
+          - "  8. Sur DC1  : scripts/08_verify.ps1"
+          - ""
+          - "Consulter SOLUTION.md en cas de blocage."

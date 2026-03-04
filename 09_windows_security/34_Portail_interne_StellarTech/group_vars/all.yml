@@ -1,0 +1,163 @@
+# ============================================
+# Configuration pour Lab 34 - Portail Interne StellarTech
+# ============================================
+# Ce lab s'appuie sur l'infrastructure du Lab 30
+# (domaine stellar.local, DC1, DC2, SRV1)
+
+# ============================================
+# CONNEXION GNS3 - A MODIFIER SELON VOTRE SETUP
+# ============================================
+
+# IP du serveur GNS3
+gns3_server: "http://192.168.155.153:80"
+gns3_host: "192.168.155.153"
+
+# Nom du projet qui sera cree dans GNS3
+project_name: "Lab_34_Portail_StellarTech"
+
+# ============================================
+# TEMPLATES GNS3
+# ============================================
+
+template_names:
+  windows_server: "Windows Server"
+  pfsense: "Pfsense"
+  nat: "NAT"
+  switch: "Ethernet switch"
+
+# ============================================
+# TOPOLOGIE
+# ============================================
+
+# pfSense (routeur/firewall)
+pfsense:
+  name: "pfSense"
+  x: 0
+  y: -200
+
+# NAT pour acces Internet
+nat:
+  name: "NAT1"
+  x: 0
+  y: -400
+
+# Switch Ethernet (LAN bridge)
+lan_switch:
+  name: "SW-LAN"
+  x: 0
+  y: -50
+
+# Domain Controller 1 (Primary DC + DNS)
+dc1:
+  name: "DC1"
+  x: -300
+  y: 100
+
+# Domain Controller 2 (RODC)
+dc2:
+  name: "DC2"
+  x: 0
+  y: 100
+
+# Web Server + VPN Server
+srv1:
+  name: "SRV1"
+  x: 300
+  y: 100
+
+# ============================================
+# CONFIGURATION RESEAU
+# ============================================
+
+network:
+  domain: "stellar.local"
+  netbios: "STELLAR"
+  subnet: "10.0.0.0/24"
+  gateway: "10.0.0.1"
+  dns_primary: "10.0.0.10"
+
+# Adresses IP des serveurs
+servers:
+  pfsense_lan: "10.0.0.1"
+  dc1: "10.0.0.10"
+  dc2: "10.0.0.11"
+  srv1: "10.0.0.20"
+
+# ============================================
+# CONFIGURATION ACTIVE DIRECTORY
+# ============================================
+
+ad_domain:
+  name: "stellar.local"
+  netbios: "STELLAR"
+  forest_mode: "WinThreshold"
+  domain_mode: "WinThreshold"
+  dsrm_password: "P@ssw0rd123!"
+
+# ============================================
+# PORTAIL WEB INTERNE
+# ============================================
+
+website:
+  hostname: "internal.stellar.local"
+  ip: "10.0.0.20"  # SRV1
+  iis_path: "C:\\inetpub\\wwwroot"
+  site_name: "StellarTech Intranet"
+
+# ============================================
+# CONFIGURATION VPN
+# ============================================
+
+vpn:
+  protocol: "SSTP"  # Fonctionne sur un seul NIC (port 443)
+  auth_method: "EAP-MSCHAPv2"
+  ip_pool_start: "10.0.0.100"
+  ip_pool_end: "10.0.0.120"
+  dns_server: "10.0.0.10"
+
+# ============================================
+# GROUPE VPN
+# ============================================
+
+vpn_group:
+  name: "VPN_Users"
+  ou: "OU=Groups,DC=stellar,DC=local"
+  # Membres : on ajoute tous les utilisateurs existants du Lab 30
+  members:
+    - "anakin"
+    - "ahsoka"
+    - "obiwan"
+    - "padme"
+    - "leia"
+    - "monmothma"
+
+# ============================================
+# DNS
+# ============================================
+
+dns_records:
+  - name: "internal"
+    type: "A"
+    zone: "stellar.local"
+    ip: "10.0.0.20"
+
+# ============================================
+# GPO INTRANET
+# ============================================
+
+gpos:
+  - name: "IntranetShortcutPolicy"
+    target: "OU=Stellar Teams,DC=stellar,DC=local"
+    description: "Raccourci bureau vers le portail interne + page d'accueil Edge"
+  - name: "IntranetHomepagePolicy"
+    target: "OU=Stellar Teams,DC=stellar,DC=local"
+    description: "Definit http://internal.stellar.local comme page d'accueil"
+
+# ============================================
+# CERTIFICAT HTTPS (BONUS)
+# ============================================
+
+certificate:
+  subject: "CN=internal.stellar.local"
+  friendly_name: "StellarTech Intranet SSL"
+  validity_years: 2
