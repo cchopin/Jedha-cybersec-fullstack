@@ -30,7 +30,7 @@ jobs:
       # - Les secrets hardcodés (API keys, passwords, etc.)
       # - Les problèmes de configuration
       - name: Run Trivy vulnerability scanner in filesystem mode
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         with:
           scan-type: "fs"
           scan-ref: "."
@@ -42,7 +42,7 @@ jobs:
       # SARIF (Static Analysis Results Interchange Format) est le format standardisé
       # qui permet à GitHub de créer des alertes détaillées dans l'onglet Security
       - name: Run Trivy vulnerability scanner for SARIF report
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         with:
           scan-type: "fs"
           scan-ref: "."
@@ -92,7 +92,7 @@ jobs:
       # Ce scan est plus complet que le scan filesystem car il analyse
       # l'image finale avec toutes ses couches et dépendances système
       - name: Run Trivy vulnerability scanner on Docker image
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         with:
           image-ref: "${{ matrix.dockerfile.name }}:${{ github.sha }}"
           format: "sarif"
