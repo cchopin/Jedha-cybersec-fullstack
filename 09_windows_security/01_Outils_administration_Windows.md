@@ -390,7 +390,7 @@ Console graphique qui regroupe en un seul endroit : la gestion des utilisateurs 
 Interface en ligne de commande capable de reproduire (et dépasser) tout ce que font les outils graphiques ci-dessus. Son principal avantage est l'automatisation : tout ce qui se fait manuellement dans une console graphique peut être scripté en PowerShell pour être reproduit sur des dizaines de machines. L'apprentissage demande un investissement initial, mais le gain en efficacité est considérable.
 
 > **À propos de cmd** : l'invite de commandes classique (`cmd.exe`) reste présente sur toutes les versions de Windows, mais elle est aujourd'hui considérée comme un outil legacy. PowerShell la remplace avantageusement dans la quasi-totalité des cas. Il est néanmoins courant de trouver des commandes `cmd` dans la documentation ou les forums en ligne.
-
+>
 > **Où se trouvent ces outils ?** Tous les exécutables mentionnés dans cette section sont situés dans `C:\Windows` ou `C:\Windows\System32\`. C'est un bon exercice de les localiser manuellement pour se familiariser avec l'arborescence.
 
 ---

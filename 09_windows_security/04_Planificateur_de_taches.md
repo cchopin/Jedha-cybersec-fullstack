@@ -1,6 +1,7 @@
 # Planification de tâches sous Windows
 
-**Module** : administration Windows 
+**Module** : administration Windows
+
 ---
 
 ## Objectifs du module

@@ -15,7 +15,7 @@
 - Comprendre le rôle du Contrôle de compte d'utilisateur (UAC)
 
 > **Prérequis** : avoir suivi le module "Prise en main de la sécurité Windows".
-
+>
 > **Périmètre** : ce module traite exclusivement des **utilisateurs locaux**. La gestion des utilisateurs de domaine via Active Directory sera abordée dans un module ultérieur.
 
 ---
@@ -131,7 +131,7 @@ Les comptes `DefaultAccount` et `WDAGUtilityAccount` sont gérés par Windows. N
 L'interface graphique est pratique pour des opérations ponctuelles, mais elle atteint rapidement ses limites en matière d'automatisation et de reproductibilité. La maîtrise des commandes est indispensable pour tout administrateur système ou professionnel de la cybersécurité.
 
 > **Note** : les commandes `net` présentées ci-dessous fonctionnent aussi bien dans PowerShell que dans l'invite de commandes classique (`cmd.exe`). PowerShell dispose en plus de cmdlets dédiées (`Get-LocalUser`, `Get-LocalGroup`, etc.) qui offrent davantage de flexibilité. Les deux approches sont valables.
-
+>
 > **Prérequis** : toutes les commandes de cette section nécessitent une exécution en tant qu'administrateur. Dans PowerShell, effectuer un clic droit > "Exécuter en tant qu'administrateur".
 
 ### 3.1 Gestion des utilisateurs
