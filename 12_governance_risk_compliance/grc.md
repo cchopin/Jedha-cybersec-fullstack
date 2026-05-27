@@ -20,8 +20,9 @@ L'objectif est de comprendre comment gouverner, évaluer le risque et démontrer
 8. Le cadre européen, NIS2 et DORA
 9. L'analyse de risque à la française, EBIOS RM
 10. Les normes ISO 27001 et 27005
-11. Articulation des trois piliers
-12. Glossaire et ressources
+11. Tableau de référence des cadres et réglementations
+12. Articulation des trois piliers
+13. Glossaire et ressources
 
 ---
 
@@ -485,9 +486,63 @@ La norme dédiée à la gestion des risques liés à la sécurité de l'informat
 | NIS2 | Union européenne | Réglementation | Non | Sécuriser les secteurs essentiels |
 | DORA | Union européenne | Réglementation | Non | Résilience du secteur financier |
 
+Le tableau ci-dessus donne une vue rapide. La section suivante détaille chaque texte sur l'ensemble des critères utiles en audit.
+
 ---
 
-## 11. Articulation des trois piliers
+## 11. Tableau de référence des cadres et réglementations
+
+Pour des raisons de lisibilité, les critères sont répartis sur deux tableaux complémentaires, suivis d'une fiche synthétique par texte.
+
+### Identité et champ d'application
+
+| Sigle | Signification | Type | Origine et organisme | Entrée en vigueur |
+|---|---|---|---|---|
+| NIST CSF 2.0 | Cybersecurity Framework du National Institute of Standards and Technology | Cadre de bonnes pratiques, volontaire | États-Unis, NIST | Version 1.0 en 2014, version 2.0 en février 2024 |
+| ISO/IEC 27001 | Norme de management de la sécurité de l'information | Norme internationale, certifiable | International, ISO et IEC | Première version 2005, révision majeure en 2013, dernière en 2022 |
+| ISO/IEC 27005 | Norme de gestion des risques liés à la sécurité de l'information | Norme internationale, non certifiable | International, ISO et IEC | Première version 2008, dernière révision en 2022 |
+| EBIOS RM | Expression des besoins et identification des objectifs de sécurité, Risk Manager | Méthode d'analyse de risque | France, ANSSI et Club EBIOS | Version Risk Manager publiée en 2018 |
+| RGPD | Règlement général sur la protection des données | Règlement européen, obligatoire | Union européenne, contrôle par les autorités nationales (CNIL en France) | Adopté en 2016, applicable depuis le 25 mai 2018 |
+| NIS2 | Network and Information Security, directive 2022/2555 | Directive européenne, obligatoire | Union européenne, transposée par chaque État (ANSSI en France) | Adoptée en décembre 2022, transposition nationale attendue à partir d'octobre 2024 |
+| DORA | Digital Operational Resilience Act, règlement 2022/2554 | Règlement européen, obligatoire | Union européenne, supervision par les autorités financières (ACPR et AMF en France, autorités européennes ESA) | Adopté en décembre 2022, applicable depuis le 17 janvier 2025 |
+| PCI-DSS | Payment Card Industry Data Security Standard | Standard contractuel privé | PCI Security Standards Council (industrie des cartes) | Première version 2004, version 4.0 en 2022 |
+
+### Périmètre, secteurs et sanctions
+
+| Sigle | Champ géographique | Secteurs visés | Sanctions en cas de manquement |
+|---|---|---|---|
+| NIST CSF 2.0 | Mondial dans les faits, surtout États-Unis | Tous secteurs, toute taille | Aucune, cadre volontaire (mais souvent exigé contractuellement) |
+| ISO 27001 | Mondial | Tous secteurs, toute organisation | Aucune sanction légale, mais perte ou refus de la certification |
+| ISO 27005 | Mondial | Tous secteurs | Aucune, norme d'appui méthodologique |
+| EBIOS RM | France et francophonie | Tous secteurs, recommandée pour le secteur public et les OIV en France | Aucune, méthode de référence non obligatoire en soi |
+| RGPD | Toute organisation traitant des données de résidents de l'UE, même hors UE | Tous secteurs | Jusqu'à 20 M€ ou 4% du chiffre d'affaires mondial annuel, le plus élevé étant retenu |
+| NIS2 | Union européenne | Secteurs essentiels et importants (énergie, transport, santé, banque, infrastructures numériques, administration, etc.) | Jusqu'à 10 M€ ou 2% du chiffre d'affaires mondial pour les entités essentielles, responsabilité possible des dirigeants |
+| DORA | Union européenne | Secteur financier et ses prestataires TIC critiques (banques, assurances, sociétés d'investissement, etc.) | Sanctions définies par les autorités de supervision, astreintes possibles, supervision directe des prestataires TIC critiques |
+| PCI-DSS | Mondial | Toute entité stockant, traitant ou transmettant des données de cartes de paiement | Amendes contractuelles des réseaux de cartes, perte du droit de traiter les paiements |
+
+### Fiches synthétiques
+
+**NIST CSF 2.0.** Boîte à outils volontaire pour structurer une démarche de cybersécurité autour de six fonctions. Pas de valeur légale, mais largement utilisé comme langage commun et parfois exigé par les clients ou partenaires.
+
+**ISO 27001.** La seule du tableau qui mène à une certification auditée et reconnue mondialement. Atteste qu'une organisation pilote sa sécurité via un système de management documenté (SMSI). Sa perte se traduit par un risque commercial et réputationnel.
+
+**ISO 27005.** Norme d'accompagnement de l'ISO 27001, dédiée à la méthode d'appréciation du risque. Non certifiable, elle sert de cadre, et des méthodes comme EBIOS RM s'y conforment.
+
+**EBIOS RM.** Méthode française d'analyse de risque par scénarios, gratuite et portée par l'ANSSI. Pertinente pour le secteur public français, les opérateurs d'importance vitale, et compatible ISO 27005.
+
+**RGPD.** Le texte de référence sur les données personnelles. Portée extraterritoriale : il s'applique dès qu'on traite les données de personnes situées dans l'UE, où que soit l'organisation. Sanctions parmi les plus lourdes au monde.
+
+**NIS2.** Directive qui élargit fortement le champ des entités tenues à des obligations de cybersécurité. Étant une directive, elle doit être transposée en droit national, d'où des variations possibles d'un pays à l'autre. Responsabilise directement les dirigeants.
+
+**DORA.** Règlement spécifique à la résilience opérationnelle numérique du secteur financier. Étant un règlement, il s'applique uniformément sans transposition. Particulièrement structurant pour les banques et assurances, et il supervise aussi leurs prestataires informatiques critiques.
+
+**PCI-DSS.** Standard privé imposé par l'industrie des cartes bancaires, et non par une loi. Obligatoire par contrat dès qu'on manipule des données de cartes de paiement. Souvent rencontré aux côtés du RGPD dans la fintech et le e-commerce.
+
+> **Distinction utile : directive contre règlement européen.** Un règlement (RGPD, DORA) s'applique directement et de façon identique dans tous les États membres. Une directive (NIS2) fixe des objectifs que chaque État traduit dans sa propre loi, ce qui autorise des différences nationales de mise en œuvre.
+
+---
+
+## 12. Articulation des trois piliers
 
 C'est ici que la GRC prend tout son sens. Les fonctions du NIST, les méthodes de risque et les réglementations ne sont pas des activités parallèles, mais un cycle qui s'alimente.
 
@@ -523,7 +578,7 @@ Un même élément joue souvent dans les trois registres. Prenons le MFA sur les
 
 ---
 
-## 12. Glossaire et ressources
+## 13. Glossaire et ressources
 
 ### Glossaire des sigles
 
@@ -577,15 +632,18 @@ Un même élément joue souvent dans les trois registres. Prenons le MFA sur les
 
 ### Ressources gratuites
 
-- **NIST CSF 2.0** : le cadre complet et les résumés par fonction, librement consultables sur le site du NIST.
-- **Guide EBIOS Risk Manager (ANSSI)** : le téléchargement de référence pour pratiquer l'analyse de risque.
-- **Catalogue NIST SP 800-53 Rev. 5** : la liste complète des contrôles de sécurité.
-- **CIS Controls v8 et CIS Benchmarks** : contrôles priorisés et guides de durcissement gratuits.
-- **OWASP** : principes de conception sécurisée et Top 10.
-- **Textes officiels** : RGPD via EUR-Lex, NIS2 et DORA via les portails officiels de l'UE, guides pratiques de la CNIL.
-- **NICE Framework** : référentiel des métiers et compétences en cybersécurité.
-- **ENISA** (European Union Agency for Cybersecurity, l'agence de cybersécurité de l'Union européenne) : guides de gouvernance et de gestion du risque.
+- **NIST CSF 2.0** : le cadre complet et les résumés par fonction, librement consultables. Page officielle : https://www.nist.gov/cyberframework et document de référence (PDF) : https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf. Un guide de prise en main traduit en français est disponible sur https://www.nist.gov/cyberframework
+- **Guide EBIOS Risk Manager (ANSSI)** : le téléchargement de référence pour pratiquer l'analyse de risque. Présentation de la méthode : https://cyber.gouv.fr/securisation/analyse-des-risques/methode-ebios-rm/ et guide complet (PDF) : https://messervices.cyber.gouv.fr/documents-guides/250129_np_anssi_guide_ebios_fr_final_collection_WEB.pdf
+- **Catalogue NIST SP 800-53 Rev. 5** : la liste complète des contrôles de sécurité. Publication officielle : https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final
+- **CIS Controls v8 et CIS Benchmarks** : contrôles priorisés et guides de durcissement gratuits. CIS Controls : https://www.cisecurity.org/controls/v8 et CIS Benchmarks : https://www.cisecurity.org/cis-benchmarks
+- **OWASP** : principes de conception sécurisée et Top 10. OWASP Top 10 : https://owasp.org/www-project-top-ten/ et Secure Product Design Cheat Sheet : https://cheatsheetseries.owasp.org/cheatsheets/Secure_Product_Design_Cheat_Sheet.html
+- **Textes officiels** :
+  - RGPD (texte consolidé, EUR-Lex) : https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32016R0679
+  - NIS2 (directive 2022/2555, EUR-Lex) : https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022L2555
+  - DORA (règlement 2022/2554, EUR-Lex) : https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022R2554
+  - Guides pratiques de la CNIL : https://www.cnil.fr
+- **NICE Framework** : référentiel des métiers et compétences en cybersécurité. https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-resource-center
+- **ENISA** (European Union Agency for Cybersecurity, l'agence de cybersécurité de l'Union européenne) : guides de gouvernance et de gestion du risque. https://www.enisa.europa.eu
+- **ISO/IEC 27001 et 27005** : les normes elles-mêmes sont payantes, mais leur présentation officielle est consultable gratuitement. ISO 27001 : https://www.iso.org/standard/27001 et ISO 27005 : https://www.iso.org/standard/80585.html
 
 ---
-
-*Fin du cours. La suite logique consiste à approfondir un pilier selon les besoins : la méthode EBIOS RM appliquée à un cas réel, la mise en place d'un SMSI ISO 27001, ou la déclinaison concrète des obligations DORA dans le secteur de l'assurance.*
