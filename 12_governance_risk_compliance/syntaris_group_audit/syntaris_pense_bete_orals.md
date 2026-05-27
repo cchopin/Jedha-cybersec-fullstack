@@ -77,11 +77,11 @@ Améliorations : automatiser DSR / plan notif avec preuves / base légale biomé
 - 3 chantiers immédiats = VPN, DSR, CISO
 - Trajectoire : **3,1 → 4,0**
 - Bonus : renforce aussi vers **NIS2 + DORA** (secteur financier)
-- "Je suis dispo pour vos questions"
+
 
 ---
 
-## Si on me pose la question…
+## Questions/Réponses
 
 **Pourquoi Respond pas à 5 ?**
 1 seul tabletop réussi =/= amélioration continue prouvée. Playbooks lab absents avant 2023.
@@ -99,8 +99,3 @@ Appétence faible pour perte données clients / non-conformité (explicite dans 
 DORA = secteur financier + prestataires IT critiques = profil Syntaris. NIS2 selon qualification. Les 2 renforcent risque + notif + tiers = pile où Syntaris a le plus de marge.
 
 ---
-
-## Rappels gestion du temps
-- Si court sur le temps : sabrer slide 2 (profil) et aller vite sur 4
-- Cœur à ne jamais sacrifier : slides 3 (risques) et 5 (recos)
-- Garder ~1 min pour les questions
