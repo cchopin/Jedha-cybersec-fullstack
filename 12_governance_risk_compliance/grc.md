@@ -2,7 +2,7 @@
 
 ## Un cours complet de GRC en cybersécurité
 
-Ce cours fusionne deux approches complémentaires. D'un côté, la structure du NIST Cybersecurity Framework 2.0 et ses outils opérationnels, qui forment une colonne vertébrale solide et concrète. De l'autre, le cadre réglementaire européen et sectoriel (EBIOS Risk Manager, ISO 27001 et 27005, RGPD, NIS2, DORA), indispensable dès lors qu'on exerce en Europe et a fortiori dans le secteur de l'assurance ou de la finance.
+Ce cours fusionne deux approches complémentaires. D'un côté, la structure du Cybersecurity Framework 2.0 du NIST (National Institute of Standards and Technology, l'institut national américain des normes et de la technologie) et ses outils opérationnels, qui forment une colonne vertébrale solide et concrète. De l'autre, le cadre réglementaire européen et sectoriel (EBIOS Risk Manager, les normes ISO 27001 et 27005 publiées par l'ISO, l'Organisation internationale de normalisation, ainsi que le RGPD, NIS2 et DORA), indispensable dès lors qu'on exerce en Europe et a fortiori dans le secteur de l'assurance ou de la finance.
 
 L'objectif est de comprendre comment gouverner, évaluer le risque et démontrer la conformité, puis comment ces trois dimensions s'articulent en une démarche unique.
 
@@ -36,13 +36,14 @@ Chaque pilier répond à une question centrale.
 - **Conformité** : à quelles obligations sommes-nous soumis, et comment prouvons-nous que nous les respectons ?
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#D9E2F3','primaryTextColor':'#1A1A1A','primaryBorderColor':'#2E5AAC','lineColor':'#555555','fontSize':'15px','textColor':'#1A1A1A','mainBkg':'#D9E2F3'}}}%%
 flowchart LR
     G[Gouvernance<br/>fixe le cap] --> R[Risque<br/>éclaire les décisions]
     R --> C[Conformité<br/>contrôle et prouve]
     C --> G
-    style G fill:#D9E2F3,stroke:#2E5AAC
-    style R fill:#E8F1E4,stroke:#4A7A3A
-    style C fill:#F5EAE0,stroke:#B5651D
+    style G fill:#D9E2F3,stroke:#2E5AAC,color:#1A1A1A,stroke-width:2px
+    style R fill:#E8F1E4,stroke:#4A7A3A,color:#1A1A1A,stroke-width:2px
+    style C fill:#F5EAE0,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
 ```
 
 Pris isolément, chaque pilier a une faiblesse. La gouvernance sans gestion du risque produit des politiques déconnectées du terrain. Le risque sans gouvernance génère des analyses que personne n'arbitre ni ne finance. La conformité sans les deux autres devient une course aux cases à cocher. La valeur de la GRC vient de leur articulation.
@@ -53,9 +54,10 @@ Pris isolément, chaque pilier a une faiblesse. La gouvernance sans gestion du r
 
 ## 2. Le cadre NIST CSF 2.0, fil conducteur
 
-Le NIST Cybersecurity Framework version 2.0 est un référentiel de bonnes pratiques publié par l'agence américaine NIST. Il n'est pas obligatoire et ne mène à aucune certification, mais sa structure claire en fait un excellent squelette pour organiser une démarche de sécurité. Il s'articule autour de six fonctions.
+Le NIST Cybersecurity Framework version 2.0 (CSF, le cadre de cybersécurité du NIST) est un référentiel de bonnes pratiques publié par le NIST, l'agence fédérale américaine de normalisation. Il n'est pas obligatoire et ne mène à aucune certification, mais sa structure claire en fait un excellent squelette pour organiser une démarche de sécurité. Il s'articule autour de six fonctions.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#D9E2F3','primaryTextColor':'#1A1A1A','primaryBorderColor':'#2E5AAC','lineColor':'#555555','fontSize':'15px','textColor':'#1A1A1A','mainBkg':'#D9E2F3'}}}%%
 flowchart TD
     GV[GOVERN<br/>Gouverner] --> ID[IDENTIFY<br/>Identifier]
     ID --> PR[PROTECT<br/>Protéger]
@@ -64,12 +66,12 @@ flowchart TD
     RS --> RC[RECOVER<br/>Récupérer]
     RC -.retour experience.-> GV
     GV -.supervise tout.-> ID
-    style GV fill:#D9E2F3,stroke:#2E5AAC,stroke-width:3px
-    style ID fill:#E8F1E4,stroke:#4A7A3A
-    style PR fill:#E8F1E4,stroke:#4A7A3A
-    style DE fill:#FCE8E8,stroke:#B33A3A
-    style RS fill:#FCE8E8,stroke:#B33A3A
-    style RC fill:#FCE8E8,stroke:#B33A3A
+    style GV fill:#D9E2F3,stroke:#2E5AAC,color:#1A1A1A,stroke-width:3px
+    style ID fill:#E8F1E4,stroke:#4A7A3A,color:#1A1A1A,stroke-width:2px
+    style PR fill:#E8F1E4,stroke:#4A7A3A,color:#1A1A1A,stroke-width:2px
+    style DE fill:#FCE8E8,stroke:#B33A3A,color:#1A1A1A,stroke-width:2px
+    style RS fill:#FCE8E8,stroke:#B33A3A,color:#1A1A1A,stroke-width:2px
+    style RC fill:#FCE8E8,stroke:#B33A3A,color:#1A1A1A,stroke-width:2px
 ```
 
 La fonction Govern est la nouveauté majeure de la version 2.0 : elle chapeaute et conditionne les cinq autres. Une manière simple de mémoriser la logique : Identify et Protect préparent et défendent, Detect, Respond et Recover gèrent l'incident une fois que les défenses ont cédé, et Govern supervise l'ensemble.
@@ -85,6 +87,7 @@ La fonction Govern ne traite ni de pare-feu ni de malware. Elle traite du côté
 On distingue trois niveaux de gouvernance : la direction (executives), les managers, et les praticiens. La fonction se décline en six catégories.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#D9E2F3','primaryTextColor':'#1A1A1A','primaryBorderColor':'#2E5AAC','lineColor':'#555555','fontSize':'15px','textColor':'#1A1A1A','mainBkg':'#D9E2F3'}}}%%
 mindmap
   root((GOVERN))
     GV.OC Contexte organisationnel
@@ -117,25 +120,26 @@ Une analogie simple : l'appétence, c'est « je suis d'accord pour dépenser dan
 Une fois le niveau de risque acceptable connu, un processus de décision détermine quoi faire de chaque risque. Quatre choix possibles, un seul retenu par risque.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#D9E2F3','primaryTextColor':'#1A1A1A','primaryBorderColor':'#2E5AAC','lineColor':'#555555','fontSize':'15px','textColor':'#1A1A1A','mainBkg':'#D9E2F3'}}}%%
 flowchart TD
     R{Risque identifié<br/>et évalué} --> A[Accepter<br/>aucune action au-delà<br/>des contrôles actuels]
     R --> AV[Éviter<br/>supprimer la source<br/>en cessant activité]
     R --> T[Transférer<br/>déplacer la charge<br/>vers un tiers]
     R --> M[Réduire<br/>diminuer vraisemblance<br/>ou impact]
-    style R fill:#FFF2CC,stroke:#BF9000
-    style A fill:#E8F1E4,stroke:#4A7A3A
-    style AV fill:#FCE8E8,stroke:#B33A3A
-    style T fill:#D9E2F3,stroke:#2E5AAC
-    style M fill:#E2D9F3,stroke:#5A2EAC
+    style R fill:#FFF2CC,stroke:#BF9000,color:#1A1A1A,stroke-width:2px
+    style A fill:#E8F1E4,stroke:#4A7A3A,color:#1A1A1A,stroke-width:2px
+    style AV fill:#FCE8E8,stroke:#B33A3A,color:#1A1A1A,stroke-width:2px
+    style T fill:#D9E2F3,stroke:#2E5AAC,color:#1A1A1A,stroke-width:2px
+    style M fill:#E2D9F3,stroke:#5A2EAC,color:#1A1A1A,stroke-width:2px
 ```
 
 Cette stratégie doit être alignée avec l'ERM (Enterprise Risk Management), l'approche structurée qui gère tous les types de risques de l'organisation, pas seulement cyber, mais aussi financiers, opérationnels, réputationnels et stratégiques.
 
 ### GV.RR, rôles, responsabilités et autorités
 
-L'un des domaines les plus négligés : définir clairement qui fait quoi. Il faut définir les rôles (RSSI ou CISO, DPO, propriétaire de système, analyste de risque, équipe SOC), attribuer l'autorité de décider et d'appliquer les contrôles, et éviter les chevauchements et la confusion en cas d'incident. Dans les vraies brèches, la confusion sur les responsabilités cause des retards, des erreurs et des dommages de réputation.
+L'un des domaines les plus négligés : définir clairement qui fait quoi. Il faut définir les rôles (RSSI, équivalent français du CISO ou Chief Information Security Officer ; DPO ; propriétaire de système ; analyste de risque ; équipe SOC, le Security Operations Center qui surveille la sécurité en continu), attribuer l'autorité de décider et d'appliquer les contrôles, et éviter les chevauchements et la confusion en cas d'incident. Dans les vraies brèches, la confusion sur les responsabilités cause des retards, des erreurs et des dommages de réputation.
 
-> **Astuce.** Pour une convention commune sur la répartition des rôles, le référentiel NICE framework établit un langage standard pour décrire le travail en cybersécurité.
+> **Astuce.** Pour une convention commune sur la répartition des rôles, le NICE framework (National Initiative for Cybersecurity Education, l'initiative américaine pour la formation en cybersécurité) établit un langage standard pour décrire le travail en cybersécurité.
 
 ### GV.PO, politique
 
@@ -159,7 +163,7 @@ Trois exemples réels d'attaques par la chaîne d'approvisionnement :
 - **MOVEit** : exploité par le groupe rançongiciel Cl0p pour voler des données de centaines d'organisations via une seule vulnérabilité.
 - **Kaseya** : un outil de gestion à distance compromis pour pousser un rançongiciel vers des centaines de clients en aval.
 
-Ce qu'attend GV.SC : connaître ses fournisseurs et leur rôle, fixer des exigences de sécurité minimales (chiffrement, MFA, application des correctifs) inscrites dans les contrats et SLA, exiger la conformité à des standards comme ISO 27001 ou SOC 2, évaluer et surveiller les fournisseurs (questionnaires, audits, tests), et les inclure dans le plan de réponse à incident.
+Ce qu'attend GV.SC : connaître ses fournisseurs et leur rôle, fixer des exigences de sécurité minimales (chiffrement, MFA, application des correctifs) inscrites dans les contrats et SLA (Service Level Agreements, les accords de niveau de service), exiger la conformité à des standards comme ISO 27001 ou SOC 2 (un référentiel d'audit américain attestant la maîtrise des contrôles d'un prestataire, à ne pas confondre avec le SOC centre opérationnel vu plus haut), évaluer et surveiller les fournisseurs (questionnaires, audits, tests), et les inclure dans le plan de réponse à incident.
 
 > **Astuce, stratégie fournisseurs critiques.** Se concentrer d'abord sur les fournisseurs à haut risque : ceux qui ont accès au réseau ou aux données, ceux qui fournissent du code, et ceux dont la défaillance perturberait les opérations.
 
@@ -177,9 +181,9 @@ Les actifs sont tout ce que possède l'entreprise et qui a de la valeur. On dist
 
 ### ID.RA, évaluation du risque
 
-Une fois les actifs connus, il faut comprendre ce qui pourrait mal tourner. Le côté technique est familier (tests d'intrusion, renseignement sur les menaces via des plateformes CTI), mais il faut ensuite prendre du recul et évaluer le risque à plus haut niveau pour que les dirigeants décident.
+Une fois les actifs connus, il faut comprendre ce qui pourrait mal tourner. Le côté technique est familier (tests d'intrusion, renseignement sur les menaces via des plateformes CTI, pour Cyber Threat Intelligence), mais il faut ensuite prendre du recul et évaluer le risque à plus haut niveau pour que les dirigeants décident.
 
-Pour identifier les risques, les **principes de conception sécurisée OWASP** (Secure Product Design, à ne pas confondre avec l'OWASP Top 10) sont utiles. Quatre principes principaux :
+Pour identifier les risques, les **principes de conception sécurisée OWASP** (Secure Product Design) sont utiles. L'OWASP (Open Worldwide Application Security Project) est une fondation à but non lucratif qui publie des ressources libres sur la sécurité applicative. Ces principes sont à ne pas confondre avec l'OWASP Top 10, qui classe les failles web les plus fréquentes. Quatre principes principaux :
 
 - **Moindre privilège et séparation des tâches** : utilisateurs et systèmes n'ont que l'accès minimal nécessaire, et aucune personne ne contrôle seule toutes les étapes critiques d'un processus.
 - **Défense en profondeur** : la sécurité est en couches, si un contrôle tombe, d'autres protègent encore.
@@ -191,6 +195,7 @@ Le **catalogue de contrôles NIST SP 800-53** référence par ailleurs l'ensembl
 Une fois les risques identifiés, on évalue leur impact et leur vraisemblance à l'aide d'une matrice de risque.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#D9E2F3','primaryTextColor':'#1A1A1A','primaryBorderColor':'#2E5AAC','lineColor':'#555555','fontSize':'15px','textColor':'#1A1A1A','mainBkg':'#D9E2F3'}}}%%
 quadrantChart
     title Matrice de risque, impact contre vraisemblance
     x-axis Faible vraisemblance --> Forte vraisemblance
@@ -201,7 +206,7 @@ quadrantChart
     quadrant-4 Plan action requis
     Fuite base clients: [0.8, 0.9]
     Panne serveur secondaire: [0.4, 0.35]
-    Phishing employé: [0.75, 0.55]
+    Phishing employe: [0.75, 0.55]
     Incendie datacenter: [0.15, 0.85]
 ```
 
@@ -244,11 +249,11 @@ Une plateforme désigne tout environnement matériel ou logiciel où tournent de
 
 Ce qu'attend PR.PS en pratique :
 
-- **Appliquer des configurations sécurisées de référence** via des guides de durcissement comme les **CIS Benchmarks** (gratuits, communautaires) ou les **DISA STIGs** (standards de niveau Département de la Défense américain).
+- **Appliquer des configurations sécurisées de référence** via des guides de durcissement comme les **CIS Benchmarks** (publiés par le Center for Internet Security, une organisation à but non lucratif ; ils sont gratuits et communautaires) ou les **DISA STIG** (Security Technical Implementation Guides de la Defense Information Systems Agency, l'agence informatique de l'armée américaine, donc des standards de niveau défense).
 - **Maintenir les plateformes** : appliquer les correctifs régulièrement, décommissionner les logiciels et matériels non supportés, surveiller les technologies en fin de vie.
 - **Restreindre les logiciels non autorisés** : empêcher l'installation d'applications, utiliser des listes d'autorisation ou AppLocker.
 - **Activer la journalisation d'audit** : générer des journaux détaillés, les transférer vers un SIEM, les conserver de manière infalsifiable.
-- **Sécuriser le cycle de développement (SDLC)** si l'organisation développe ses applications : codage sécurisé, analyse automatisée (SAST, DAST), signature des builds.
+- **Sécuriser le cycle de développement (SDLC)** si l'organisation développe ses applications : codage sécurisé, analyse automatisée (SAST, l'analyse statique du code source, et DAST, l'analyse dynamique de l'application en fonctionnement), signature des builds.
 
 > **Attention.** Beaucoup d'attaques réussissent parce que des organisations font encore tourner de vieilles plateformes non corrigées, comme Windows 7 ou de vieilles versions de Java.
 
@@ -272,6 +277,7 @@ Ces trois fonctions interviennent après l'échec des protections, et oui, l'éc
 > **Penser comme un pompier.** Detect, repérer la fumée. Respond, contenir le feu. Recover, reconstruire la maison.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#D9E2F3','primaryTextColor':'#1A1A1A','primaryBorderColor':'#2E5AAC','lineColor':'#555555','fontSize':'15px','textColor':'#1A1A1A','mainBkg':'#D9E2F3'}}}%%
 flowchart LR
     subgraph DETECT
     CM[DE.CM<br/>Surveillance continue] --> AE[DE.AE<br/>Analyse événements]
@@ -292,19 +298,19 @@ flowchart LR
     MA --> MI
     MI --> RP
     RP --> RCO
-    style CM fill:#FCE8E8,stroke:#B33A3A
-    style AE fill:#FCE8E8,stroke:#B33A3A
-    style MA fill:#FFE9D6,stroke:#B5651D
-    style AN fill:#FFE9D6,stroke:#B5651D
-    style CO fill:#FFE9D6,stroke:#B5651D
-    style MI fill:#FFE9D6,stroke:#B5651D
-    style RP fill:#E8F1E4,stroke:#4A7A3A
-    style RCO fill:#E8F1E4,stroke:#4A7A3A
+    style CM fill:#FCE8E8,stroke:#B33A3A,color:#1A1A1A,stroke-width:2px
+    style AE fill:#FCE8E8,stroke:#B33A3A,color:#1A1A1A,stroke-width:2px
+    style MA fill:#FFE9D6,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
+    style AN fill:#FFE9D6,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
+    style CO fill:#FFE9D6,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
+    style MI fill:#FFE9D6,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
+    style RP fill:#E8F1E4,stroke:#4A7A3A,color:#1A1A1A,stroke-width:2px
+    style RCO fill:#E8F1E4,stroke:#4A7A3A,color:#1A1A1A,stroke-width:2px
 ```
 
 ### DE.CM, surveillance continue
 
-On ne protège pas ce qu'on ne voit pas. Cette catégorie surveille activement le trafic réseau (IDS/IPS, SIEM), les journaux matériels et logiciels (Sysmon, EDR), les espaces physiques (vidéosurveillance, journaux de badges) et les environnements cloud. Le but est de trouver des anomalies ou indicateurs de compromission. Exemples de signaux : plusieurs échecs de connexion depuis l'étranger, un poste contactant soudain un domaine de commande et contrôle connu, un employé branchant une clé USB suspecte.
+On ne protège pas ce qu'on ne voit pas. Cette catégorie surveille activement le trafic réseau (IDS et IPS, systèmes de détection et de prévention d'intrusion ; SIEM), les journaux matériels et logiciels (Sysmon, EDR), les espaces physiques (vidéosurveillance, journaux de badges) et les environnements cloud. Le but est de trouver des anomalies ou indicateurs de compromission. Exemples de signaux : plusieurs échecs de connexion depuis l'étranger, un poste contactant soudain un domaine de commande et contrôle connu, un employé branchant une clé USB suspecte.
 
 > **Astuce, outils courants.** SIEM comme Splunk, Sentinel, Wazuh. EDR comme CrowdStrike, Defender, SentinelOne. Sysmon couplé aux journaux d'événements Windows. Outils cloud natifs comme GuardDuty (AWS) ou Security Command Center (GCP).
 
@@ -355,6 +361,7 @@ Le RGPD (Règlement général sur la protection des données) est l'une des lois
 ### Les 7 principes
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#D9E2F3','primaryTextColor':'#1A1A1A','primaryBorderColor':'#2E5AAC','lineColor':'#555555','fontSize':'15px','textColor':'#1A1A1A','mainBkg':'#D9E2F3'}}}%%
 mindmap
   root((RGPD<br/>7 principes))
     Licéité, loyauté, transparence
@@ -408,18 +415,19 @@ La directive NIS2 élargit fortement le périmètre des entités soumises à des
 Le règlement DORA (Digital Operational Resilience Act) vise spécifiquement la résilience opérationnelle numérique du secteur financier européen : banques, assurances et leurs prestataires informatiques critiques. C'est le texte le plus structurant pour une organisation du secteur de l'assurance. Il repose sur cinq piliers.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#D9E2F3','primaryTextColor':'#1A1A1A','primaryBorderColor':'#2E5AAC','lineColor':'#555555','fontSize':'15px','textColor':'#1A1A1A','mainBkg':'#D9E2F3'}}}%%
 flowchart TD
     DORA[DORA<br/>Résilience opérationnelle<br/>du secteur financier] --> P1[Gestion du risque TIC<br/>cadre interne complet]
     DORA --> P2[Gestion et notification<br/>des incidents TIC]
     DORA --> P3[Tests de résilience<br/>opérationnelle numérique]
     DORA --> P4[Risque lié aux<br/>prestataires tiers TIC]
     DORA --> P5[Partage informations<br/>sur les cybermenaces]
-    style DORA fill:#D9E2F3,stroke:#2E5AAC,stroke-width:3px
-    style P1 fill:#F5EAE0,stroke:#B5651D
-    style P2 fill:#F5EAE0,stroke:#B5651D
-    style P3 fill:#F5EAE0,stroke:#B5651D
-    style P4 fill:#F5EAE0,stroke:#B5651D
-    style P5 fill:#F5EAE0,stroke:#B5651D
+    style DORA fill:#D9E2F3,stroke:#2E5AAC,color:#1A1A1A,stroke-width:3px
+    style P1 fill:#F5EAE0,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
+    style P2 fill:#F5EAE0,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
+    style P3 fill:#F5EAE0,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
+    style P4 fill:#F5EAE0,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
+    style P5 fill:#F5EAE0,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
 ```
 
 > **Lien avec l'assurance.** Une compagnie d'assurance cumule souvent plusieurs obligations : DORA pour la résilience opérationnelle, le RGPD pour les données des assurés, et potentiellement NIS2 selon sa qualification. La conformité y est multi-référentiels, ce qui rend l'articulation avec la gouvernance et l'analyse de risque d'autant plus essentielle : on cherche les mesures qui satisfont plusieurs obligations à la fois. Le pilier DORA sur les prestataires tiers recoupe directement la catégorie GV.SC du NIST.
@@ -428,20 +436,21 @@ flowchart TD
 
 ## 9. L'analyse de risque à la française, EBIOS RM
 
-Le NIST décrit le quoi (évaluer le risque), EBIOS Risk Manager décrit un comment, reconnu en France et porté par l'ANSSI et le Club EBIOS. Sa force est d'être orientée scénarios : plutôt que de partir d'une liste figée de vulnérabilités, elle raisonne à partir des sources de risque (qui voudrait nous attaquer, et pourquoi) et construit des chemins d'attaque réalistes. C'est l'approche la plus pédagogique pour pratiquer concrètement.
+Le NIST décrit le quoi (évaluer le risque), EBIOS Risk Manager décrit un comment, reconnu en France et porté par l'ANSSI (Agence nationale de la sécurité des systèmes d'information, l'autorité française en matière de cybersécurité) et le Club EBIOS (association d'experts qui fait vivre la méthode). EBIOS signifie Expression des besoins et identification des objectifs de sécurité, et la déclinaison RM (Risk Manager) en est la version actuelle. Sa force est d'être orientée scénarios : plutôt que de partir d'une liste figée de vulnérabilités, elle raisonne à partir des sources de risque (qui voudrait nous attaquer, et pourquoi) et construit des chemins d'attaque réalistes. C'est l'approche la plus pédagogique pour pratiquer concrètement.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#D9E2F3','primaryTextColor':'#1A1A1A','primaryBorderColor':'#2E5AAC','lineColor':'#555555','fontSize':'15px','textColor':'#1A1A1A','mainBkg':'#D9E2F3'}}}%%
 flowchart LR
     A1[Atelier 1<br/>Cadrage et<br/>socle de sécurité] --> A2[Atelier 2<br/>Sources<br/>de risque]
     A2 --> A3[Atelier 3<br/>Scénarios<br/>stratégiques]
     A3 --> A4[Atelier 4<br/>Scénarios<br/>opérationnels]
     A4 --> A5[Atelier 5<br/>Traitement<br/>du risque]
     A5 -.itération.-> A1
-    style A1 fill:#D9E2F3,stroke:#2E5AAC
-    style A2 fill:#D9E2F3,stroke:#2E5AAC
-    style A3 fill:#E8F1E4,stroke:#4A7A3A
-    style A4 fill:#E8F1E4,stroke:#4A7A3A
-    style A5 fill:#F5EAE0,stroke:#B5651D
+    style A1 fill:#D9E2F3,stroke:#2E5AAC,color:#1A1A1A,stroke-width:2px
+    style A2 fill:#D9E2F3,stroke:#2E5AAC,color:#1A1A1A,stroke-width:2px
+    style A3 fill:#E8F1E4,stroke:#4A7A3A,color:#1A1A1A,stroke-width:2px
+    style A4 fill:#E8F1E4,stroke:#4A7A3A,color:#1A1A1A,stroke-width:2px
+    style A5 fill:#F5EAE0,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
 ```
 
 - **Atelier 1, cadrage et socle de sécurité** : périmètre, valeurs métier, événements redoutés et socle de sécurité existant.
@@ -483,6 +492,7 @@ La norme dédiée à la gestion des risques liés à la sécurité de l'informat
 C'est ici que la GRC prend tout son sens. Les fonctions du NIST, les méthodes de risque et les réglementations ne sont pas des activités parallèles, mais un cycle qui s'alimente.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#D9E2F3','primaryTextColor':'#1A1A1A','primaryBorderColor':'#2E5AAC','lineColor':'#555555','fontSize':'15px','textColor':'#1A1A1A','mainBkg':'#D9E2F3'}}}%%
 flowchart TD
     GOV[Gouvernance<br/>Govern NIST, appétence au risque] --> RA[Analyse de risque<br/>EBIOS RM, ID.RA, matrice]
     RA --> DEC{Décision<br/>de traitement}
@@ -493,12 +503,12 @@ flowchart TD
     MES --> CONF[Conformité<br/>RGPD, NIS2, DORA, ISO 27001]
     CONF --> SUIVI[Suivi et supervision<br/>GV.OV, indicateurs, audits]
     SUIVI -.boucle.-> GOV
-    style GOV fill:#D9E2F3,stroke:#2E5AAC,stroke-width:2px
-    style RA fill:#E8F1E4,stroke:#4A7A3A
-    style DEC fill:#FFF2CC,stroke:#BF9000
-    style MES fill:#E2D9F3,stroke:#5A2EAC
-    style CONF fill:#F5EAE0,stroke:#B5651D
-    style SUIVI fill:#D9E2F3,stroke:#2E5AAC
+    style GOV fill:#D9E2F3,stroke:#2E5AAC,color:#1A1A1A,stroke-width:2px
+    style RA fill:#E8F1E4,stroke:#4A7A3A,color:#1A1A1A,stroke-width:2px
+    style DEC fill:#FFF2CC,stroke:#BF9000,color:#1A1A1A,stroke-width:2px
+    style MES fill:#E2D9F3,stroke:#5A2EAC,color:#1A1A1A,stroke-width:2px
+    style CONF fill:#F5EAE0,stroke:#B5651D,color:#1A1A1A,stroke-width:2px
+    style SUIVI fill:#D9E2F3,stroke:#2E5AAC,color:#1A1A1A,stroke-width:2px
 ```
 
 Un même élément joue souvent dans les trois registres. Prenons le MFA sur les comptes à privilèges.
@@ -517,10 +527,28 @@ Un même élément joue souvent dans les trois registres. Prenons le MFA sur les
 
 ### Glossaire des sigles
 
+**Organismes et référentiels**
+
+| Sigle | Signification |
+|---|---|
+| NIST | National Institute of Standards and Technology, l'institut de normalisation américain |
+| NIST CSF | Cybersecurity Framework du NIST, son cadre de cybersécurité |
+| NIST SP 800-53 | Catalogue de contrôles de sécurité publié par le NIST |
+| ISO | Organisation internationale de normalisation |
+| ANSSI | Agence nationale de la sécurité des systèmes d'information (France) |
+| ENISA | European Union Agency for Cybersecurity, l'agence européenne de cybersécurité |
+| CNIL | Commission nationale de l'informatique et des libertés (régulateur français des données) |
+| OWASP | Open Worldwide Application Security Project, fondation sur la sécurité applicative |
+| CIS | Center for Internet Security, qui publie les CIS Benchmarks et CIS Controls |
+| DISA STIG | Security Technical Implementation Guides de l'agence informatique de l'armée américaine |
+| NICE | National Initiative for Cybersecurity Education, référentiel de métiers et compétences |
+| SOC 2 | Référentiel d'audit américain attestant la maîtrise des contrôles d'un prestataire |
+
+**Termes techniques et organisationnels**
+
 | Sigle | Signification |
 |---|---|
 | GRC | Gouvernance, risque et conformité |
-| NIST CSF | Cybersecurity Framework du NIST |
 | SMSI | Système de management de la sécurité de l'information |
 | PSSI | Politique de sécurité des systèmes d'information |
 | RSSI / CISO | Responsable de la sécurité des systèmes d'information |
@@ -543,6 +571,9 @@ Un même élément joue souvent dans les trois registres. Prenons le MFA sur les
 | DORA | Digital Operational Resilience Act |
 | CNIL | Commission nationale de l'informatique et des libertés |
 | TIC | Technologies de l'information et de la communication |
+| CTI | Cyber Threat Intelligence, renseignement sur les menaces |
+| IDS / IPS | Systèmes de détection / prévention d'intrusion |
+| SLA | Service Level Agreement, accord de niveau de service |
 
 ### Ressources gratuites
 
@@ -553,7 +584,7 @@ Un même élément joue souvent dans les trois registres. Prenons le MFA sur les
 - **OWASP** : principes de conception sécurisée et Top 10.
 - **Textes officiels** : RGPD via EUR-Lex, NIS2 et DORA via les portails officiels de l'UE, guides pratiques de la CNIL.
 - **NICE Framework** : référentiel des métiers et compétences en cybersécurité.
-- **ENISA** : guides de gouvernance et de gestion du risque de l'agence européenne.
+- **ENISA** (European Union Agency for Cybersecurity, l'agence de cybersécurité de l'Union européenne) : guides de gouvernance et de gestion du risque.
 
 ---
 
