@@ -31,7 +31,7 @@
 
 ---
 
-## 4. Maturité NIST (1 min 30) — slide radar
+## 4. Maturité NIST (1 min 30) - slide radar
 *Laisser 2 s pour lire le radar*
 - Échelle **1 à 5**, orange = actuel, bleu = cible
 
@@ -44,7 +44,7 @@
 
 ---
 
-## 5. Recommandations (1 min 30) — tableau
+## 5. Recommandations (1 min 30) - tableau
 **Haute** (3) :
 - VPN : décommissionner/isoler + négocier migration clients
 - DSR : intégrer dans VaultLock v2, traçable, délai **30 j**
@@ -62,7 +62,7 @@
 
 ---
 
-## 6. RGPD (1 min 30) — 4 articles
+## 6. RGPD (1 min 30) - 4 articles
 - **Art. 5** principes : OK exactitude/conservation, MAIS minimisation à questionner sur biométrie
 - **Art. 25** privacy by design : revendiqué (DPIA), à nuancer (sanitisation ML pas documentée)
 - **Art. 32** sécurité : le mieux couvert (chiffrement, pseudo, RBAC), angle mort = VPN
