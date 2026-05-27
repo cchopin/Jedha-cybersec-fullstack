@@ -1,16 +1,15 @@
 # Notes orales, audit Syntaris Group
 
-Support de présentation de 5 à 10 minutes. Le texte ci-dessous est une trame à dire, pas à lire mot à mot. Les durées sont indicatives. Les phrases entre crochets sont des intentions, pas des choses à prononcer.
 
 ---
 
-## Slide 1, titre (20 secondes)
+## Slide 1, titre 
 
 Bonjour. Je vous présente les conclusions de l'audit de cybersécurité de Syntaris Group, mené en tant que consultant externe. La mission portait sur deux volets : une évaluation de maturité selon le cadre NIST CSF 2.0, et une revue de conformité au RGPD. J'ai travaillé à partir de cinq sources : le profil de l'entreprise, l'architecture technique, l'historique des incidents, l'entretien des dirigeants et l'inventaire des tiers.
 
 ---
 
-## Slide 2, profil de l'entreprise (45 secondes)
+## Slide 2, profil de l'entreprise 
 
 Quelques mots de contexte, parce qu'ils déterminent tout le reste. Syntaris est une fintech d'identité et de paiement, fondée en 2017, 284 salariés, 42 millions d'euros de revenu, en forte croissance. Elle traite environ 280 millions d'appels d'API par mois pour 1 100 clients.
 
@@ -22,7 +21,7 @@ Côté cadre, l'entreprise cumule RGPD, PCI-DSS niveau 1, PIPEDA au Canada, et d
 
 ---
 
-## Slide 3, résumé exécutif (1 minute)
+## Slide 3, résumé exécutif 
 
 Le message principal tient en une phrase : Syntaris est solide sur la protection et la réponse à incident, mais fragile sur la gouvernance et la gestion de ses tiers.
 
@@ -38,7 +37,7 @@ Enfin, l'applicabilité du RGPD est totale : Syntaris est responsable de traitem
 
 ---
 
-## Slide 4, maturité NIST (1 minute 30)
+## Slide 4, maturité NIST 
 
 Voici l'évaluation de maturité, sur une échelle de 1 à 5, état actuel en orange, cible en bleu.
 
@@ -54,7 +53,7 @@ La cible que je propose, 4 sur 5 partout, est réaliste, ce n'est pas la perfect
 
 ---
 
-## Slide 5, recommandations (1 minute 30)
+## Slide 5, recommandations 
 
 J'ai priorisé les recommandations en trois niveaux.
 
@@ -68,7 +67,7 @@ Chaque action est rattachée à une référence NIST ou RGPD, à une équipe res
 
 ---
 
-## Slide 6, section RGPD (1 minute 30)
+## Slide 6, section RGPD 
 
 Le focus RGPD porte sur les quatre articles demandés.
 
@@ -84,7 +83,7 @@ D'où les améliorations en bas de slide : automatiser et tracer les DSR, formal
 
 ---
 
-## Slide 7, conclusion (45 secondes)
+## Slide 7, conclusion 
 
 Pour conclure. Syntaris a une base solide, il ne faut pas l'oublier : protection et réponse matures, deux certifications, une vraie culture de retour d'expérience après incident.
 
