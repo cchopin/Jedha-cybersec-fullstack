@@ -38,6 +38,8 @@ L'utilisateur décrit un **objectif**, non une suite d'instructions. Copilot :
 - Il **consomme davantage** (allers-retours, outils) : à éviter pour une micro-tâche (voir [module 2](02_economie_tokens.md)).
 - La responsabilité du diff final reste humaine : relecture et tests obligatoires (voir [module 6](06_risques.md)).
 
+> Doc officielle : [Agent mode dans le chat VS Code](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode).
+
 > La connexion à des serveurs **MCP** étendrait les actions de l'agent à des outils externes, mais le **MCP est désactivé** dans l'organisation (voir [annexe](annexe_configuration.md)).
 
 ### Travailler sur une branche dédiée (et finir en PR)
@@ -79,7 +81,7 @@ L'usage le plus simple est manuel : on sélectionne un agent et il reste actif j
         └── mon-agent.agent.md
 ```
 
-VS Code détecte automatiquement les fichiers `*.agent.md` placés dans `.github/agents/` à la racine du dépôt ouvert. Aucune configuration supplémentaire n'est requise.
+VS Code détecte automatiquement les fichiers `*.agent.md` placés dans `.github/agents/` à la racine du dépôt ouvert. Aucune configuration supplémentaire n'est requise. Doc officielle : [Custom agents](https://code.visualstudio.com/docs/agent-customization/custom-agents) (VS Code).
 
 ### Syntaxe
 

@@ -35,12 +35,14 @@ Pour tester ou demander de l'aide sur un format, utiliser des **données fictive
 
 ## 3. Exclusion de contenu (content exclusion)
 
-Contrôle technique central côté entreprise, configuré par l'administration au niveau **dépôt ou organisation**. Il empêche Copilot d'utiliser certains chemins comme contexte - ni complétion, ni chat.
+Contrôle technique central côté entreprise, configuré par l'administration au niveau **dépôt ou organisation**. Il empêche Copilot d'utiliser certains chemins comme contexte - ni complétion, ni chat. La syntaxe (motifs fnmatch), l'emplacement exact et les exemples sont détaillés au [module 3](03_configuration.md) ; doc officielle : [Excluding content from GitHub Copilot](https://docs.github.com/en/copilot/how-tos/configure-content-exclusion/exclude-content-from-copilot).
 
 À faire exclure en priorité :
 - `**/.env`, `**/*.pem`, `**/*.key`, `secrets/**`, `**/credentials*` ;
 - répertoires de données réelles, fixtures sensibles ;
 - code confidentiel ou sous licence à ne pas réutiliser.
+
+> **Limite à connaître** : la content exclusion **ne s'applique pas à l'agent mode** (ni à la CLI, ni au cloud agent) - or l'agent mode est activé ici. Un agent peut donc lire un fichier exclu. Pour ces fichiers, combiner d'autres garde-fous : couper Copilot par langage, ne pas pointer l'agent dessus, restreindre ses outils ([module 3](03_configuration.md)).
 
 > Ne pas se reposer sur la seule discipline individuelle : la content exclusion est une **barrière de configuration**, à demander à l'administration. C'est plus fiable qu'une consigne.
 
@@ -79,6 +81,17 @@ Copilot peut suggérer d'installer des packages. Risques :
 ## 7. Scénarios d'attaque par contenu non fiable
 
 Principe commun : **Copilot traite tout son contexte comme des instructions potentielles.** Un attaquant qui contrôle une partie de ce contexte (un fichier, une sortie de commande, un log, un dépôt) peut tenter de **détourner le comportement** de Copilot. C'est l'**injection de prompt indirecte** - la donnée d'entrée devient instruction. Le risque est plus marqué en agent mode, où Copilot agit.
+
+Le mécanisme, étape par étape - le point critique est le passage de « donnée » à « instruction » :
+
+```mermaid
+flowchart TD
+    A["Contenu contrôlé par un tiers<br/>(log, README, commentaire, dépôt cloné)"] --> B["Lu par Copilot comme contexte"]
+    B --> C["Interprété comme une instruction"]
+    C --> D["Copilot agit, surtout en agent mode"]
+    D --> E["Impact : fuite, code piégé, action non voulue"]
+    C -. parade .-> P["Contenu externe = non fiable<br/>relire, valider, ne pas exécuter à l'aveugle"]
+```
 
 ### 7.1 Injection de prompt directe et indirecte
 

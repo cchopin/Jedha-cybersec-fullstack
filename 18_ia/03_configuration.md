@@ -50,22 +50,63 @@ Points clés :
 
 ## 3. Exclure du contenu (content exclusion)
 
-Réglage central pour la sécurité : il empêche Copilot de **lire** certains fichiers ou chemins comme contexte, donc de les envoyer au modèle ou de s'en inspirer.
+Réglage central pour la sécurité : il empêche Copilot d'**utiliser** certains fichiers ou chemins comme contexte, donc de les envoyer au modèle ou de s'en inspirer. Les chemins exclus ne servent ni en complétion, ni en chat.
 
-Ce contrôle se configure côté **organisation ou dépôt**, par l'administration GitHub. Les chemins exclus ne sont jamais utilisés comme contexte, ni en complétion, ni en chat.
+### 3.1 Où ça se configure
 
-Contenu typiquement exclu :
-- Fichiers de secrets : `.env`, `*.pem`, `*.key`, `secrets/**`.
-- Données clients, dumps, jeux de données réels.
-- Code confidentiel à ne pas voir réutilisé.
+Ce contrôle se règle dans l'**interface GitHub**, pas dans VS Code (le poste ne peut que le subir, pas le définir) :
+- **Dépôt** : `Settings` > `Copilot` > `Content exclusion` (rôle admin du dépôt).
+- **Organisation** : paramètres de l'organisation > `Copilot` > `Content exclusion` (propriétaire de l'organisation).
+- **Entreprise** : contrôles IA de l'entreprise (propriétaire d'entreprise).
 
-> Détail développé au [module 7 - Sécurité](07_securite.md). À retenir ici : la content exclusion est une **barrière de configuration**, à demander à l'administration plutôt qu'à reposer sur la seule discipline individuelle.
+Le rôle `Maintain` d'un dépôt permet de **voir** ces règles, pas de les modifier. Côté poste, on ne peut donc que **demander** une exclusion à l'administration.
+
+### 3.2 Syntaxe (motifs fnmatch)
+
+Les chemins s'écrivent en **fnmatch** (proche du `.gitignore`, insensible à la casse) :
+- `*` : une séquence de caractères dans un segment ;
+- `**` : traverse les dossiers, à n'importe quelle profondeur ;
+- `secret*` : tout fichier commençant par `secret` ;
+- `*.cfg` : tout fichier `.cfg` ;
+- `/scripts/**` : tout ce qui est sous `scripts/`.
+
+**Au niveau dépôt**, une simple liste de chemins :
+
+```yaml
+- "/src/config/kernel.rs"
+- "secrets.json"
+- "secret*"
+- "*.cfg"
+- "/scripts/**"
+```
+
+**Au niveau organisation**, on préfixe par un dépôt, ou par `"*":` pour viser **tous** les dépôts et emplacements :
+
+```yaml
+"*":
+  - "**/.env"
+  - "**/*.pem"
+  - "**/*.key"
+  - "secrets/**"
+
+octo-repo:
+  - "/src/config/kernel.rs"
+```
+
+### 3.3 Délai et limite majeure
+
+- **Propagation** : jusqu'à **30 minutes** pour s'appliquer dans les IDE (un rechargement manuel de VS Code accélère la prise en compte).
+- **Limite à connaître absolument** : la content exclusion **ne couvre pas l'agent mode** (ni la CLI, ni le cloud agent). Or l'agent mode est **activé** dans l'organisation (voir [annexe](annexe_configuration.md)). Concrètement, un fichier exclu reste protégé en complétion et en chat, mais **un agent peut quand même le lire**. Pour un fichier vraiment sensible, ne pas compter sur la seule content exclusion : couper Copilot par langage ([§2](#2-réglages-utiles-côté-poste)), ne pas pointer l'agent sur ces chemins, et restreindre ses outils (voir [§5](#5-encadrer-lagent--approbations-commandes-interdites-et-droits) et [module 5](05_agents.md)).
+
+Contenu à exclure en priorité : secrets (`.env`, `*.pem`, `*.key`, `secrets/**`), données clients / dumps réels, code confidentiel. Le **pourquoi** (sécurité, RGPD) est développé au [module 7](07_securite.md).
+
+> Doc officielle : [Excluding content from GitHub Copilot](https://docs.github.com/en/copilot/how-tos/configure-content-exclusion/exclude-content-from-copilot). La content exclusion est une **barrière de configuration**, plus fiable que la seule discipline individuelle.
 
 ---
 
 ## 4. Intégration MCP (Model Context Protocol)
 
-Le **MCP** est un protocole standard qui connecte l'agent mode à des **serveurs externes** fournissant outils et données : accès à une base, à une API interne, à un système de tickets, mais aussi des **connecteurs métier** (SharePoint, messagerie, Excel/Office, Google Drive…).
+Le **MCP** est un protocole standard qui connecte l'agent mode à des **serveurs externes** fournissant outils et données : accès à une base, à une API interne, à un système de tickets, mais aussi des **connecteurs métier** (SharePoint, messagerie, Excel/Office, Google Drive…). Doc officielle : [Add and manage MCP servers in VS Code](https://code.visualstudio.com/docs/agent-customization/mcp-servers).
 
 > **Dans l'organisation, « MCP servers in Copilot » est désactivé** (voir [annexe](annexe_configuration.md)). Toute cette section est fournie à titre d'information et de préparation : la connexion de serveurs MCP n'est pas disponible en l'état. En cas d'activation ultérieure par l'administration, les précautions ci-dessous s'appliquent.
 
@@ -114,7 +155,7 @@ Un serveur MCP **étend la surface d'action** de Copilot : à traiter comme une 
 
 ## 5. Encadrer l'agent : approbations, commandes interdites et droits
 
-L'agent mode **exécute des commandes** et **édite des fichiers**. VS Code permet de cadrer ce qu'il peut faire **sans confirmation** et ce qui doit rester **interdit ou validé manuellement**. Ces réglages sont des entrées de `settings.json`, plaçables aux niveaux vus au [§1](#1-trois-niveaux-de-réglage).
+L'agent mode **exécute des commandes** et **édite des fichiers**. VS Code permet de cadrer ce qu'il peut faire **sans confirmation** et ce qui doit rester **interdit ou validé manuellement**. Ces réglages sont des entrées de `settings.json`, plaçables aux niveaux vus au [§1](#1-trois-niveaux-de-réglage). Référence : [Manage approvals and permissions](https://code.visualstudio.com/docs/agents/approvals) (VS Code).
 
 ### 5.1 Commandes terminal : auto-approuver le sûr, bloquer le dangereux
 
@@ -144,6 +185,17 @@ Points clés :
 - **Ne pas activer** `chat.tools.global.autoApprove: true` (mode « tout approuver ») : il **ignore les deny lists**.
 - Côté organisation, la policy `ChatToolsTerminalEnableAutoApprove` peut désactiver entièrement l'auto-approbation.
 
+Logique d'évaluation d'une commande (le `false` est vérifié en premier) :
+
+```mermaid
+flowchart TD
+    A["L'agent veut lancer une commande"] --> B{"Correspond à un motif 'false' ?"}
+    B -- Oui --> C["Confirmation manuelle obligatoire"]
+    B -- Non --> D{"Correspond à un motif 'true' ?"}
+    D -- Oui --> E["Exécution automatique"]
+    D -- Non --> F["Confirmation par défaut (dialogue)"]
+```
+
 ### 5.2 Droits de lecture et d'écriture sur les fichiers
 
 VS Code n'a pas de « permission par dossier » de type `chmod` ; on obtient l'équivalent en combinant trois leviers :
@@ -160,7 +212,7 @@ VS Code n'a pas de « permission par dossier » de type `chmod` ; on obtient l'�
 ```
 
 - **Aucune écriture du tout** - retirer l'outil `edit` de l'agent : il devient strictement lecture seule (voir [module 5](05_agents.md)).
-- **Lecture** - la **content exclusion** ([§3](#3-exclure-du-contenu-content-exclusion)) empêche l'agent de **lire** certains chemins (secrets, données). C'est le pendant « read » des réglages ci-dessus.
+- **Lecture** - la **content exclusion** ([§3](#3-exclure-du-contenu-content-exclusion)) empêche Copilot d'utiliser certains chemins comme contexte en complétion et en chat. **Attention** : elle ne s'applique **pas à l'agent mode** ([§3.3](#33-délai-et-limite-majeure)) - pour qu'un agent ne lise pas un fichier sensible, il faut ne pas l'ouvrir / ne pas l'y pointer et restreindre ses outils.
 
 ### 5.3 Accès internet et téléchargements
 

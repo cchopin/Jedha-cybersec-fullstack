@@ -96,6 +96,8 @@ La **revue de code Copilot est activée** dans l'organisation (voir [annexe](ann
 
 **Règle :** Copilot code review **débroussaille**, l'humain **tranche**. La responsabilité de la fusion reste au réviseur, et la grille du §5 s'applique toujours.
 
+> Doc officielle : [Using GitHub Copilot code review](https://docs.github.com/copilot/using-github-copilot/code-review/using-copilot-code-review).
+
 ---
 
 ## 7. Carte mémoire (à afficher)

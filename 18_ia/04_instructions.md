@@ -63,7 +63,7 @@ Le fichier central. Emplacement :
     └── copilot-instructions.md
 ```
 
-Son contenu est **injecté automatiquement dans chaque interaction de chat** pour toute personne travaillant sur ce dépôt. C'est le socle commun de l'équipe.
+Son contenu est **injecté automatiquement dans chaque interaction de chat** pour toute personne travaillant sur ce dépôt. C'est le socle commun de l'équipe. Doc officielle : [Custom instructions](https://code.visualstudio.com/docs/agent-customization/custom-instructions) (VS Code).
 
 **Ce qui doit y figurer :**
 - Pile technique avec **versions** (« Python 3.12, FastAPI, SQLAlchemy 2.x »).
