@@ -17,6 +17,8 @@ Ce module est autonome : il contient tout le nécessaire pour comprendre et cré
 
 Les deux se combinent : un agent personnalisé peut s'exécuter en agent mode avec un périmètre d'outils limité. Dans l'organisation, l'**agent mode est activé** (voir [annexe](annexe_configuration.md)).
 
+> **Vocabulaire.** Le terme varie d'un outil à l'autre : ce que Copilot appelle « agent (personnalisé) » correspond, dans d'autres écosystèmes, à ce qu'on nomme « skill » (par exemple chez Anthropic / Claude). Même idée : un profil de capacité réutilisable, avec instructions et périmètre. Ne pas se laisser perdre par le vocabulaire d'un fournisseur à l'autre.
+
 ---
 
 ## 2. Agent mode
@@ -37,6 +39,18 @@ L'utilisateur décrit un **objectif**, non une suite d'instructions. Copilot :
 - La responsabilité du diff final reste humaine : relecture et tests obligatoires (voir [module 6](06_risques.md)).
 
 > La connexion à des serveurs **MCP** étendrait les actions de l'agent à des outils externes, mais le **MCP est désactivé** dans l'organisation (voir [annexe](annexe_configuration.md)).
+
+### Travailler sur une branche dédiée (et finir en PR)
+
+L'agent mode agit dans le **répertoire et la branche courants** : il faut donc s'assurer **avant de lancer** qu'on est au bon endroit.
+
+1. **Créer/basculer sur une branche dédiée** : `git checkout -b feat/ma-tache`. Une tâche = une branche, jamais directement sur `main`.
+2. **Vérifier la branche active** avant de lancer : `git branch --show-current` (ou l'indicateur de branche en bas à gauche de VS Code).
+3. **Partir d'un arbre propre** : ne pas lancer l'agent avec des changements non commités importants - il les mélangerait à son travail. Au besoin, `git stash` d'abord.
+4. **Relire avant de committer** : examiner le `git diff` complet, puis committer. L'agent **ne pousse pas en direct** : la branche part en **pull request** pour relecture humaine et CI.
+5. **Isoler plusieurs agents/tâches en parallèle** : un **worktree** Git dédié par tâche (`git worktree add ../tache-x feat/tache-x`) évite que deux exécutions se marchent dessus.
+
+> Garde-fou complémentaire : bloquer les commandes Git destructives (`git push`, `git reset`, `git clean`) via la deny-list d'auto-approbation, pour qu'elles exigent toujours une confirmation (voir [module 3](03_configuration.md)). Risques associés détaillés au [module 6](06_risques.md).
 
 ---
 
@@ -113,6 +127,14 @@ Pour un agent d'analyse ou de revue, se limiter aux outils de **lecture/recherch
 
 Le champ `model` est optionnel et accepte le **nom tel qu'affiché** dans le sélecteur. Dans l'organisation, seuls les modèles **OpenAI GPT-5.x** sont disponibles (`GPT-5 mini`, `GPT-5.4 mini`, `GPT-5.4`, `GPT-5.5`). En l'absence de ce champ, l'agent utilise le modèle actif dans le chat. Privilégier un modèle économe pour les agents simples (voir [module 2](02_economie_tokens.md)).
 
+### Garder l'agent court
+
+Un fichier d'agent doit rester **concis et focalisé : viser 200 lignes maximum**. Un agent trop long se dilue, devient difficile à maintenir, et l'IA en suit moins fidèlement les consignes.
+
+Au-delà, c'est généralement le signe qu'on y a glissé du **contexte général du projet** (conventions, stack, règles transverses) qui n'a pas sa place dans un agent : ce contenu va dans les **fichiers d'instructions « always-on »** (`AGENTS.md`, `copilot-instructions.md` - voir [module 4](04_instructions.md)), partagés par tous les agents et tout le chat. L'agent ne garde que ce qui est **propre à son rôle**.
+
+> Certains outils disposent en plus d'un fichier **mémoire** dédié pour ce contexte durable ; chez Copilot, **Copilot Memory est désactivé** dans l'organisation (voir [annexe](annexe_configuration.md)) - on s'appuie donc sur les fichiers d'instructions.
+
 ---
 
 ## 5. Sélectionner un agent dans VS Code
@@ -126,6 +148,8 @@ Dans le panneau Copilot Chat :
 Autres accès : taper **`/agents`** dans le chat ouvre le menu « Configure Custom Agents » ; la commande **`Chat: New Custom Agent`** (palette `⇧⌘P`) crée un nouvel agent avec un sélecteur d'outils.
 
 L'agent sélectionné reste actif jusqu'à changement manuel. Pour empêcher qu'un agent soit visible dans ce menu, mettre `user-invocable: false` ; pour l'empêcher d'être appelé **comme subagent** par un autre agent, mettre `disable-model-invocation: true`.
+
+> **Sur les conversations longues, l'IA peut « se perdre »** : oublier son rôle, mélanger les consignes, se mettre à halluciner. Réflexe simple : lui **demander de relire son agent** (« relis tes instructions d'agent et reprends ») pour la recadrer, ou repartir au propre avec `/clear`.
 
 ---
 
@@ -202,3 +226,4 @@ Ne jamais proposer de modification directe. En cas de doute, le signaler plutôt
 3. **Périmètre** : comparer le comportement d'un même rôle sans puis avec l'outil `edit`. Noter la différence de risque (lecture seule vs capacité de modifier).
 4. **Sélecteur** : ouvrir le sélecteur d'agent, repérer les agents existants et l'entrée « Configure Custom Agents… ». Identifier dans la barre du bas le modèle, l'effort et la fenêtre de contexte actifs.
 5. **Décision** : pour trois tâches récurrentes de l'équipe, déterminer ce qui relève de l'agent mode, d'un agent personnalisé ou d'un simple prompt file.
+6. **Discipline Git** : avant une tâche en agent mode, créer une branche dédiée (`git checkout -b feat/test`), vérifier la branche active, lancer la tâche, puis relire le `git diff` complet avant tout commit. Constater que rien n'a touché `main`.

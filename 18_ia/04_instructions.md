@@ -153,7 +153,21 @@ Le prompt s'invoque ensuite dans le chat par son nom. Avantage : toute l'équipe
 
 ---
 
-## 7. Hiérarchie : quelle source l'emporte ?
+## 7. Spec-driven development : la spécification guide l'IA
+
+Au-delà du prompt et des instructions, une pratique structurante : le **spec-driven development** (SDD), ou développement piloté par la spécification. Le principe : on **écrit d'abord la spécification** (objectif, comportement attendu, contraintes, critères d'acceptation), puis l'IA s'appuie sur ce document comme source de vérité pour générer le code.
+
+L'idée clé : la **documentation du projet n'est pas un sous-produit, c'est le point de départ**. Une spec claire et versionnée :
+- **guide l'IA** : elle cadre la génération bien mieux qu'une suite de prompts isolés, et limite les dérives (hallucination, hors-sujet) ;
+- **sert de prémisse à la documentation finale** : la spec rédigée en amont devient la base de la doc du projet, au lieu d'être reconstituée après coup.
+
+En pratique, la spec rejoint la logique des fichiers de contexte de ce module : un document de référence, stable et partagé, qui oriente chaque génération. On décrit *ce qui doit être fait et pourquoi* ; l'IA propose le *comment*, qu'on relit.
+
+> À retenir : prompts (le moment), instructions (le décor permanent), **spec (l'intention de référence du projet)**. Les trois se complètent.
+
+---
+
+## 8. Hiérarchie : quelle source l'emporte ?
 
 Lorsque plusieurs sources de contexte coexistent, l'ordre général est :
 
@@ -176,3 +190,4 @@ En pratique : les instructions posent le décor permanent, le prompt précise la
 6. **Prompt file** : transformer le prompt de revue de sécurité ci-dessus en `*.prompt.md`, puis le lancer sur un fichier. Comparer avec une demande tapée à la main.
 7. **Sans / avec** : poser la même demande de génération dans un projet sans instructions, puis avec. Mesurer ce qui n'a plus eu besoin d'être précisé.
 8. **Hygiène** : relire le `copilot-instructions.md` et vérifier l'absence de toute donnée sensible.
+9. **Spec-driven** : avant de coder une petite fonctionnalité, rédiger d'abord une courte spec (objectif, comportement, contraintes, critères d'acceptation). Demander la génération à partir de cette spec, puis vérifier ce qui a été cadré sans avoir eu à le repréciser.

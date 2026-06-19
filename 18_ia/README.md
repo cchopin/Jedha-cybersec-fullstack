@@ -37,23 +37,23 @@ Le fil conducteur : **débuter → professionnaliser → sécuriser → consolid
 
 | # | Module | Contenu |
 |---|--------|---------|
-| 3 | [Configuration](03_configuration.md) | Réglages VS Code, activation par langage, exclusion de contenu, MCP, paramètres d'organisation |
-| 4 | [Prompting, instructions et pré-prompts](04_instructions.md) | Techniques de prompting (few-shot, comment-driven), `copilot-instructions.md`, `*.instructions.md`, prompt files, `AGENTS.md` |
-| 5 | [Agents](05_agents.md) | Agent mode et agents personnalisés : création, périmètre d'outils, exemples |
+| 3 | [Configuration](03_configuration.md) | Réglages VS Code, exclusion de contenu, MCP, encadrement de l'agent (commandes interdites, droits, téléchargements), règles globales vs locales |
+| 4 | [Prompting, instructions et pré-prompts](04_instructions.md) | Techniques de prompting (few-shot, comment-driven), `copilot-instructions.md`, `*.instructions.md`, prompt files, `AGENTS.md`, spec-driven development |
+| 5 | [Agents](05_agents.md) | Agent mode et agents personnalisés : création, périmètre d'outils, branche/PR, exemples |
 
 ### Niveau 3 - Maîtrise des risques
 *Le cœur cyber : qualité, sécurité, conformité.*
 
 | # | Module | Contenu |
 |---|--------|---------|
-| 6 | [Risques](06_risques.md) | Hallucinations, code non sécurisé, propriété intellectuelle, dépendance |
-| 7 | [Sécurité](07_securite.md) | Secrets, RGPD, filtre code public, injection de prompt, dépôt non fiable, injection via logs, OWASP Top 10 LLM |
+| 6 | [Risques](06_risques.md) | Hallucinations, code non sécurisé, propriété intellectuelle, dépendance, tests en trompe-l'œil |
+| 7 | [Sécurité](07_securite.md) | Secrets, RGPD, filtre code public, injection de prompt, dépôt non fiable, injection via logs, réflexe incident, OWASP Top 10 LLM |
 
 ### Synthèse et application
 
 | # | Module | Contenu |
 |---|--------|---------|
-| 8 | [Bonnes pratiques](08_bonnes_pratiques.md) | Workflow type, anti-patterns, checklists, revue du code généré |
+| 8 | [Bonnes pratiques](08_bonnes_pratiques.md) | Workflow type, anti-patterns, checklists, revue du code généré, revue PR Copilot |
 | 9 | [Cas pratique (fil rouge)](09_cas_pratique.md) | Atelier guidé de bout en bout, mobilisant tous les modules |
 | A | [Annexe - Notre configuration](annexe_configuration.md) | État réel des fonctionnalités et modèles activés dans l'organisation |
 

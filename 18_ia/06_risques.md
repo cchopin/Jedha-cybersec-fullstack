@@ -56,11 +56,24 @@ L'agent mode **exécute des actions**. Risques additionnels :
 - Commandes destructives (`rm`, reset, drop) lancées en cours de tâche.
 - Effets de bord non désirés sur plusieurs fichiers.
 
-**Parade :** relire le plan et les commandes avant validation, s'appuyer sur le niveau d'approbation (« Default Approvals »), travailler sur une branche dédiée, ne pas lancer l'agent mode sur un dépôt comportant des changements non commités importants. Conserver la possibilité de revenir en arrière (`git`).
+**Parade :** relire le plan et les commandes avant validation, s'appuyer sur le niveau d'approbation (« Default Approvals ») et sur la deny-list d'auto-approbation pour bloquer les commandes destructives ([module 3](03_configuration.md)), travailler sur une **branche dédiée** et finir en pull request ([module 5](05_agents.md)), ne pas lancer l'agent mode sur un dépôt comportant des changements non commités importants. Conserver la possibilité de revenir en arrière (`git`).
 
 ---
 
-## 6. Tableau de synthèse
+## 6. Faux sentiment de sécurité : les tests générés
+
+Copilot génère volontiers des tests - mais **un test qui passe ne prouve pas que le code est juste**. Pièges fréquents :
+
+- **Test tautologique** : l'assertion recopie le résultat *observé* du code au lieu du résultat *attendu*. Si le code est faux, le test l'entérine - le bug devient la référence.
+- **Couverture en trompe-l'œil** : les lignes sont bien exécutées (bon taux de couverture affiché), mais **aucune assertion utile** ne vérifie réellement le comportement.
+- **Happy path uniquement** : seul le chemin nominal est testé ; les cas d'erreur (exceptions, entrées invalides) - souvent les plus importants en sécurité - sont absents.
+- **Cas limites ignorés** : vide, très grand, négatif, caractères spéciaux, valeurs nulles rarement couverts.
+
+**Parade :** dériver les tests de la **spécification**, pas du code produit (voir spec-driven, [module 4](04_instructions.md)). Vérifier qu'un test **échoue quand il doit échouer** : casser volontairement le code et s'assurer que le test rougit. Compléter à la main les cas d'erreur et les cas limites. Un test généré se relit comme le code généré.
+
+---
+
+## 7. Tableau de synthèse
 
 | Risque | Signe | Parade |
 |--------|-------|--------|
@@ -68,6 +81,7 @@ L'agent mode **exécute des actions**. Risques additionnels :
 | Code non sécurisé | SQL concaténé, crypto faible, entrée non validée | Revue sécurité + linter + SAST |
 | Licence/IP | Bloc ressemblant à du code public | Filtre code public maintenu activé |
 | Dépendance | `Tab` sans lecture | Garder la main, `/explain` |
+| Tests en trompe-l'œil | Tout est vert mais rien n'est vraiment vérifié | Test issu de la spec, vérifier qu'il échoue quand il faut |
 | Agent mode | Commande destructive proposée | Branche dédiée, relecture avant validation |
 
 ---
@@ -79,3 +93,4 @@ L'agent mode **exécute des actions**. Risques additionnels :
 3. **Cas limite** : faire générer une fonction de découpage/parsing, puis la tester sur des entrées limites (vide, très long, caractères spéciaux). Noter ce qui casse.
 4. **Explain avant accept** : prendre une suggestion non entièrement comprise, lancer `/explain`, puis décider en connaissance de cause.
 5. **Agent mode maîtrisé** : avant de lancer une tâche en agent mode, créer une branche dédiée. Après coup, examiner le `git diff` complet avant tout commit.
+6. **Test qui ment** : faire générer des tests pour une fonction, puis introduire volontairement un bug dans cette fonction. Vérifier si les tests échouent. S'ils restent verts, c'est qu'ils ne testent rien d'utile - les corriger pour qu'ils rougissent.

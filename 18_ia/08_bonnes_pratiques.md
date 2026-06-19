@@ -76,6 +76,26 @@ Avant de committer du code produit par Copilot :
 - En revue de pull request, le réviseur humain reste maître : le code généré se relit comme le reste, voire davantage.
 - Signaler en équipe les hallucinations marquantes : cela construit une culture commune.
 
+### Revue automatisée des pull requests (Copilot code review)
+
+La **revue de code Copilot est activée** dans l'organisation (voir [annexe](annexe_configuration.md)). Elle ajoute un relecteur automatique qui commente un diff - **en complément, jamais en remplacement**, du réviseur humain.
+
+**Comment la déclencher :**
+- dans VS Code, demander une revue de ses modifications **avant de pousser** (revue du diff local) ;
+- sur GitHub.com, **ajouter Copilot comme reviewer** de la pull request : il poste des commentaires ligne à ligne, parfois avec des suggestions applicables.
+
+**Ce qu'elle apporte :**
+- un premier passage rapide sur les fautes évidentes, oublis et incohérences de style ;
+- des commentaires ciblés qui dégrossissent avant la revue humaine ;
+- la prise en compte du `copilot-instructions.md` - attention, c'est celui de la **branche de base** qui est lu, pas celui de la branche de la PR (voir [module 4](04_instructions.md)).
+
+**Ses limites, à garder en tête :**
+- elle **n'exécute pas** le code et ne lance pas les tests : elle raisonne sur le texte du diff ;
+- ce **n'est pas un audit de sécurité** ni un SAST ; elle peut manquer une faille logique ou un cas limite ;
+- elle peut produire des commentaires faux ou hors-sujet (mêmes limites d'hallucination que le reste - [module 6](06_risques.md)).
+
+**Règle :** Copilot code review **débroussaille**, l'humain **tranche**. La responsabilité de la fusion reste au réviseur, et la grille du §5 s'applique toujours.
+
 ---
 
 ## 7. Carte mémoire (à afficher)
